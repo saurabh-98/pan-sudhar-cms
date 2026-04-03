@@ -1,0 +1,173 @@
+/* =========================
+   CUSTOMER HEADER BASE
+========================= */
+.cust-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* LEFT */
+.cust-header-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* RIGHT */
+.cust-header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* =========================
+   NOTIFICATION
+========================= */
+.cust-notif-icon {
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.cust-notif-badge {
+    position: absolute;
+    top: -5px;
+    right: -6px;
+    background: red;
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 50%;
+}
+
+.cust-notif-dropdown {
+    width: 220px;
+    padding: 10px;
+}
+
+/* =========================
+   USER
+========================= */
+.cust-user-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    background: #f5f5f5;
+    padding: 6px 12px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.cust-user-btn:hover {
+    background: #ff5722;
+    color: #fff;
+}
+
+.cust-user-img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.cust-user-name {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* TOGGLE BUTTON */
+.cust-menu-toggle {
+    display: none;
+    border: none;
+    background: #ff5722;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* SHOW ONLY ON MOBILE */
+@media (max-width: 768px) {
+    .cust-menu-toggle {
+        display: inline-block;
+    }
+}
+
+/* =========================
+   TABLET
+========================= */
+@media (max-width: 992px) {
+
+    .cust-header {
+        padding: 10px 15px;
+    }
+
+    .cust-user-name {
+        font-size: 13px;
+    }
+}
+
+/* =========================
+   MOBILE
+========================= */
+@media (max-width: 768px) {
+
+    .cust-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cust-header-left {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .cust-header-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    /* Hide name on mobile */
+    .cust-user-name {
+        display: none;
+    }
+
+    .cust-user-btn {
+        padding: 6px;
+    }
+
+    .cust-user-img {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+/* =========================
+   SMALL MOBILE
+========================= */
+@media (max-width: 480px) {
+
+    .cust-header-title {
+        font-size: 16px;
+    }
+
+    .cust-header {
+        padding: 8px 10px;
+    }
+
+    .cust-header-right {
+        gap: 10px;
+    }
+
+    .cust-notif-icon {
+        font-size: 16px;
+    }
+}

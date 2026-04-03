@@ -1,0 +1,55 @@
+/* CARD BOX */
+.card-box {
+    padding: 20px;
+    border-radius: 16px;
+    color: #fff;
+    transition: 0.3s;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.card-box:hover {
+    transform: translateY(-5px);
+}
+
+/* GRADIENTS */
+.gradient-green { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+.gradient-blue { background: linear-gradient(135deg, #3498db, #6dd5fa); }
+.gradient-yellow { background: linear-gradient(135deg, #f39c12, #f1c40f); }
+.gradient-red { background: linear-gradient(135deg, #e74c3c, #ff6b6b); }
+
+/* ANALYTICS */
+.dark-card {
+    background: #111827;
+    color: #fff;
+}
+
+.info-card {
+    background: #0ea5e9;
+    color: #fff;
+}
+
+.success-card {
+    background: #22c55e;
+    color: #fff;
+}
+
+/* DASHBOARD CARD */
+.dashboard-card {
+    border-radius: 16px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+.dashboard-card .card-header {
+    background: transparent;
+    border-bottom: none;
+    font-weight: bold;
+}
+
+/* TITLE */
+.dashboard-title {
+    font-weight: bold;
+}
+
+canvas {
+    height: 300px !important;
+}

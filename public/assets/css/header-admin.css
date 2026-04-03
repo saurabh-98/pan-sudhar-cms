@@ -1,0 +1,180 @@
+/* ===== HEADER ===== */
+.hdrx-header {
+    height: 60px;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 18px;
+    position: fixed;
+    top: 0;
+    left: 260px;
+    right: 0;
+    z-index: 999;
+    transition: 0.3s;
+}
+
+/* WHEN SIDEBAR COLLAPSE */
+.sbx-sidebar.sbx-collapse ~ .hdrx-header {
+    left: 70px;
+}
+
+/* LEFT */
+.hdrx-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* MENU BUTTON */
+.hdrx-menu-btn {
+    border: none;
+    background: #f1f5f9;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* TITLE */
+.hdrx-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* RIGHT */
+.hdrx-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+/* NOTIFICATION */
+.hdrx-notif {
+    position: relative;
+}
+
+.hdrx-notif-icon {
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* BADGE */
+.hdrx-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: red;
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 50%;
+}
+
+/* USER */
+.hdrx-user-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+/* AVATAR */
+.hdrx-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+}
+
+/* USER NAME */
+.hdrx-username {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* DROPDOWN */
+.hdrx-dropdown {
+    min-width: 220px;
+}
+
+/* ===== RESPONSIVE ===== */
+
+/* TABLET */
+@media (max-width: 992px) {
+
+    .hdrx-title {
+        font-size: 14px;
+    }
+
+    .hdrx-username {
+        display: none;
+    }
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+
+    .hdrx-header {
+        left: 0;
+    }
+
+    .hdrx-title {
+        display: none;
+    }
+
+    .hdrx-right {
+        gap: 12px;
+    }
+
+    .hdrx-avatar {
+        width: 30px;
+        height: 30px;
+    }
+
+}
+
+/* ===== BODY SHIFT ===== */
+.sbx-body-collapse .hdrx-header {
+    left: 70px;
+}
+
+.sbx-body-collapse .main-content {
+    margin-left: 70px;
+}
+
+/* DEFAULT */
+.hdrx-header {
+    left: 260px;
+    transition: 0.3s;
+}
+
+.main-content {
+    margin-left: 260px;
+    transition: 0.3s;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+
+    .hdrx-header {
+        left: 0;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+}
+
+/* SMALL MOBILE */
+@media (max-width: 480px) {
+
+    .hdrx-badge {
+        font-size: 9px;
+        padding: 2px 5px;
+    }
+
+}

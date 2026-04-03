@@ -1,0 +1,159 @@
+/* ===== HEADER ===== */
+.stfh-header {
+    height: 60px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+    position: fixed;
+    top: 0;
+    left: 240px;
+    right: 0;
+    z-index: 2000;
+    gap: 10px;
+}
+
+/* LEFT */
+.stfh-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* MENU BTN */
+.stfh-menu-btn {
+    border: none;
+    background: #f1f5f9;
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* TITLE */
+.stfh-title {
+    font-size: 16px;
+    margin: 0;
+}
+
+/* SEARCH */
+.stfh-search {
+    flex: 1;
+    max-width: 400px;
+    position: relative;
+}
+
+.stfh-search input {
+    width: 100%;
+    padding: 8px 35px 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.stfh-search i {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+}
+
+/* RIGHT */
+.stfh-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* NOTIF */
+.stfh-notif {
+    position: relative;
+}
+
+.stfh-notif-icon {
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.stfh-badge {
+    position: absolute;
+    top: -5px;
+    right: -6px;
+    background: red;
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 50%;
+}
+
+/* USER */
+.stfh-user-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.stfh-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+}
+
+/* ===== RESPONSIVE ===== */
+
+/* TABLET */
+@media (max-width: 992px) {
+
+    .stfh-search {
+        max-width: 250px;
+    }
+
+    .stfh-username {
+        display: none;
+    }
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+
+    .stfh-header {
+        left: 0;
+        padding: 0 10px;
+    }
+
+    .stfh-title {
+        display: none;
+    }
+
+    .stfh-search {
+        position: absolute;
+        top: 65px;
+        left: 10px;
+        right: 10px;
+        max-width: 100%;
+        display: none;
+        background: #fff;
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .stfh-search.active {
+        display: block;
+    }
+
+}
+
+/* SMALL MOBILE */
+@media (max-width: 480px) {
+
+    .stfh-avatar {
+        width: 30px;
+        height: 30px;
+    }
+
+}

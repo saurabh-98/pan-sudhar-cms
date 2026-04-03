@@ -1,0 +1,191 @@
+/* =========================
+   TRENDING V2 (CENTER FIX)
+========================= */
+
+.trending-v2 {
+    padding: 50px 20px;
+    background: #f8f9fb;
+}
+
+/* 🔥 CENTER WRAPPER */
+.tv2-wrapper {
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+/* HEADER */
+.tv2-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.tv2-title {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.tv2-view-all {
+    color: #ff5722;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* =========================
+   GRID (CENTER PERFECT)
+========================= */
+
+.tv2-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 25px;
+}
+
+/* =========================
+   CARD (PREMIUM)
+========================= */
+
+.tv2-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.tv2-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+/* =========================
+   IMAGE
+========================= */
+
+.tv2-img {
+    position: relative;
+    height: 170px;
+    overflow: hidden;
+    border-radius: 14px;
+}
+
+.tv2-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.4s;
+}
+
+.tv2-card:hover img {
+    transform: scale(1.08);
+}
+
+/* BADGE */
+.tv2-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    color: #fff;
+    font-weight: 600;
+}
+
+.tv2-badge.veg { background: green; }
+.tv2-badge.nonveg { background: red; }
+
+/* =========================
+   INFO
+========================= */
+
+.tv2-info {
+    padding: 12px 5px;
+}
+
+.tv2-title-text {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+/* RATING */
+.tv2-rating {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+/* =========================
+   BOTTOM
+========================= */
+
+.tv2-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* PRICE */
+.tv2-price {
+    color: #ff5722;
+    font-weight: bold;
+    font-size: 17px;
+}
+
+/* =========================
+   ACTIONS
+========================= */
+
+.tv2-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* DETAILS BUTTON */
+.tv2-details {
+    padding: 6px 12px;
+    border: 1px solid #ff5722;
+    border-radius: 20px;
+    font-size: 12px;
+    color: #ff5722;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.tv2-details:hover {
+    background: #ff5722;
+    color: #fff;
+}
+
+/* ADD BUTTON */
+.tv2-add {
+    padding: 6px 14px;
+    background: linear-gradient(135deg, #ff5722, #ff3d00);
+    color: #fff;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.tv2-add:hover {
+    transform: scale(1.05);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:768px){
+
+    .tv2-title {
+        font-size: 22px;
+    }
+
+    .tv2-img {
+        height: 150px;
+    }
+}

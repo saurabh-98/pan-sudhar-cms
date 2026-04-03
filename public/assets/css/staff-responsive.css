@@ -1,0 +1,157 @@
+/* =========================================
+   STAFF RESPONSIVE CSS (SAFE OVERRIDES)
+   Prefix: .stf-resp
+========================================= */
+
+/* ===== GLOBAL WRAPPER (OPTIONAL BUT BEST) ===== */
+.stf-resp {
+
+}
+
+/* ===== HEADER FIX ===== */
+@media (max-width: 992px) {
+
+    .stf-resp .header-search {
+        max-width: 250px;
+    }
+
+    .stf-resp .user-dropdown span {
+        display: none;
+    }
+
+}
+
+/* ===== MOBILE HEADER ===== */
+@media (max-width: 768px) {
+
+    .stf-resp .header {
+        left: 0 !important;
+        padding: 0 10px;
+    }
+
+    /* SEARCH DROPDOWN STYLE */
+    .stf-resp .header-search {
+        position: absolute;
+        top: 65px;
+        left: 10px;
+        right: 10px;
+        background: #fff;
+        padding: 10px;
+        border-radius: 10px;
+        display: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        z-index: 1500;
+    }
+
+    .stf-resp .header-search.active {
+        display: block;
+    }
+
+    /* TITLE HIDE */
+    .stf-resp .header-left h5 {
+        display: none;
+    }
+
+}
+
+/* ===== SIDEBAR MOBILE ===== */
+@media (max-width: 768px) {
+
+    .stf-resp .sidebar {
+        left: -240px !important;
+        transition: 0.3s;
+    }
+
+    .stf-resp .sidebar.show {
+        left: 0 !important;
+    }
+
+}
+
+/* ===== MAIN CONTENT FIX ===== */
+@media (max-width: 768px) {
+
+    .stf-resp .main-content {
+        margin-left: 0 !important;
+        padding: 10px;
+    }
+
+}
+
+/* ===== TABLE RESPONSIVE ===== */
+@media (max-width: 768px) {
+
+    .stf-resp table thead {
+        display: none;
+    }
+
+    .stf-resp table,
+    .stf-resp table tbody,
+    .stf-resp table tr,
+    .stf-resp table td {
+        display: block;
+        width: 100%;
+    }
+
+    .stf-resp table tr {
+        background: #fff;
+        margin-bottom: 12px;
+        border-radius: 10px;
+        padding: 10px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    }
+
+    .stf-resp table td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        font-size: 13px;
+    }
+
+    .stf-resp table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        font-weight: 600;
+        text-align: left;
+    }
+
+}
+
+/* ===== BUTTON FIX ===== */
+@media (max-width: 768px) {
+
+    .stf-resp .btn {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+}
+
+/* ===== CARD SPACING ===== */
+@media (max-width: 768px) {
+
+    .stf-resp .card {
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+}
+
+/* ===== SCROLL FIX ===== */
+.stf-resp .table-responsive {
+    overflow-x: auto;
+}
+
+/* ===== SMALL MOBILE ===== */
+@media (max-width: 480px) {
+
+    .stf-resp .header-right {
+        gap: 10px;
+    }
+
+    .stf-resp .notif-badge {
+        font-size: 9px;
+    }
+
+}

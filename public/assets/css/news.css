@@ -1,0 +1,227 @@
+/* =========================
+   NEWS X (FINAL PRO UI)
+========================= */
+
+.news-x {
+    padding: 70px 0;
+    background: #f8f9fb;
+    display: flex;
+    justify-content: center;
+}
+
+.news-x-wrapper {
+    max-width: 1200px;
+    width: 100%;
+    padding: 0 20px;
+}
+
+/* TITLE */
+.news-x-title {
+    text-align: center;
+    font-size: 34px;
+    font-weight: 800;
+    margin-bottom: 50px;
+}
+
+/* ================= FEATURED ================= */
+
+.news-x-featured {
+    position: relative;
+    height: 340px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 40px;
+}
+
+.news-x-featured img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* OVERLAY */
+.news-x-featured-overlay {
+    position: absolute;
+    bottom: 25px;
+    left: 25px;
+    background: rgba(255,255,255,0.95);
+    padding: 20px 25px;
+    border-radius: 14px;
+    max-width: 380px;
+    backdrop-filter: blur(10px);
+}
+
+.news-x-badge {
+    display: inline-block;
+    background: #ff5722;
+    color: #fff;
+    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+}
+
+.news-x-btn {
+    color: #ff5722;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* ================= LAYOUT ================= */
+
+.news-x-layout {
+    display: flex;
+    gap: 30px;
+}
+
+/* ================= GRID ================= */
+
+.news-x-grid {
+    flex: 2;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* ================= CARD ================= */
+
+.news-x-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: #000;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    transition: 0.3s;
+}
+
+.news-x-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(255,87,34,0.15);
+}
+
+/* IMAGE FIX 🔥 */
+.news-x-img {
+    height: 170px;
+    position: relative;
+    overflow: hidden;
+}
+
+.news-x-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: 0.4s;
+}
+
+.news-x-card:hover img {
+    transform: scale(1.1);
+}
+
+/* HOVER EFFECT */
+.news-x-hover {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: 0.3s;
+}
+
+.news-x-hover span {
+    color: #fff;
+    font-weight: 600;
+}
+
+.news-x-card:hover .news-x-hover {
+    opacity: 1;
+}
+
+/* CONTENT FIX 🔥 */
+.news-x-content {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.news-x-content h4 {
+    font-size: 15px;
+    margin-bottom: 6px;
+}
+
+/* REMOVE WHITE SPACE 🔥 */
+.news-x-read {
+    margin-top: auto;
+    color: #ff5722;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* ================= SIDEBAR ================= */
+
+.news-x-sidebar {
+    flex: 1;
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    height: fit-content;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.news-x-sidebar h4 {
+    margin-bottom: 15px;
+}
+
+.news-x-sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.news-x-sidebar li {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.news-x-sidebar a {
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.news-x-sidebar a:hover {
+    color: #ff5722;
+    padding-left: 6px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:992px){
+
+    .news-x-layout {
+        flex-direction: column;
+    }
+
+    .news-x-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media(max-width:600px){
+
+    .news-x-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .news-x-featured {
+        height: 220px;
+    }
+
+}

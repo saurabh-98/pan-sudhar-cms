@@ -1,0 +1,113 @@
+/* =========================
+   MENU V2 (SWIGGY STYLE)
+========================= */
+
+.menu-v2-banner {
+    background: linear-gradient(135deg,#ff5722,#ff3d00);
+    padding: 50px;
+    text-align: center;
+    color: #fff;
+    border-radius: 0 0 40px 40px;
+}
+
+.menu-v2-filter {
+    display: flex;
+    gap: 15px;
+}
+
+/* TABS */
+.menu-v2-tabs {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.menu-v2-tab {
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    background: #eee;
+    margin: 5px;
+}
+
+.menu-v2-tab.active {
+    background: #ff5722;
+    color: #fff;
+}
+
+/* CARD */
+.menu-v2-card {
+    display: flex;
+    gap: 20px;
+    background: #fff;
+    padding: 15px;
+    border-radius: 16px;
+    border: 1px solid #eee;
+    transition: 0.3s;
+}
+
+.menu-v2-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+/* IMAGE */
+.menu-v2-img {
+    width: 130px;
+    height: 130px;
+    position: relative;
+}
+
+.menu-v2-img img {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+/* BADGE */
+.menu-v2-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 4px 8px;
+    font-size: 11px;
+    color: #fff;
+    border-radius: 6px;
+}
+
+.menu-v2-badge.veg { background: green; }
+.menu-v2-badge.nonveg { background: red; }
+
+/* INFO */
+.menu-v2-info h4 {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.menu-v2-price {
+    color: #ff5722;
+    font-weight: 600;
+}
+
+/* ACTIONS */
+.menu-v2-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.menu-v2-details {
+    background: #eee;
+    padding: 6px 14px;
+    border-radius: 20px;
+    text-decoration: none;
+    color: #333;
+}
+
+.menu-v2-add {
+    background: linear-gradient(135deg,#ff5722,#ff3d00);
+    color: #fff;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 20px;
+}

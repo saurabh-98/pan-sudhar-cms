@@ -1,0 +1,263 @@
+/* =========================
+   RESET
+========================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* =========================
+   FULL SCREEN BACKGROUND
+========================= */
+html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+
+    display: grid;
+    place-items: center;
+
+    min-height: 100vh;
+
+    /* 🔥 PREMIUM GRADIENT */
+    background: linear-gradient(-45deg, #ff6b6b, #ff8c42, #ff3c00, #ffb347);
+    background-size: 400% 400%;
+    animation: gradientBG 8s ease infinite;
+
+    position: relative;
+}
+
+/* 🌟 GLOW BACKGROUND EFFECT */
+body::before {
+    content: "";
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    background: rgba(255, 255, 255, 0.15);
+    filter: blur(120px);
+    border-radius: 50%;
+    top: 10%;
+    left: 20%;
+    z-index: 0;
+}
+
+/* ANIMATION */
+@keyframes gradientBG {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+}
+
+/* =========================
+   WRAPPER
+========================= */
+.login-wrapper {
+    width: 100%;
+    min-height: 100vh;
+
+    display: grid;
+    place-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+/* =========================
+   CARD (GLASS PREMIUM)
+========================= */
+.login-card {
+    width: 100%;
+    max-width: 380px;
+
+    padding: 30px;
+    border-radius: 20px;
+
+    backdrop-filter: blur(25px);
+    background: rgba(255,255,255,0.12);
+
+    border: 1px solid rgba(255,255,255,0.2);
+
+    box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+
+    text-align: center;
+    color: #fff;
+
+    animation: fadeIn 0.6s ease;
+}
+
+/* CARD ANIMATION */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* =========================
+   TEXT
+========================= */
+.login-title {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.login-sub {
+    font-size: 13px;
+    margin-bottom: 22px;
+    opacity: 0.9;
+}
+
+/* =========================
+   INPUT GROUP
+========================= */
+.input-group {
+    position: relative;
+    margin-bottom: 22px;
+}
+
+/* INPUT */
+.input-field {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+
+    border: 1px solid rgba(255,255,255,0.2);
+
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+
+    transition: 0.3s;
+}
+
+/* INPUT FOCUS */
+.input-field:focus {
+    background: rgba(255,255,255,0.25);
+    border-color: #fff;
+    box-shadow: 0 0 15px rgba(255,255,255,0.5);
+}
+
+/* FLOAT LABEL */
+.input-group label {
+    position: absolute;
+    left: 14px;
+    top: 14px;
+
+    font-size: 13px;
+    color: #eee;
+
+    transition: 0.3s;
+}
+
+.input-field:focus + label,
+.input-field:not(:placeholder-shown) + label {
+    top: -8px;
+    font-size: 10px;
+
+    background: #ff6b6b;
+    padding: 2px 6px;
+    border-radius: 6px;
+}
+
+/* =========================
+   PASSWORD ICON
+========================= */
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 14px;
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+.toggle-password:hover {
+    opacity: 1;
+}
+
+/* =========================
+   BUTTON (PREMIUM)
+========================= */
+.btn-login-full {
+    width: 100%;
+    padding: 14px;
+
+    border-radius: 30px;
+    border: none;
+
+    background: linear-gradient(45deg, #ffffff, #ffe5d0);
+    color: #ff3c00;
+
+    font-weight: bold;
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.btn-login-full:hover {
+    background: linear-gradient(45deg, #ff3c00, #ff8c42);
+    color: #fff;
+
+    transform: scale(1.06);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+/* =========================
+   ERROR
+========================= */
+.error-text {
+    display: block;
+    margin-top: 5px;
+
+    font-size: 12px;
+    color: #ffdede;
+
+    text-align: left;
+}
+
+/* =========================
+   LINKS
+========================= */
+.extra-links {
+    margin-top: 12px;
+}
+
+.extra-links a {
+    color: #fff;
+    font-size: 13px;
+    text-decoration: underline;
+    opacity: 0.9;
+}
+
+.extra-links a:hover {
+    opacity: 1;
+}
+
+.signup-link {
+    color: #fff;
+    font-weight: 600;
+    margin-left: 5px;
+    transition: 0.3s;
+}
+
+.signup-link:hover {
+    color: #ffd1b3;
+    text-decoration: underline;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 480px) {
+    .login-card {
+        margin: 20px;
+        padding: 25px;
+    }
+}
