@@ -3,10 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Config; // ✅ ADD THIS
 use App\Services\NavigationMenuService;
-use App\Services\FooterService; // ✅ ADD THIS
+use App\Services\FooterService;
 use App\Models\Setting;
-use App\Models\PopupOffer;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,9 +17,12 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(
         NavigationMenuService $navService,
-        FooterService $footerService // ✅ ADD THIS
+        FooterService $footerService
     )
     {
+        /* ================= 🔥 FIX QR CODE (NO IMAGICK ERROR) ================= */
+        Config::set('qr-code.image_backend', 'gd');
+
         view()->composer('*', function ($view) use ($navService, $footerService) {
 
             // 🔹 Navigation Menus
@@ -28,27 +31,20 @@ class AppServiceProvider extends ServiceProvider
             // 🔹 Settings
             $settings = Setting::pluck('value', 'key');
 
-            // 🔥 POPUP
-            $popup = PopupOffer::where('is_active', 1)
-                ->where(fn($q) => $q->whereNull('start_at')->orWhere('start_at','<=',now()))
-                ->where(fn($q) => $q->whereNull('end_at')->orWhere('end_at','>=',now()))
-                ->latest()
-                ->first();
+           
 
-            // 🔥 FOOTER DATA
+            // 🔹 Footer Data
             $footer = $footerService->getFooterData();
 
             // 🔥 SHARE ALL DATA
             $view->with([
                 'navMenus' => $menus,
                 'settings' => $settings,
-                'popup' => $popup,
 
-                // ✅ FOOTER FIX
-                'links' => $footer['links'],
+                // ✅ Footer
+                'links'   => $footer['links'],
                 'socials' => $footer['socials'],
             ]);
-
         });
     }
 }

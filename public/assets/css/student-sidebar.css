@@ -1,0 +1,706 @@
+/* ==========================================================================
+   STUDENT SIDEBAR
+========================================================================== */
+
+.stf-sidebar{
+
+    width:290px;
+
+    height:100vh;
+
+    position:fixed;
+
+    left:0;
+
+    top:0;
+
+    overflow:hidden;
+
+    overflow-y:auto;
+
+    z-index:1050;
+
+    transition:0.35s ease;
+
+    background:
+
+        linear-gradient(
+            180deg,
+            #071129 0%,
+            #0f172a 45%,
+            #111827 100%
+        );
+
+    color:#fff;
+
+    box-shadow:
+        10px 0 40px rgba(0,0,0,0.18);
+
+}
+
+/* SCROLLBAR */
+
+.stf-sidebar::-webkit-scrollbar{
+
+    width:6px;
+
+}
+
+.stf-sidebar::-webkit-scrollbar-thumb{
+
+    background:#334155;
+
+    border-radius:20px;
+
+}
+
+.stf-sidebar::-webkit-scrollbar-track{
+
+    background:transparent;
+
+}
+
+/* ==========================================================================
+   TOP HEADER
+========================================================================== */
+
+.stf-top{
+
+    padding:24px 22px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    border-bottom:
+
+        1px solid rgba(255,255,255,0.06);
+
+    background:
+
+        rgba(255,255,255,0.02);
+
+    backdrop-filter:blur(10px);
+
+}
+
+.stf-top-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+}
+
+/* LOGO */
+
+.stf-logo{
+
+    width:52px;
+
+    height:52px;
+
+    border-radius:18px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #3b82f6
+        );
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:24px;
+
+    color:#fff;
+
+    box-shadow:
+        0 12px 30px rgba(37,99,235,0.35);
+
+}
+
+/* TITLE */
+
+.stf-title{
+
+    margin:0;
+
+    font-size:20px;
+
+    font-weight:800;
+
+    color:#fff;
+
+}
+
+.stf-subtitle{
+
+    color:#94a3b8;
+
+    font-size:12px;
+
+    margin-top:2px;
+
+}
+
+/* ==========================================================================
+   PROFILE CARD
+========================================================================== */
+
+.stf-profile-card{
+
+    position:relative;
+
+    margin:22px 18px;
+
+    padding:28px 22px;
+
+    border-radius:28px;
+
+    overflow:hidden;
+
+    text-align:center;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.08),
+            rgba(255,255,255,0.03)
+        );
+
+    border:
+
+        1px solid rgba(255,255,255,0.06);
+
+    backdrop-filter:blur(14px);
+
+}
+
+/* GLOW EFFECT */
+
+.stf-profile-card::before{
+
+    content:'';
+
+    position:absolute;
+
+    width:180px;
+
+    height:180px;
+
+    border-radius:50%;
+
+    background:
+
+        rgba(59,130,246,0.12);
+
+    top:-100px;
+
+    right:-70px;
+
+}
+
+/* AVATAR */
+
+.stf-avatar{
+
+    width:90px;
+
+    height:90px;
+
+    border-radius:50%;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #3b82f6
+        );
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    margin:auto;
+
+    font-size:34px;
+
+    font-weight:800;
+
+    color:#fff;
+
+    border:4px solid rgba(255,255,255,0.08);
+
+    box-shadow:
+        0 15px 35px rgba(37,99,235,0.35);
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+/* NAME */
+
+.stf-student-name{
+
+    margin-top:18px;
+
+    margin-bottom:6px;
+
+    font-size:20px;
+
+    font-weight:700;
+
+    color:#fff;
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+/* REG NO */
+
+.stf-reg-no{
+
+    color:#cbd5e1;
+
+    font-size:13px;
+
+    margin-bottom:16px;
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+/* BADGE */
+
+.stf-profile-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:9px 16px;
+
+    border-radius:30px;
+
+    background:
+
+        rgba(34,197,94,0.18);
+
+    color:#4ade80;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+/* ==========================================================================
+   MINI STATS
+========================================================================== */
+
+.stf-mini-stats{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:12px;
+
+    padding:0 18px 22px;
+
+}
+
+.stf-stat-box{
+
+    padding:16px 14px;
+
+    border-radius:20px;
+
+    background:
+
+        rgba(255,255,255,0.05);
+
+    border:
+
+        1px solid rgba(255,255,255,0.04);
+
+    text-align:center;
+
+    transition:0.35s ease;
+
+}
+
+.stf-stat-box:hover{
+
+    transform:translateY(-5px);
+
+    background:
+
+        rgba(255,255,255,0.08);
+
+}
+
+.stf-stat-box i{
+
+    display:block;
+
+    margin-bottom:10px;
+
+    font-size:18px;
+
+    color:#60a5fa;
+
+}
+
+.stf-stat-box strong{
+
+    display:block;
+
+    color:#fff;
+
+    font-size:16px;
+
+    margin-bottom:3px;
+
+}
+
+.stf-stat-box span{
+
+    color:#94a3b8;
+
+    font-size:12px;
+
+}
+
+/* ==========================================================================
+   MENU
+========================================================================== */
+
+.stf-menu{
+
+    list-style:none;
+
+    padding:8px 16px 30px;
+
+    margin:0;
+
+}
+
+/* MENU TITLE */
+
+.stf-menu-title{
+
+    color:#94a3b8;
+
+    font-size:11px;
+
+    text-transform:uppercase;
+
+    letter-spacing:1.5px;
+
+    margin:22px 14px 12px;
+
+}
+
+/* LINK */
+
+.stf-link{
+
+    position:relative;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:16px 18px;
+
+    margin-bottom:10px;
+
+    border-radius:18px;
+
+    color:#cbd5e1;
+
+    text-decoration:none;
+
+    overflow:hidden;
+
+    transition:0.35s ease;
+
+}
+
+/* BACKGROUND EFFECT */
+
+.stf-link::before{
+
+    content:'';
+
+    position:absolute;
+
+    inset:0;
+
+    border-radius:18px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #1d4ed8
+        );
+
+    opacity:0;
+
+    transition:0.35s ease;
+
+}
+
+/* ACTIVE + HOVER */
+
+.stf-link:hover::before,
+.stf-active::before{
+
+    opacity:1;
+
+}
+
+.stf-link:hover,
+.stf-active{
+
+    color:#fff !important;
+
+    transform:translateX(4px);
+
+    box-shadow:
+        0 12px 28px rgba(37,99,235,0.25);
+
+}
+
+/* ICON */
+
+.stf-link i{
+
+    width:20px;
+
+    text-align:center;
+
+    font-size:17px;
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+/* TEXT */
+
+.stf-link span{
+
+    position:relative;
+
+    z-index:2;
+
+    font-size:15px;
+
+    font-weight:600;
+
+}
+
+/* ARROW */
+
+.stf-arrow{
+
+    margin-left:auto;
+
+    font-size:11px;
+
+    opacity:0.75;
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+/* ==========================================================================
+   LOGOUT
+========================================================================== */
+
+.stf-logout-btn{
+
+    color:#fca5a5 !important;
+
+}
+
+.stf-logout-btn:hover{
+
+    color:#fff !important;
+
+}
+
+/* ==========================================================================
+   CLOSE BUTTON
+========================================================================== */
+
+.stf-close{
+
+    display:none;
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:
+
+        rgba(255,255,255,0.08);
+
+    color:#fff;
+
+    font-size:18px;
+
+    transition:0.3s ease;
+
+}
+
+.stf-close:hover{
+
+    background:
+
+        rgba(255,255,255,0.15);
+
+}
+
+/* ==========================================================================
+   MOBILE OVERLAY
+========================================================================== */
+
+.stf-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,0.55);
+
+    z-index:1040;
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition:0.3s ease;
+
+}
+
+.stf-overlay.active{
+
+    opacity:1;
+
+    visibility:visible;
+
+}
+
+/* ==========================================================================
+   MOBILE RESPONSIVE
+========================================================================== */
+
+@media(max-width:991px){
+
+    .stf-sidebar{
+
+        transform:translateX(-100%);
+
+        width:280px;
+
+    }
+
+    .stf-sidebar.active{
+
+        transform:translateX(0);
+
+    }
+
+    .stf-close{
+
+        display:flex;
+
+        align-items:center;
+
+        justify-content:center;
+
+    }
+
+}
+
+/* SMALL MOBILE */
+
+@media(max-width:576px){
+
+    .stf-sidebar{
+
+        width:100%;
+
+        max-width:320px;
+
+    }
+
+    .stf-profile-card{
+
+        padding:24px 18px;
+
+    }
+
+    .stf-avatar{
+
+        width:82px;
+
+        height:82px;
+
+        font-size:30px;
+
+    }
+
+    .stf-student-name{
+
+        font-size:18px;
+
+    }
+
+    .stf-link{
+
+        padding:15px 16px;
+
+    }
+
+}

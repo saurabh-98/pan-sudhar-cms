@@ -1,321 +1,451 @@
-@extends('layout.admin')
-
-@section('content')
-
-<div class="container-fluid">
-
-    <h3 class="dashboard-title mb-4">Manage News</h3>
-
-    <div class="row g-4">
-
-        <!-- FORM -->
-        <div class="col-lg-4">
-            <div class="modern-card">
-
-                <h5 class="card-title">Add / Edit News</h5>
-
-                <form id="newsForm" enctype="multipart/form-data">
-                    @csrf
-
-                    <input type="hidden" id="news_id">
-
-                    <!-- TITLE -->
-                    <div class="mb-3">
-                        <label>Title</label>
-                        <input type="text" name="title" class="form-control modern-input">
-                    </div>
-
-                    <!-- SLUG -->
-                    <div class="mb-3">
-                        <label>Slug (Auto)</label>
-                        <input type="text" name="slug" id="slugField" class="form-control modern-input" readonly>
-                    </div>
-
-                    <!-- DESCRIPTION -->
-                    <div class="mb-3">
-                        <label>Description</label>
-                        <textarea name="description" id="descriptionEditor" class="form-control modern-input"></textarea>
-                    </div>
-
-                    <!-- SEO -->
-                    <div class="mb-3">
-                        <label>Meta Title</label>
-                        <input type="text" name="meta_title" class="form-control modern-input">
-                    </div>
-
-                    <div class="mb-3">
-                        <label>Meta Description</label>
-                        <textarea name="meta_description" class="form-control modern-input"></textarea>
-                    </div>
-
-                    <!-- IMAGE -->
-                    <div class="mb-3">
-                        <label>Upload Image</label>
-                        <input type="file" name="image" id="imageInput" class="form-control modern-input">
-
-                        <div class="mt-2">
-                            <img id="previewImg" style="display:none; width:80px; border-radius:10px;">
-                        </div>
-                    </div>
-
-                    <!-- STATUS -->
-                    <div class="mb-3">
-                        <label>Status</label>
-                        <div class="form-check form-switch">
-                            <input type="checkbox" name="is_active" id="statusToggle" class="form-check-input" checked>
-                            <label class="form-check-label">Active</label>
-                        </div>
-                    </div>
-
-                    <button class="btn btn-gradient w-100" id="saveBtn">
-                        Save News
-                    </button>
-
-                </form>
-
-            </div>
-        </div>
-
-        <!-- TABLE -->
-        <div class="col-lg-8">
-            <div class="modern-card">
-
-                <div class="table-header">
-                    <h5>News List</h5>
-                </div>
-
-                <div class="table-responsive">
-
-                    <table id="newsTable" class="modern-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>News</th>
-                                <th>Status</th>
-                                <th>Image</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                    </table>
-
-                </div>
-
-            </div>
-        </div>
-
-    </div>
-
-</div>
-
-@endsection
-
-
 @section('scripts')
 
 <!-- CKEDITOR -->
 <script src="https://cdn.ckeditor.com/4.21.0/standard/ckeditor.js"></script>
 
 <script>
+
 $(document).ready(function(){
+
+    /*
+    |--------------------------------------------------------------------------
+    | CKEDITOR
+    |--------------------------------------------------------------------------
+    */
 
     let editor = CKEDITOR.replace('descriptionEditor');
 
-    /* =========================
-       AUTO SLUG
-    ========================= */
-    $('input[name="title"]').on('keyup', function(){
-        let slug = $(this).val()
-            .toLowerCase()
-            .replace(/ /g,'-')
-            .replace(/[^\w-]+/g,'');
+    /*
+    |--------------------------------------------------------------------------
+    | DATATABLE
+    |--------------------------------------------------------------------------
+    */
 
-        $('#slugField').val(slug);
-    });
+    let table = $('#onlineClassTable').DataTable({
 
-    /* =========================
-       IMAGE PREVIEW
-    ========================= */
-    $('#imageInput').on('change', function(e){
-        let reader = new FileReader();
-        reader.onload = function(){
-            $('#previewImg').attr('src', reader.result).show();
-        }
-        reader.readAsDataURL(e.target.files[0]);
-    });
-
-    /* =========================
-       DATATABLE
-    ========================= */
-    let table = $('#newsTable').DataTable({
         ajax: {
-            url: "{{ route('admin.news.index') }}",
-            dataSrc: ''
+
+            url: "{{ route('admin.online-classes.index') }}",
+
+            dataSrc: 'data'
         },
+
+        responsive: true,
+
+        autoWidth: false,
+
         columns: [
-            { data: 'id' },
+
             {
-                data: 'title',
-                render: function(data, type, row){
+                data: 'id'
+            },
+
+            {
+                data: null,
+
+                render: function(row){
+
                     return `
-                        <strong>${data}</strong><br>
-                        <small>${(row.description || '').substring(0,60)}...</small>
+
+                        <strong>
+
+                            ${row.title}
+
+                        </strong>
+
+                        <br>
+
+                        <small>
+
+                            ${row.class_name}
+
+                            |
+
+                            ${row.section_name}
+
+                            |
+
+                            ${row.subject_name}
+
+                        </small>
+
                     `;
                 }
             },
+
             {
-                data: 'is_active',
-                render: function(data){
-                    return data == 1 
-                        ? '<span class="badge bg-success">Active</span>'
-                        : '<span class="badge bg-danger">Inactive</span>';
-                }
+                data: 'teacher_name'
             },
-            {
-                data: 'image',
-                render: function(data){
-                    return `<img src="/storage/${data}" class="table-img">`;
-                }
-            },
+
             {
                 data: null,
+
                 render: function(row){
+
                     return `
-                        <button class="btn btn-sm btn-edit editBtn"
-                            data-id="${row.id}"
-                            data-title="${row.title}"
-                            data-description="${row.description}"
-                            data-active="${row.is_active}">
+
+                        ${row.class_date}
+
+                        <br>
+
+                        <small>
+
+                            ${row.time}
+
+                        </small>
+
+                    `;
+                }
+            },
+
+            {
+                data: 'status_badge'
+            },
+
+            {
+                data: null,
+
+                render: function(row){
+
+                    return `
+
+                        <button
+                            class="btn btn-sm btn-edit editBtn"
+                            data-id="${row.id}">
+
                             Edit
+
                         </button>
 
-                        <button class="btn btn-sm btn-delete deleteBtn"
+                        <button
+                            class="btn btn-sm btn-delete deleteBtn"
                             data-id="${row.id}">
+
                             Delete
+
                         </button>
+
                     `;
                 }
             }
         ]
     });
 
-    /* =========================
-       EDIT
-    ========================= */
+    /*
+    |--------------------------------------------------------------------------
+    | EDIT
+    |--------------------------------------------------------------------------
+    */
+
     $(document).on('click','.editBtn',function(){
 
-        let title = $(this).data('title');
-
-        $('#news_id').val($(this).data('id'));
-        $('input[name="title"]').val(title);
-
-        editor.setData($(this).data('description'));
-
-        $('#statusToggle').prop('checked', $(this).data('active') == 1);
-
-        let slug = title.toLowerCase().replace(/ /g,'-').replace(/[^\w-]+/g,'');
-        $('#slugField').val(slug);
-
-        Swal.fire({
-            icon:'info',
-            title:'Edit Mode',
-            text:'Update and submit'
-        });
-    });
-
-    /* =========================
-       SAVE
-    ========================= */
-    $('#newsForm').submit(function(e){
-        e.preventDefault();
-
-        let btn = $('#saveBtn');
-        btn.prop('disabled', true).text('Saving...');
-
-        let id = $('#news_id').val();
-
-        let url = id 
-            ? "{{ route('admin.news.update', ':id') }}".replace(':id', id)
-            : "{{ route('admin.news.store') }}";
-
-        let formData = new FormData(this);
-
-        formData.set('description', editor.getData());
-        formData.set('is_active', $('#statusToggle').is(':checked') ? 1 : 0);
-        formData.set('slug', $('#slugField').val());
+        let id = $(this).data('id');
 
         $.ajax({
-            url: url,
-            method: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
 
-            success: function(){
+            url: "{{ route('admin.online-classes.edit', ':id') }}"
+                .replace(':id', id),
 
-                Swal.fire('Success','Saved successfully','success');
+            method: "GET",
 
-                $('#newsForm')[0].reset();
-                editor.setData('');
-                $('#previewImg').hide();
-                $('#news_id').val('');
+            success: function(res){
 
-                table.ajax.reload();
+                /*
+                |--------------------------------------------------------------------------
+                | SET ID
+                |--------------------------------------------------------------------------
+                */
 
-                btn.prop('disabled', false).text('Save News');
-            },
+                $('#class_id').val(res.id);
 
-            error: function(err){
+                /*
+                |--------------------------------------------------------------------------
+                | FIELDS
+                |--------------------------------------------------------------------------
+                */
 
-                let errors = err.responseJSON.errors;
-                let msg = '';
+                $('input[name="title"]')
+                    .val(res.title);
 
-                if(errors){
-                    $.each(errors,function(k,v){
-                        msg += v[0] + '<br>';
-                    });
-                }
+                $('select[name="class_id"]')
+                    .val(res.class_id);
 
-                Swal.fire('Error', msg, 'error');
+                $('select[name="section_id"]')
+                    .val(res.section_id);
 
-                btn.prop('disabled', false).text('Save News');
+                $('select[name="subject_id"]')
+                    .val(res.subject_id);
+
+                $('select[name="teacher_id"]')
+                    .val(res.teacher_id);
+
+                $('input[name="class_date"]')
+                    .val(res.class_date);
+
+                $('input[name="start_time"]')
+                    .val(res.start_time);
+
+                $('input[name="end_time"]')
+                    .val(res.end_time);
+
+                $('input[name="meeting_link"]')
+                    .val(res.meeting_link);
+
+                $('input[name="meeting_id"]')
+                    .val(res.meeting_id);
+
+                $('input[name="meeting_password"]')
+                    .val(res.meeting_password);
+
+                $('input[name="recording_link"]')
+                    .val(res.recording_link);
+
+                $('select[name="platform"]')
+                    .val(res.platform);
+
+                $('select[name="status"]')
+                    .val(res.status);
+
+                /*
+                |--------------------------------------------------------------------------
+                | DESCRIPTION
+                |--------------------------------------------------------------------------
+                */
+
+                editor.setData(
+
+                    res.description ?? ''
+
+                );
+
+                /*
+                |--------------------------------------------------------------------------
+                | ALERT
+                |--------------------------------------------------------------------------
+                */
+
+                Swal.fire({
+
+                    icon:'info',
+
+                    title:'Edit Mode',
+
+                    text:'Update class details'
+
+                });
             }
         });
     });
 
-    /* =========================
-       DELETE
-    ========================= */
+    /*
+    |--------------------------------------------------------------------------
+    | SAVE / UPDATE
+    |--------------------------------------------------------------------------
+    */
+
+    $('#onlineClassForm').submit(function(e){
+
+        e.preventDefault();
+
+        let id = $('#class_id').val();
+
+        let url = id
+
+            ? "{{ route('admin.online-classes.update', ':id') }}"
+                .replace(':id', id)
+
+            : "{{ route('admin.online-classes.store') }}";
+
+        /*
+        |--------------------------------------------------------------------------
+        | CONFIRM
+        |--------------------------------------------------------------------------
+        */
+
+        Swal.fire({
+
+            title: id
+                ? 'Update Online Class?'
+                : 'Create Online Class?',
+
+            text:'Please confirm action',
+
+            icon:'question',
+
+            showCancelButton:true,
+
+            confirmButtonColor:'#3085d6',
+
+            cancelButtonColor:'#d33',
+
+            confirmButtonText:'Yes'
+
+        }).then((result)=>{
+
+            if(result.isConfirmed){
+
+                let formData = new FormData(
+
+                    $('#onlineClassForm')[0]
+
+                );
+
+                formData.set(
+
+                    'description',
+
+                    editor.getData()
+
+                );
+
+                $.ajax({
+
+                    url: url,
+
+                    method: "POST",
+
+                    data: formData,
+
+                    processData: false,
+
+                    contentType: false,
+
+                    success: function(res){
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | SUCCESS
+                        |--------------------------------------------------------------------------
+                        */
+
+                        Swal.fire({
+
+                            icon:'success',
+
+                            title:'Success',
+
+                            text:res.message
+
+                        });
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | RESET
+                        |--------------------------------------------------------------------------
+                        */
+
+                        $('#onlineClassForm')[0].reset();
+
+                        $('#class_id').val('');
+
+                        editor.setData('');
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | RELOAD
+                        |--------------------------------------------------------------------------
+                        */
+
+                        table.ajax.reload(
+                            null,
+                            false
+                        );
+                    },
+
+                    error: function(err){
+
+                        let msg = '';
+
+                        if(err.responseJSON.errors){
+
+                            $.each(
+
+                                err.responseJSON.errors,
+
+                                function(k,v){
+
+                                    msg += v[0] + '<br>';
+
+                                }
+                            );
+                        }
+
+                        Swal.fire({
+
+                            icon:'error',
+
+                            title:'Validation Error',
+
+                            html:msg
+                        });
+                    }
+                });
+            }
+        });
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | DELETE
+    |--------------------------------------------------------------------------
+    */
+
     $(document).on('click','.deleteBtn',function(){
 
         let id = $(this).data('id');
 
         Swal.fire({
-            title:'Delete this news?',
-            text:'This action cannot be undone!',
-            icon:'warning',
-            showCancelButton:true,
-            confirmButtonColor:'#ff5722'
-        }).then((res)=>{
 
-            if(res.isConfirmed){
+            title:'Delete Online Class?',
+
+            text:'This action cannot be undone',
+
+            icon:'warning',
+
+            showCancelButton:true,
+
+            confirmButtonColor:'#d33',
+
+            confirmButtonText:'Yes Delete'
+
+        }).then((result)=>{
+
+            if(result.isConfirmed){
 
                 $.ajax({
-                    url: "{{ route('admin.news.delete', ':id') }}".replace(':id', id),
+
+                    url: "{{ route('admin.online-classes.delete', ':id') }}"
+                        .replace(':id', id),
+
                     method: "POST",
+
                     data: {
+
                         _token: "{{ csrf_token() }}",
+
                         _method: "DELETE"
                     },
-                    success: function(){
-                        Swal.fire('Deleted','','success');
-                        table.ajax.reload();
+
+                    success: function(res){
+
+                        Swal.fire({
+
+                            icon:'success',
+
+                            title:'Deleted',
+
+                            text:res.message
+
+                        });
+
+                        table.ajax.reload(
+                            null,
+                            false
+                        );
                     }
                 });
-
             }
-
         });
-
     });
 
 });

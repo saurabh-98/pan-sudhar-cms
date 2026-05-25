@@ -1,180 +1,572 @@
-/* ===== HEADER ===== */
-.hdrx-header {
-    height: 60px;
-    background: #ffffff;
-    border-bottom: 1px solid #e5e7eb;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 18px;
-    position: fixed;
-    top: 0;
-    left: 260px;
-    right: 0;
-    z-index: 999;
-    transition: 0.3s;
+/* =========================================================
+| ULTRA PREMIUM ADMIN HEADER
+========================================================= */
+
+.hdrx-header{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:999;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:20px;
+
+    padding:18px 30px;
+
+    margin-bottom:30px;
+
+    background:
+        rgba(255,255,255,0.72);
+
+    backdrop-filter:blur(18px);
+
+    border:
+        1px solid rgba(255,255,255,0.35);
+
+    border-radius:28px;
+
+    box-shadow:
+        0 15px 45px rgba(0,0,0,0.08);
 }
 
-/* WHEN SIDEBAR COLLAPSE */
-.sbx-sidebar.sbx-collapse ~ .hdrx-header {
-    left: 70px;
+/* =========================================================
+| LEFT
+========================================================= */
+
+.hdrx-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    flex-wrap:wrap;
 }
 
-/* LEFT */
-.hdrx-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+/* =========================================================
+| MENU BUTTON
+========================================================= */
+
+.hdrx-menu-btn{
+
+    width:54px;
+
+    height:54px;
+
+    border:none;
+
+    border-radius:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #60a5fa
+        );
+
+    color:#fff;
+
+    font-size:18px;
+
+    transition:0.4s ease;
+
+    box-shadow:
+        0 12px 30px rgba(37,99,235,0.25);
 }
 
-/* MENU BUTTON */
-.hdrx-menu-btn {
-    border: none;
-    background: #f1f5f9;
-    padding: 8px 10px;
-    border-radius: 6px;
-    cursor: pointer;
+.hdrx-menu-btn:hover{
+
+    transform:
+        translateY(-4px)
+        rotate(90deg);
+
+    box-shadow:
+        0 20px 40px rgba(37,99,235,0.35);
 }
 
-/* TITLE */
-.hdrx-title {
-    font-size: 16px;
-    font-weight: 600;
-    margin: 0;
+/* =========================================================
+| TITLE
+========================================================= */
+
+.hdrx-title{
+
+    font-size:28px;
+
+    font-weight:900;
+
+    color:#0f172a;
+
+    letter-spacing:-0.5px;
 }
 
-/* RIGHT */
-.hdrx-right {
-    display: flex;
-    align-items: center;
-    gap: 18px;
+.hdrx-subtitle{
+
+    color:#64748b;
+
+    font-size:13px;
+
+    font-weight:600;
 }
 
-/* NOTIFICATION */
-.hdrx-notif {
-    position: relative;
+/* =========================================================
+| RIGHT
+========================================================= */
+
+.hdrx-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
 }
 
-.hdrx-notif-icon {
-    font-size: 18px;
-    cursor: pointer;
+/* =========================================================
+| WALLET
+========================================================= */
+
+.admin-wallet-box{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:12px 22px;
+
+    border-radius:24px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,0.92),
+            rgba(255,255,255,0.75)
+        );
+
+    backdrop-filter:blur(12px);
+
+    border:
+        1px solid rgba(255,255,255,0.35);
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,0.08);
+
+    transition:0.4s ease;
 }
 
-/* BADGE */
-.hdrx-badge {
-    position: absolute;
-    top: -6px;
-    right: -6px;
-    background: red;
-    color: #fff;
-    font-size: 10px;
-    padding: 2px 6px;
-    border-radius: 50%;
+.admin-wallet-box:hover{
+
+    transform:
+        translateY(-4px);
+
+    box-shadow:
+        0 22px 50px rgba(34,197,94,0.18);
 }
 
-/* USER */
-.hdrx-user-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
+/* =========================================================
+| WALLET ICON
+========================================================= */
+
+.wallet-icon{
+
+    width:56px;
+
+    height:56px;
+
+    border-radius:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #16a34a,
+            #22c55e
+        );
+
+    color:#fff;
+
+    font-size:22px;
+
+    box-shadow:
+        0 12px 30px rgba(34,197,94,0.28);
 }
 
-/* AVATAR */
-.hdrx-avatar {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
+/* =========================================================
+| WALLET CONTENT
+========================================================= */
+
+.wallet-content span{
+
+    display:block;
+
+    font-size:12px;
+
+    font-weight:800;
+
+    color:#64748b;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+    margin-bottom:4px;
 }
 
-/* USER NAME */
-.hdrx-username {
-    font-size: 14px;
-    font-weight: 500;
+.wallet-content h5{
+
+    margin:0;
+
+    font-size:24px;
+
+    font-weight:900;
+
+    color:#0f172a;
 }
 
-/* DROPDOWN */
-.hdrx-dropdown {
-    min-width: 220px;
+/* =========================================================
+| NOTIFICATION
+========================================================= */
+
+.hdrx-notif{
+
+    position:relative;
 }
 
-/* ===== RESPONSIVE ===== */
+.hdrx-notif-btn{
 
-/* TABLET */
-@media (max-width: 992px) {
+    position:relative;
 
-    .hdrx-title {
-        font-size: 14px;
+    width:56px;
+
+    height:56px;
+
+    border:none;
+
+    border-radius:20px;
+
+    background:
+        rgba(255,255,255,0.92);
+
+    backdrop-filter:blur(12px);
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,0.08);
+
+    transition:0.35s ease;
+}
+
+.hdrx-notif-btn:hover{
+
+    transform:
+        translateY(-4px);
+
+    box-shadow:
+        0 22px 45px rgba(37,99,235,0.15);
+}
+
+.hdrx-notif-icon{
+
+    font-size:20px;
+
+    color:#0f172a;
+}
+
+.hdrx-badge{
+
+    position:absolute;
+
+    top:-4px;
+
+    right:-2px;
+
+    min-width:22px;
+
+    height:22px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #dc2626,
+            #ef4444
+        );
+
+    color:#fff;
+
+    font-size:11px;
+
+    font-weight:900;
+
+    box-shadow:
+        0 8px 18px rgba(220,38,38,0.28);
+}
+
+/* =========================================================
+| USER BUTTON
+========================================================= */
+
+.hdrx-user-btn{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    border:none;
+
+    padding:10px 18px;
+
+    border-radius:24px;
+
+    background:
+        rgba(255,255,255,0.92);
+
+    backdrop-filter:blur(12px);
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,0.08);
+
+    transition:0.35s ease;
+}
+
+.hdrx-user-btn:hover{
+
+    transform:
+        translateY(-4px);
+
+    box-shadow:
+        0 22px 45px rgba(37,99,235,0.15);
+}
+
+/* =========================================================
+| AVATAR
+========================================================= */
+
+.hdrx-avatar-wrapper{
+
+    position:relative;
+}
+
+.hdrx-avatar{
+
+    width:56px;
+
+    height:56px;
+
+    border-radius:20px;
+
+    object-fit:cover;
+
+    border:3px solid #fff;
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,0.08);
+}
+
+.hdrx-online-dot{
+
+    position:absolute;
+
+    right:2px;
+
+    bottom:2px;
+
+    width:14px;
+
+    height:14px;
+
+    border-radius:50%;
+
+    background:#22c55e;
+
+    border:2px solid #fff;
+}
+
+/* =========================================================
+| USER CONTENT
+========================================================= */
+
+.hdrx-user-content{
+
+    text-align:left;
+}
+
+.hdrx-username{
+
+    display:block;
+
+    font-size:15px;
+
+    font-weight:900;
+
+    color:#0f172a;
+}
+
+.hdrx-role{
+
+    color:#64748b;
+
+    font-size:12px;
+
+    font-weight:700;
+}
+
+.hdrx-angle{
+
+    font-size:16px;
+
+    color:#64748b;
+}
+
+/* =========================================================
+| DROPDOWN
+========================================================= */
+
+.hdrx-dropdown{
+
+    border:none;
+
+    border-radius:24px;
+
+    padding:14px;
+
+    min-width:260px;
+
+    background:
+        rgba(255,255,255,0.92);
+
+    backdrop-filter:blur(18px);
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,0.12);
+}
+
+.hdrx-dropdown .dropdown-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:14px 16px;
+
+    border-radius:16px;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    transition:0.3s ease;
+}
+
+.hdrx-dropdown .dropdown-item:hover{
+
+    background:
+        rgba(37,99,235,0.08);
+
+    color:#2563eb;
+}
+
+/* =========================================================
+| EMPTY
+========================================================= */
+
+.hdrx-empty-box{
+
+    text-align:center;
+
+    padding:30px 15px;
+}
+
+.hdrx-empty-box i{
+
+    font-size:42px;
+
+    color:#cbd5e1;
+
+    margin-bottom:12px;
+}
+
+.hdrx-empty-box p{
+
+    margin:0;
+
+    color:#64748b;
+
+    font-size:14px;
+
+    font-weight:700;
+}
+
+/* =========================================================
+| RESPONSIVE
+========================================================= */
+
+@media(max-width:991px){
+
+    .hdrx-header{
+
+        padding:20px;
     }
 
-    .hdrx-username {
-        display: none;
+    .admin-wallet-box{
+
+        display:none;
     }
 }
 
-/* MOBILE */
-@media (max-width: 768px) {
+@media(max-width:767px){
 
-    .hdrx-header {
-        left: 0;
+    .hdrx-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
     }
 
-    .hdrx-title {
-        display: none;
+    .hdrx-right{
+
+        width:100%;
+
+        justify-content:space-between;
     }
 
-    .hdrx-right {
-        gap: 12px;
+    .hdrx-title{
+
+        font-size:22px;
     }
 
-    .hdrx-avatar {
-        width: 30px;
-        height: 30px;
+    .hdrx-user-content{
+
+        display:none;
     }
-
-}
-
-/* ===== BODY SHIFT ===== */
-.sbx-body-collapse .hdrx-header {
-    left: 70px;
-}
-
-.sbx-body-collapse .main-content {
-    margin-left: 70px;
-}
-
-/* DEFAULT */
-.hdrx-header {
-    left: 260px;
-    transition: 0.3s;
-}
-
-.main-content {
-    margin-left: 260px;
-    transition: 0.3s;
-}
-
-/* ===== MOBILE ===== */
-@media (max-width: 768px) {
-
-    .hdrx-header {
-        left: 0;
-    }
-
-    .main-content {
-        margin-left: 0;
-    }
-
-}
-
-/* SMALL MOBILE */
-@media (max-width: 480px) {
-
-    .hdrx-badge {
-        font-size: 9px;
-        padding: 2px 5px;
-    }
-
 }

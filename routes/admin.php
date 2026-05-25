@@ -1,0 +1,987 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN CONTROLLERS
+|--------------------------------------------------------------------------
+*/
+
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\StateController;
+use App\Http\Controllers\Admin\DistrictController;
+use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\Admin\NavigationMenuController;
+use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\FooterController;
+use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\GalleryController;
+use App\Http\Controllers\Admin\DepartmentController;
+use App\Http\Controllers\Admin\DesignationController;
+use App\Http\Controllers\Admin\EmployeeController;
+use App\Http\Controllers\Admin\EmployeeAttendanceController;
+use App\Http\Controllers\Admin\LeaveController;
+use App\Http\Controllers\Admin\SalaryStructureController;
+use App\Http\Controllers\Admin\PayrollController;
+use App\Http\Controllers\Admin\PayslipController;
+use App\Http\Controllers\Admin\NoticeController;
+use App\Http\Controllers\Admin\MessageController;
+use App\Http\Controllers\Admin\EventController;
+use App\Http\Controllers\Admin\UpiController;
+use App\Http\Controllers\Admin\WalletController;
+use App\Http\Controllers\Admin\AdminNewPanController;
+use App\Http\Controllers\Admin\AdminItrController as ItrFileController;
+use App\Http\Controllers\Admin\AdminWalletController ;
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN ROUTES
+|--------------------------------------------------------------------------
+|
+| Prefix Automatically Applied:
+| /admin
+|
+| Name Automatically Applied:
+| admin.
+|
+*/
+
+Route::middleware([
+
+    'auth',
+
+])->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | DASHBOARD
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/dashboard',
+        [DashboardController::class, 'index']
+    )->name('dashboard')
+     ->middleware('permission:dashboard.view');
+
+     /* ================= PROFILE ================= */
+
+    Route::get(
+        '/profile',
+        [UserController::class, 'profile']
+    )->name('profile')
+    ->middleware('permission:profile.view');
+
+    Route::post(
+        '/profile/update',
+        [UserController::class, 'profileUpdate']
+    )->name('profile.update')
+    ->middleware('permission:profile.edit');
+
+    Route::post(
+        '/profile/password',
+        [UserController::class, 'changePassword']
+    )->name('profile.password')
+    ->middleware('permission:profile.password');
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | STATES
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('states')
+        ->name('states.')
+        ->middleware('permission:states.view')
+        ->group(function () {
+
+        Route::get(
+            '/',
+            [StateController::class, 'index']
+        )->name('index');
+
+        Route::post(
+            '/store',
+            [StateController::class, 'store']
+        )->name('store')
+         ->middleware('permission:states.create');
+
+        Route::delete(
+            '/delete/{id}',
+            [StateController::class, 'destroy']
+        )->name('delete')
+         ->middleware('permission:states.delete');
+
+        Route::get(
+            '/list',
+            [StateController::class, 'list']
+        )->name('list');
+
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | DISTRICTS
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('districts')
+        ->name('districts.')
+        ->middleware('permission:districts.view')
+        ->group(function () {
+
+        Route::get(
+            '/',
+            [DistrictController::class, 'index']
+        )->name('index');
+
+        Route::post(
+            '/store',
+            [DistrictController::class, 'store']
+        )->name('store')
+         ->middleware('permission:districts.create');
+
+        Route::delete(
+            '/delete/{id}',
+            [DistrictController::class, 'destroy']
+        )->name('delete')
+         ->middleware('permission:districts.delete');
+
+        Route::get(
+            '/list',
+            [DistrictController::class, 'list']
+        )->name('list');
+
+        Route::get(
+            '/by-state/{stateId}',
+            [DistrictController::class, 'getByState']
+        )->name('byState');
+
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | USERS
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('users')
+        ->name('users.')
+        ->middleware('permission:users.view')
+        ->group(function () {
+
+        Route::get(
+            '/',
+            [UserController::class, 'index']
+        )->name('index');
+
+        Route::get(
+            '/create',
+            [UserController::class, 'create']
+        )->name('create')
+         ->middleware('permission:users.create');
+
+        Route::post(
+            '/store',
+            [UserController::class, 'store']
+        )->name('store')
+         ->middleware('permission:users.create');
+
+        Route::get(
+            '/list',
+            [UserController::class, 'list']
+        )->name('list');
+
+        Route::get(
+            '/edit/{id}',
+            [UserController::class, 'edit']
+        )->name('edit')
+         ->middleware('permission:users.edit');
+
+        Route::post(
+            '/update/{id}',
+            [UserController::class, 'update']
+        )->name('update')
+         ->middleware('permission:users.edit');
+
+        Route::delete(
+            '/delete/{id}',
+            [UserController::class, 'delete']
+        )->name('delete')
+         ->middleware('permission:users.delete');
+
+        /*
+        |--------------------------------------------------------------------------
+        | PROFILE
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/profile',
+            [UserController::class, 'profile']
+        )->name('profile');
+
+        Route::post(
+            '/profile/update',
+            [UserController::class, 'profileUpdate']
+        )->name('profile.update');
+
+        Route::post(
+            '/profile/password',
+            [UserController::class, 'changePassword']
+        )->name('profile.password');
+
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | ROLES
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('roles')
+        ->name('roles.')
+        ->middleware('permission:roles.view')
+        ->group(function () {
+
+        Route::get(
+            '/',
+            [RoleController::class, 'index']
+        )->name('index');
+
+        Route::get(
+            '/create',
+            [RoleController::class, 'create']
+        )->name('create')
+         ->middleware('permission:roles.create');
+
+        Route::post(
+            '/store',
+            [RoleController::class, 'store']
+        )->name('store')
+         ->middleware('permission:roles.create');
+
+        Route::get(
+            '/edit/{id}',
+            [RoleController::class, 'edit']
+        )->name('edit')
+         ->middleware('permission:roles.edit');
+
+        Route::post(
+            '/update/{id}',
+            [RoleController::class, 'update']
+        )->name('update')
+         ->middleware('permission:roles.edit');
+
+        Route::delete(
+            '/delete/{id}',
+            [RoleController::class, 'destroy']
+        )->name('delete')
+         ->middleware('permission:roles.delete');
+
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | CMS MODULES
+    |--------------------------------------------------------------------------
+    */
+
+    /* ================= BANNERS ================= */
+
+    Route::prefix('banners')
+        ->name('banners.')
+        ->middleware('permission:banners.view')
+        ->group(function () {
+
+        Route::get(
+            '/',
+            [BannerController::class, 'index']
+        )->name('index');
+
+        Route::post(
+            '/store',
+            [BannerController::class, 'store']
+        )->name('store')
+        ->middleware('permission:banners.create');
+
+        Route::post(
+            '/update/{banner}',
+            [BannerController::class, 'update']
+        )->name('update')
+        ->middleware('permission:banners.edit');
+
+        Route::delete(
+            '/delete/{banner}',
+            [BannerController::class, 'destroy']
+        )->name('delete')
+        ->middleware('permission:banners.delete');
+
+    });
+
+
+    /* ================= NAVIGATION ================= */
+
+Route::prefix('navigation')
+    ->name('navigation.')
+    ->middleware('permission:navigation.view')
+    ->group(function () {
+
+    Route::get(
+        '/',
+        [NavigationMenuController::class, 'index']
+    )->name('index');
+
+    Route::get(
+        '/create',
+        [NavigationMenuController::class, 'create']
+    )->name('create')
+     ->middleware('permission:navigation.create');
+
+    Route::post(
+        '/store',
+        [NavigationMenuController::class, 'store']
+    )->name('store')
+     ->middleware('permission:navigation.create');
+
+    Route::get(
+        '/list',
+        [NavigationMenuController::class, 'list']
+    )->name('list');
+
+    Route::get(
+        '/edit/{id}',
+        [NavigationMenuController::class, 'edit']
+    )->name('edit')
+     ->middleware('permission:navigation.edit');
+
+    Route::post(
+        '/update/{id}',
+        [NavigationMenuController::class, 'update']
+    )->name('update')
+     ->middleware('permission:navigation.edit');
+
+    Route::delete(
+        '/delete/{id}',
+        [NavigationMenuController::class, 'destroy']
+    )->name('delete')
+     ->middleware('permission:navigation.delete');
+
+});
+
+/* ================= UPI ================= */
+
+Route::get(
+    '/upi',
+    [UpiController::class,'index']
+)->name('upi.index')
+ ->middleware('permission:upi.view');
+
+Route::post(
+    '/upi',
+    [UpiController::class,'store']
+)->name('upi.store')
+ ->middleware('permission:upi.create');
+
+Route::get(
+    '/upi/activate/{id}',
+    [UpiController::class,'activate']
+)->name('admin.upi.activate')
+ ->middleware('permission:upi.activate');
+
+Route::post(
+    '/upi/update/{id}',
+    [UpiController::class,'update']
+)->name('upi.update')
+ ->middleware('permission:upi.edit');
+
+Route::post(
+    '/upi/delete/{id}',
+    [UpiController::class,'delete']
+)->name('upi.delete')
+ ->middleware('permission:upi.delete');
+
+
+/* ================= PAGES ================= */
+
+Route::prefix('pages')
+    ->name('pages.')
+    ->middleware('permission:pages.view')
+    ->group(function () {
+
+    Route::get(
+        '/',
+        [PageController::class, 'index']
+    )->name('index');
+
+    Route::get(
+        '/list',
+        [PageController::class, 'list']
+    )->name('list');
+
+    Route::post(
+        '/store',
+        [PageController::class, 'store']
+    )->name('store')
+     ->middleware('permission:pages.create');
+
+    Route::post(
+        '/update/{id}',
+        [PageController::class, 'update']
+    )->name('update')
+     ->middleware('permission:pages.edit');
+
+    Route::delete(
+        '/delete/{id}',
+        [PageController::class, 'destroy']
+    )->name('delete')
+     ->middleware('permission:pages.delete');
+
+});
+
+
+    /* ================= LOGO SETTINGS ================= */
+
+    Route::get(
+        '/settings/logo',
+        [SettingController::class, 'logoForm']
+    )->name('logo.form')
+    ->middleware('permission:settings.view');
+
+    Route::post(
+        '/settings/logo',
+        [SettingController::class, 'saveLogo']
+    )->name('logo.save')
+    ->middleware('permission:settings.edit');
+
+    Route::delete(
+        '/settings/logo',
+        [SettingController::class, 'deleteLogo']
+    )->name('logo.delete')
+    ->middleware('permission:settings.delete');
+
+
+    /* ================= FOOTER ================= */
+
+    Route::prefix('footer')
+        ->name('footer.')
+        ->middleware('permission:footer.view')
+        ->group(function () {
+
+        Route::get(
+            '/',
+            [FooterController::class, 'index']
+        )->name('index');
+
+        Route::get(
+            '/list',
+            [FooterController::class, 'list']
+        )->name('list');
+
+        Route::post(
+            '/store',
+            [FooterController::class, 'store']
+        )->name('store')
+        ->middleware('permission:footer.create');
+
+        Route::post(
+            '/update/{id}',
+            [FooterController::class, 'update']
+        )->name('update')
+        ->middleware('permission:footer.edit');
+
+        Route::delete(
+            '/delete/{id}',
+            [FooterController::class, 'delete']
+        )->name('delete')
+        ->middleware('permission:footer.delete');
+
+        Route::post(
+            '/settings',
+            [FooterController::class, 'storeSetting']
+        )->name('storeSetting')
+        ->middleware('permission:footer.settings');
+
+    });
+
+    
+    /*
+    |--------------------------------------------------------------------------
+    | HR MODULES
+    |--------------------------------------------------------------------------
+    */
+
+    Route::resource(
+        'departments',
+        DepartmentController::class
+    );
+
+    Route::resource(
+        'designations',
+        DesignationController::class
+    );
+
+    Route::resource(
+        'employees',
+        EmployeeController::class
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | ATTENDANCE
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('employee-attendance')
+        ->name('employee-attendance.')
+        ->group(function () {
+
+        Route::get(
+            '/',
+            [EmployeeAttendanceController::class, 'index']
+        )->name('index');
+
+        Route::post(
+            '/store',
+            [EmployeeAttendanceController::class, 'store']
+        )->name('store');
+
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | LEAVE
+    |--------------------------------------------------------------------------
+    */
+
+    Route::resource(
+        'leave',
+        LeaveController::class
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | PAYROLL
+    |--------------------------------------------------------------------------
+    */
+
+    Route::resource(
+        'salary-structure',
+        SalaryStructureController::class
+    );
+
+    Route::resource(
+        'payroll',
+        PayrollController::class
+    );
+
+    Route::resource(
+        'payslip',
+        PayslipController::class
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | COMMUNICATION
+    |--------------------------------------------------------------------------
+    */
+
+    Route::resource(
+        'notice',
+        NoticeController::class
+    );
+
+    Route::resource(
+        'messages',
+        MessageController::class
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | EVENTS
+    |--------------------------------------------------------------------------
+    */
+
+    Route::resource(
+        'events',
+        EventController::class
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | SETTINGS
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/settings/logo',
+        [SettingController::class, 'logoForm']
+    )->name('logo.form');
+
+    Route::post(
+        '/settings/logo',
+        [SettingController::class, 'saveLogo']
+    )->name('logo.save');
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPI
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('upi')
+        ->name('upi.')
+        ->group(function () {
+
+        Route::get(
+            '/',
+            [UpiController::class, 'index']
+        )->name('index');
+
+        Route::post(
+            '/store',
+            [UpiController::class, 'store']
+        )->name('store');
+
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | WALLET MANAGEMENT
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('wallet')
+        ->name('wallet.')
+        ->middleware('permission:wallet.view')
+        ->group(function () {
+
+        /*
+        |--------------------------------------------------------------------------
+        | WALLET LIST
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/',
+            [WalletController::class, 'index']
+        )->name('index');
+
+        /*
+        |--------------------------------------------------------------------------
+        | ADD WALLET BALANCE
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post(
+            '/add/{id}',
+            [WalletController::class, 'addBalance']
+        )->name('add')
+        ->middleware('permission:wallet.add');
+
+        /*
+        |--------------------------------------------------------------------------
+        | TRANSACTIONS
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/transactions',
+            [WalletController::class, 'transactions']
+        )->name('transactions')
+        ->middleware('permission:wallet.transactions');
+
+    });
+
+
+    /*
+|--------------------------------------------------------------------------
+| NEW PAN MODULE
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('pan')
+    ->name('pan.')
+    ->middleware('permission:pan.view')
+    ->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | PAN APPLICATION LIST
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/',
+        [AdminNewPanController::class, 'index']
+    )->name('index');
+
+    /*
+    |--------------------------------------------------------------------------
+    | PAN APPLICATION SHOW
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/show/{id}',
+        [AdminNewPanController::class, 'show']
+    )->name('show');
+
+    /*
+    |--------------------------------------------------------------------------
+    | ASSIGN APPLICATION
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/assign/{id}',
+        [AdminNewPanController::class, 'assign']
+    )->name('assign');
+
+   
+
+    Route::post(
+        '/pan/document-upload/{id}',
+        [AdminNewPanController::class, 'uploadDocument']
+    )->name('document.upload');
+
+     Route::get(
+
+            '/pan/{id}/download-documents',
+
+            [AdminNewPanController::class, 'downloadDocuments']
+
+        )->name('new.download.documents');
+
+
+
+});
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| ITR MODULE
+|--------------------------------------------------------------------------
+|
+*/
+
+Route::prefix('itr')
+    ->name('itr.')
+    ->middleware([
+
+        'auth',
+       
+        'permission:itr.view'
+
+    ])
+    ->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | ITR DASHBOARD / LIST
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/',
+        [ItrFileController::class, 'index']
+    )->name('index');
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ITR HISTORY
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/history',
+        [ItrFileController::class, 'history']
+    )->name('history');
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SHOW ITR DETAILS
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/show/{id}',
+        [ItrFileController::class, 'show']
+    )->name('show');
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ASSIGN ITR
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/assign/{id}',
+        [ItrFileController::class, 'assign']
+    )->name('assign');
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE STATUS
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/status/{id}',
+        [ItrFileController::class, 'status']
+    )->name('status');
+
+
+    Route::post(
+        '/document-upload/{id}',
+        [ItrFileController::class, 'uploadDocument']
+    )->name('document.upload');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DELETE ITR
+    |--------------------------------------------------------------------------
+    */
+
+    Route::delete(
+        '/delete/{id}',
+        [ItrFileController::class, 'delete']
+    )->name('delete');
+
+    /*
+        |--------------------------------------------------------------------------
+        | DOWNLOAD ALL DOCUMENTS
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+
+            '/itr/{id}/download-documents',
+
+            [ItrFileController::class, 'downloadDocuments']
+
+        )->name('download.documents');
+
+});
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN WALLET MODULE
+|--------------------------------------------------------------------------
+|
+| URL:
+| /admin/admin-wallet
+|
+| NAME:
+| admin.admin-wallet.*
+|
+*/
+
+Route::prefix('admin-wallet')
+    ->name('admin-wallet.')
+    ->middleware([
+
+        'auth',
+        'permission:admin.wallet.view'
+
+    ])
+    ->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | WALLET DASHBOARD
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/',
+        [AdminWalletController::class, 'index']
+    )->name('index');
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | WALLET HISTORY
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/history',
+        [AdminWalletController::class, 'history']
+    )->name('history');
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | TRANSACTION DETAILS
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/show/{id}',
+        [AdminWalletController::class, 'show']
+    )->name('show');
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ADD BALANCE
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/add-balance',
+        [AdminWalletController::class, 'addBalance']
+    )->name('add-balance');
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | WITHDRAW BALANCE
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/withdraw-balance',
+        [AdminWalletController::class, 'withdrawBalance']
+    )->name('withdraw-balance');
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DELETE TRANSACTION
+    |--------------------------------------------------------------------------
+    */
+
+    Route::delete(
+        '/delete/{id}',
+        [AdminWalletController::class, 'delete']
+    )->name('delete');
+
+});
+
+});

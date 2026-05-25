@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Repositories\HomeRepository;
-use Illuminate\Support\Facades\Cache;
 
 class HomeService
 {
@@ -14,22 +13,24 @@ class HomeService
         $this->homeRepository = $homeRepository;
     }
 
-    public function getHomeData()
+    public function getHomePageData()
     {
-        return Cache::remember('home_page_data', now()->addMinutes(10), function () {
+        return [
+            // 🎯 HERO SLIDER
+            'heroes'   => $this->homeRepository->getHeroes(),
 
-            return [
-                'heroes'       => $this->homeRepository->getHeroes(),
-                'campaigns'   => $this->homeRepository->getCampaigns(),
-                'categories' => $this->homeRepository->getCategories(),
-                'menus'      => $this->homeRepository->getMenus(),
-                'features'   => $this->homeRepository->getFeatures(),
-                'news'       => $this->homeRepository->getNews(),
-                'offers'     => $this->homeRepository->getOffers(),
-                'chef'       => $this->homeRepository->getChef(),
-                'delivery'   => $this->homeRepository->getDelivery(),
-            ];
+            // ⭐ FEATURES
+            'features' => $this->homeRepository->getFeatures(),
 
-        });
+            // 🖼️ GALLERY
+            'gallery'  => $this->homeRepository->getGallery(),
+
+          
+
+            // 📰 NEWS (optional)
+            'news'     => $this->homeRepository->getNews(),
+
+           
+        ];
     }
 }

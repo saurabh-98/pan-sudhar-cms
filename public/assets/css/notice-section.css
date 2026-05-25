@@ -1,0 +1,563 @@
+/* =========================================================
+| NOTICE SECTION
+========================================================= */
+
+.notice-section{
+
+    position:relative;
+
+    padding:90px 0;
+
+    overflow:hidden;
+
+    background:
+        linear-gradient(
+            180deg,
+            #020617,
+            #0f172a,
+            #111827
+        );
+}
+
+/* =========================================================
+| BACKGROUND GLOW
+========================================================= */
+
+.notice-glow{
+
+    position:absolute;
+
+    border-radius:50%;
+
+    filter:blur(40px);
+
+    opacity:.16;
+
+    z-index:1;
+}
+
+.notice-glow-1{
+
+    width:320px;
+    height:320px;
+
+    top:-100px;
+    left:-120px;
+
+    background:
+        radial-gradient(
+            #2563eb,
+            transparent
+        );
+}
+
+.notice-glow-2{
+
+    width:280px;
+    height:280px;
+
+    bottom:-120px;
+    right:-80px;
+
+    background:
+        radial-gradient(
+            #06b6d4,
+            transparent
+        );
+}
+
+/* =========================================================
+| CONTAINER
+========================================================= */
+
+.notice-section .container{
+
+    position:relative;
+
+    z-index:5;
+}
+
+/* =========================================================
+| HEADER
+========================================================= */
+
+.notice-header{
+
+    margin-bottom:55px;
+}
+
+/* =========================================================
+| BADGE
+========================================================= */
+
+.notice-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    padding:12px 24px;
+
+    border-radius:60px;
+
+    background:
+        rgba(37,99,235,.12);
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    backdrop-filter:blur(12px);
+
+    color:#60a5fa;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    margin-bottom:28px;
+}
+
+/* =========================================================
+| TITLE
+========================================================= */
+
+.notice-title{
+
+    font-size:58px;
+
+    line-height:1.1;
+
+    font-weight:900;
+
+    color:#fff;
+
+    margin-bottom:20px;
+
+    letter-spacing:-2px;
+}
+
+.notice-title span{
+
+    background:
+        linear-gradient(
+            135deg,
+            #60a5fa,
+            #38bdf8,
+            #ffffff
+        );
+
+    -webkit-background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+}
+
+/* =========================================================
+| SUBTITLE
+========================================================= */
+
+.notice-subtitle{
+
+    max-width:780px;
+
+    margin:auto;
+
+    font-size:18px;
+
+    line-height:1.9;
+
+    color:
+        rgba(255,255,255,.72);
+}
+
+/* =========================================================
+| NOTICE BOX
+========================================================= */
+
+.notice-box{
+
+    position:relative;
+
+    overflow:hidden;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:24px;
+
+    padding:28px 34px;
+
+    border-radius:34px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.08),
+            rgba(255,255,255,.03)
+        );
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    backdrop-filter:blur(14px);
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.22);
+}
+
+/* =========================================================
+| TOP LIGHT
+========================================================= */
+
+.notice-box::before{
+
+    content:'';
+
+    position:absolute;
+
+    top:-90px;
+    right:-90px;
+
+    width:200px;
+    height:200px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            rgba(255,255,255,.08),
+            transparent
+        );
+}
+
+/* =========================================================
+| LIVE
+========================================================= */
+
+.notice-live{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:12px 18px;
+
+    border-radius:60px;
+
+    background:
+        rgba(239,68,68,.10);
+
+    color:#f87171;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    white-space:nowrap;
+}
+
+.live-dot{
+
+    width:10px;
+    height:10px;
+
+    border-radius:50%;
+
+    background:#ef4444;
+
+    animation:pulseDot 1.5s infinite;
+}
+
+@keyframes pulseDot{
+
+    0%{
+        transform:scale(1);
+        opacity:1;
+    }
+
+    50%{
+        transform:scale(1.4);
+        opacity:.6;
+    }
+
+    100%{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+/* =========================================================
+| ICON
+========================================================= */
+
+.notice-icon{
+
+    width:78px;
+    height:78px;
+
+    min-width:78px;
+
+    border-radius:24px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:
+        linear-gradient(
+            145deg,
+            #7da2ff,
+            #2563eb
+        );
+
+    color:#fff;
+
+    font-size:30px;
+
+    box-shadow:
+        0 18px 35px rgba(37,99,235,.28);
+}
+
+/* =========================================================
+| MARQUEE
+========================================================= */
+
+.notice-marquee{
+
+    position:relative;
+
+    overflow:hidden;
+
+    width:100%;
+}
+
+/* =========================================================
+| TRACK
+========================================================= */
+
+.notice-track{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:28px;
+
+    width:max-content;
+
+    animation:noticeScroll 10s linear infinite;
+}
+
+/* =========================================================
+| SCROLL ANIMATION
+========================================================= */
+
+@keyframes noticeScroll{
+
+    0%{
+        transform:translateX(0);
+    }
+
+    100%{
+        transform:translateX(-50%);
+    }
+}
+
+/* =========================================================
+| ITEM
+========================================================= */
+
+.notice-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:14px 20px;
+
+    border-radius:20px;
+
+    background:
+        rgba(255,255,255,.05);
+
+    border:
+        1px solid rgba(255,255,255,.06);
+
+    white-space:nowrap;
+
+    transition:.35s ease;
+}
+
+.notice-item:hover{
+
+    background:
+        rgba(37,99,235,.12);
+
+    transform:
+        translateY(-4px);
+}
+
+/* =========================================================
+| TAG
+========================================================= */
+
+.notice-tag{
+
+    padding:6px 12px;
+
+    border-radius:50px;
+
+    background:
+        rgba(37,99,235,.14);
+
+    color:#60a5fa;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    text-transform:uppercase;
+}
+
+/* =========================================================
+| TEXT
+========================================================= */
+
+.notice-text{
+
+    color:#fff;
+
+    font-size:15px;
+
+    font-weight:500;
+}
+
+/* =========================================================
+| HOVER PAUSE
+========================================================= */
+
+.notice-marquee:hover .notice-track{
+
+    animation-play-state:paused;
+}
+
+/* =========================================================
+| RESPONSIVE
+========================================================= */
+
+@media(max-width:1200px){
+
+    .notice-title{
+
+        font-size:48px;
+    }
+}
+
+@media(max-width:991px){
+
+    .notice-section{
+
+        padding:80px 0;
+    }
+
+    .notice-title{
+
+        font-size:40px;
+    }
+
+    .notice-subtitle{
+
+        font-size:16px;
+    }
+
+    .notice-box{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:22px;
+    }
+}
+
+@media(max-width:768px){
+
+    .notice-title{
+
+        font-size:34px;
+    }
+
+    .notice-subtitle{
+
+        font-size:15px;
+
+        line-height:1.8;
+    }
+
+    .notice-box{
+
+        padding:26px 24px;
+    }
+
+    .notice-icon{
+
+        width:68px;
+        height:68px;
+
+        min-width:68px;
+
+        border-radius:20px;
+
+        font-size:26px;
+    }
+
+    .notice-track{
+
+        gap:18px;
+    }
+
+    .notice-item{
+
+        padding:12px 16px;
+    }
+}
+
+@media(max-width:576px){
+
+    .notice-section{
+
+        padding:65px 0;
+    }
+
+    .notice-title{
+
+        font-size:28px;
+    }
+
+    .notice-badge{
+
+        width:100%;
+    }
+
+    .notice-box{
+
+        border-radius:26px;
+    }
+
+    .notice-live{
+
+        width:100%;
+
+        justify-content:center;
+    }
+}

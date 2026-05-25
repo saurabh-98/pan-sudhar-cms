@@ -1,0 +1,838 @@
+/* =========================================================
+| ADVANCED PREMIUM DATATABLE UI
+| PAN HISTORY PAGE
+========================================================= */
+
+:root{
+
+    --primary:#2563eb;
+    --primary-dark:#1d4ed8;
+    --secondary:#0f172a;
+    --success:#10b981;
+    --danger:#ef4444;
+    --warning:#f59e0b;
+    --light:#f8fafc;
+    --border:#e2e8f0;
+    --text:#1e293b;
+    --muted:#64748b;
+    --white:#ffffff;
+}
+
+/* =========================================================
+| PAGE
+========================================================= */
+
+.pan-history-page{
+
+    padding:24px;
+
+    min-height:100vh;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eff6ff 0%,
+            #f8fafc 40%,
+            #eef2ff 100%
+        );
+}
+
+/* =========================================================
+| HEADER
+========================================================= */
+
+.history-header{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:20px;
+
+    flex-wrap:wrap;
+
+    margin-bottom:28px;
+}
+
+.history-title{
+
+    font-size:34px;
+
+    font-weight:900;
+
+    margin-bottom:6px;
+
+    color:var(--secondary);
+
+    letter-spacing:-1px;
+}
+
+.history-subtitle{
+
+    margin:0;
+
+    font-size:15px;
+
+    color:var(--muted);
+}
+
+/* =========================================================
+| ADD BUTTON
+========================================================= */
+
+.history-add-btn{
+
+    position:relative;
+
+    overflow:hidden;
+
+    border:none !important;
+
+    border-radius:18px;
+
+    padding:14px 24px;
+
+    font-size:14px;
+
+    font-weight:800;
+
+    color:#fff !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            var(--primary-dark)
+        );
+
+    transition:all .4s ease;
+
+    box-shadow:
+        0 10px 30px rgba(37,99,235,.25);
+}
+
+.history-add-btn::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-100%;
+
+    width:100%;
+
+    height:100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.35),
+            transparent
+        );
+
+    transition:.7s;
+}
+
+.history-add-btn:hover::before{
+
+    left:100%;
+}
+
+.history-add-btn:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:
+        0 20px 40px rgba(37,99,235,.35);
+}
+
+/* =========================================================
+| CARD
+========================================================= */
+
+.history-card{
+
+    border:none !important;
+
+    border-radius:28px;
+
+    overflow:hidden;
+
+    background:
+        rgba(255,255,255,.78);
+
+    backdrop-filter:blur(18px);
+
+    box-shadow:
+        0 10px 40px rgba(15,23,42,.08);
+
+    position:relative;
+}
+
+.history-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    border-radius:28px;
+
+    padding:1px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.8),
+            rgba(255,255,255,.1)
+        );
+
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+
+    -webkit-mask-composite:xor;
+
+    pointer-events:none;
+}
+
+.history-card .card-body{
+
+    padding:28px;
+}
+
+/* =========================================================
+| DATATABLE TOP AREA
+========================================================= */
+
+.dataTables_wrapper .row:first-child{
+
+    margin-bottom:22px;
+
+    align-items:center;
+}
+
+/* =========================================================
+| SEARCH BOX
+========================================================= */
+
+.dataTables_filter{
+
+    text-align:right !important;
+}
+
+.dataTables_filter label{
+
+    width:100%;
+}
+
+.dataTables_filter input{
+
+    width:320px !important;
+
+    max-width:100%;
+
+    height:52px;
+
+    border-radius:18px !important;
+
+    border:1px solid var(--border) !important;
+
+    background:#fff !important;
+
+    padding-left:20px !important;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:var(--text);
+
+    transition:all .35s ease;
+
+    box-shadow:none !important;
+}
+
+.dataTables_filter input:focus{
+
+    border-color:var(--primary) !important;
+
+    box-shadow:
+        0 0 0 5px rgba(37,99,235,.10) !important;
+
+    transform:translateY(-1px);
+}
+
+/* =========================================================
+| LENGTH MENU
+========================================================= */
+
+.dataTables_length select{
+
+    height:48px !important;
+
+    border-radius:14px !important;
+
+    border:1px solid var(--border) !important;
+
+    padding:0 14px !important;
+
+    font-weight:700 !important;
+
+    cursor:pointer;
+}
+
+/* =========================================================
+| TABLE
+========================================================= */
+
+.history-table{
+
+    width:100% !important;
+
+    border-collapse:separate;
+
+    border-spacing:0 16px;
+}
+
+/* =========================================================
+| HEAD
+========================================================= */
+
+.history-table thead th{
+
+    border:none !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f8fafc,
+            #eff6ff
+        ) !important;
+
+    color:#334155;
+
+    padding:18px 18px !important;
+
+    font-size:12px;
+
+    font-weight:900;
+
+    text-transform:uppercase;
+
+    letter-spacing:.8px;
+
+    white-space:nowrap;
+}
+
+.history-table thead th:first-child{
+
+    border-top-left-radius:18px;
+
+    border-bottom-left-radius:18px;
+}
+
+.history-table thead th:last-child{
+
+    border-top-right-radius:18px;
+
+    border-bottom-right-radius:18px;
+}
+
+/* =========================================================
+| BODY ROW
+========================================================= */
+
+.history-table tbody tr{
+
+    position:relative;
+
+    background:#fff;
+
+    transition:all .35s ease;
+
+    box-shadow:
+        0 4px 20px rgba(15,23,42,.04);
+
+    border-radius:22px;
+}
+
+.history-table tbody tr:hover{
+
+    transform:
+        translateY(-5px)
+        scale(1.003);
+
+    box-shadow:
+        0 16px 35px rgba(37,99,235,.10);
+}
+
+/* =========================================================
+| TD
+========================================================= */
+
+.history-table tbody td{
+
+    border:none !important;
+
+    padding:18px !important;
+
+    vertical-align:middle;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:var(--text);
+
+    background:#fff;
+}
+
+.history-table tbody td:first-child{
+
+    border-top-left-radius:20px;
+
+    border-bottom-left-radius:20px;
+}
+
+.history-table tbody td:last-child{
+
+    border-top-right-radius:20px;
+
+    border-bottom-right-radius:20px;
+}
+
+/* =========================================================
+| APPLICATION NUMBER
+========================================================= */
+
+.app-no{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    padding:10px 14px;
+
+    border-radius:14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(37,99,235,.10),
+            rgba(37,99,235,.05)
+        );
+
+    color:var(--primary);
+
+    font-size:13px;
+
+    font-weight:800;
+}
+
+/* =========================================================
+| USER
+========================================================= */
+
+.history-user-img{
+
+    width:56px;
+
+    height:56px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:3px solid rgba(37,99,235,.15);
+
+    transition:.35s ease;
+}
+
+.history-table tbody tr:hover .history-user-img{
+
+    transform:scale(1.08);
+}
+
+.history-user-name{
+
+    font-size:15px;
+
+    font-weight:800;
+
+    color:var(--secondary);
+
+    margin-bottom:4px;
+}
+
+/* =========================================================
+| STATUS BADGES
+========================================================= */
+
+.badge{
+
+    padding:10px 14px;
+
+    border-radius:14px;
+
+    font-size:12px;
+
+    font-weight:800;
+
+    letter-spacing:.4px;
+}
+
+/* =========================================================
+| ACTION BUTTON
+========================================================= */
+
+.history-action-btn{
+
+    border:none !important;
+
+    border-radius:14px;
+
+    padding:11px 18px;
+
+    font-size:13px;
+
+    font-weight:800;
+
+    color:#fff !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            #111827,
+            #1e293b
+        );
+
+    transition:all .35s ease;
+
+    box-shadow:
+        0 6px 20px rgba(15,23,42,.15);
+}
+
+.history-action-btn:hover{
+
+    transform:translateY(-2px);
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            var(--primary-dark)
+        );
+
+    box-shadow:
+        0 12px 28px rgba(37,99,235,.22);
+}
+
+/* =========================================================
+| DROPDOWN
+========================================================= */
+
+.dropdown-menu{
+
+    border:none !important;
+
+    border-radius:20px !important;
+
+    overflow:hidden;
+
+    padding:10px;
+
+    min-width:220px;
+
+    box-shadow:
+        0 18px 45px rgba(15,23,42,.14);
+
+    animation:dropdownFade .25s ease;
+}
+
+@keyframes dropdownFade{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(10px);
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+    }
+}
+
+.dropdown-item{
+
+    border-radius:14px;
+
+    padding:13px 16px;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    transition:all .25s ease;
+}
+
+.dropdown-item:hover{
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(37,99,235,.10),
+            rgba(37,99,235,.04)
+        );
+
+    color:var(--primary);
+
+    transform:translateX(4px);
+}
+
+/* =========================================================
+| INFO
+========================================================= */
+
+.dataTables_info{
+
+    color:var(--muted);
+
+    font-size:14px;
+
+    font-weight:700;
+
+    padding-top:18px !important;
+}
+
+/* =========================================================
+| PAGINATION
+========================================================= */
+
+.dataTables_paginate{
+
+    padding-top:12px !important;
+}
+
+.pagination{
+
+    gap:10px;
+}
+
+.page-item .page-link{
+
+    width:44px;
+
+    height:44px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border:none !important;
+
+    border-radius:14px !important;
+
+    font-size:14px;
+
+    font-weight:800;
+
+    color:var(--secondary);
+
+    background:#fff;
+
+    transition:all .3s ease;
+
+    box-shadow:
+        0 4px 14px rgba(15,23,42,.05);
+}
+
+.page-item .page-link:hover{
+
+    transform:translateY(-2px);
+
+    color:var(--primary);
+
+    box-shadow:
+        0 10px 22px rgba(37,99,235,.12);
+}
+
+.page-item.active .page-link{
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            var(--primary-dark)
+        ) !important;
+
+    color:#fff !important;
+
+    box-shadow:
+        0 12px 28px rgba(37,99,235,.25);
+}
+
+/* =========================================================
+| PROCESSING
+========================================================= */
+
+.dataTables_processing{
+
+    border:none !important;
+
+    border-radius:18px !important;
+
+    padding:20px 24px !important;
+
+    background:#fff !important;
+
+    box-shadow:
+        0 10px 40px rgba(15,23,42,.10) !important;
+
+    font-weight:800;
+
+    color:var(--primary);
+}
+
+/* =========================================================
+| SCROLLBAR
+========================================================= */
+
+.table-responsive::-webkit-scrollbar{
+
+    height:10px;
+}
+
+.table-responsive::-webkit-scrollbar-track{
+
+    background:#f1f5f9;
+
+    border-radius:20px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb{
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            var(--primary-dark)
+        );
+
+    border-radius:20px;
+}
+
+/* =========================================================
+| EMPTY TABLE
+========================================================= */
+
+.dataTables_empty{
+
+    padding:50px !important;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    color:var(--muted);
+}
+
+/* =========================================================
+| RESPONSIVE
+========================================================= */
+
+@media(max-width:992px){
+
+    .history-title{
+
+        font-size:28px;
+    }
+
+    .history-card .card-body{
+
+        padding:20px;
+    }
+}
+
+@media(max-width:768px){
+
+    .pan-history-page{
+
+        padding:16px;
+    }
+
+    .history-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+    }
+
+    .history-title{
+
+        font-size:24px;
+    }
+
+    .history-add-btn{
+
+        width:100%;
+
+        justify-content:center;
+
+        text-align:center;
+    }
+
+    .dataTables_filter{
+
+        margin-top:14px;
+    }
+
+    .dataTables_filter input{
+
+        width:100% !important;
+    }
+
+    .history-table tbody td{
+
+        padding:14px !important;
+    }
+
+    .history-user-img{
+
+        width:48px;
+
+        height:48px;
+    }
+}
+
+@media(max-width:576px){
+
+    .history-card{
+
+        border-radius:20px;
+    }
+
+    .history-table{
+
+        border-spacing:0 12px;
+    }
+
+    .page-item .page-link{
+
+        width:40px;
+
+        height:40px;
+    }
+}

@@ -1,0 +1,311 @@
+/* =========================================================
+| TOP HEADER
+========================================================= */
+
+.header-topbar{
+
+    position:relative;
+
+    overflow:hidden;
+
+    padding:11px 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #020617,
+            #172554,
+            #2563eb
+        );
+}
+
+/* =========================================================
+| GLOW
+========================================================= */
+
+.header-topbar::before{
+
+    content:'';
+
+    position:absolute;
+
+    top:-90px;
+    right:-90px;
+
+    width:240px;
+    height:240px;
+
+    border-radius:50%;
+
+    background:
+        rgba(255,255,255,.04);
+}
+
+/* =========================================================
+| CONTAINER
+========================================================= */
+
+.container-custom{
+
+    width:100%;
+
+    max-width:1320px;
+
+    margin:auto;
+
+    padding:0 20px;
+}
+
+/* =========================================================
+| WRAPPER
+========================================================= */
+
+.topbar-wrapper{
+
+    position:relative;
+
+    z-index:2;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:20px;
+}
+
+/* =========================================================
+| CONTACT
+========================================================= */
+
+.topbar-contact{
+
+    display:flex;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    gap:24px;
+}
+
+.topbar-link,
+.topbar-time{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    color:#ffffff;
+
+    text-decoration:none;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    opacity:.95;
+
+    transition:.35s ease;
+}
+
+.topbar-link:hover{
+
+    color:#fbbf24;
+}
+
+.topbar-link i,
+.topbar-time i{
+
+    color:#60a5fa;
+}
+
+/* =========================================================
+| RIGHT
+========================================================= */
+
+.topbar-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+}
+
+/* =========================================================
+| SOCIAL
+========================================================= */
+
+.topbar-social{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+}
+
+.topbar-social a{
+
+    width:40px;
+    height:40px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-decoration:none;
+
+    background:
+        rgba(255,255,255,.12);
+
+    border:
+        1px solid rgba(255,255,255,.12);
+
+    transition:.35s ease;
+}
+
+.topbar-social a i{
+
+    color:#ffffff;
+
+    font-size:15px;
+}
+
+.topbar-social a:hover{
+
+    background:#ffffff;
+
+    transform:
+        translateY(-4px);
+}
+
+.topbar-social a:hover i{
+
+    color:#2563eb;
+}
+
+/* =========================================================
+| ADMISSION BUTTON
+========================================================= */
+
+.topbar-admission-btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    height:42px;
+
+    padding:0 18px;
+
+    border-radius:40px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--logo-color, #2563eb),
+            #1d4ed8
+        );
+
+    color:#ffffff;
+
+    text-decoration:none;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    transition:.35s ease;
+}
+
+.topbar-admission-btn:hover{
+
+    transform:
+        translateY(-3px);
+
+    color:#ffffff;
+}
+
+/* =========================================================
+| MOBILE
+========================================================= */
+
+@media(max-width:991px){
+
+    .header-topbar{
+
+        padding:10px 0;
+    }
+
+    .topbar-wrapper{
+
+        flex-direction:column;
+
+        align-items:center;
+
+        justify-content:center;
+
+        gap:12px;
+    }
+
+    .topbar-contact{
+
+        justify-content:center;
+
+        text-align:center;
+
+        gap:14px;
+    }
+
+    .topbar-right{
+
+        flex-direction:column;
+
+        gap:12px;
+    }
+}
+
+@media(max-width:576px){
+
+    .container-custom{
+
+        padding:0 16px;
+    }
+
+    .topbar-contact{
+
+        flex-direction:column;
+
+        gap:8px;
+    }
+
+    .topbar-link,
+    .topbar-time{
+
+        font-size:12px;
+    }
+
+    .topbar-social a{
+
+        width:34px;
+        height:34px;
+    }
+
+    .topbar-admission-btn{
+
+        width:100%;
+    }
+}

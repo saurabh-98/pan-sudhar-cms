@@ -3,42 +3,46 @@
 namespace App\Repositories;
 
 use App\Models\Banner;
+use App\Models\Feature;
+use App\Models\News;
+
+// OPTIONAL (only if you use them)
 use App\Models\Category;
 use App\Models\Menu;
 use App\Models\Offer;
 use App\Models\Campaign;
-use App\Models\Feature;
-use App\Models\News;
+
+// ERP MODELS
+use App\Models\Gallery;
+use App\Models\Notice;
+use App\Models\Student;
+use App\Models\Teacher;
+use App\Models\SchoolClass;
 
 class HomeRepository
 {
+    /* =========================
+       HERO BANNERS (SLIDER)
+    ========================= */
     public function getHeroes()
     {
         return Banner::where('type', 'hero')
             ->where('is_active', 1)
             ->latest()
-            ->get(); 
-    }
-    public function getCampaigns()
-    {
-        return Campaign::where('is_active', 1)->latest()->get();
+            ->get();
     }
 
-    public function getCategories()
-    {
-        return Category::latest()->get();
-    }
-
-    public function getMenus()
-    {
-        return Menu::latest()->take(8)->get();
-    }
-
+    /* =========================
+       FEATURES
+    ========================= */
     public function getFeatures()
     {
         return Feature::where('is_active', 1)->get();
     }
 
+    /* =========================
+       NEWS / BLOG
+    ========================= */
     public function getNews()
     {
         return News::where('is_active', 1)
@@ -47,20 +51,19 @@ class HomeRepository
             ->get();
     }
 
-    public function getOffers()
+    /* =========================
+       ERP ADDITIONS
+    ========================= */
+
+    public function getGallery()
     {
-        return Offer::where('is_active', 1)->get();
+        return Gallery::latest()->take(8)->get();
     }
 
-    /* OPTIONAL (SAFE FALLBACK) */
-
-    public function getChef()
+    public function getNotices()
     {
-        return Menu::latest()->first();
+        return 0;
     }
 
-    public function getDelivery()
-    {
-        return null; // or create table later
-    }
+    
 }

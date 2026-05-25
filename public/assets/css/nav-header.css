@@ -1,0 +1,879 @@
+/* =========================================================
+| NAVBAR
+========================================================= */
+
+.header-navbar{
+
+    position:relative;
+
+    overflow:hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            #020617,
+            #0f172a,
+            #1e3a8a
+        );
+
+    backdrop-filter:blur(20px);
+
+    border-bottom:
+        1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+        0 12px 40px rgba(2,6,23,.22);
+}
+
+/* =========================================================
+| GLOW EFFECT
+========================================================= */
+
+.header-navbar::before{
+
+    content:'';
+
+    position:absolute;
+
+    top:-120px;
+    right:-120px;
+
+    width:280px;
+    height:280px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            rgba(96,165,250,.12),
+            transparent
+        );
+}
+
+/* =========================================================
+| SCROLL EFFECT
+========================================================= */
+
+.modern-header.scrolled .header-navbar{
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(2,6,23,.96),
+            rgba(15,23,42,.96),
+            rgba(30,58,138,.96)
+        );
+
+    box-shadow:
+        0 18px 50px rgba(2,6,23,.30);
+}
+
+/* =========================================================
+| WRAPPER
+========================================================= */
+
+.navbar-wrapper{
+
+    position:relative;
+
+    z-index:5;
+
+    min-height:82px;
+
+    display:grid;
+
+    grid-template-columns:
+        auto
+        minmax(0,1fr)
+        auto;
+
+    align-items:center;
+
+    gap:40px;
+}
+
+/* =========================================================
+| LOGO
+========================================================= */
+
+.brand-logo{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    text-decoration:none;
+
+    flex-shrink:0;
+
+    min-width:max-content;
+}
+
+/* =========================================================
+| LOGO ICON
+========================================================= */
+
+.logo-icon{
+
+    width:54px;
+    height:54px;
+
+    min-width:54px;
+
+    border-radius:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    overflow:hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--logo-color, #2563eb),
+            #1d4ed8
+        );
+
+    box-shadow:
+        0 12px 28px rgba(37,99,235,.28);
+}
+
+.logo-icon img{
+
+    width:32px;
+    height:32px;
+
+    object-fit:contain;
+}
+
+/* =========================================================
+| TEXT LOGO
+========================================================= */
+
+.dynamic-logo-text{
+
+    color:#ffffff;
+
+    font-size:
+        var(--logo-font-size, 18px);
+
+    font-weight:900;
+
+    text-transform:uppercase;
+}
+
+/* =========================================================
+| LOGO TEXT
+========================================================= */
+
+.logo-text{
+
+    display:flex;
+
+    flex-direction:column;
+}
+
+.logo-text h2{
+
+    margin:0 0 3px;
+
+    font-size:18px;
+
+    line-height:1.1;
+
+    font-weight:900;
+
+    color:#ffffff;
+
+    white-space:nowrap;
+}
+
+.logo-text span{
+
+    font-size:11px;
+
+    font-weight:700;
+
+    letter-spacing:1px;
+
+    text-transform:uppercase;
+
+    color:rgba(255,255,255,.65);
+}
+
+/* =========================================================
+| NAV CONTAINER
+========================================================= */
+
+.nav-container{
+
+    display:grid;
+
+    grid-template-columns:
+        1fr
+        auto;
+
+    align-items:center;
+
+    gap:24px;
+
+    width:100%;
+
+    min-width:0;
+}
+
+/* =========================================================
+| MAIN NAV
+========================================================= */
+
+.main-nav{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:flex-start;
+
+    gap:6px;
+
+    flex-wrap:nowrap;
+
+    min-width:0;
+}
+
+/* =========================================================
+| NAV LINKS
+========================================================= */
+
+.main-nav a{
+
+    position:relative;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:10px 14px;
+
+    border-radius:10px;
+
+    text-decoration:none;
+
+    color:rgba(255,255,255,.88);
+
+    font-size:14px;
+
+    font-weight:700;
+
+    white-space:nowrap;
+
+    transition:.35s ease;
+}
+
+.main-nav a::before{
+
+    content:'';
+
+    position:absolute;
+
+    left:50%;
+    bottom:-3px;
+
+    transform:translateX(-50%);
+
+    width:0;
+
+    height:3px;
+
+    border-radius:30px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #60a5fa,
+            #38bdf8
+        );
+
+    transition:.35s ease;
+}
+
+.main-nav a:hover,
+.main-nav a.active{
+
+    color:#ffffff;
+
+    background:
+        rgba(255,255,255,.08);
+}
+
+.main-nav a:hover::before,
+.main-nav a.active::before{
+
+    width:80%;
+}
+
+/* =========================================================
+| ACTIONS
+========================================================= */
+
+.nav-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    flex-shrink:0;
+
+    padding-left:10px;
+}
+
+/* =========================================================
+| BUTTONS
+========================================================= */
+
+.action-btn{
+
+    height:40px;
+
+    padding:0 16px;
+
+    border-radius:12px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    text-decoration:none;
+
+    color:#ffffff;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    transition:.35s ease;
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.16);
+}
+
+.action-btn:hover{
+
+    transform:
+        translateY(-3px);
+
+    color:#ffffff;
+}
+
+.student-btn{
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #1d4ed8
+        );
+}
+
+.parent-btn{
+
+    background:
+        linear-gradient(
+            135deg,
+            #059669,
+            #047857
+        );
+}
+
+.dept-btn{
+
+    background:
+        linear-gradient(
+            135deg,
+            #ea580c,
+            #c2410c
+        );
+}
+
+/* =========================================================
+| MOBILE TOGGLE
+========================================================= */
+
+.mobile-toggle{
+
+    position:relative;
+
+    z-index:100005;
+
+    width:52px;
+    height:52px;
+
+    border:none;
+
+    outline:none;
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:center;
+
+    flex-direction:column;
+
+    gap:6px;
+
+    border-radius:16px;
+
+    cursor:pointer;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #3b82f6
+        );
+
+    border:
+        1px solid rgba(255,255,255,.12);
+
+    box-shadow:
+        0 12px 30px rgba(37,99,235,.40);
+
+    transition:.35s ease;
+}
+
+.mobile-toggle{
+
+    overflow:hidden;
+}
+
+/* =========================================================
+| HOVER
+========================================================= */
+
+.mobile-toggle:hover{
+
+    transform:
+        scale(1.04);
+
+    box-shadow:
+        0 18px 40px rgba(37,99,235,.48);
+}
+
+/* =========================================================
+| ICON LINES
+========================================================= */
+
+/* =========================================================
+| ICON LINES
+========================================================= */
+
+.mobile-toggle span{
+
+    position:absolute;
+
+    width:24px;
+    height:3px;
+
+    border-radius:30px;
+
+    background:#ffffff;
+
+    transition:
+        transform .35s ease,
+        opacity .25s ease;
+
+    left:50%;
+
+    transform:
+        translateX(-50%);
+}
+
+/* TOP */
+
+.mobile-toggle span:nth-child(1){
+
+    top:16px;
+}
+
+/* MIDDLE */
+
+.mobile-toggle span:nth-child(2){
+
+    top:24px;
+}
+
+/* BOTTOM */
+
+.mobile-toggle span:nth-child(3){
+
+    top:32px;
+}
+
+/* =========================================================
+| ACTIVE ANIMATION
+========================================================= */
+
+.mobile-toggle.active span:nth-child(1){
+
+    top:24px;
+
+    transform:
+        translateX(-50%)
+        rotate(45deg);
+}
+
+.mobile-toggle.active span:nth-child(2){
+
+    opacity:0;
+}
+
+.mobile-toggle.active span:nth-child(3){
+
+    top:24px;
+
+    transform:
+        translateX(-50%)
+        rotate(-45deg);
+}
+
+/* =========================================================
+| ACTIVE ANIMATION
+========================================================= */
+
+.mobile-toggle.active span:nth-child(1){
+
+    transform:
+        translateY(9px)
+        rotate(45deg);
+}
+
+.mobile-toggle.active span:nth-child(2){
+
+    opacity:0;
+}
+
+.mobile-toggle.active span:nth-child(3){
+
+    transform:
+        translateY(-9px)
+        rotate(-45deg);
+}
+
+/* =========================================================
+| MOBILE OVERLAY
+========================================================= */
+
+.mobile-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+        rgba(0,0,0,.65);
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition:.35s ease;
+
+    z-index:99990;
+}
+
+.mobile-overlay.show{
+
+    opacity:1;
+
+    visibility:visible;
+}
+
+/* =========================================================
+| MOBILE
+========================================================= */
+
+/* =========================================================
+   FINAL MOBILE DROPDOWN MENU
+========================================================= */
+
+@media(max-width:991px){
+
+    .header-navbar{
+
+        position:relative;
+
+        z-index:999999;
+
+        overflow:visible;
+    }
+
+    .navbar-wrapper{
+
+        position:relative;
+
+        display:flex;
+
+        align-items:center;
+
+        justify-content:space-between;
+
+        min-height:74px;
+    }
+
+    /* =====================================
+       MOBILE TOGGLE
+    ===================================== */
+
+    .mobile-toggle{
+
+        display:flex !important;
+
+        align-items:center;
+
+        justify-content:center;
+
+        z-index:1000001;
+    }
+
+    /* =====================================
+       MOBILE MENU
+    ===================================== */
+
+    .nav-container{
+
+        position:absolute;
+
+        top:100%;
+
+        left:0;
+
+        width:100%;
+
+        background:
+            linear-gradient(
+                180deg,
+                #0f172a,
+                #111827
+            );
+
+        border-radius:0 0 20px 20px;
+
+        overflow:hidden;
+
+        max-height:0;
+
+        opacity:0;
+
+        visibility:hidden;
+
+        transform:translateY(-12px);
+
+        transition:
+            max-height .45s ease,
+            opacity .35s ease,
+            transform .35s ease;
+
+        box-shadow:
+            0 25px 50px rgba(0,0,0,.35);
+
+        z-index:999999;
+
+        padding:0 20px;
+    }
+
+    /* =====================================
+       OPEN MENU
+    ===================================== */
+
+    .nav-container.show{
+
+        max-height:100vh;
+
+        opacity:1;
+
+        visibility:visible;
+
+        transform:translateY(0);
+
+        overflow-y:auto;
+
+        padding:22px 20px 30px;
+    }
+
+    /* =====================================
+       NAV LINKS
+    ===================================== */
+
+    .main-nav{
+
+        display:flex;
+
+        flex-direction:column;
+
+        gap:12px;
+
+        width:100%;
+    }
+
+    .main-nav a{
+
+        width:100%;
+
+        display:flex;
+
+        align-items:center;
+
+        justify-content:flex-start;
+
+        padding:16px 18px;
+
+        border-radius:14px;
+
+        background:
+            rgba(255,255,255,.05);
+
+        color:#ffffff;
+
+        font-size:15px;
+
+        font-weight:700;
+
+        transition:.35s ease;
+
+        text-decoration:none;
+    }
+
+    .main-nav a::before{
+
+        display:none;
+    }
+
+    .main-nav a:hover,
+    .main-nav a.active{
+
+        background:
+            rgba(37,99,235,.25);
+
+        transform:translateX(5px);
+    }
+
+    /* =====================================
+       BUTTONS
+    ===================================== */
+
+    .nav-actions{
+
+        width:100%;
+
+        display:flex;
+
+        flex-direction:column;
+
+        gap:14px;
+
+        margin-top:24px;
+
+        padding-top:22px;
+
+        border-top:
+            1px solid rgba(255,255,255,.08);
+    }
+
+    .action-btn{
+
+        width:100%;
+
+        height:54px;
+
+        border-radius:14px;
+
+        display:flex;
+
+        align-items:center;
+
+        justify-content:center;
+
+        font-size:14px;
+
+        font-weight:700;
+    }
+
+    /* =====================================
+       OVERLAY
+    ===================================== */
+
+    .mobile-overlay{
+
+        position:fixed;
+
+        inset:0;
+
+        background:
+            rgba(0,0,0,.6);
+
+        opacity:0;
+
+        visibility:hidden;
+
+        transition:.35s ease;
+
+        z-index:999990;
+    }
+
+    .mobile-overlay.show{
+
+        opacity:1;
+
+        visibility:visible;
+    }
+
+    body.menu-open{
+
+        overflow:hidden;
+    }
+}
+
+/* =========================================================
+| SMALL MOBILE
+========================================================= */
+
+@media(max-width:576px){
+
+    .logo-text h2{
+
+        font-size:16px;
+    }
+
+    .logo-text span{
+
+        font-size:9px;
+    }
+
+    .logo-icon{
+
+        width:50px;
+        height:50px;
+
+        min-width:50px;
+    }
+
+    .logo-icon img{
+
+        width:28px;
+        height:28px;
+    }
+}

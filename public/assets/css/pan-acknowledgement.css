@@ -1,0 +1,298 @@
+/* =========================================================
+| PAN ACKNOWLEDGEMENT PAGE CSS
+========================================================= */
+
+.pan-ack-page{
+
+    padding:40px 0;
+}
+
+/* =========================================================
+| MAIN CARD
+========================================================= */
+
+.pan-ack-card{
+
+    border:none;
+
+    border-radius:30px;
+
+    overflow:hidden;
+
+    background:#ffffff;
+
+    box-shadow:
+        0 10px 40px rgba(0,0,0,0.08);
+}
+
+/* =========================================================
+| CARD BODY
+========================================================= */
+
+.pan-ack-body{
+
+    padding:60px;
+}
+
+/* =========================================================
+| SUCCESS ICON
+========================================================= */
+
+.success-icon{
+
+    width:130px;
+
+    height:130px;
+
+    border-radius:50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #198754,
+            #20c997
+        );
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    margin:auto;
+
+    box-shadow:
+        0 15px 35px rgba(25,135,84,0.35);
+}
+
+.success-icon i{
+
+    color:#fff;
+
+    font-size:55px;
+}
+
+/* =========================================================
+| TITLE
+========================================================= */
+
+.pan-success-title{
+
+    font-size:38px;
+
+    font-weight:800;
+
+    color:#198754;
+
+    margin-top:30px;
+
+    margin-bottom:15px;
+}
+
+/* =========================================================
+| DESCRIPTION
+========================================================= */
+
+.pan-success-desc{
+
+    color:#6c757d;
+
+    font-size:18px;
+
+    margin-bottom:50px;
+}
+
+/* =========================================================
+| DETAIL BOX
+========================================================= */
+
+.ack-box{
+
+    background:#f8f9fa;
+
+    border-radius:22px;
+
+    padding:25px;
+
+    height:100%;
+
+    transition:0.3s ease;
+
+    border:1px solid #e9ecef;
+}
+
+.ack-box:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* =========================================================
+| LABEL
+========================================================= */
+
+.ack-box label{
+
+    display:block;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:#6c757d;
+
+    margin-bottom:10px;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+}
+
+/* =========================================================
+| VALUE
+========================================================= */
+
+.ack-box h5{
+
+    margin:0;
+
+    font-size:20px;
+
+    font-weight:700;
+
+    color:#212529;
+
+    word-break:break-word;
+}
+
+/* =========================================================
+| BUTTONS
+========================================================= */
+
+.pan-btn{
+
+    min-width:240px;
+
+    border-radius:60px;
+
+    padding:14px 30px;
+
+    font-size:17px;
+
+    font-weight:700;
+
+    transition:0.3s ease;
+}
+
+.pan-btn:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* =========================================================
+| PRIMARY BUTTON
+========================================================= */
+
+.pan-btn-primary{
+
+    background:
+        linear-gradient(
+            135deg,
+            #0d6efd,
+            #0b5ed7
+        );
+
+    border:none;
+
+    color:#fff;
+}
+
+/* =========================================================
+| DARK BUTTON
+========================================================= */
+
+.pan-btn-dark{
+
+    background:
+        linear-gradient(
+            135deg,
+            #212529,
+            #000
+        );
+
+    border:none;
+
+    color:#fff;
+}
+
+/* =========================================================
+| RESPONSIVE
+========================================================= */
+
+@media(max-width:991px){
+
+    .pan-ack-body{
+
+        padding:40px 25px;
+    }
+
+    .pan-success-title{
+
+        font-size:30px;
+    }
+
+    .pan-success-desc{
+
+        font-size:16px;
+    }
+}
+
+@media(max-width:767px){
+
+    .pan-ack-page{
+
+        padding:20px 0;
+    }
+
+    .pan-ack-body{
+
+        padding:30px 20px;
+    }
+
+    .success-icon{
+
+        width:100px;
+
+        height:100px;
+    }
+
+    .success-icon i{
+
+        font-size:40px;
+    }
+
+    .pan-success-title{
+
+        font-size:24px;
+    }
+
+    .ack-box{
+
+        padding:20px;
+    }
+
+    .ack-box h5{
+
+        font-size:17px;
+    }
+
+    .pan-btn{
+
+        width:100%;
+    }
+}

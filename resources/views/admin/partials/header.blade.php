@@ -1,63 +1,290 @@
 <div class="hdrx-header">
 
-    <!-- LEFT -->
+    <!-- =====================================================
+    | LEFT
+    ====================================================== -->
     <div class="hdrx-left">
 
-        <!-- Toggle -->
-        <button id="toggleSidebar" class="hdrx-menu-btn">
+        {{-- SIDEBAR TOGGLE --}}
+        <button
+            id="toggleSidebar"
+            class="hdrx-menu-btn"
+        >
             <i class="fa fa-bars"></i>
         </button>
 
-        <h5 class="hdrx-title">Admin Dashboard</h5>
-    </div>
+        {{-- =====================================================
+        | PAGE TITLE
+        ====================================================== --}}
+        <div class="hdrx-page-content">
 
-    <!-- RIGHT -->
-    <div class="hdrx-right">
+            <h5 class="hdrx-title mb-0">
 
-        <!-- Notification -->
-        <div class="dropdown hdrx-notif">
-            <i class="fa fa-bell hdrx-notif-icon" data-bs-toggle="dropdown"></i>
-            <span class="hdrx-badge">0</span>
+                @if(auth()->user()->hasRole('admin'))
 
-            <div class="dropdown-menu dropdown-menu-end hdrx-dropdown">
-                <p class="mb-1 fw-bold">Notifications</p>
-                <small class="text-muted">No new notifications</small>
-            </div>
+                    {{ $pageTitle ?? 'Admin Dashboard' }}
+
+                @elseif(auth()->user()->hasRole('Executive'))
+
+                    {{ $pageTitle ?? 'Executive Dashboard' }}
+
+                @else
+
+                    {{ $pageTitle ?? 'Dashboard' }}
+
+                @endif
+
+            </h5>
+
+            @if(!empty($pageSubtitle))
+
+                <small class="hdrx-subtitle">
+
+                    {{ $pageSubtitle }}
+
+                </small>
+
+            @endif
+
         </div>
 
-        <!-- USER -->
+        {{-- =====================================================
+        | ACTION BUTTON
+        ====================================================== --}}
+        @if(!empty($pageAction))
+
+            <div class="hdrx-action-area">
+
+                {!! $pageAction !!}
+
+            </div>
+
+        @endif
+
+    </div>
+
+    <!-- =====================================================
+    | RIGHT
+    ====================================================== -->
+    <div class="hdrx-right">
+
+        {{-- =====================================================
+        | WALLET BOX
+        ====================================================== --}}
+        @if(auth()->user()->hasAnyRole(['admin','Executive']))
+
+            <div class="admin-wallet-box">
+
+                <div class="wallet-icon">
+
+                    @if(auth()->user()->hasRole('admin'))
+
+                        <i class="fa fa-wallet"></i>
+
+                    @else
+
+                        <i class="fa fa-briefcase"></i>
+
+                    @endif
+
+                </div>
+
+                <div class="wallet-content">
+
+                    <span>
+
+                        @if(auth()->user()->hasRole('admin'))
+
+                            Admin Wallet
+
+                        @elseif(auth()->user()->hasRole('Executive'))
+
+                            Executive Wallet
+
+                        @endif
+
+                    </span>
+
+                    <h5>
+
+                        ₹{{ number_format(auth()->user()->wallet_balance ?? 0,2) }}
+
+                    </h5>
+
+                </div>
+
+            </div>
+
+        @endif
+
+       
+
+        {{-- =====================================================
+        | USER PROFILE
+        ====================================================== --}}
         <div class="dropdown hdrx-user">
 
-            <button class="hdrx-user-btn" data-bs-toggle="dropdown">
+            <button
+                class="hdrx-user-btn"
+                data-bs-toggle="dropdown"
+            >
 
-                <img id="headerProfileImage"
-                    src="{{ auth()->user()->image ? asset('uploads/'.auth()->user()->image) : 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()->name) }}"
-                    class="hdrx-avatar">
+                {{-- AVATAR --}}
+                <div class="hdrx-avatar-wrapper">
 
-                <span class="hdrx-username">
-                    {{ auth()->user()->name }}
-                </span>
+                    <img
+                        id="headerProfileImage"
 
-                <i class="fa fa-angle-down"></i>
+                        src="{{ auth()->user()->image
+                            ? asset('uploads/'.auth()->user()->image)
+                            : 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()->name)
+                        }}"
+
+                        class="hdrx-avatar"
+                    >
+
+                    <span class="hdrx-online-dot"></span>
+
+                </div>
+
+                {{-- USER INFO --}}
+                <div class="hdrx-user-content">
+
+                    <span class="hdrx-username">
+
+                        {{ auth()->user()->name }}
+
+                    </span>
+
+                    <small class="hdrx-role">
+
+                        @if(auth()->user()->hasRole('admin'))
+
+                            Admin
+
+                        @elseif(auth()->user()->hasRole('Executive'))
+
+                            Executive
+
+                        @else
+
+                            User
+
+                        @endif
+
+                    </small>
+
+                </div>
+
+                <i class="fa fa-angle-down hdrx-angle"></i>
+
             </button>
 
-            <ul class="dropdown-menu dropdown-menu-end hdrx-dropdown">
+            {{-- =====================================================
+            | DROPDOWN MENU
+            ====================================================== --}}
+            <ul class="dropdown-menu dropdown-menu-end hdrx-dropdown hdrx-user-dropdown">
+
+                {{-- PROFILE --}}
                 <li>
-                    <a class="dropdown-item" href="{{ route('admin.profile') }}">
-                        <i class="fa fa-user"></i> Profile
+
+                    <a
+                        class="dropdown-item"
+
+                        href="
+                        @if(auth()->user()->hasRole('admin'))
+
+                            {{ route('admin.profile') }}
+
+                        @elseif(auth()->user()->hasRole('Executive'))
+
+                            {{ route('admin.profile') }}
+
+                        @else
+
+                            #
+                        @endif
+                        "
+                    >
+
+                        <i class="fa fa-user"></i>
+
+                        My Profile
+
                     </a>
+
                 </li>
 
-                <li><hr class="dropdown-divider"></li>
+               
+
+                {{-- ADMIN MENU --}}
+                @if(auth()->user()->hasRole('admin'))
+
+                    <li>
+
+                        <a
+                            class="dropdown-item"
+                            href="{{ route('admin.dashboard') }}"
+                        >
+
+                            <i class="fa fa-shield-alt"></i>
+
+                            Admin Panel
+
+                        </a>
+
+                    </li>
+
+                @endif
+
+                {{-- EXECUTIVE MENU --}}
+                @if(auth()->user()->hasRole('Executive'))
+
+                    <li>
+
+                        <a
+                            class="dropdown-item"
+                            href="{{ route('admin.dashboard') }}"
+                        >
+
+                            <i class="fa fa-briefcase"></i>
+
+                            Executive Panel
+
+                        </a>
+
+                    </li>
+
+                @endif
 
                 <li>
-                    <form method="POST" action="/logout">
-                        @csrf
-                        <button class="dropdown-item text-danger">
-                            <i class="fa fa-sign-out-alt"></i> Logout
-                        </button>
-                    </form>
+
+                    <hr class="dropdown-divider">
+
                 </li>
+
+                {{-- LOGOUT --}}
+                <li>
+
+                    <form
+                        method="POST"
+                        action="{{ route('logout') }}"
+                    >
+
+                        @csrf
+
+                        <button class="dropdown-item text-danger">
+
+                            <i class="fa fa-sign-out-alt"></i>
+
+                            Logout
+
+                        </button>
+
+                    </form>
+
+                </li>
+
             </ul>
 
         </div>

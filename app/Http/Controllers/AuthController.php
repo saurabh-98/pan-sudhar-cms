@@ -4,88 +4,313 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Services\AuthService;
+
 use App\DTO\LoginDTO;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\RegisterRequest;
-use App\Http\Requests\ForgotPasswordRequest;
-use App\Http\Requests\ResetPasswordRequest;
 use App\DTO\RegisterDTO;
 use App\DTO\ForgotPasswordDTO;
 use App\DTO\ResetPasswordDTO;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\ForgotPasswordRequest;
+use App\Http\Requests\ResetPasswordRequest;
 
 class AuthController extends Controller
 {
     protected $authService;
 
-    public function __construct(AuthService $authService)
-    {
+    public function __construct(
+        AuthService $authService
+    ) {
         $this->authService = $authService;
     }
 
-   public function showLogin()
+    /*
+    |--------------------------------------------------------------------------
+    | LOGIN PAGE
+    |--------------------------------------------------------------------------
+    */
+
+    public function showLogin()
     {
         
+
 
         return view('auth.login');
     }
 
-    public function login(LoginRequest $request)
-    {
-        $dto = LoginDTO::fromRequest($request);
+    /*
+    |--------------------------------------------------------------------------
+    | LOGIN
+    |--------------------------------------------------------------------------
+    */
 
-        $response = $this->authService->login($dto, $request);
+    public function login(
+        LoginRequest $request
+    ) {
 
-        // ✅ AJAX
+        /*
+        |--------------------------------------------------------------------------
+        | DTO
+        |--------------------------------------------------------------------------
+        */
+
+        $dto = LoginDTO::fromRequest(
+            $request
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | LOGIN SERVICE
+        |--------------------------------------------------------------------------
+        */
+
+        $response = $this->authService
+            ->login($dto, $request);
+
+        /*
+        |--------------------------------------------------------------------------
+        | AJAX RESPONSE
+        |--------------------------------------------------------------------------
+        */
+
         if ($request->expectsJson()) {
-            return response()->json($response);
+
+            return response()->json(
+                $response
+            );
         }
 
-        // ✅ NORMAL
-        if ($response['status'] === 'success') {
-            return redirect()->intended($response['redirect'])
-                ->with('success', $response['message']);
+        /*
+        |--------------------------------------------------------------------------
+        | SUCCESS
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $response['status']
+            === 'success'
+        ) {
+
+            return redirect()
+                ->intended(
+                    $response['redirect']
+                )
+                ->with(
+                    'success',
+                    $response['message']
+                );
         }
 
-        return back()->withInput()->with('error', $response['message']);
+        /*
+        |--------------------------------------------------------------------------
+        | FAILED
+        |--------------------------------------------------------------------------
+        */
+
+        return back()
+            ->withInput()
+            ->with(
+                'error',
+                $response['message']
+            );
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | LOGOUT
+    |--------------------------------------------------------------------------
+    */
 
-    public function logout(Request $request)
+    public function logout(
+        Request $request
+    ) {
+
+        $this->authService->logout(
+            $request
+        );
+
+        return redirect('/login')
+            ->with(
+                'success',
+                'Logged out successfully'
+            );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | REGISTER PAGE
+    |--------------------------------------------------------------------------
+    */
+
+    public function showRegister()
     {
-        $this->authService->logout($request);
-
-        return redirect('/login')->with('success', 'Logged out successfully');
+        return view(
+            'auth.register'
+        );
     }
 
-    public function showRegister(){
-        
-        return view('auth.register');
+    /*
+    |--------------------------------------------------------------------------
+    | REGISTER
+    |--------------------------------------------------------------------------
+    */
+
+    public function register(
+        RegisterRequest $request
+    ) {
+
+        /*
+        |--------------------------------------------------------------------------
+        | DTO
+        |--------------------------------------------------------------------------
+        */
+
+        $dto = RegisterDTO::fromRequest(
+            $request
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | REGISTER SERVICE
+        |--------------------------------------------------------------------------
+        */
+
+        $response = $this->authService
+            ->register($dto);
+
+        /*
+        |--------------------------------------------------------------------------
+        | JSON RESPONSE
+        |--------------------------------------------------------------------------
+        */
+
+        return response()->json(
+            $response
+        );
     }
 
-     public function showForgotPassword(){
-        
-        return view('auth.forgot-password');
-    }
+    /*
+    |--------------------------------------------------------------------------
+    | FORGOT PASSWORD PAGE
+    |--------------------------------------------------------------------------
+    */
 
-    // REGISTER
-    public function register(RegisterRequest $request)
+    public function showForgotPassword()
     {
-        $dto = RegisterDTO::fromRequest($request);
-        return response()->json($this->authService->register($dto));
+        return view(
+            'auth.forgot-password'
+        );
     }
 
-    // FORGOT
-    public function forgotPassword(ForgotPasswordRequest $request)
-    {
-        $dto = ForgotPasswordDTO::fromRequest($request);
-        return response()->json($this->authService->forgotPassword($dto));
+    /*
+    |--------------------------------------------------------------------------
+    | FORGOT PASSWORD
+    |--------------------------------------------------------------------------
+    */
+
+    public function forgotPassword(
+        ForgotPasswordRequest $request
+    ) {
+
+        /*
+        |--------------------------------------------------------------------------
+        | DTO
+        |--------------------------------------------------------------------------
+        */
+
+        $dto = ForgotPasswordDTO
+            ::fromRequest($request);
+
+        /*
+        |--------------------------------------------------------------------------
+        | SERVICE
+        |--------------------------------------------------------------------------
+        */
+
+        $response = $this->authService
+            ->forgotPassword($dto);
+
+        return response()->json(
+            $response
+        );
     }
 
-    // RESET
-    public function resetPassword(ResetPasswordRequest $request)
+    /*
+    |--------------------------------------------------------------------------
+    | RESET PASSWORD
+    |--------------------------------------------------------------------------
+    */
+
+    public function resetPassword(
+        ResetPasswordRequest $request
+    ) {
+
+        /*
+        |--------------------------------------------------------------------------
+        | DTO
+        |--------------------------------------------------------------------------
+        */
+
+        $dto = ResetPasswordDTO
+            ::fromRequest($request);
+
+        /*
+        |--------------------------------------------------------------------------
+        | SERVICE
+        |--------------------------------------------------------------------------
+        */
+
+        $response = $this->authService
+            ->resetPassword($dto);
+
+        return response()->json(
+            $response
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | CURRENT USER ROLE
+    |--------------------------------------------------------------------------
+    */
+
+    public function currentRole()
     {
-        $dto = ResetPasswordDTO::fromRequest($request);
-        return response()->json($this->authService->resetPassword($dto));
+        $user = Auth::user();
+
+        if (!$user) {
+
+            return response()->json([
+
+                'status' => false,
+
+                'message' => 'Unauthenticated'
+
+            ], 401);
+        }
+
+        return response()->json([
+
+            'status' => true,
+
+            'user' => [
+
+                'id' => $user->id,
+
+                'name' => $user->name,
+
+                'email' => $user->email,
+
+                'roles' => $user
+                    ->getRoleNames(),
+
+                'permissions' => $user
+                    ->getAllPermissions()
+                    ->pluck('name')
+            ]
+        ]);
     }
 }

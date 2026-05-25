@@ -1,95 +1,72 @@
-/* =========================
-   FOOTER BASE
-========================= */
-.footer {
-    background: #0f172a;
+/* FOOTER */
+.admin-footer {
+    background: linear-gradient(90deg, #0f172a, #1e293b);
     color: #cbd5e1;
-    padding: 15px 20px;
+    padding: 10px 20px;
+    font-size: 13px;
     border-top: 1px solid rgba(255,255,255,0.05);
 }
 
-/* CONTAINER */
-.footer-container {
+/* WRAPPER */
+.footer-wrapper {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
 }
 
 /* LEFT */
 .footer-left {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    gap: 8px;
 }
 
-.footer-brand {
+.brand {
     font-weight: 600;
-    color: #ff5722;
+    color: #fff;
+}
+
+.version {
+    background: rgba(255,255,255,0.1);
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-size: 11px;
 }
 
 /* CENTER */
 .footer-center {
-    font-size: 13px;
     text-align: center;
+    flex: 1;
+    font-size: 12px;
+    opacity: 0.8;
 }
 
 /* RIGHT */
 .footer-right {
     display: flex;
-    gap: 12px;
+    align-items: center;
 }
 
 .footer-right a {
     color: #cbd5e1;
-    font-size: 16px;
-    transition: 0.2s;
+    margin-left: 12px;
+    font-size: 15px;
+    transition: all 0.3s ease;
 }
 
 .footer-right a:hover {
-    color: #ff5722;
-    transform: scale(1.2);
+    color: #38bdf8;
+    transform: translateY(-2px);
 }
 
-/* =========================
-   TABLET
-========================= */
-@media (max-width:768px){
-
-    .footer-container {
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .footer-wrapper {
         flex-direction: column;
-        text-align: center;
-    }
-
-    .footer-left {
-        align-items: center;
-    }
-
-    .footer-right {
-        justify-content: center;
-    }
-
-}
-
-/* =========================
-   SMALL MOBILE
-========================= */
-@media (max-width:480px){
-
-    .footer {
-        padding: 12px;
-    }
-
-    .footer-brand {
-        font-size: 14px;
-    }
-
-    .footer-center {
-        font-size: 12px;
+        gap: 8px;
     }
 
     .footer-right a {
-        font-size: 14px;
+        margin: 0 8px;
     }
-
 }

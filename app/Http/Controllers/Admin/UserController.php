@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Services\UserService;
 use Illuminate\Http\Request;
-use App\DTO\UserDTO; 
+use App\DTO\UserDTO;
+
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -19,35 +22,77 @@ class UserController extends Controller
         $this->service = $service;
     }
 
-    /* ================= USERS ================= */
+    /*
+    |--------------------------------------------------------------------------
+    | USERS
+    |--------------------------------------------------------------------------
+    */
 
     public function index()
     {
         return view('admin.users.index');
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | CREATE
+    |--------------------------------------------------------------------------
+    */
+
     public function create()
     {
-        return view('admin.users.create');
+        $roles = Role::all();
+
+        return view(
+            'admin.users.create',
+            compact('roles')
+        );
     }
 
-    /* ================= STORE ================= */
+    /*
+    |--------------------------------------------------------------------------
+    | STORE
+    |--------------------------------------------------------------------------
+    */
 
     public function store(Request $request)
     {
         $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'nullable|min:6',
-            'role'     => 'required|in:admin,staff,customer'
+
+            'name' => 'required|string|max:255',
+
+            'email' => 'required|email|unique:users,email',
+
+            'password' => 'required|min:6',
+
+            'role' => 'required|exists:roles,name',
         ]);
 
         try {
 
-            // ✅ DTO HANDLE ALL LOGIC
+            /*
+            |--------------------------------------------------------------------------
+            | DTO
+            |--------------------------------------------------------------------------
+            */
+
             $dto = UserDTO::fromAdmin($request);
 
-            $this->service->createUser($dto);
+            /*
+            |--------------------------------------------------------------------------
+            | CREATE USER
+            |--------------------------------------------------------------------------
+            */
+
+            $user = $this->service->createUser($dto);
+
+            /*
+            |--------------------------------------------------------------------------
+            | ASSIGN ROLE
+            |--------------------------------------------------------------------------
+            */
+
+            $user->assignRole($request->role);
 
             return redirect()
                 ->route('admin.users.index')
@@ -61,47 +106,178 @@ class UserController extends Controller
         }
     }
 
-    /* ================= LIST ================= */
+    /*
+    |--------------------------------------------------------------------------
+    | LIST
+    |--------------------------------------------------------------------------
+    */
 
-    public function list()
-    {
+public function list()
+{
+    try {
+
+        /*
+        |--------------------------------------------------------------------------
+        | GET USERS
+        |--------------------------------------------------------------------------
+        */
+
+        $users = $this->service
+            ->getAllUsers();
+
+        /*
+        |--------------------------------------------------------------------------
+        | TRANSFORM DATA
+        |--------------------------------------------------------------------------
+        */
+
+        $data = $users->map(function ($user) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | ROLE
+            |--------------------------------------------------------------------------
+            */
+
+            $role = $user
+                ->getRoleNames()
+                ->first();
+
+            /*
+            |--------------------------------------------------------------------------
+            | DEFAULT ROLE
+            |--------------------------------------------------------------------------
+            */
+
+            if (!$role) {
+
+                $role = 'No Role';
+            }
+
+            return [
+
+                'id' => $user->id,
+
+                'name' => $user->name,
+
+                'email' => $user->email,
+
+                /*
+                |--------------------------------------------------------------------------
+                | DYNAMIC ROLE
+                |--------------------------------------------------------------------------
+                */
+
+                'role' => $role,
+
+                /*
+                |--------------------------------------------------------------------------
+                | STATUS
+                |--------------------------------------------------------------------------
+                */
+
+                'status' => $user->status ?? 1,
+            ];
+        });
+
+        /*
+        |--------------------------------------------------------------------------
+        | JSON RESPONSE
+        |--------------------------------------------------------------------------
+        */
+
         return response()->json([
-            'data' => $this->service->getAllUsers()
-        ]);
-    }
 
-    /* ================= EDIT ================= */
+            'status' => true,
+
+            'data' => $data
+        ]);
+
+    } catch (\Exception $e) {
+
+        return response()->json([
+
+            'status' => false,
+
+            'message' => 'Failed to load users',
+
+            'error' => $e->getMessage()
+
+        ], 500);
+    }
+}
+
+    /*
+    |--------------------------------------------------------------------------
+    | EDIT
+    |--------------------------------------------------------------------------
+    */
 
     public function edit($id)
     {
         $user = $this->service->getUserById($id);
 
         if (!$user) {
+
             return redirect()
                 ->route('admin.users.index')
                 ->with('error', 'User not found');
         }
 
-        return view('admin.users.create', compact('user'));
+        $roles = Role::all();
+
+        return view(
+            'admin.users.create',
+            compact('user', 'roles')
+        );
     }
 
-    /* ================= UPDATE ================= */
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE
+    |--------------------------------------------------------------------------
+    */
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email,' . $id,
+
+            'name' => 'required|string|max:255',
+
+            'email' => 'required|email|unique:users,email,' . $id,
+
             'password' => 'nullable|min:6',
-            'role'     => 'required|in:admin,staff,customer'
+
+            'role' => 'required|exists:roles,name',
         ]);
 
         try {
 
-            // ✅ DTO UPDATE
+            /*
+            |--------------------------------------------------------------------------
+            | DTO
+            |--------------------------------------------------------------------------
+            */
+
             $dto = UserDTO::fromUpdate($request);
 
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE USER
+            |--------------------------------------------------------------------------
+            */
+
             $this->service->updateUser($id, $dto);
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE ROLE
+            |--------------------------------------------------------------------------
+            */
+
+            $user = $this->service->getUserById($id);
+
+            $user->syncRoles([$request->role]);
 
             return redirect()
                 ->route('admin.users.index')
@@ -115,7 +291,11 @@ class UserController extends Controller
         }
     }
 
-    /* ================= FORCE RESET ================= */
+    /*
+    |--------------------------------------------------------------------------
+    | FORCE RESET
+    |--------------------------------------------------------------------------
+    */
 
     public function forceReset($id)
     {
@@ -124,20 +304,28 @@ class UserController extends Controller
             $this->service->forcePasswordReset($id);
 
             return response()->json([
+
                 'status' => true,
+
                 'message' => 'User must reset password on next login'
             ]);
 
         } catch (\Exception $e) {
 
             return response()->json([
+
                 'status' => false,
+
                 'message' => 'Reset failed'
             ], 500);
         }
     }
 
-    /* ================= CUSTOMERS ================= */
+    /*
+    |--------------------------------------------------------------------------
+    | CUSTOMERS
+    |--------------------------------------------------------------------------
+    */
 
     public function customers()
     {
@@ -151,13 +339,18 @@ class UserController extends Controller
         ]);
     }
 
-    /* ================= CUSTOMER PROFILE ================= */
+    /*
+    |--------------------------------------------------------------------------
+    | CUSTOMER PROFILE
+    |--------------------------------------------------------------------------
+    */
 
     public function customerShow($id)
     {
         $data = $this->service->getCustomerProfile($id);
 
         if (!$data || !$data['user']) {
+
             return redirect()
                 ->route('admin.users.customers')
                 ->with('error', 'Customer not found');
@@ -166,7 +359,11 @@ class UserController extends Controller
         return view('admin.users.show-customer', $data);
     }
 
-    /* ================= CUSTOMER ORDERS ================= */
+    /*
+    |--------------------------------------------------------------------------
+    | CUSTOMER ORDERS
+    |--------------------------------------------------------------------------
+    */
 
     public function customerOrders($id)
     {
@@ -175,7 +372,11 @@ class UserController extends Controller
         ]);
     }
 
-    /* ================= DELETE ================= */
+    /*
+    |--------------------------------------------------------------------------
+    | DELETE
+    |--------------------------------------------------------------------------
+    */
 
     public function delete($id)
     {
@@ -184,21 +385,28 @@ class UserController extends Controller
             $deleted = $this->service->deleteUser($id);
 
             if (!$deleted) {
+
                 return response()->json([
+
                     'status' => false,
+
                     'message' => 'User not found'
                 ], 404);
             }
 
             return response()->json([
+
                 'status' => true,
+
                 'message' => 'User deleted successfully'
             ]);
 
         } catch (\Exception $e) {
 
             return response()->json([
+
                 'status' => false,
+
                 'message' => 'Delete failed'
             ], 500);
         }
@@ -211,6 +419,7 @@ class UserController extends Controller
             $deleted = $this->service->deleteUser($id);
 
             if (!$deleted) {
+
                 return back()->with('error', 'User not found');
             }
 
@@ -222,120 +431,193 @@ class UserController extends Controller
         }
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | PROFILE
+    |--------------------------------------------------------------------------
+    */
 
-    /* ================= PROFILE ================= */
+    public function profile()
+    {
+        $user = auth()->user();
 
-public function profile()
-{
-    $user = auth()->user();
-    return view('admin.users.profile', compact('user'));
-}
+        return view(
+            'admin.users.profile',
+            compact('user')
+        );
+    }
 
-/* ================= UPDATE PROFILE ================= */
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE PROFILE
+    |--------------------------------------------------------------------------
+    */
 
+    public function profileUpdate(Request $request)
+    {
+        $user = auth()->user();
 
-public function profileUpdate(Request $request)
-{
-    $user = auth()->user();
+        $request->validate([
 
-    $request->validate([
-        'name'  => 'required|string|max:255',
-        'email' => 'required|email|unique:users,email,' . $user->id,
-        'image' => 'nullable|file|mimes:jpg,jpeg,png|max:2048' // ✅ FIXED
-    ]);
+            'name' => 'required|string|max:255',
 
-    try {
+            'email' => 'required|email|unique:users,email,' . $user->id,
 
-        $data = [
-            'name'  => $request->name,
-            'email' => $request->email
-        ];
+            'image' => 'nullable|file|mimes:jpg,jpeg,png|max:2048'
+        ]);
 
-        /* ================= IMAGE UPLOAD ================= */
+        try {
 
-        if ($request->hasFile('image')) {
+            $data = [
 
-            $file = $request->file('image');
+                'name' => $request->name,
 
-            // ✅ Generate safe filename
-            $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+                'email' => $request->email,
+            ];
 
-            // ✅ Store in storage/app/public/uploads
-            $path = $file->storeAs('uploads', $filename, 'public');
+            /*
+            |--------------------------------------------------------------------------
+            | IMAGE UPLOAD
+            |--------------------------------------------------------------------------
+            */
 
-            // ✅ Delete old image (if exists)
-            if ($user->image && Storage::disk('public')->exists('uploads/'.$user->image)) {
-                Storage::disk('public')->delete('uploads/'.$user->image);
+            if ($request->hasFile('image')) {
+
+                $file = $request->file('image');
+
+                $filename = Str::uuid() . '.'
+                    . $file->getClientOriginalExtension();
+
+                $file->storeAs(
+                    'uploads',
+                    $filename,
+                    'public'
+                );
+
+                if (
+                    $user->image &&
+                    Storage::disk('public')->exists(
+                        'uploads/' . $user->image
+                    )
+                ) {
+
+                    Storage::disk('public')->delete(
+                        'uploads/' . $user->image
+                    );
+                }
+
+                $data['image'] = $filename;
             }
 
-            // Save only filename
-            $data['image'] = $filename;
-        }
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE USER
+            |--------------------------------------------------------------------------
+            */
 
-        /* ================= UPDATE USER ================= */
-
-        $user->update($data);
-
-        return response()->json([
-            'status'  => true,
-            'message' => 'Profile updated successfully',
-            'image_url' => isset($data['image'])
-                ? asset('storage/uploads/'.$data['image'])
-                : null
-        ]);
-
-    } catch (\Exception $e) {
-
-        return response()->json([
-            'status'  => false,
-            'message' => 'Update failed',
-            'error'   => $e->getMessage() // 🔥 helpful for debugging
-        ], 500);
-    }
-}
-
-/* ================= CHANGE PASSWORD ================= */
-
-public function changePassword(Request $request)
-{
-    $request->validate([
-        'current_password' => 'required',
-        'new_password'     => 'required|min:6|confirmed',
-    ]);
-
-    $user = auth()->user();
-
-    try {
-
-        if (!\Hash::check($request->current_password, $user->password)) {
+            $user->update($data);
 
             return response()->json([
-                'status'  => false,
-                'message' => 'Current password incorrect'
-            ], 400);
+
+                'status' => true,
+
+                'message' => 'Profile updated successfully',
+
+                'image_url' => isset($data['image'])
+                    ? asset('storage/uploads/' . $data['image'])
+                    : null
+            ]);
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+
+                'status' => false,
+
+                'message' => 'Update failed',
+
+                'error' => $e->getMessage()
+
+            ], 500);
         }
+    }
 
-        // ✅ UPDATE PASSWORD VIA DTO
-        $dto = new \App\DTO\UserDTO(
-            $user->name,
-            $user->email,
-            $request->new_password,
-            $user->role
-        );
+    /*
+    |--------------------------------------------------------------------------
+    | CHANGE PASSWORD
+    |--------------------------------------------------------------------------
+    */
 
-        $this->service->updateUser($user->id, $dto);
+    public function changePassword(Request $request)
+    {
+        $request->validate([
 
-        return response()->json([
-            'status'  => true,
-            'message' => 'Password updated successfully'
+            'current_password' => 'required',
+
+            'new_password' => 'required|min:6|confirmed',
         ]);
 
-    } catch (\Exception $e) {
+        $user = auth()->user();
 
-        return response()->json([
-            'status'  => false,
-            'message' => 'Password update failed'
-        ], 500);
+        try {
+
+            if (
+                !Hash::check(
+                    $request->current_password,
+                    $user->password
+                )
+            ) {
+
+                return response()->json([
+
+                    'status' => false,
+
+                    'message' => 'Current password incorrect'
+
+                ], 400);
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | DTO
+            |--------------------------------------------------------------------------
+            */
+
+            $dto = new UserDTO(
+
+                $user->name,
+
+                $user->email,
+
+                $request->new_password,
+
+                $user->getRoleNames()->first()
+            );
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE PASSWORD
+            |--------------------------------------------------------------------------
+            */
+
+            $this->service->updateUser($user->id, $dto);
+
+            return response()->json([
+
+                'status' => true,
+
+                'message' => 'Password updated successfully'
+            ]);
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+
+                'status' => false,
+
+                'message' => 'Password update failed'
+
+            ], 500);
+        }
     }
-}
 }

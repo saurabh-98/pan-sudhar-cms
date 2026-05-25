@@ -1,0 +1,548 @@
+/* =========================================================
+| FEATURES SECTION
+========================================================= */
+
+.features-section{
+
+    position:relative;
+
+    padding:120px 0;
+
+    overflow:hidden;
+
+    background:
+        linear-gradient(
+            180deg,
+            #020617,
+            #0f172a 40%,
+            #111827
+        );
+}
+
+/* =========================================================
+| BACKGROUND GLOW
+========================================================= */
+
+.features-glow{
+
+    position:absolute;
+
+    border-radius:50%;
+
+    filter:blur(40px);
+
+    opacity:.18;
+
+    z-index:1;
+}
+
+.features-glow-1{
+
+    width:350px;
+    height:350px;
+
+    top:-100px;
+    left:-120px;
+
+    background:
+        radial-gradient(
+            #2563eb,
+            transparent
+        );
+}
+
+.features-glow-2{
+
+    width:300px;
+    height:300px;
+
+    bottom:-120px;
+    right:-80px;
+
+    background:
+        radial-gradient(
+            #06b6d4,
+            transparent
+        );
+}
+
+/* =========================================================
+| CONTAINER
+========================================================= */
+
+.features-section .container{
+
+    position:relative;
+
+    z-index:5;
+}
+
+/* =========================================================
+| HEADER
+========================================================= */
+
+.features-header{
+
+    text-align:center;
+
+    margin-bottom:70px;
+}
+
+/* =========================================================
+| BADGE
+========================================================= */
+
+.features-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    padding:12px 24px;
+
+    border-radius:60px;
+
+    background:
+        rgba(37,99,235,.12);
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    backdrop-filter:blur(12px);
+
+    color:#60a5fa;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    margin-bottom:28px;
+}
+
+/* =========================================================
+| TITLE
+========================================================= */
+
+.features-title{
+
+    font-size:64px;
+
+    line-height:1.1;
+
+    font-weight:900;
+
+    color:#fff;
+
+    margin-bottom:24px;
+
+    letter-spacing:-2px;
+}
+
+.features-title span{
+
+    background:
+        linear-gradient(
+            135deg,
+            #60a5fa,
+            #38bdf8,
+            #fff
+        );
+
+    -webkit-background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+}
+
+
+
+/* =========================================================
+| SUBTITLE
+========================================================= */
+
+.features-subtitle{
+
+    max-width:850px;
+
+    margin:auto;
+
+    font-size:18px;
+
+    line-height:2;
+
+    color:
+        rgba(255,255,255,.72);
+}
+
+/* =========================================================
+| FEATURE CARD
+========================================================= */
+
+.feature-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+    height:100%;
+
+    padding:42px 34px;
+
+    border-radius:32px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.08),
+            rgba(255,255,255,.03)
+        );
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    backdrop-filter:blur(16px);
+
+    transition:
+        transform .45s ease,
+        border-color .45s ease,
+        box-shadow .45s ease;
+
+    box-shadow:
+        0 18px 40px rgba(0,0,0,.22);
+
+    isolation:isolate;
+}
+
+/* =========================================================
+| HOVER
+========================================================= */
+
+.feature-card:hover{
+
+    transform:
+        translateY(-14px);
+
+    border-color:
+        rgba(96,165,250,.35);
+
+    box-shadow:
+        0 35px 70px rgba(37,99,235,.18);
+}
+
+/* =========================================================
+| TOP LIGHT
+========================================================= */
+
+.feature-card::before{
+
+    content:'';
+
+    position:absolute;
+
+    top:-80px;
+    right:-80px;
+
+    width:180px;
+    height:180px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            rgba(255,255,255,.08),
+            transparent
+        );
+}
+
+/* =========================================================
+| CARD NUMBER
+========================================================= */
+
+.feature-number{
+
+    position:absolute;
+
+    top:24px;
+    right:28px;
+
+    font-size:42px;
+
+    font-weight:900;
+
+    color:
+        rgba(255,255,255,.06);
+
+    line-height:1;
+}
+
+/* =========================================================
+| ICON
+========================================================= */
+
+.feature-icon{
+
+    position:relative;
+
+    width:92px;
+    height:92px;
+
+    border-radius:28px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    margin-bottom:32px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #7da2ff,
+            #2563eb
+        );
+
+    color:#fff;
+
+    font-size:34px;
+
+    box-shadow:
+        0 18px 35px rgba(37,99,235,.30);
+
+    overflow:hidden;
+
+    transition:
+        transform .45s ease;
+}
+
+.feature-icon::before{
+
+    content:'';
+
+    position:absolute;
+
+    inset:8px;
+
+    border-radius:20px;
+
+    border:
+        1px solid rgba(255,255,255,.18);
+}
+
+.feature-card:hover .feature-icon{
+
+    transform:
+        rotate(-8deg)
+        scale(1.08);
+}
+
+/* =========================================================
+| CONTENT
+========================================================= */
+
+.feature-content{
+
+    position:relative;
+
+    z-index:2;
+}
+
+.feature-content h5{
+
+    font-size:26px;
+
+    font-weight:800;
+
+    color:#fff;
+
+    margin-bottom:18px;
+}
+
+.feature-content p{
+
+    margin:0;
+
+    font-size:16px;
+
+    line-height:1.9;
+
+    color:
+        rgba(255,255,255,.72);
+}
+
+/* =========================================================
+| HOVER BUTTON
+========================================================= */
+
+.feature-hover{
+
+    margin-top:28px;
+}
+
+.feature-btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    color:#60a5fa;
+
+    text-decoration:none;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    transition:.35s ease;
+}
+
+.feature-btn:hover{
+
+    gap:16px;
+
+    color:#fff;
+}
+
+/* =========================================================
+| BLUR EFFECT
+========================================================= */
+
+.feature-blur{
+
+    position:absolute;
+
+    bottom:-60px;
+    right:-60px;
+
+    width:140px;
+    height:140px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            rgba(37,99,235,.18),
+            transparent
+        );
+
+    filter:blur(20px);
+
+    opacity:0;
+
+    transition:.45s ease;
+}
+
+.feature-card:hover .feature-blur{
+
+    opacity:1;
+}
+
+/* =========================================================
+| RESPONSIVE
+========================================================= */
+
+@media(max-width:1400px){
+
+    .features-title{
+
+        font-size:56px;
+    }
+}
+
+@media(max-width:1200px){
+
+    .features-title{
+
+        font-size:48px;
+    }
+}
+
+@media(max-width:991px){
+
+    .features-section{
+
+        padding:100px 0;
+    }
+
+    .features-title{
+
+        font-size:42px;
+    }
+
+    .features-subtitle{
+
+        font-size:17px;
+    }
+}
+
+@media(max-width:768px){
+
+    .features-section{
+
+        padding:80px 0;
+    }
+
+    .features-title{
+
+        font-size:34px;
+
+        line-height:1.2;
+    }
+
+    .features-subtitle{
+
+        font-size:15px;
+
+        line-height:1.9;
+    }
+
+    .feature-card{
+
+        padding:34px 28px;
+    }
+
+    .feature-icon{
+
+        width:78px;
+        height:78px;
+
+        border-radius:24px;
+
+        font-size:30px;
+    }
+
+    .feature-content h5{
+
+        font-size:22px;
+    }
+}
+
+@media(max-width:576px){
+
+    .features-title{
+
+        font-size:30px;
+    }
+
+    .features-badge{
+
+        width:100%;
+    }
+
+    .feature-card{
+
+        text-align:center;
+    }
+
+    .feature-icon{
+
+        margin-left:auto;
+        margin-right:auto;
+    }
+}

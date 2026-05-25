@@ -1,0 +1,455 @@
+/* =========================================================
+   GLOBAL LAYOUT FINAL PROFESSIONAL
+========================================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+
+    --sidebar-width:300px;
+
+    --primary:#2563eb;
+    --primary-dark:#1d4ed8;
+
+    --secondary:#0f172a;
+
+    --light:#f8fafc;
+
+    --border:#e2e8f0;
+
+    --text:#334155;
+
+    --white:#ffffff;
+
+    --shadow-sm:
+    0 4px 20px rgba(15,23,42,0.04);
+
+    --shadow-md:
+    0 15px 40px rgba(15,23,42,0.08);
+
+    --shadow-lg:
+    0 25px 60px rgba(37,99,235,0.12);
+
+    --transition:
+    all .35s cubic-bezier(.4,0,.2,1);
+
+}
+
+/* =========================================================
+   HTML & BODY
+========================================================= */
+
+html,
+body{
+
+    width:100%;
+
+    min-height:100%;
+
+    overflow-x:hidden;
+
+    scroll-behavior:smooth;
+
+}
+
+/* =========================================================
+   BODY
+========================================================= */
+
+body{
+
+    position:relative;
+
+    font-family:'Inter',sans-serif;
+
+    color:var(--text);
+
+    background:
+    radial-gradient(circle at top left,
+    rgba(37,99,235,0.12),
+    transparent 28%),
+
+    radial-gradient(circle at bottom right,
+    rgba(96,165,250,0.10),
+    transparent 30%),
+
+    linear-gradient(135deg,
+    #eef4ff 0%,
+    #f8fbff 45%,
+    #eff6ff 100%);
+
+}
+
+/* =========================================================
+   BODY FLOAT EFFECT
+========================================================= */
+
+body::before{
+
+    content:"";
+
+    position:fixed;
+
+    width:500px;
+
+    height:500px;
+
+    border-radius:50%;
+
+    background:
+    radial-gradient(circle,
+    rgba(37,99,235,0.08),
+    transparent);
+
+    top:-200px;
+
+    right:-120px;
+
+    z-index:-2;
+
+    animation:layoutFloat1 18s infinite alternate ease-in-out;
+
+}
+
+body::after{
+
+    content:"";
+
+    position:fixed;
+
+    width:380px;
+
+    height:380px;
+
+    border-radius:50%;
+
+    background:
+    radial-gradient(circle,
+    rgba(96,165,250,0.06),
+    transparent);
+
+    bottom:-150px;
+
+    left:-100px;
+
+    z-index:-2;
+
+    animation:layoutFloat2 16s infinite alternate ease-in-out;
+
+}
+
+@keyframes layoutFloat1{
+
+    from{
+        transform:translateY(0px);
+    }
+
+    to{
+        transform:translateY(40px);
+    }
+
+}
+
+@keyframes layoutFloat2{
+
+    from{
+        transform:translateX(0px);
+    }
+
+    to{
+        transform:translateX(35px);
+    }
+
+}
+
+/* =========================================================
+   MAIN LAYOUT
+========================================================= */
+
+.retailer-layout{
+
+    width:100%;
+
+    min-height:100vh;
+
+    display:flex;
+
+    position:relative;
+
+}
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.main-content{
+
+    position:relative;
+
+    margin-left:var(--sidebar-width);
+
+    width:calc(100% - var(--sidebar-width));
+
+    min-height:100vh;
+
+    display:flex;
+
+    flex-direction:column;
+
+    transition:var(--transition);
+
+    overflow:hidden;
+
+}
+
+/* =========================================================
+   PAGE CONTENT
+========================================================= */
+
+.page-content{
+
+    flex:1;
+
+    width:100%;
+
+    padding:30px;
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+/* =========================================================
+   DASHBOARD WRAPPER
+========================================================= */
+
+.dashboard-wrapper{
+
+    width:100%;
+
+    position:relative;
+
+}
+
+/* =========================================================
+   CONTAINER FIX
+========================================================= */
+
+.container,
+.container-fluid{
+
+    width:100% !important;
+
+    max-width:100% !important;
+
+    padding-left:0 !important;
+
+    padding-right:0 !important;
+
+}
+
+/* =========================================================
+   ROW FIX
+========================================================= */
+
+.row{
+
+    margin-left:0 !important;
+
+    margin-right:0 !important;
+
+}
+
+/* =========================================================
+   CARD FIX
+========================================================= */
+
+.card{
+
+    border:none;
+
+    box-shadow:var(--shadow-sm);
+
+}
+
+/* =========================================================
+   LINK
+========================================================= */
+
+a{
+
+    text-decoration:none;
+
+}
+
+/* =========================================================
+   IMAGE
+========================================================= */
+
+img{
+
+    max-width:100%;
+
+    height:auto;
+
+}
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+button{
+
+    outline:none;
+
+    border:none;
+
+}
+
+/* =========================================================
+   DROPDOWN FIX
+========================================================= */
+
+.dropdown-menu{
+
+    z-index:99999 !important;
+
+}
+
+/* =========================================================
+   TABLE FIX
+========================================================= */
+
+.table-responsive{
+
+    width:100%;
+
+    overflow-x:auto;
+
+}
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+    height:10px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#dbeafe;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:
+    linear-gradient(180deg,
+    #2563eb,
+    #1d4ed8);
+
+    border-radius:30px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:
+    linear-gradient(180deg,
+    #1d4ed8,
+    #1e40af);
+
+}
+
+/* =========================================================
+   OVERLAY
+========================================================= */
+
+.sidebar-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+    rgba(15,23,42,0.55);
+
+    backdrop-filter:blur(4px);
+
+    z-index:1040;
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition:var(--transition);
+
+}
+
+.sidebar-overlay.active{
+
+    opacity:1;
+
+    visibility:visible;
+
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media(max-width:1199px){
+
+    .main-content{
+
+        margin-left:0;
+
+        width:100%;
+
+    }
+
+    .page-content{
+
+        padding:20px;
+
+    }
+
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:768px){
+
+    .page-content{
+
+        padding:18px;
+
+    }
+
+}
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media(max-width:576px){
+
+    .page-content{
+
+        padding:14px;
+
+    }
+
+}

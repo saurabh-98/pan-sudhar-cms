@@ -1,0 +1,502 @@
+/* =========================================================
+| GALLERY WRAPPER
+========================================================= */
+
+.gallery-view-wrapper{
+
+    position:relative;
+
+    overflow:hidden;
+
+    padding:110px 0;
+
+    min-height:100vh;
+
+    background:
+    linear-gradient(
+        135deg,
+        #020617,
+        #0f172a,
+        #1e3a8a
+    );
+}
+
+/* =========================================================
+| GLOW EFFECTS
+========================================================= */
+
+.gallery-glow{
+
+    position:absolute;
+
+    border-radius:50%;
+
+    filter:blur(120px);
+
+    opacity:.22;
+}
+
+.gallery-glow-1{
+
+    width:340px;
+    height:340px;
+
+    background:#2563eb;
+
+    top:-120px;
+    left:-120px;
+}
+
+.gallery-glow-2{
+
+    width:380px;
+    height:380px;
+
+    background:#7c3aed;
+
+    bottom:-150px;
+    right:-120px;
+}
+
+/* =========================================================
+| HEADER
+========================================================= */
+
+.gallery-header{
+
+    position:relative;
+
+    z-index:5;
+
+    text-align:center;
+
+    margin-bottom:70px;
+}
+
+/* BADGE */
+
+.gallery-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    background:
+    rgba(37,99,235,.15);
+
+    border:
+    1px solid rgba(255,255,255,.08);
+
+    color:#93c5fd;
+
+    padding:12px 22px;
+
+    border-radius:50px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    margin-bottom:28px;
+}
+
+/* TITLE */
+
+.gallery-header h1{
+
+    font-size:64px;
+
+    line-height:1.1;
+
+    font-weight:900;
+
+    color:#fff;
+
+    margin-bottom:22px;
+}
+
+.gallery-header h1 span{
+
+    background:
+    linear-gradient(
+        135deg,
+        #60a5fa,
+        #38bdf8
+    );
+
+    -webkit-background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+}
+
+/* SUBTITLE */
+
+.gallery-header p{
+
+    max-width:780px;
+
+    margin:auto;
+
+    color:#cbd5e1;
+
+    font-size:18px;
+
+    line-height:1.9;
+}
+
+/* =========================================================
+| GRID
+========================================================= */
+
+.sg-gallery-grid{
+
+    position:relative;
+
+    z-index:5;
+}
+
+/* =========================================================
+| CARD
+========================================================= */
+
+.sg-gallery-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+    border-radius:30px;
+
+    background:#fff;
+
+    height:100%;
+
+    transition:.4s;
+
+    box-shadow:
+    0 20px 50px rgba(0,0,0,.25);
+}
+
+.sg-gallery-card:hover{
+
+    transform:
+    translateY(-10px);
+}
+
+/* =========================================================
+| IMAGE
+========================================================= */
+
+.sg-gallery-image{
+
+    position:relative;
+
+    overflow:hidden;
+
+    height:320px;
+}
+
+.sg-gallery-image img{
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    transition:.6s;
+}
+
+.sg-gallery-card:hover img{
+
+    transform:scale(1.12);
+}
+
+/* =========================================================
+| OVERLAY
+========================================================= */
+
+.sg-gallery-overlay{
+
+    position:absolute;
+
+    inset:0;
+
+    display:flex;
+
+    align-items:flex-end;
+
+    padding:28px;
+
+    background:
+    linear-gradient(
+        to top,
+        rgba(2,6,23,.95),
+        rgba(2,6,23,.2),
+        transparent
+    );
+
+    opacity:0;
+
+    transition:.4s;
+}
+
+.sg-gallery-card:hover .sg-gallery-overlay{
+
+    opacity:1;
+}
+
+/* =========================================================
+| CONTENT
+========================================================= */
+
+.sg-gallery-content{
+
+    width:100%;
+}
+
+.sg-gallery-category{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:8px 16px;
+
+    border-radius:50px;
+
+    background:
+    rgba(255,255,255,.12);
+
+    backdrop-filter:blur(10px);
+
+    color:#fff;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    margin-bottom:18px;
+}
+
+.sg-gallery-content h5{
+
+    color:#fff;
+
+    font-size:24px;
+
+    font-weight:700;
+
+    margin-bottom:22px;
+}
+
+/* =========================================================
+| ACTIONS
+========================================================= */
+
+.sg-gallery-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+}
+
+.sg-gallery-btn{
+
+    width:52px;
+    height:52px;
+
+    border-radius:16px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-decoration:none;
+
+    background:#2563eb;
+
+    color:#fff;
+
+    font-size:18px;
+
+    transition:.3s;
+}
+
+.sg-gallery-btn:hover{
+
+    background:#1d4ed8;
+
+    color:#fff;
+
+    transform:translateY(-4px);
+}
+
+/* =========================================================
+| NUMBER
+========================================================= */
+
+.sg-gallery-number{
+
+    position:absolute;
+
+    top:20px;
+    right:20px;
+
+    width:54px;
+    height:54px;
+
+    border-radius:18px;
+
+    background:
+    rgba(255,255,255,.14);
+
+    backdrop-filter:blur(14px);
+
+    border:
+    1px solid rgba(255,255,255,.1);
+
+    color:#fff;
+
+    font-size:16px;
+
+    font-weight:700;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+}
+
+/* =========================================================
+| EMPTY
+========================================================= */
+
+.gallery-empty{
+
+    text-align:center;
+
+    padding:100px 30px;
+
+    background:
+    rgba(255,255,255,.06);
+
+    border-radius:30px;
+
+    border:
+    1px solid rgba(255,255,255,.08);
+}
+
+.gallery-empty i{
+
+    font-size:70px;
+
+    color:#60a5fa;
+
+    margin-bottom:25px;
+}
+
+.gallery-empty h3{
+
+    color:#fff;
+
+    font-size:32px;
+
+    margin-bottom:15px;
+}
+
+.gallery-empty p{
+
+    color:#cbd5e1;
+
+    font-size:16px;
+}
+
+/* =========================================================
+| RESPONSIVE
+========================================================= */
+
+@media(max-width:1200px){
+
+    .gallery-header h1{
+
+        font-size:52px;
+    }
+}
+
+@media(max-width:768px){
+
+    .gallery-view-wrapper{
+
+        padding:80px 0;
+    }
+
+    .gallery-header{
+
+        margin-bottom:45px;
+    }
+
+    .gallery-header h1{
+
+        font-size:38px;
+    }
+
+    .gallery-header p{
+
+        font-size:15px;
+    }
+
+    .sg-gallery-image{
+
+        height:250px;
+    }
+
+    .sg-gallery-overlay{
+
+        padding:20px;
+    }
+
+    .sg-gallery-content h5{
+
+        font-size:18px;
+    }
+
+    .sg-gallery-btn{
+
+        width:46px;
+        height:46px;
+
+        border-radius:14px;
+    }
+}
+
+@media(max-width:576px){
+
+    .gallery-header h1{
+
+        font-size:30px;
+    }
+
+    .sg-gallery-image{
+
+        height:210px;
+    }
+
+    .sg-gallery-number{
+
+        width:44px;
+        height:44px;
+
+        border-radius:14px;
+
+        font-size:14px;
+    }
+}

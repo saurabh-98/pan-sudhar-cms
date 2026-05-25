@@ -1,114 +1,476 @@
 @extends('layout.admin')
 
+@section('title', 'Dashboard')
+
 @section('content')
 
-<h3 class="mb-4 dashboard-title">👋 Welcome back, Admin</h3>
+@php
 
-<!-- STATS -->
-<div class="row g-4">
+    /*
+    |--------------------------------------------------------------------------
+    | ROLE
+    |--------------------------------------------------------------------------
+    */
 
-    <div class="col-md-3">
-        <div class="card-box gradient-green">
-            <div class="d-flex justify-content-between">
-                <div>
-                    <h6>Categories</h6>
-                    <h2 class="counter">{{ $categories }}</h2>
+    $isExecutive = auth()->user()->hasRole('Executive');
+
+@endphp
+
+<div class="container-fluid dashboard">
+
+    {{-- =========================================================
+    | HEADER
+    ========================================================== --}}
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+
+        <div>
+
+            <h3 class="fw-bold mb-1">
+
+                <i class="fa fa-chart-line me-2 text-primary"></i>
+
+                {{ $isExecutive ? 'Executive Dashboard' : 'Admin Dashboard' }}
+
+            </h3>
+
+            <p class="text-muted mb-0">
+
+                Welcome back,
+                {{ auth()->user()->name }}
+
+            </p>
+
+        </div>
+
+        <div class="dashboard-date-box">
+
+            <i class="fa fa-calendar-alt me-2"></i>
+
+            {{ now()->format('d M Y') }}
+
+        </div>
+
+    </div>
+
+
+    {{-- =========================================================
+    | MAIN KPI CARDS
+    ========================================================== --}}
+    <div class="row g-4">
+
+        {{-- TOTAL PAN --}}
+        <div class="col-xl-3 col-md-6 col-12">
+
+            <a
+                href="{{ route('admin.pan.index') }}"
+                class="dashboard-link-card"
+            >
+
+                <div class="dash-card-modern bg-primary">
+
+                    <div>
+
+                        <h6>
+
+                            PAN Applications
+
+                        </h6>
+
+                        <h2 class="counter">
+
+                            {{ $totalPanApplications ?? 0 }}
+
+                        </h2>
+
+                    </div>
+
+                    <div class="icon">
+
+                        <i class="fa fa-id-card"></i>
+
+                    </div>
+
                 </div>
-                <i class="fa fa-list fa-2x opacity-50"></i>
-            </div>
-        </div>
-    </div>
 
-    <div class="col-md-3">
-        <div class="card-box gradient-blue">
-            <div class="d-flex justify-content-between">
-                <div>
-                    <h6>Menus</h6>
-                    <h2 class="counter">{{ $menus }}</h2>
+            </a>
+
+        </div>
+
+        {{-- TOTAL ITR --}}
+        <div class="col-xl-3 col-md-6 col-12">
+
+            <a
+                href="{{ route('admin.itr.index') }}"
+                class="dashboard-link-card"
+            >
+
+                <div class="dash-card-modern bg-success">
+
+                    <div>
+
+                        <h6>
+
+                            ITR Applications
+
+                        </h6>
+
+                        <h2 class="counter">
+
+                            {{ $totalItrApplications ?? 0 }}
+
+                        </h2>
+
+                    </div>
+
+                    <div class="icon">
+
+                        <i class="fa fa-file-invoice-dollar"></i>
+
+                    </div>
+
                 </div>
-                <i class="fa fa-utensils fa-2x opacity-50"></i>
-            </div>
-        </div>
-    </div>
 
-    <div class="col-md-3">
-        <div class="card-box gradient-yellow">
-            <div class="d-flex justify-content-between">
-                <div>
-                    <h6>Sliders</h6>
-                    <h2 class="counter">{{ $sliders }}</h2>
+            </a>
+
+        </div>
+
+        {{-- ASSIGNED --}}
+        <div class="col-xl-3 col-md-6 col-12">
+
+            <a
+                href="{{ route('admin.pan.index', ['filter' => 'assigned']) }}"
+                class="dashboard-link-card"
+            >
+
+                <div class="dash-card-modern bg-warning">
+
+                    <div>
+
+                        <h6>
+
+                            Assigned Applications
+
+                        </h6>
+
+                        <h2 class="counter">
+
+                            {{ $assignedApplications ?? 0 }}
+
+                        </h2>
+
+                    </div>
+
+                    <div class="icon">
+
+                        <i class="fa fa-user-check"></i>
+
+                    </div>
+
                 </div>
-                <i class="fa fa-image fa-2x opacity-50"></i>
-            </div>
-        </div>
-    </div>
 
-    <div class="col-md-3">
-        <div class="card-box gradient-red">
-            <div class="d-flex justify-content-between">
-                <div>
-                    <h6>Orders</h6>
-                    <h2 class="counter">{{ $orders }}</h2>
+            </a>
+
+        </div>
+
+        {{-- COMPLETED --}}
+        <div class="col-xl-3 col-md-6 col-12">
+
+            <a
+                href="{{ route('admin.pan.index', ['status' => 'completed']) }}"
+                class="dashboard-link-card"
+            >
+
+                <div class="dash-card-modern bg-info">
+
+                    <div>
+
+                        <h6>
+
+                            Completed Services
+
+                        </h6>
+
+                        <h2 class="counter">
+
+                            {{ $completedApplications ?? 0 }}
+
+                        </h2>
+
+                    </div>
+
+                    <div class="icon">
+
+                        <i class="fa fa-check-circle"></i>
+
+                    </div>
+
                 </div>
-                <i class="fa fa-shopping-cart fa-2x opacity-50"></i>
-            </div>
+
+            </a>
+
         </div>
+
     </div>
 
-</div>
 
-<!-- ANALYTICS -->
-<div class="row mt-4 g-4">
+    {{-- =========================================================
+    | SECOND ROW
+    ========================================================== --}}
+    <div class="row mt-4 g-4">
 
-    <div class="col-md-4">
-        <div class="card-box dark-card">
-            <h6>Total Revenue</h6>
-            <h2>₹{{ number_format($totalRevenue) }}</h2>
-            <small class="text-success">↑ Growth this month</small>
+        {{-- FRESH --}}
+        <div class="col-xl-4 col-md-6 col-12">
+
+            <a
+                href="{{ route('admin.pan.index', ['filter' => 'fresh']) }}"
+                class="dashboard-link-card"
+            >
+
+                <div class="dash-card-modern bg-dark">
+
+                    <div>
+
+                        <h6>
+
+                            Fresh Applications
+
+                        </h6>
+
+                        <h2 class="counter">
+
+                            {{ $freshApplications ?? 0 }}
+
+                        </h2>
+
+                    </div>
+
+                    <div class="icon">
+
+                        <i class="fa fa-bolt"></i>
+
+                    </div>
+
+                </div>
+
+            </a>
+
         </div>
+
+        {{-- PROCESSING --}}
+        <div class="col-xl-4 col-md-6 col-12">
+
+            <a
+                href="{{ route('admin.pan.index', ['status' => 'processing']) }}"
+                class="dashboard-link-card"
+            >
+
+                <div class="dash-card-modern bg-secondary">
+
+                    <div>
+
+                        <h6>
+
+                            Processing
+
+                        </h6>
+
+                        <h2 class="counter">
+
+                            {{ $processingApplications ?? 0 }}
+
+                        </h2>
+
+                    </div>
+
+                    <div class="icon">
+
+                        <i class="fa fa-spinner"></i>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+        {{-- TOTAL EARNINGS --}}
+        <div class="col-xl-4 col-md-12 col-12">
+
+            <a
+                href="{{ route('admin.wallet.transactions') }}"
+                class="dashboard-link-card"
+            >
+
+                <div class="dash-card-modern bg-danger">
+
+                    <div>
+
+                        <h6>
+
+                            {{ $isExecutive ? 'Commission Earned' : 'Total Revenue' }}
+
+                        </h6>
+
+                        <h2 class="counter revenue-counter">
+
+                            {{ number_format($totalRevenue ?? 0, 2) }}
+
+                        </h2>
+
+                    </div>
+
+                    <div class="icon">
+
+                        <i class="fa fa-wallet"></i>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
     </div>
 
-    <div class="col-md-4">
-        <div class="card-box info-card">
-            <h6>Pending Orders</h6>
-            <h2 class="counter">{{ $pending }}</h2>
-            <small class="text-warning">Needs attention</small>
-        </div>
-    </div>
 
-    <div class="col-md-4">
-        <div class="card-box success-card">
-            <h6>Delivered Orders</h6>
-            <h2 class="counter">{{ $delivered }}</h2>
-            <small class="text-success">Completed successfully</small>
-        </div>
-    </div>
+    {{-- =========================================================
+    | CHART SECTION
+    ========================================================== --}}
+    <div class="row mt-4">
 
-</div>
+        <div class="col-xl-8 col-12">
 
-<!-- CHARTS -->
-<div class="row mt-4 g-4">
+            <div class="card shadow-sm border-0 dashboard-chart-card">
 
-    <div class="col-md-6">
-        <div class="card dashboard-card">
-            <div class="card-header">
-                <h6>📈 Revenue Overview</h6>
+                <div class="card-header bg-white border-0">
+
+                    <h5 class="mb-0 fw-bold">
+
+                        <i class="fa fa-chart-area me-2 text-primary"></i>
+
+                        Service Overview
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <canvas id="serviceChart"></canvas>
+
+                </div>
+
             </div>
-            <div class="card-body">
-                <canvas id="revenueChart"></canvas>
-            </div>
-        </div>
-    </div>
 
-    <div class="col-md-6">
-        <div class="card dashboard-card">
-            <div class="card-header">
-                <h6>📊 Order Status</h6>
-            </div>
-            <div class="card-body">
-                <canvas id="orderChart"></canvas>
-            </div>
         </div>
+
+        {{-- QUICK STATS --}}
+        <div class="col-xl-4 col-12">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-header bg-white border-0">
+
+                    <h5 class="mb-0 fw-bold">
+
+                        <i class="fa fa-layer-group me-2 text-success"></i>
+
+                        Quick Statistics
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="quick-stat-item">
+
+                        <span>
+
+                            Pending Applications
+
+                        </span>
+
+                        <strong>
+
+                            {{ $pendingApplications ?? 0 }}
+
+                        </strong>
+
+                    </div>
+
+                    <div class="quick-stat-item">
+
+                        <span>
+
+                            Approved Applications
+
+                        </span>
+
+                        <strong>
+
+                            {{ $approvedApplications ?? 0 }}
+
+                        </strong>
+
+                    </div>
+
+                    <div class="quick-stat-item">
+
+                        <span>
+
+                            Rejected Applications
+
+                        </span>
+
+                        <strong>
+
+                            {{ $rejectedApplications ?? 0 }}
+
+                        </strong>
+
+                    </div>
+
+                    <div class="quick-stat-item">
+
+                        <span>
+
+                            Today's Uploads
+
+                        </span>
+
+                        <strong>
+
+                            {{ $todayUploads ?? 0 }}
+
+                        </strong>
+
+                    </div>
+
+                    <div class="quick-stat-item border-0">
+
+                        <span>
+
+                            Wallet Balance
+
+                        </span>
+
+                        <strong class="text-success">
+
+                            ₹{{ number_format(auth()->user()->wallet_balance ?? 0, 2) }}
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
 </div>
@@ -118,108 +480,97 @@
 
 @section('scripts')
 
-<!-- CHART JS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
 
-    /* =========================
-       COUNTER ANIMATION (SAFE)
-    ========================= */
-    document.querySelectorAll('.counter').forEach(el => {
+/*
+|--------------------------------------------------------------------------
+| SERVICE CHART
+|--------------------------------------------------------------------------
+*/
 
-        let target = parseInt(el.innerText) || 0;
-        let count = 0;
-        let speed = Math.max(1, target / 40);
+new Chart(document.getElementById('serviceChart'), {
 
-        function update() {
-            count += speed;
-            if (count < target) {
-                el.innerText = Math.floor(count);
-                requestAnimationFrame(update);
-            } else {
-                el.innerText = target.toLocaleString();
+    type: 'line',
+
+    data: {
+
+        labels: @json($months ?? []),
+
+        datasets: [{
+
+            label: 'Applications',
+
+            data: @json($chartData ?? []),
+
+            fill: true,
+
+            tension: 0.4
+
+        }]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        plugins: {
+
+            legend: {
+
+                display: false
+
             }
+
         }
 
-        update();
-    });
-
-    /* =========================
-       REVENUE CHART
-    ========================= */
-    const revenueCanvas = document.getElementById('revenueChart');
-
-    if (revenueCanvas) {
-        new Chart(revenueCanvas, {
-            type: 'line',
-            data: {
-                labels: ['Jan','Feb','Mar','Apr','May','Jun'],
-                datasets: [{
-                    label: 'Revenue',
-                    data: [100, 300, 250, 400, 350, {{ $totalRevenue }}],
-                    borderColor: '#ff5722',
-                    backgroundColor: 'rgba(255,87,34,0.1)',
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top'
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return '₹ ' + context.raw;
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    }
-
-    /* =========================
-       ORDER STATUS CHART
-    ========================= */
-    const orderCanvas = document.getElementById('orderChart');
-
-    if (orderCanvas) {
-        new Chart(orderCanvas, {
-            type: 'doughnut',
-            data: {
-                labels: ['Pending','Delivered'],
-                datasets: [{
-                    data: [{{ $pending }}, {{ $delivered }}],
-                    backgroundColor: ['#f39c12', '#27ae60'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }
-        });
     }
 
 });
+
+
+/*
+|--------------------------------------------------------------------------
+| COUNTER ANIMATION
+|--------------------------------------------------------------------------
+*/
+
+document.querySelectorAll('.counter').forEach(counter => {
+
+    let target = +counter.innerText
+        .replace(/,/g,'')
+        .replace('₹','');
+
+    let count = 0;
+
+    let speed = target / 40;
+
+    let update = () => {
+
+        count += speed;
+
+        if(count < target){
+
+            counter.innerText = Math.floor(count)
+                .toLocaleString();
+
+            requestAnimationFrame(update);
+
+        } else {
+
+            counter.innerText = target
+                .toLocaleString();
+
+        }
+
+    };
+
+    update();
+
+});
+
 </script>
 
 @endsection

@@ -1,0 +1,964 @@
+/*
+|--------------------------------------------------------------------------
+| GOOGLE FONT
+|--------------------------------------------------------------------------
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+/*
+|--------------------------------------------------------------------------
+| ROOT VARIABLES
+|--------------------------------------------------------------------------
+*/
+
+:root {
+
+    --primary:
+        #2563eb;
+
+    --primary-dark:
+        #1d4ed8;
+
+    --secondary:
+        #0f172a;
+
+    --success:
+        #10b981;
+
+    --danger:
+        #ef4444;
+
+    --warning:
+        #f59e0b;
+
+    --white:
+        #ffffff;
+
+    --text:
+        #0f172a;
+
+    --muted:
+        #64748b;
+
+    --border:
+        #dbe4f0;
+
+    --bg:
+        #f4f7ff;
+
+    --shadow:
+        0 20px 60px rgba(15,23,42,0.08);
+
+    --radius:
+        28px;
+}
+
+/*
+|--------------------------------------------------------------------------
+| BODY
+|--------------------------------------------------------------------------
+*/
+
+body {
+
+    font-family: 'Inter', sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eef4ff 0%,
+            #f8fbff 40%,
+            #eef2ff 100%
+        );
+
+    color: var(--text);
+
+    overflow-x: hidden;
+}
+
+/*
+|--------------------------------------------------------------------------
+| CONTAINER
+|--------------------------------------------------------------------------
+*/
+
+.container-fluid {
+
+    max-width: 1700px;
+}
+
+/*
+|--------------------------------------------------------------------------
+| PAGE HEADER
+|--------------------------------------------------------------------------
+*/
+
+.pan-page-header {
+
+    position: relative;
+
+    overflow: hidden;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 25px;
+
+    padding: 40px;
+
+    border-radius: 35px;
+
+    margin-bottom: 40px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0f172a 0%,
+            #172554 35%,
+            #1d4ed8 100%
+        );
+
+    box-shadow:
+        0 25px 55px rgba(37,99,235,0.22);
+}
+
+.pan-page-header::before {
+
+    content: '';
+
+    position: absolute;
+
+    width: 450px;
+    height: 450px;
+
+    right: -140px;
+    top: -180px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,255,255,0.06);
+}
+
+.pan-page-header::after {
+
+    content: '';
+
+    position: absolute;
+
+    width: 250px;
+    height: 250px;
+
+    left: -100px;
+    bottom: -100px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,255,255,0.04);
+}
+
+.pan-header-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 25px;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+.pan-header-icon {
+
+    width: 95px;
+    height: 95px;
+
+    border-radius: 30px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        rgba(255,255,255,0.12);
+
+    backdrop-filter: blur(14px);
+
+    border:
+        1px solid rgba(255,255,255,0.12);
+}
+
+.pan-header-icon i {
+
+    font-size: 42px;
+
+    color: #fff;
+}
+
+.pan-page-header h1 {
+
+    font-size: 38px;
+
+    font-weight: 900;
+
+    color: #fff;
+
+    margin-bottom: 8px;
+}
+
+.pan-page-header p {
+
+    color: rgba(255,255,255,0.82);
+
+    font-size: 15px;
+
+    margin: 0;
+}
+
+/*
+|--------------------------------------------------------------------------
+| FORM WRAPPER
+|--------------------------------------------------------------------------
+*/
+
+.pan-form-wrapper {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 35px;
+}
+
+/*
+|--------------------------------------------------------------------------
+| STEP CARD
+|--------------------------------------------------------------------------
+*/
+
+.pan-step-card {
+
+    position: relative;
+
+    background:
+        rgba(255,255,255,0.88);
+
+    border-radius: 34px;
+
+    padding: 35px;
+
+    backdrop-filter: blur(16px);
+
+    border:
+        1px solid rgba(255,255,255,0.6);
+
+    box-shadow: var(--shadow);
+
+    transition: all 0.35s ease;
+}
+
+.pan-step-card:hover {
+
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 30px 70px rgba(37,99,235,0.10);
+}
+
+/*
+|--------------------------------------------------------------------------
+| STEP HEADER
+|--------------------------------------------------------------------------
+*/
+
+.step-heading {
+
+    margin-bottom: 35px;
+}
+
+.step-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+}
+
+.step-number {
+
+    width: 62px;
+    height: 62px;
+
+    border-radius: 22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #1d4ed8
+        );
+
+    color: #fff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 22px;
+
+    font-weight: 800;
+
+    box-shadow:
+        0 15px 35px rgba(37,99,235,0.25);
+}
+
+.step-heading h4 {
+
+    font-size: 26px;
+
+    font-weight: 800;
+
+    color: var(--secondary);
+
+    margin-bottom: 5px;
+}
+
+.step-heading p {
+
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 14px;
+}
+
+/*
+|--------------------------------------------------------------------------
+| LABEL
+|--------------------------------------------------------------------------
+*/
+
+.pan-label {
+
+    display: inline-block;
+
+    margin-bottom: 12px;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    color: var(--secondary);
+}
+
+.required::after {
+
+    content: '*';
+
+    color: var(--danger);
+
+    margin-left: 4px;
+}
+
+/*
+|--------------------------------------------------------------------------
+| INPUTS
+|--------------------------------------------------------------------------
+*/
+
+.form-control,
+.form-select {
+
+    height: 62px;
+
+    border-radius: 22px;
+
+    border:
+        1.5px solid #dbe4f0;
+
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff,
+            #f8fbff
+        );
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    color: var(--secondary);
+
+    padding-inline: 20px;
+
+    transition: all 0.35s ease;
+
+    box-shadow:
+        inset 0 2px 4px rgba(255,255,255,0.45);
+}
+
+.form-control:hover,
+.form-select:hover {
+
+    border-color:
+        rgba(37,99,235,0.45);
+}
+
+.form-control:focus,
+.form-select:focus {
+
+    border-color: var(--primary);
+
+    background: #fff;
+
+    box-shadow:
+
+        0 0 0 5px rgba(37,99,235,0.12),
+
+        0 20px 45px rgba(37,99,235,0.10);
+
+    transform: translateY(-2px);
+}
+
+textarea.form-control {
+
+    min-height: 140px;
+
+    padding-top: 20px;
+
+    border-radius: 26px;
+}
+
+/*
+|--------------------------------------------------------------------------
+| PARENT BOX
+|--------------------------------------------------------------------------
+*/
+
+.parent-box {
+
+    border:
+        1px solid rgba(37,99,235,0.08);
+
+    border-radius: 28px;
+
+    padding: 28px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff,
+            #f8fbff
+        );
+
+    transition: all 0.35s ease;
+}
+
+.parent-box:hover {
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 20px 45px rgba(37,99,235,0.08);
+}
+
+/*
+|--------------------------------------------------------------------------
+| SIGNATURE OPTIONS
+|--------------------------------------------------------------------------
+*/
+
+.signature-wrapper {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 20px;
+}
+
+.signature-option {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 18px;
+
+    padding: 25px;
+
+    border-radius: 24px;
+
+    border:
+        1.5px solid rgba(37,99,235,0.10);
+
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff,
+            #f8fbff
+        );
+
+    cursor: pointer;
+
+    transition: all 0.35s ease;
+}
+
+.signature-option:hover {
+
+    transform: translateY(-3px);
+
+    border-color: rgba(37,99,235,0.25);
+
+    box-shadow:
+        0 18px 35px rgba(37,99,235,0.10);
+}
+
+.signature-option input {
+
+    margin-top: 6px;
+
+    transform: scale(1.2);
+}
+
+.signature-option h5 {
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+    margin-bottom: 6px;
+
+    color: var(--secondary);
+}
+
+.signature-option p {
+
+    margin: 0;
+
+    color: var(--muted);
+}
+
+/*
+|--------------------------------------------------------------------------
+| ALERT
+|--------------------------------------------------------------------------
+*/
+
+.alert-warning {
+
+    border: none;
+
+    border-radius: 24px;
+
+    padding: 22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff8e1,
+            #fff3c4
+        );
+
+    color: #8a6200;
+
+    font-weight: 600;
+}
+
+/*
+|--------------------------------------------------------------------------
+| DOCUMENT UPLOAD
+|--------------------------------------------------------------------------
+*/
+
+.upload-box {
+
+    position: relative;
+
+    overflow: hidden;
+
+    min-height: 260px;
+
+    border-radius: 30px;
+
+    border:
+        2px dashed rgba(37,99,235,0.18);
+
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff,
+            #f8fbff
+        );
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    cursor: pointer;
+
+    padding: 30px;
+
+    transition: all 0.4s ease;
+}
+
+.upload-box::before {
+
+    content: '';
+
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    top: -70px;
+    right: -70px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(37,99,235,0.05);
+}
+
+.upload-box:hover {
+
+    transform: translateY(-5px);
+
+    border-color: var(--primary);
+
+    background:
+        linear-gradient(
+            145deg,
+            #f8fbff,
+            #eef4ff
+        );
+
+    box-shadow:
+        0 25px 45px rgba(37,99,235,0.12);
+}
+
+.upload-icon {
+
+    width: 85px;
+    height: 85px;
+
+    border-radius: 28px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #1d4ed8
+        );
+
+    margin-bottom: 22px;
+
+    box-shadow:
+        0 18px 35px rgba(37,99,235,0.20);
+}
+
+.upload-icon i {
+
+    font-size: 34px;
+
+    color: #fff;
+}
+
+.upload-box h5 {
+
+    font-size: 20px;
+
+    font-weight: 800;
+
+    color: var(--secondary);
+
+    margin-bottom: 10px;
+}
+
+.upload-box p {
+
+    color: var(--muted);
+
+    margin-bottom: 10px;
+}
+
+.upload-info {
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    color: var(--primary);
+
+    padding: 8px 14px;
+
+    border-radius: 40px;
+
+    background:
+        rgba(37,99,235,0.08);
+}
+
+/*
+|--------------------------------------------------------------------------
+| SUBMIT BUTTON
+|--------------------------------------------------------------------------
+*/
+
+.submit-wrapper {
+
+    text-align: center;
+
+    margin-top: 10px;
+}
+
+.submit-pan-btn {
+
+    height: 68px;
+
+    padding-inline: 55px;
+
+    border: none;
+
+    border-radius: 60px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #1d4ed8,
+            #172554
+        );
+
+    color: #fff;
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.3px;
+
+    transition: all 0.35s ease;
+
+    box-shadow:
+        0 18px 40px rgba(37,99,235,0.22);
+}
+
+.submit-pan-btn:hover {
+
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 25px 55px rgba(37,99,235,0.30);
+}
+
+/*
+|--------------------------------------------------------------------------
+| SCROLLBAR
+|--------------------------------------------------------------------------
+*/
+
+::-webkit-scrollbar {
+
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+
+    background: #eef2ff;
+}
+
+::-webkit-scrollbar-thumb {
+
+    background:
+        linear-gradient(
+            180deg,
+            #2563eb,
+            #1d4ed8
+        );
+
+    border-radius: 20px;
+}
+
+/*
+|--------------------------------------------------------------------------
+| ANIMATION
+|--------------------------------------------------------------------------
+*/
+
+.pan-step-card {
+
+    animation: fadeUp 0.45s ease;
+}
+
+@keyframes fadeUp {
+
+    from {
+
+        opacity: 0;
+
+        transform: translateY(18px);
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform: translateY(0);
+    }
+}
+
+/*
+|--------------------------------------------------------------------------
+| RESPONSIVE
+|--------------------------------------------------------------------------
+*/
+
+@media (max-width: 1200px) {
+
+    .upload-box {
+
+        min-height: 230px;
+    }
+}
+
+@media (max-width: 992px) {
+
+    .pan-page-header {
+
+        padding: 30px;
+
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .pan-step-card {
+
+        padding: 28px;
+    }
+
+    .step-heading h4 {
+
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .pan-page-header {
+
+        padding: 25px;
+    }
+
+    .pan-header-left {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .pan-page-header h1 {
+
+        font-size: 30px;
+    }
+
+    .pan-header-icon {
+
+        width: 80px;
+        height: 80px;
+    }
+
+    .pan-header-icon i {
+
+        font-size: 35px;
+    }
+
+    .form-control,
+    .form-select {
+
+        height: 58px;
+
+        font-size: 14px;
+    }
+
+    .upload-box {
+
+        min-height: 220px;
+    }
+
+    .submit-pan-btn {
+
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+
+    .pan-step-card {
+
+        padding: 22px;
+    }
+
+    .step-left {
+
+        align-items: flex-start;
+    }
+
+    .step-number {
+
+        width: 52px;
+        height: 52px;
+
+        font-size: 18px;
+    }
+
+    .step-heading h4 {
+
+        font-size: 20px;
+    }
+
+    .pan-page-header h1 {
+
+        font-size: 24px;
+    }
+
+    .upload-box {
+
+        min-height: 200px;
+    }
+
+    .upload-icon {
+
+        width: 70px;
+        height: 70px;
+    }
+
+    .upload-icon i {
+
+        font-size: 28px;
+    }
+}

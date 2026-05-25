@@ -17,21 +17,22 @@
     <!-- Toastr -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
-    <!-- ✅ CUSTOM CSS -->
+    <!-- CUSTOM CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/admin.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/order.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/footer-admin.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/dashboard-admin.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/category-admin.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/gallery-admin.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/admin-approval.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/sidebar-admin.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/header-admin.css') }}">
-    
+    <link rel="stylesheet" href="{{ asset('assets/css/admin-new-pan.css') }}">
+     <link rel="stylesheet" href="{{ asset('assets/css/admin-new-pan-show.css') }}">
+
 </head>
 
 <body>
 
-<!-- 🔥 OVERLAY (VERY IMPORTANT - FIXES YOUR ERROR) -->
 <div id="sidebarOverlay"></div>
 
 <div class="admin-wrapper">
@@ -47,6 +48,13 @@
 
         <!-- CONTENT -->
         <div class="content-wrapper">
+
+            <!-- ✅ OPTIONAL PAGE HEADER (Reusable) -->
+            @hasSection('pageHeader')
+                <div class="px-3 pt-3">
+                    @yield('pageHeader')
+                </div>
+            @endif
 
             <div class="content content-inner">
                 @yield('content')
@@ -68,44 +76,290 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-<!-- ✅ CUSTOM JS -->
+<!-- CUSTOM JS -->
 <script src="{{ asset('assets/js/admin.js') }}"></script>
 
 <!-- PAGE JS -->
 @yield('scripts')
+
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
 
-    const toggleBtn = document.getElementById("toggleSidebar");
-    const closeBtn = document.getElementById("closeSidebar");
-    const sidebar = document.getElementById("sbxSidebar");
-    const body = document.body;
+        /*
+        |--------------------------------------------------------------------------
+        | ELEMENTS
+        |--------------------------------------------------------------------------
+        */
 
-    // OPEN
-    toggleBtn.addEventListener("click", function () {
+        const body = document.body;
 
-        if (window.innerWidth <= 768) {
+        const sidebar =
+            document.getElementById("sbxSidebar");
+
+        const toggleBtn =
+            document.getElementById("toggleSidebar");
+
+        const closeBtn =
+            document.getElementById("closeSidebar");
+
+        const sections =
+            document.querySelectorAll(".sbx-section");
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SAFETY CHECK
+        |--------------------------------------------------------------------------
+        */
+
+        if (!sidebar) {
+
+            console.warn("Sidebar not found");
+
+            return;
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | MOBILE OPEN FUNCTION
+        |--------------------------------------------------------------------------
+        */
+
+        window.openSidebar = function () {
+
             sidebar.classList.add("sbx-show");
-        } else {
-            sidebar.classList.toggle("sbx-collapse");
-            body.classList.toggle("sbx-body-collapse");
+
+            body.classList.add("sidebar-open");
+
+        };
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | TOGGLE BUTTON
+        |--------------------------------------------------------------------------
+        */
+
+        if (toggleBtn) {
+
+            toggleBtn.addEventListener("click", function () {
+
+                /*
+                |--------------------------------------------------------------------------
+                | MOBILE
+                |--------------------------------------------------------------------------
+                */
+
+                if (window.innerWidth <= 768) {
+
+                    sidebar.classList.toggle("sbx-show");
+
+                    body.classList.toggle("sidebar-open");
+
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | DESKTOP
+                |--------------------------------------------------------------------------
+                */
+
+                else {
+
+                    sidebar.classList.toggle("sbx-collapse");
+
+                    body.classList.toggle("sbx-body-collapse");
+
+                }
+
+            });
+
         }
 
-    });
 
-    // ❌ CLOSE BUTTON (ALL DEVICES)
-    closeBtn.addEventListener("click", function () {
+        /*
+        |--------------------------------------------------------------------------
+        | CLOSE BUTTON
+        |--------------------------------------------------------------------------
+        */
 
-        if (window.innerWidth <= 768) {
-            sidebar.classList.remove("sbx-show");
-        } else {
-            sidebar.classList.remove("sbx-collapse");
-            body.classList.remove("sbx-body-collapse");
+        if (closeBtn) {
+
+            closeBtn.addEventListener("click", function () {
+
+                sidebar.classList.remove("sbx-show");
+
+                body.classList.remove("sidebar-open");
+
+            });
+
         }
 
-    });
 
-});
+        /*
+        |--------------------------------------------------------------------------
+        | SECTION ACCORDION
+        |--------------------------------------------------------------------------
+        */
+
+        sections.forEach(function (section) {
+
+            section.addEventListener("click", function (e) {
+
+                e.preventDefault();
+
+                e.stopPropagation();
+
+                /*
+                |--------------------------------------------------------------------------
+                | FIND GROUP
+                |--------------------------------------------------------------------------
+                */
+
+                let group =
+                    this.nextElementSibling;
+
+                /*
+                |--------------------------------------------------------------------------
+                | SAFETY
+                |--------------------------------------------------------------------------
+                */
+
+                if (
+                    !group ||
+                    !group.classList.contains("sbx-group")
+                ) {
+
+                    group =
+                        this.parentElement
+                            .querySelector(".sbx-group");
+                }
+
+                if (!group) {
+                    return;
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | CURRENT STATE
+                |--------------------------------------------------------------------------
+                */
+
+                const isOpen =
+                    group.classList.contains("open");
+
+                /*
+                |--------------------------------------------------------------------------
+                | CLOSE ALL
+                |--------------------------------------------------------------------------
+                */
+
+                document
+                    .querySelectorAll(".sbx-group")
+                    .forEach(function (item) {
+
+                        item.classList.remove("open");
+
+                    });
+
+                document
+                    .querySelectorAll(".sbx-section")
+                    .forEach(function (item) {
+
+                        item.classList.remove("active");
+
+                    });
+
+                /*
+                |--------------------------------------------------------------------------
+                | TOGGLE CURRENT
+                |--------------------------------------------------------------------------
+                */
+
+                if (!isOpen) {
+
+                    group.classList.add("open");
+
+                    section.classList.add("active");
+
+                }
+
+            });
+
+        });
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SUB LEVEL SUPPORT
+        |--------------------------------------------------------------------------
+        */
+
+        document
+            .querySelectorAll(".sbx-group li > a")
+            .forEach(function (link) {
+
+                link.addEventListener("click", function (e) {
+
+                    const next =
+                        this.nextElementSibling;
+
+                    if (
+                        next &&
+                        next.classList.contains("sbx-group")
+                    ) {
+
+                        e.preventDefault();
+
+                        next.classList.toggle("open");
+
+                        this.classList.toggle("active");
+
+                    }
+
+                });
+
+            });
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | AUTO OPEN ACTIVE PATH
+        |--------------------------------------------------------------------------
+        */
+
+        document
+            .querySelectorAll(".sbx-active")
+            .forEach(function (active) {
+
+                let parentGroup =
+                    active.closest(".sbx-group");
+
+                while (parentGroup) {
+
+                    parentGroup.classList.add("open");
+
+                    const section =
+                        parentGroup.previousElementSibling;
+
+                    if (
+                        section &&
+                        section.classList.contains("sbx-section")
+                    ) {
+
+                        section.classList.add("active");
+
+                    }
+
+                    parentGroup =
+                        parentGroup.parentElement
+                            ?.closest(".sbx-group");
+                }
+
+            });
+
+    });
 </script>
 </body>
 </html>

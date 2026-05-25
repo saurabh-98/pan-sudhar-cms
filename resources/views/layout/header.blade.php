@@ -1,93 +1,285 @@
-<header class="main-header">
-    <div class="container-custom header-inner">
+<!-- =========================================================
+| ADVANCED MODERN HEADER
+========================================================= -->
 
-        <!-- LOGO -->
-        <div class="logo">
-            <a href="{{ url('/') }}">
+<header class="modern-header"
+        id="mainHeader">
 
-                @if(($settings['logo_type'] ?? 'image') === 'image' && !empty($settings['logo']))
-                    <img src="{{ asset($settings['logo']) }}" alt="Logo" height="40">
+    <!-- =====================================================
+    | TOPBAR
+    ===================================================== -->
 
-                @elseif(($settings['logo_type'] ?? '') === 'text')
-                    <span class="text-logo"
-                        style="
-                            color: {{ $settings['color'] ?? '#ff5722' }};
-                            font-size: {{ $settings['font_size'] ?? 26 }}px;
-                            font-weight: bold;
-                        ">
-                        {{ $settings['logo_text'] ?? 'Foodies' }}
+    <div class="header-topbar">
+
+        <div class="container-custom topbar-wrapper">
+
+            <!-- LEFT -->
+            <div class="topbar-contact">
+
+                <a href="tel:{{ $settings['phone'] ?? '+919876543210' }}"
+                   class="topbar-link">
+
+                    <i class="fa-solid fa-phone-volume"></i>
+
+                    <span>
+
+                        {{ $settings['phone'] ?? '+91 9876543210' }}
+
                     </span>
 
-                @else
-                    <span class="text-logo-default">
-                        🍴 {{ $settings['site_name'] ?? 'Foodies' }}
-                    </span>
-                @endif
-
-            </a>
-        </div>
-
-        <!-- MOBILE TOGGLE -->
-        <div class="menu-toggle">☰</div>
-
-        <!-- NAV -->
-        <nav class="nav-links">
-
-            @foreach($navMenus as $menu)
-                <a href="{{ url($menu->url) }}"
-                   class="{{ request()->is(ltrim($menu->url,'/').'*') ? 'active' : '' }}">
-                    {{ $menu->name }}
                 </a>
-            @endforeach
 
-            <!-- CART -->
-            <a href="javascript:void(0)" onclick="toggleCart()" class="cart-link">
-                🛒 Cart <span id="cartCount">{{ session('cart_count', 0) }}</span>
-            </a>
+                <a href="mailto:{{ $settings['email'] ?? 'support@panaadhaarsuvidha.com' }}"
+                   class="topbar-link">
 
-            
-                @auth
-                <div class="user-dropdown">
+                    <i class="fa-solid fa-envelope"></i>
 
-                    <!-- TRIGGER -->
-                    <div class="user-trigger">
-                        👋 {{ auth()->user()->name }}
-                        <i class="fa fa-angle-down"></i>
-                    </div>
+                    <span>
 
-                    <!-- DROPDOWN -->
-                    <div class="dropdown-menu-user">
+                        {{ $settings['email'] ?? 'support@panaadhaarsuvidha.com' }}
 
-                        @if(auth()->user()->role === 'customer')
+                    </span>
 
-                            <a href="{{ route('customer.dashboard') }}">
-                                <i class="fa fa-dashboard"></i> Dashboard
-                            </a>
+                </a>
 
-                            <a href="{{ route('customer.profile') }}">
-                                <i class="fa fa-user"></i> Profile
-                            </a>
+                <div class="topbar-time">
 
-                        @endif
+                    <i class="fa-solid fa-clock"></i>
 
-                        <div class="dropdown-divider"></div>
+                    <span>
 
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit">
-                                <i class="fa fa-sign-out-alt"></i> Logout
-                            </button>
-                        </form>
+                        Mon - Sat : 9:00 AM - 7:00 PM
 
-                    </div>
+                    </span>
 
                 </div>
-                @endauth
-            @guest
-                <a href="{{ route('login') }}" class="btn-login">Login</a>
-            @endguest
 
-        </nav>
+            </div>
+
+            <!-- RIGHT -->
+            <div class="topbar-right">
+
+                <!-- SOCIAL -->
+                <div class="topbar-social">
+
+                    <a href="#">
+
+                        <i class="fa-brands fa-facebook-f"></i>
+
+                    </a>
+
+                    <a href="#">
+
+                        <i class="fa-brands fa-instagram"></i>
+
+                    </a>
+
+                    <a href="#">
+
+                        <i class="fa-brands fa-youtube"></i>
+
+                    </a>
+
+                    <a href="#">
+
+                        <i class="fa-brands fa-linkedin-in"></i>
+
+                    </a>
+
+                </div>
+
+
+            </div>
+
+        </div>
 
     </div>
+
+    <!-- =====================================================
+    | MAIN NAVBAR
+    ===================================================== -->
+
+    <div class="header-navbar">
+
+        <div class="container-custom navbar-wrapper">
+
+            <!-- =================================================
+            | LOGO
+            ================================================= -->
+
+            <a href="{{ url('/') }}"
+               class="brand-logo">
+
+                <!-- =====================================================
+                | LOGO ICON / IMAGE / TEXT
+                ===================================================== -->
+
+                <div class="logo-icon">
+
+                    @if(($settings['logo_type'] ?? '') === 'image'
+                        && !empty($settings['logo']))
+
+                        <!-- IMAGE LOGO -->
+                        <img src="{{ asset($settings['logo']) }}"
+                             alt="Portal Logo">
+
+                    @elseif(($settings['logo_type'] ?? '') === 'text')
+
+                        <!-- TEXT LOGO -->
+                        <span class="dynamic-logo-text">
+
+                            {{ $settings['logo_text'] ?? 'PS' }}
+
+                        </span>
+
+                    @else
+
+                        <!-- DEFAULT -->
+                        🪪
+
+                    @endif
+
+                </div>
+
+                <!-- =====================================================
+                | TEXT
+                ===================================================== -->
+
+                <div class="logo-text">
+
+                    <h2>
+
+                        {{ $settings['site_name']
+                            ?? $settings['logo_text']
+                            ?? 'PAN Suvidha Portal' }}
+
+                    </h2>
+
+                </div>
+
+            </a>
+
+            <!-- =================================================
+            | MOBILE TOGGLE
+            ================================================= -->
+
+            <button class="mobile-toggle"
+                    id="mobileToggle"
+                    aria-label="Toggle Navigation">
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </button>
+
+            <!-- =================================================
+            | NAVIGATION CONTAINER
+            ================================================= -->
+
+            <div class="nav-container"
+                 id="mobileMenu">
+
+                <!-- NAVIGATION -->
+                <nav class="main-nav">
+
+                    @foreach($navMenus as $menu)
+
+                        <a href="{{ url($menu->url) }}"
+                           class="{{ request()->is(ltrim($menu->url,'/').'*') ? 'active' : '' }}">
+
+                            {{ $menu->name }}
+
+                        </a>
+
+                    @endforeach
+
+                </nav>
+
+               <!-- ACTIONS -->
+                <div class="nav-actions">
+
+                    <!-- =====================================================
+                    | RETAILER LOGIN
+                    ===================================================== -->
+
+                    <a href="{{ route('retailer.login') }}"
+                    class="action-btn parent-btn">
+
+                        <i class="fa-solid fa-shop"></i>
+
+                        <span>
+
+                            Retailer Login
+
+                        </span>
+
+                    </a>
+
+                    <!-- =====================================================
+                    | RETAILER REGISTRATION
+                    ===================================================== -->
+
+                    <a href="{{ route('retailer.register') }}"
+                    class="action-btn retailer-register-btn">
+
+                        <i class="fa-solid fa-user-plus"></i>
+
+                        <span>
+
+                            Retailer Register
+
+                        </span>
+
+                    </a>
+
+                    <!-- =====================================================
+                    | BUSINESS DEVELOPMENT EXECUTIVE
+                    ===================================================== -->
+
+                    <a href=""
+                    class="action-btn bde-btn">
+
+                        <i class="fa-solid fa-briefcase"></i>
+
+                        <span>
+
+                            BDE Login
+
+                        </span>
+
+                    </a>
+
+                    <!-- =====================================================
+                    | ADMIN LOGIN
+                    ===================================================== -->
+
+                    <a href="{{ route('login') }}"
+                    class="action-btn dept-btn">
+
+                        <i class="fa-solid fa-user-shield"></i>
+
+                        <span>
+
+                            Admin Login
+
+                        </span>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </header>
+
+<!-- =========================================================
+| MOBILE OVERLAY
+========================================================= -->
+
+<div class="mobile-overlay"
+     id="mobileOverlay"></div>

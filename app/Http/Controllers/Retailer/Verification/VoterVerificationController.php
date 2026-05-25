@@ -1,0 +1,11 @@
+<?php
+
+namespace App\Http\Controllers\Retailer\Verification;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+class VoterVerificationController extends Controller
+{
+    //
+}

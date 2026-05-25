@@ -1,0 +1,126 @@
+/* ===== PAGE ===== */
+.container-fluid {
+    padding: 20px;
+}
+
+/* ===== CARD STYLE ===== */
+.modern-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+/* ===== HEADINGS ===== */
+.modern-card h5 {
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+/* ===== INPUTS ===== */
+.form-control {
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    transition: 0.2s;
+}
+
+.form-control:focus {
+    border-color: #4facfe;
+    box-shadow: 0 0 5px rgba(79,172,254,0.3);
+}
+
+/* ===== BUTTON ===== */
+.btn-gradient {
+    background: linear-gradient(45deg,#4facfe,#00f2fe);
+    border: none;
+    color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.btn-gradient:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+/* ===== TABLE ===== */
+.modern-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.modern-table thead {
+    background: #f8fafc;
+}
+
+.modern-table th {
+    padding: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    border-bottom: 1px solid #eee;
+}
+
+.modern-table td {
+    padding: 10px;
+    border-bottom: 1px solid #f1f1f1;
+    font-size: 14px;
+}
+
+/* ===== ROW HOVER ===== */
+.modern-table tbody tr:hover {
+    background: #f9fbff;
+}
+
+/* ===== IMAGE PREVIEW ===== */
+.modern-table img {
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.btn-edit {
+    background: #ffc107;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    margin-right: 5px;
+}
+
+.btn-delete {
+    background: #dc3545;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #fff;
+}
+
+/* ===== DATATABLE FIX ===== */
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter {
+    margin-bottom: 10px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width: 768px) {
+
+    .modern-card {
+        padding: 15px;
+    }
+
+    .modern-table th,
+    .modern-table td {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .btn-edit,
+    .btn-delete {
+        font-size: 10px;
+        padding: 4px 6px;
+    }
+}

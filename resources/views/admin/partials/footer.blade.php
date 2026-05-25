@@ -1,26 +1,24 @@
-<footer class="footer">
-
-    <div class="footer-container">
+<footer class="admin-footer">
+    <div class="footer-wrapper">
 
         <!-- LEFT -->
         <div class="footer-left">
-            <div class="footer-brand">🍽️ Foodies Admin</div>
-            <small>Manage your restaurant efficiently</small>
+            <span class="brand">🎓 School ERP</span>
+            <span class="version">v1.0</span>
         </div>
 
         <!-- CENTER -->
         <div class="footer-center">
-            © <span id="year"></span> Foodies. All rights reserved.
+            © <span id="year"></span> All rights reserved
         </div>
 
         <!-- RIGHT -->
         <div class="footer-right">
-            <a href="#"><i class="fa fa-user-circle"></i></a>
-            <a href="#"><i class="fa fa-cog"></i></a>
-            <a href="#"><i class="fa fa-book"></i></a>
-            <a href="#"><i class="fa fa-headset"></i></a>
+            <a href="#" title="Profile"><i class="fa fa-user"></i></a>
+            <a href="#" title="Settings"><i class="fa fa-cog"></i></a>
+            <a href="#" title="Reports"><i class="fa fa-chart-bar"></i></a>
+            <a href="#" title="Support"><i class="fa fa-headset"></i></a>
         </div>
 
     </div>
-
 </footer>

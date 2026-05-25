@@ -1,30 +1,168 @@
 <?php
+
 namespace App\Services;
 
 use App\Repositories\DashboardRepository;
 
 class DashboardService
 {
-    protected $repo;
+    /*
+    |--------------------------------------------------------------------------
+    | REPOSITORY
+    |--------------------------------------------------------------------------
+    */
 
-    public function __construct(DashboardRepository $repo)
+    protected DashboardRepository $repo;
+
+    /*
+    |--------------------------------------------------------------------------
+    | CONSTRUCTOR
+    |--------------------------------------------------------------------------
+    */
+
+    public function __construct(
+        DashboardRepository $repo
+    )
     {
         $this->repo = $repo;
     }
 
-    public function getDashboardData()
+    /*
+    |--------------------------------------------------------------------------
+    | DASHBOARD DATA
+    |--------------------------------------------------------------------------
+    */
+
+    public function getDashboardData(): array
     {
-        $counts = $this->repo->getCounts();
-        $stats = $this->repo->getOrderStats();
 
         return [
-            'categories' => $counts['categories'],
-            'menus' => $counts['menus'],
-            'orders' => $counts['orders'],
-            'sliders' => $this->repo->getSliderCount(),
-            'totalRevenue' => $this->repo->getRevenue(),
-            'pending' => $stats['pending'],
-            'delivered' => $stats['delivered'],
+
+            /*
+            |--------------------------------------------------------------------------
+            | PAN
+            |--------------------------------------------------------------------------
+            */
+
+            'totalPanApplications' =>
+
+                $this->repo->getTotalPanApplications(),
+
+            /*
+            |--------------------------------------------------------------------------
+            | ITR
+            |--------------------------------------------------------------------------
+            */
+
+            'totalItrApplications' =>
+
+                $this->repo->getTotalItrApplications(),
+
+            /*
+            |--------------------------------------------------------------------------
+            | ASSIGNED
+            |--------------------------------------------------------------------------
+            */
+
+            'assignedApplications' =>
+
+                $this->repo->getAssignedApplications(),
+
+            /*
+            |--------------------------------------------------------------------------
+            | COMPLETED
+            |--------------------------------------------------------------------------
+            */
+
+            'completedApplications' =>
+
+                $this->repo->getCompletedApplications(),
+
+            /*
+            |--------------------------------------------------------------------------
+            | FRESH
+            |--------------------------------------------------------------------------
+            */
+
+            'freshApplications' =>
+
+                $this->repo->getFreshApplications(),
+
+            /*
+            |--------------------------------------------------------------------------
+            | PROCESSING
+            |--------------------------------------------------------------------------
+            */
+
+            'processingApplications' =>
+
+                $this->repo->getProcessingApplications(),
+
+            /*
+            |--------------------------------------------------------------------------
+            | PENDING
+            |--------------------------------------------------------------------------
+            */
+
+            'pendingApplications' =>
+
+                $this->repo->getPendingApplications(),
+
+            /*
+            |--------------------------------------------------------------------------
+            | APPROVED
+            |--------------------------------------------------------------------------
+            */
+
+            'approvedApplications' =>
+
+                $this->repo->getApprovedApplications(),
+
+            /*
+            |--------------------------------------------------------------------------
+            | REJECTED
+            |--------------------------------------------------------------------------
+            */
+
+            'rejectedApplications' =>
+
+                $this->repo->getRejectedApplications(),
+
+            /*
+            |--------------------------------------------------------------------------
+            | TODAY UPLOADS
+            |--------------------------------------------------------------------------
+            */
+
+            'todayUploads' =>
+
+                $this->repo->getTodayUploads(),
+
+            /*
+            |--------------------------------------------------------------------------
+            | REVENUE
+            |--------------------------------------------------------------------------
+            */
+
+            'totalRevenue' =>
+
+                $this->repo->getTotalRevenue(),
+
+            /*
+            |--------------------------------------------------------------------------
+            | CHART
+            |--------------------------------------------------------------------------
+            */
+
+            'months' =>
+
+                $this->repo->getMonths(),
+
+            'chartData' =>
+
+                $this->repo->getMonthlyApplications(),
+
         ];
+
     }
 }

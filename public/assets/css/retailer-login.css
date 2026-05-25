@@ -1,0 +1,497 @@
+/* =========================================================
+| RETAILER LOGIN PAGE CSS
+========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root{
+    --primary:#4f46e5;
+    --secondary:#06b6d4;
+    --dark:#0f172a;
+    --light:#ffffff;
+}
+
+/* =========================================================
+| BODY
+========================================================= */
+
+body{
+    margin:0;
+    overflow-x:hidden;
+    min-height:100vh;
+
+    font-family:'Inter',sans-serif;
+
+    background:
+    radial-gradient(circle at top left,#312e81 0%,transparent 30%),
+    radial-gradient(circle at bottom right,#0891b2 0%,transparent 30%),
+    linear-gradient(135deg,#020617,#111827,#1e293b);
+}
+
+/* =========================================================
+| WRAPPER
+========================================================= */
+
+.parent-login-wrapper{
+    min-height:100vh;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:40px 20px;
+
+    position:relative;
+
+    overflow:hidden;
+}
+
+/* =========================================================
+| BACKGROUND SHAPES
+========================================================= */
+
+.bg-shape{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(90px);
+    z-index:1;
+}
+
+.shape-1{
+    width:350px;
+    height:350px;
+
+    background:#4f46e5;
+
+    top:-120px;
+    left:-100px;
+}
+
+.shape-2{
+    width:280px;
+    height:280px;
+
+    background:#06b6d4;
+
+    right:-100px;
+    bottom:-100px;
+}
+
+/* =========================================================
+| LOGIN CARD
+========================================================= */
+
+.parent-login-card{
+    width:100%;
+    max-width:1200px;
+
+    background:rgba(255,255,255,.08);
+
+    backdrop-filter:blur(22px);
+
+    border-radius:35px;
+
+    overflow:hidden;
+
+    position:relative;
+
+    z-index:10;
+
+    box-shadow:
+    0 25px 60px rgba(0,0,0,.45);
+}
+
+/* =========================================================
+| LEFT PANEL
+========================================================= */
+
+.parent-left-panel{
+    height:100%;
+
+    padding:70px 55px;
+
+    background:
+    linear-gradient(rgba(2,6,23,.82),rgba(15,23,42,.92)),
+    url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200');
+
+    background-size:cover;
+    background-position:center;
+
+    color:#fff;
+
+    position:relative;
+}
+
+.left-content{
+    position:relative;
+    z-index:5;
+}
+
+.parent-left-panel h1{
+    font-size:52px;
+    font-weight:900;
+
+    margin-bottom:20px;
+}
+
+.parent-left-panel p{
+    font-size:16px;
+    line-height:1.8;
+
+    color:rgba(255,255,255,.85);
+
+    margin-bottom:40px;
+}
+
+/* =========================================================
+| FEATURE BOX
+========================================================= */
+
+.feature-item{
+    display:flex;
+    align-items:center;
+    gap:18px;
+
+    padding:20px;
+
+    margin-bottom:20px;
+
+    border-radius:22px;
+
+    background:rgba(255,255,255,.08);
+
+    transition:.3s;
+}
+
+.feature-item:hover{
+    transform:translateX(8px);
+}
+
+.feature-icon{
+    width:65px;
+    height:65px;
+
+    border-radius:18px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:28px;
+
+    background:
+    linear-gradient(
+        135deg,
+        var(--primary),
+        var(--secondary)
+    );
+}
+
+/* =========================================================
+| RIGHT PANEL
+========================================================= */
+
+.parent-right-panel{
+    background:#fff;
+
+    padding:70px 60px;
+
+    height:100%;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+/* =========================================================
+| LOGIN HEADER
+========================================================= */
+
+.login-header{
+    text-align:center;
+    margin-bottom:40px;
+}
+
+.login-icon{
+    width:110px;
+    height:110px;
+
+    border-radius:50%;
+
+    margin:auto auto 20px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:
+    linear-gradient(
+        135deg,
+        var(--primary),
+        var(--secondary)
+    );
+
+    color:#fff;
+
+    font-size:45px;
+}
+
+.login-header h2{
+    font-size:40px;
+    font-weight:900;
+
+    color:#0f172a;
+
+    margin-bottom:10px;
+}
+
+.login-header p{
+    color:#64748b;
+}
+
+/* =========================================================
+| FORM GROUP
+========================================================= */
+
+.form-group-modern{
+    margin-bottom:24px;
+}
+
+.form-group-modern label{
+    display:block;
+
+    margin-bottom:10px;
+
+    font-size:14px;
+    font-weight:700;
+
+    color:#0f172a;
+}
+
+/* =========================================================
+| INPUT BOX
+========================================================= */
+
+.input-box{
+    position:relative;
+    width:100%;
+}
+
+/* =========================================================
+| INPUT ICON
+========================================================= */
+
+.input-box i{
+    position:absolute;
+
+    left:18px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    color:#64748b;
+
+    font-size:15px;
+
+    z-index:5;
+
+    pointer-events:none;
+}
+
+/* =========================================================
+| INPUT FIELD
+========================================================= */
+
+.input-box input,
+.input-box select{
+
+    width:100%;
+
+    height:62px;
+
+    border-radius:18px;
+
+    border:2px solid #e2e8f0;
+
+    background:#f8fafc;
+
+    padding-left:55px !important;
+    padding-right:18px;
+
+    font-size:15px;
+    font-weight:500;
+
+    color:#0f172a;
+
+    transition:.3s ease;
+
+    appearance:none;
+}
+
+/* =========================================================
+| INPUT PLACEHOLDER
+========================================================= */
+
+.input-box input::placeholder{
+    color:#94a3b8;
+}
+
+/* =========================================================
+| INPUT FOCUS
+========================================================= */
+
+.input-box input:focus,
+.input-box select:focus{
+
+    outline:none;
+
+    border-color:var(--primary);
+
+    background:#fff;
+
+    box-shadow:
+    0 0 0 5px rgba(79,70,229,.10);
+
+}
+
+/* =========================================================
+| ICON ACTIVE
+========================================================= */
+
+.input-box:focus-within i{
+    color:var(--primary);
+}
+
+/* =========================================================
+| INVALID
+========================================================= */
+
+.is-invalid{
+    border-color:#dc3545 !important;
+    background:#fff5f5 !important;
+}
+
+/* =========================================================
+| ERROR
+========================================================= */
+
+.validation-error,
+.text-danger{
+
+    display:block;
+
+    margin-top:7px;
+
+    color:#dc3545;
+
+    font-size:13px;
+    font-weight:600;
+}
+
+/* =========================================================
+| BUTTON
+========================================================= */
+
+.btn-login-parent{
+    width:100%;
+
+    height:62px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:
+    linear-gradient(
+        135deg,
+        var(--primary),
+        var(--secondary)
+    );
+
+    color:#fff;
+
+    font-size:16px;
+    font-weight:800;
+
+    transition:.3s;
+}
+
+.btn-login-parent:hover{
+    transform:translateY(-3px);
+}
+
+/* =========================================================
+| FOOTER
+========================================================= */
+
+.login-footer{
+    text-align:center;
+
+    margin-top:35px;
+
+    color:#64748b;
+}
+
+/* =========================================================
+| RESPONSIVE
+========================================================= */
+
+@media(max-width:991px){
+
+    .parent-left-panel{
+        display:none;
+    }
+
+    .parent-right-panel{
+        padding:45px 25px;
+    }
+
+    .parent-login-card{
+        max-width:550px;
+    }
+
+}
+
+@media(max-width:767px){
+
+    .parent-login-wrapper{
+        padding:20px 12px;
+    }
+
+    .parent-right-panel{
+        padding:35px 20px;
+    }
+
+    .login-header h2{
+        font-size:30px;
+    }
+
+    .login-icon{
+        width:85px;
+        height:85px;
+        font-size:35px;
+    }
+
+    .input-box input,
+    .input-box select{
+
+        height:56px;
+
+        border-radius:15px;
+
+        font-size:14px;
+
+        padding-left:50px !important;
+    }
+
+    .input-box i{
+        left:16px;
+        font-size:14px;
+    }
+
+    .btn-login-parent{
+        height:56px;
+        border-radius:15px;
+    }
+
+}

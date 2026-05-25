@@ -1,0 +1,301 @@
+/* =========================================================
+| STUDENT HEADER
+|========================================================= */
+
+.stfh-header{
+    height:80px;
+    background:#ffffff;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 28px;
+    border-bottom:1px solid #e2e8f0;
+    position:sticky;
+    top:0;
+    z-index:1030;
+    box-shadow:0 10px 25px rgba(0,0,0,0.04);
+}
+
+/* =========================================================
+| LEFT
+|========================================================= */
+
+.stfh-left{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.stfh-title{
+    margin:0;
+    font-size:24px;
+    font-weight:700;
+    color:#0f172a;
+}
+
+/* =========================================================
+| RIGHT
+|========================================================= */
+
+.stfh-right{
+    display:flex;
+    align-items:center;
+    gap:22px;
+}
+
+/* =========================================================
+| MOBILE MENU BUTTON
+|========================================================= */
+
+.stfh-menu-btn{
+    width:42px;
+    height:42px;
+    border:none;
+    border-radius:12px;
+    background:#eff6ff;
+    color:#2563eb;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:0.3s;
+}
+
+.stfh-menu-btn:hover{
+    background:#2563eb;
+    color:#fff;
+}
+
+/* =========================================================
+| NOTIFICATION
+|========================================================= */
+
+.stfh-notif{
+    position:relative;
+}
+
+.stfh-notif-icon{
+    width:46px;
+    height:46px;
+    border-radius:14px;
+    background:#f8fafc;
+    color:#334155;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    font-size:18px;
+    transition:0.3s;
+}
+
+.stfh-notif-icon:hover{
+    background:#2563eb;
+    color:#fff;
+    transform:translateY(-2px);
+}
+
+.stfh-badge{
+    position:absolute;
+    top:-3px;
+    right:-3px;
+    min-width:20px;
+    height:20px;
+    border-radius:50%;
+    background:#ef4444;
+    color:#fff;
+    font-size:11px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:2px solid #fff;
+}
+
+/* =========================================================
+| USER
+|========================================================= */
+
+.stfh-user{
+    position:relative;
+}
+
+.stfh-user-btn{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    border:none;
+    background:#f8fafc;
+    border-radius:16px;
+    padding:8px 14px;
+    transition:0.3s;
+}
+
+.stfh-user-btn:hover{
+    background:#eff6ff;
+    transform:translateY(-2px);
+}
+
+.stfh-avatar{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid #dbeafe;
+    box-shadow:0 6px 15px rgba(37,99,235,0.15);
+}
+
+.stfh-username{
+    font-weight:600;
+    color:#0f172a;
+    white-space:nowrap;
+}
+
+.stfh-user-btn i{
+    color:#64748b;
+    font-size:13px;
+}
+
+/* =========================================================
+| DROPDOWN
+|========================================================= */
+
+.stfh-dropdown{
+    width:280px;
+    border:none;
+    border-radius:18px;
+    padding:14px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.08);
+    margin-top:14px !important;
+    animation:dropdownFade 0.25s ease;
+}
+
+@keyframes dropdownFade{
+
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.stfh-dropdown .dropdown-item{
+    border-radius:12px;
+    padding:12px 14px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    transition:0.3s;
+    font-weight:500;
+}
+
+.stfh-dropdown .dropdown-item:hover{
+    background:#eff6ff;
+    color:#2563eb;
+}
+
+.stfh-dropdown .dropdown-item i{
+    width:18px;
+    text-align:center;
+}
+
+/* =========================================================
+| NOTIFICATION ITEM
+|========================================================= */
+
+.stfh-notification-item{
+    padding:12px;
+    border-radius:14px;
+    background:#f8fafc;
+    margin-bottom:10px;
+    transition:0.3s;
+}
+
+.stfh-notification-item:hover{
+    background:#eff6ff;
+}
+
+.stfh-notification-item small{
+    color:#334155;
+    line-height:1.5;
+}
+
+/* =========================================================
+| EMPTY NOTIFICATION
+|========================================================= */
+
+.stfh-empty{
+    text-align:center;
+    padding:20px;
+    color:#94a3b8;
+}
+
+/* =========================================================
+| MOBILE
+|========================================================= */
+
+@media(max-width:991px){
+
+    .stfh-header{
+        padding:0 18px;
+        height:74px;
+    }
+
+    .stfh-title{
+        font-size:20px;
+    }
+
+    .stfh-right{
+        gap:14px;
+    }
+
+    .stfh-dropdown{
+        width:260px;
+    }
+}
+
+/* =========================================================
+| SMALL MOBILE
+|========================================================= */
+
+@media(max-width:576px){
+
+    .stfh-header{
+        padding:0 14px;
+    }
+
+    .stfh-title{
+        display:none;
+    }
+
+    .stfh-username{
+        display:none;
+    }
+
+    .stfh-user-btn{
+        padding:6px;
+        background:transparent;
+    }
+
+    .stfh-user-btn i.fa-angle-down{
+        display:none;
+    }
+
+    .stfh-dropdown{
+        width:240px;
+        right:0 !important;
+        left:auto !important;
+    }
+
+    .stfh-notif-icon{
+        width:42px;
+        height:42px;
+    }
+
+    .stfh-avatar{
+        width:40px;
+        height:40px;
+    }
+}
