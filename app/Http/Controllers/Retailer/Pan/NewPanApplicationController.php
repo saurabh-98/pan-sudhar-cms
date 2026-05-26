@@ -352,7 +352,7 @@ class NewPanApplicationController extends Controller
 
                         [
 
-                            'approved',
+                            'Approved',
 
                             'completed'
 
