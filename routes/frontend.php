@@ -15,10 +15,6 @@ use App\Http\Controllers\NewsController;
 */
 
 
-Route::get('/', function () {
-    return 'Laravel Working on Vercel';
-});
-
 Route::get(
     '/',
     [HomeController::class, 'index']
