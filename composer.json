@@ -18,7 +18,7 @@
         "mews/captcha": "^3.4",
         "razorpay/razorpay": "^2.9",
         "spatie/laravel-permission": "^6.25",
-        "yajra/laravel-datatables-oracle": "^12.7"
+       "yajra/laravel-datatables-oracle": "^11.0"
     },
 
     "require-dev": {
