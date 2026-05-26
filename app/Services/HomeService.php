@@ -20,7 +20,7 @@ class HomeService
             'heroes'   => $this->homeRepository->getHeroes(),
 
             // ⭐ FEATURES
-            'features' => $this->homeRepository->getFeatures(),
+            // 'features' => $this->homeRepository->getFeatures(),
 
             // 🖼️ GALLERY
             'gallery'  => $this->homeRepository->getGallery(),
@@ -28,7 +28,7 @@ class HomeService
           
 
             // 📰 NEWS (optional)
-            'news'     => $this->homeRepository->getNews(),
+            // 'news'     => $this->homeRepository->getNews(),
 
            
         ];

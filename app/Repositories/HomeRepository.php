@@ -37,7 +37,7 @@ class HomeRepository
     ========================= */
     public function getFeatures()
     {
-        return Feature::where('is_active', 1)->get();
+        return 0;
     }
 
     /* =========================
