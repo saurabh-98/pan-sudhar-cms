@@ -27,11 +27,11 @@ return Application::configure(
         |--------------------------------------------------------------------------
         */
 
-        // Route::middleware('web')
+        Route::middleware('web')
 
-        //     ->group(
-        //         base_path('routes/frontend.php')
-        //     );
+            ->group(
+                base_path('routes/frontend.php')
+            );
 
         /*
         |--------------------------------------------------------------------------
@@ -39,11 +39,11 @@ return Application::configure(
         |--------------------------------------------------------------------------
         */
 
-        // Route::middleware('web')
+        Route::middleware('web')
 
-        //     ->group(
-        //         base_path('routes/auth.php')
-        //     );
+            ->group(
+                base_path('routes/auth.php')
+            );
 
        
         /*
@@ -52,15 +52,15 @@ return Application::configure(
         |--------------------------------------------------------------------------
         */
 
-        // Route::middleware('web')
+        Route::middleware('web')
 
-        //     ->prefix('admin')
+            ->prefix('admin')
 
-        //     ->name('admin.')
+            ->name('admin.')
 
-        //     ->group(
-        //         base_path('routes/admin.php')
-        //     );
+            ->group(
+                base_path('routes/admin.php')
+            );
 
         /*
         |--------------------------------------------------------------------------
@@ -68,20 +68,15 @@ return Application::configure(
         |--------------------------------------------------------------------------
         */
 
-        // Route::middleware('web')
+        Route::middleware('web')
 
-        //     ->prefix('retailer')
+            ->prefix('retailer')
 
-        //     ->name('retailer.')
+            ->name('retailer.')
 
-        //     ->group(
-        //         base_path('routes/retailer.php')
-        //     );
-
-
-         Route::get('/', function () {
-        return 'Laravel Working';
-    });
+            ->group(
+                base_path('routes/retailer.php')
+            );
 
        
 
