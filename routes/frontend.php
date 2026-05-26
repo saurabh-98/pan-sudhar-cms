@@ -16,9 +16,8 @@ use App\Http\Controllers\NewsController;
 
 
 Route::get('/', function () {
-    return view('welcome');
+    return 'Laravel Working on Vercel';
 });
-
 
 Route::get(
     '/',
