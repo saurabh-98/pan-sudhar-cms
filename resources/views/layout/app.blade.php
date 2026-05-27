@@ -9,8 +9,8 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-     <link rel="stylesheet" href="{{ asset('assets/css/nav-desktop.css') }}">
-       <link rel="stylesheet" href="{{ asset('assets/css/nav-mobile.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/nav-desktop.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/nav-mobile.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/public-header.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/hero-section.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/quick-stats.css') }}">
@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/notice-section.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/gallery-section.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/footer.css') }}">
-     <link rel="stylesheet" href="{{ asset('assets/css/cta-section.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/cta-section.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/public-support.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/home-support-section.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/gallery-view.css') }}">
