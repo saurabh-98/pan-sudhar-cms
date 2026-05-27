@@ -19,6 +19,26 @@ class PanApplicationService
 
     /*
     |--------------------------------------------------------------------------
+    | STORE FILE
+    |--------------------------------------------------------------------------
+    */
+
+    protected function storeFile(
+        $file,
+        string $path
+    ): ?string {
+
+        return store_uploaded_file(
+
+            $file,
+
+            $path
+
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
     | PREVIEW SESSION
     |--------------------------------------------------------------------------
     */
@@ -29,7 +49,7 @@ class PanApplicationService
 
         /*
         |--------------------------------------------------------------------------
-        | EXISTING SESSION FILES
+        | EXISTING FILES
         |--------------------------------------------------------------------------
         */
 
@@ -48,9 +68,9 @@ class PanApplicationService
 
             $dto->photo
 
-                ? $dto->photo->store(
-                    'temp/pan/photo',
-                    'public'
+                ? $this->storeFile(
+                    $dto->photo,
+                    'temp/pan/photo'
                 )
 
                 : ($existingFiles['photo'] ?? null);
@@ -65,9 +85,9 @@ class PanApplicationService
 
             $dto->signature
 
-                ? $dto->signature->store(
-                    'temp/pan/signature',
-                    'public'
+                ? $this->storeFile(
+                    $dto->signature,
+                    'temp/pan/signature'
                 )
 
                 : ($existingFiles['signature'] ?? null);
@@ -82,46 +102,15 @@ class PanApplicationService
 
             $dto->aadhaar_card
 
-                ? $dto->aadhaar_card->store(
-                    'temp/pan/aadhaar',
-                    'public'
+                ? $this->storeFile(
+                    $dto->aadhaar_card,
+                    'temp/pan/aadhaar'
                 )
 
                 : ($existingFiles['aadhaar_card'] ?? null);
 
-        /*
-        |--------------------------------------------------------------------------
-        | IDENTITY PROOF
-        |--------------------------------------------------------------------------
-        */
+       
 
-        $identityProofFilePath =
-
-            $dto->identity_proof_file
-
-                ? $dto->identity_proof_file->store(
-                    'temp/pan/identity-proof',
-                    'public'
-                )
-
-                : ($existingFiles['identity_proof_file'] ?? null);
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADDRESS PROOF
-        |--------------------------------------------------------------------------
-        */
-
-        $addressProofFilePath =
-
-            $dto->address_proof_file
-
-                ? $dto->address_proof_file->store(
-                    'temp/pan/address-proof',
-                    'public'
-                )
-
-                : ($existingFiles['address_proof_file'] ?? null);
 
         /*
         |--------------------------------------------------------------------------
@@ -133,9 +122,9 @@ class PanApplicationService
 
             $dto->dob_proof_file
 
-                ? $dto->dob_proof_file->store(
-                    'temp/pan/dob-proof',
-                    'public'
+                ? $this->storeFile(
+                    $dto->dob_proof_file,
+                    'temp/pan/dob-proof'
                 )
 
                 : ($existingFiles['dob_proof_file'] ?? null);
@@ -150,9 +139,9 @@ class PanApplicationService
 
             $dto->supporting_document
 
-                ? $dto->supporting_document->store(
-                    'temp/pan/document',
-                    'public'
+                ? $this->storeFile(
+                    $dto->supporting_document,
+                    'temp/pan/document'
                 )
 
                 : ($existingFiles['supporting_document'] ?? null);
@@ -182,11 +171,6 @@ class PanApplicationService
                     'aadhaar_card' =>
                         $aadhaarCardPath,
 
-                    'identity_proof_file' =>
-                        $identityProofFilePath,
-
-                    'address_proof_file' =>
-                        $addressProofFilePath,
 
                     'dob_proof_file' =>
                         $dobProofFilePath,
@@ -202,7 +186,7 @@ class PanApplicationService
 
         /*
         |--------------------------------------------------------------------------
-        | RETURN PREVIEW DATA
+        | RETURN
         |--------------------------------------------------------------------------
         */
 
@@ -231,7 +215,7 @@ class PanApplicationService
 
             /*
             |--------------------------------------------------------------------------
-            | SESSION DATA
+            | SESSION
             |--------------------------------------------------------------------------
             */
 
@@ -273,35 +257,40 @@ class PanApplicationService
             |--------------------------------------------------------------------------
             */
 
-            foreach ($files as $key => $file) {
+            if (!is_vercel()) {
 
-                if ($file) {
+                foreach ($files as $key => $file) {
 
-                    $newPath = str_replace(
+                    if ($file) {
 
-                        'temp/pan',
+                        $newPath = str_replace(
 
-                        'pan',
+                            'temp/pan',
 
-                        $file
+                            'pan',
 
-                    );
+                            $file
 
-                    if (
-                        Storage::disk('public')
-                            ->exists($file)
-                    ) {
+                        );
 
-                        Storage::disk('public')
+                        if (
+                            Storage::disk('public')
+                                ->exists($file)
+                        ) {
 
-                            ->move(
-                                $file,
-                                $newPath
-                            );
+                            Storage::disk('public')
+                                ->move(
+
+                                    $file,
+
+                                    $newPath
+
+                                );
+                        }
+
+                        $files[$key] =
+                            $newPath;
                     }
-
-                    $files[$key] =
-                        $newPath;
                 }
             }
 
@@ -313,37 +302,19 @@ class PanApplicationService
 
             $storeData = [
 
-                /*
-                |--------------------------------------------------------------------------
-                | USER
-                |--------------------------------------------------------------------------
-                */
-
                 'user_id' =>
                     auth()->id(),
 
-                /*
-                |--------------------------------------------------------------------------
-                | APPLICATION
-                |--------------------------------------------------------------------------
-                */
-
                 'application_no' =>
 
-                    'PAN'.
+                    'PAN'
 
-                    date('YmdHis').
+                    . date('YmdHis')
 
-                    rand(1000,9999),
+                    . rand(1000,9999),
 
                 'pan_type' =>
                     'New PAN',
-
-                /*
-                |--------------------------------------------------------------------------
-                | PERSONAL
-                |--------------------------------------------------------------------------
-                */
 
                 'first_name' =>
                     $data['first_name'] ?? null,
@@ -357,12 +328,6 @@ class PanApplicationService
                 'gender' =>
                     $data['gender'] ?? null,
 
-                /*
-                |--------------------------------------------------------------------------
-                | FATHER
-                |--------------------------------------------------------------------------
-                */
-
                 'father_first_name' =>
                     $data['father_first_name'] ?? null,
 
@@ -371,12 +336,6 @@ class PanApplicationService
 
                 'father_last_name' =>
                     $data['father_last_name'] ?? null,
-
-                /*
-                |--------------------------------------------------------------------------
-                | MOTHER
-                |--------------------------------------------------------------------------
-                */
 
                 'mother_first_name' =>
                     $data['mother_first_name'] ?? null,
@@ -387,32 +346,14 @@ class PanApplicationService
                 'mother_last_name' =>
                     $data['mother_last_name'] ?? null,
 
-                /*
-                |--------------------------------------------------------------------------
-                | PAN
-                |--------------------------------------------------------------------------
-                */
-
                 'pan_print_name' =>
                     $data['pan_print_name'] ?? null,
-
-                /*
-                |--------------------------------------------------------------------------
-                | CONTACT
-                |--------------------------------------------------------------------------
-                */
 
                 'mobile_no' =>
                     $data['mobile_no'] ?? null,
 
                 'email' =>
                     $data['email'] ?? null,
-
-                /*
-                |--------------------------------------------------------------------------
-                | ADDRESS
-                |--------------------------------------------------------------------------
-                */
 
                 'house_no' =>
                     $data['house_no'] ?? null,
@@ -435,12 +376,6 @@ class PanApplicationService
                 'pincode' =>
                     $data['pincode'] ?? null,
 
-                /*
-                |--------------------------------------------------------------------------
-                | PROOFS
-                |--------------------------------------------------------------------------
-                */
-
                 'identity_proof' =>
                     $data['identity_proof'] ?? null,
 
@@ -450,23 +385,11 @@ class PanApplicationService
                 'dob_proof' =>
                     $data['dob_proof'] ?? null,
 
-                /*
-                |--------------------------------------------------------------------------
-                | DOB
-                |--------------------------------------------------------------------------
-                */
-
                 'dob' =>
                     $data['dob'] ?? null,
 
                 'confirm_dob' =>
                     $data['confirm_dob'] ?? null,
-
-                /*
-                |--------------------------------------------------------------------------
-                | AADHAAR
-                |--------------------------------------------------------------------------
-                */
 
                 'aadhaar_no' =>
                     $data['aadhaar_no'] ?? null,
@@ -474,20 +397,8 @@ class PanApplicationService
                 'aadhaar_name' =>
                     $data['aadhaar_name'] ?? null,
 
-                /*
-                |--------------------------------------------------------------------------
-                | SIGNATURE
-                |--------------------------------------------------------------------------
-                */
-
                 'signature_type' =>
                     $data['signature_type'] ?? null,
-
-                /*
-                |--------------------------------------------------------------------------
-                | DOCUMENTS
-                |--------------------------------------------------------------------------
-                */
 
                 'photo' =>
                     $files['photo'] ?? null,
@@ -498,11 +409,6 @@ class PanApplicationService
                 'aadhaar_card' =>
                     $files['aadhaar_card'] ?? null,
 
-                'identity_proof_file' =>
-                    $files['identity_proof_file'] ?? null,
-
-                'address_proof_file' =>
-                    $files['address_proof_file'] ?? null,
 
                 'dob_proof_file' =>
                     $files['dob_proof_file'] ?? null,
@@ -510,32 +416,14 @@ class PanApplicationService
                 'supporting_document' =>
                     $files['supporting_document'] ?? null,
 
-                /*
-                |--------------------------------------------------------------------------
-                | PAYMENT
-                |--------------------------------------------------------------------------
-                */
-
                 'amount' =>
                     107,
 
                 'payment_status' =>
                     'Pending',
 
-                /*
-                |--------------------------------------------------------------------------
-                | STATUS
-                |--------------------------------------------------------------------------
-                */
-
                 'status' =>
                     'Pending',
-
-                /*
-                |--------------------------------------------------------------------------
-                | WALLET
-                |--------------------------------------------------------------------------
-                */
 
                 'wallet_deducted' =>
                     false,
@@ -543,23 +431,11 @@ class PanApplicationService
                 'wallet_deducted_at' =>
                     null,
 
-                /*
-                |--------------------------------------------------------------------------
-                | SECURITY
-                |--------------------------------------------------------------------------
-                */
-
                 'ip_address' =>
                     request()->ip(),
 
                 'browser' =>
                     request()->userAgent(),
-
-                /*
-                |--------------------------------------------------------------------------
-                | TIMESTAMPS
-                |--------------------------------------------------------------------------
-                */
 
                 'created_at' =>
                     now(),
@@ -571,7 +447,7 @@ class PanApplicationService
 
             /*
             |--------------------------------------------------------------------------
-            | STORE DATABASE
+            | CREATE APPLICATION
             |--------------------------------------------------------------------------
             */
 
@@ -684,10 +560,6 @@ class PanApplicationService
 
             $application->aadhaar_card,
 
-            $application->identity_proof_file,
-
-            $application->address_proof_file,
-
             $application->dob_proof_file,
 
             $application->supporting_document
@@ -696,7 +568,7 @@ class PanApplicationService
 
         foreach ($files as $file) {
 
-            if ($file) {
+            if ($file && !is_vercel()) {
 
                 Storage::disk('public')
                     ->delete($file);

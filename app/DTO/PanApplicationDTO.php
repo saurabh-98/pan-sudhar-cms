@@ -21,7 +21,7 @@ class PanApplicationDTO
         |--------------------------------------------------------------------------
         */
 
-        public readonly string $first_name,
+        public readonly ?string $first_name,
 
         public readonly ?string $middle_name,
 
@@ -35,7 +35,7 @@ class PanApplicationDTO
         |--------------------------------------------------------------------------
         */
 
-        public readonly string $father_first_name,
+        public readonly ?string $father_first_name,
 
         public readonly ?string $father_middle_name,
 
@@ -47,7 +47,7 @@ class PanApplicationDTO
         |--------------------------------------------------------------------------
         */
 
-        public readonly string $mother_first_name,
+        public readonly ?string $mother_first_name,
 
         public readonly ?string $mother_middle_name,
 
@@ -143,10 +143,6 @@ class PanApplicationDTO
 
         public readonly ?UploadedFile $aadhaar_card = null,
 
-        public readonly ?UploadedFile $identity_proof_file = null,
-
-        public readonly ?UploadedFile $address_proof_file = null,
-
         public readonly ?UploadedFile $dob_proof_file = null,
 
         public readonly ?UploadedFile $supporting_document = null,
@@ -182,7 +178,9 @@ class PanApplicationDTO
             */
 
             first_name:
-                trim($request->first_name),
+                $request->middle_name
+                    ? trim($request->first_name)
+                    : null,
 
             middle_name:
                 $request->middle_name
@@ -202,8 +200,9 @@ class PanApplicationDTO
             */
 
             father_first_name:
-                trim($request->father_first_name),
-
+                    $request->father_first_name
+                        ? trim($request->father_first_name)
+                        : null,
             father_middle_name:
                 $request->father_middle_name
                     ? trim($request->father_middle_name)
@@ -219,7 +218,10 @@ class PanApplicationDTO
             */
 
             mother_first_name:
-                trim($request->mother_first_name),
+                    $request->mother_first_name
+                    ? trim($request->mother_first_name)
+                    : null,
+               
 
             mother_middle_name:
                 $request->mother_middle_name
@@ -355,21 +357,7 @@ class PanApplicationDTO
 
                     : null,
 
-            identity_proof_file:
 
-                $request->hasFile('identity_proof_file')
-
-                    ? $request->file('identity_proof_file')
-
-                    : null,
-
-            address_proof_file:
-
-                $request->hasFile('address_proof_file')
-
-                    ? $request->file('address_proof_file')
-
-                    : null,
 
             dob_proof_file:
 
@@ -411,10 +399,6 @@ class PanApplicationDTO
         string $signaturePath,
 
         string $aadhaarCardPath,
-
-        ?string $identityProofFilePath,
-
-        ?string $addressProofFilePath,
 
         ?string $dobProofFilePath,
 
@@ -528,11 +512,6 @@ class PanApplicationDTO
             'aadhaar_card' =>
                 $aadhaarCardPath,
 
-            'identity_proof_file' =>
-                $identityProofFilePath,
-
-            'address_proof_file' =>
-                $addressProofFilePath,
 
             'dob_proof_file' =>
                 $dobProofFilePath,

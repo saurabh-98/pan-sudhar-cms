@@ -22,7 +22,7 @@ class StorePanApplicationRequest extends FormRequest
             |--------------------------------------------------------------------------
             */
 
-            'first_name' => 'required|string|max:100',
+            'first_name' => 'nullable|string|max:100',
 
             'middle_name' => 'nullable|string|max:100',
 
@@ -38,7 +38,7 @@ class StorePanApplicationRequest extends FormRequest
             */
 
             'father_first_name' =>
-                'required|string|max:100',
+                'nullable|string|max:100',
 
             'father_middle_name' =>
                 'nullable|string|max:100',
@@ -53,7 +53,7 @@ class StorePanApplicationRequest extends FormRequest
             */
 
             'mother_first_name' =>
-                'required|string|max:100',
+                'nullable|string|max:100',
 
             'mother_middle_name' =>
                 'nullable|string|max:100',
@@ -221,51 +221,9 @@ class StorePanApplicationRequest extends FormRequest
 
             ],
 
-            'identity_proof_file' => [
-
-                Rule::requiredIf(
-
-                    empty(
-                        $this->existing_files['identity_proof_file']
-                    )
-
-                ),
-
-                'nullable',
-
-                'mimes:jpg,jpeg,png,pdf',
-
-                'max:4096'
-
-            ],
-
-            'address_proof_file' => [
-
-                Rule::requiredIf(
-
-                    empty(
-                        $this->existing_files['address_proof_file']
-                    )
-
-                ),
-
-                'nullable',
-
-                'mimes:jpg,jpeg,png,pdf',
-
-                'max:4096'
-
-            ],
 
             'dob_proof_file' => [
 
-                Rule::requiredIf(
-
-                    empty(
-                        $this->existing_files['dob_proof_file']
-                    )
-
-                ),
 
                 'nullable',
 

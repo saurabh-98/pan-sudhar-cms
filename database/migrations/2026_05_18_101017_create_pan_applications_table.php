@@ -61,7 +61,7 @@ return new class extends Migration
 
                 $table->string(
                     'first_name'
-                );
+                )->nullable();
 
                 $table->string(
                     'middle_name'
@@ -95,7 +95,7 @@ return new class extends Migration
 
                 $table->string(
                     'father_first_name'
-                );
+                )->nullable();
 
                 $table->string(
                     'father_middle_name'
@@ -113,7 +113,7 @@ return new class extends Migration
 
                 $table->string(
                     'mother_first_name'
-                );
+                )->nullable();
 
                 $table->string(
                     'mother_middle_name'
@@ -243,14 +243,6 @@ return new class extends Migration
                 $table->string(
                     'aadhaar_card'
                 );
-
-                $table->string(
-                    'identity_proof_file'
-                )->nullable();
-
-                $table->string(
-                    'address_proof_file'
-                )->nullable();
 
                 $table->string(
                     'dob_proof_file'

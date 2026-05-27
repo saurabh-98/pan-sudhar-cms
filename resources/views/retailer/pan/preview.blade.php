@@ -634,7 +634,7 @@
 
             </div>
 
-            {{-- =====================================================
+          {{-- =====================================================
             | DOCUMENTS
             ====================================================== --}}
             <div class="mb-5">
@@ -658,11 +658,34 @@
 
                             </div>
 
-                            <img
-                                src="{{ asset('storage/'.$files['photo']) }}"
-                                class="img-fluid rounded"
-                                alt="Photo"
-                            >
+                            @php
+                                $photoExt = strtolower(
+                                    pathinfo(
+                                        $files['photo'] ?? '',
+                                        PATHINFO_EXTENSION
+                                    )
+                                );
+                            @endphp
+
+                            @if($photoExt == 'pdf')
+
+                                <a
+                                    href="{{ file_url($files['photo']) }}"
+                                    target="_blank"
+                                    class="btn btn-danger w-100"
+                                >
+                                    View PDF
+                                </a>
+
+                            @else
+
+                                <img
+                                    src="{{ file_url($files['photo']) }}"
+                                    class="img-fluid rounded"
+                                    alt="Photo"
+                                >
+
+                            @endif
 
                         </div>
 
@@ -679,11 +702,34 @@
 
                             </div>
 
-                            <img
-                                src="{{ asset('storage/'.$files['signature']) }}"
-                                class="img-fluid rounded"
-                                alt="Signature"
-                            >
+                            @php
+                                $signatureExt = strtolower(
+                                    pathinfo(
+                                        $files['signature'] ?? '',
+                                        PATHINFO_EXTENSION
+                                    )
+                                );
+                            @endphp
+
+                            @if($signatureExt == 'pdf')
+
+                                <a
+                                    href="{{ file_url($files['signature']) }}"
+                                    target="_blank"
+                                    class="btn btn-danger w-100"
+                                >
+                                    View PDF
+                                </a>
+
+                            @else
+
+                                <img
+                                    src="{{ file_url($files['signature']) }}"
+                                    class="img-fluid rounded"
+                                    alt="Signature"
+                                >
+
+                            @endif
 
                         </div>
 
@@ -700,10 +746,19 @@
 
                             </div>
 
-                            @if(Str::contains($files['aadhaar_card'], '.pdf'))
+                            @php
+                                $aadhaarExt = strtolower(
+                                    pathinfo(
+                                        $files['aadhaar_card'] ?? '',
+                                        PATHINFO_EXTENSION
+                                    )
+                                );
+                            @endphp
+
+                            @if($aadhaarExt == 'pdf')
 
                                 <a
-                                    href="{{ asset('storage/'.$files['aadhaar_card']) }}"
+                                    href="{{ file_url($files['aadhaar_card']) }}"
                                     target="_blank"
                                     class="btn btn-danger w-100"
                                 >
@@ -713,9 +768,9 @@
                             @else
 
                                 <img
-                                    src="{{ asset('storage/'.$files['aadhaar_card']) }}"
+                                    src="{{ file_url($files['aadhaar_card']) }}"
                                     class="img-fluid rounded"
-                                    alt="Aadhaar Front"
+                                    alt="Aadhaar Card"
                                 >
 
                             @endif
@@ -724,83 +779,6 @@
 
                     </div>
 
-                    {{-- IDENTITY PROOF --}}
-                    @if(!empty($files['identity_proof_file']))
-
-                    <div class="col-lg-3 col-md-6">
-
-                        <div class="document-preview-card">
-
-                            <div class="document-title">
-
-                                Identity Proof
-
-                            </div>
-
-                            @if(Str::contains($files['identity_proof_file'], '.pdf'))
-
-                                <a
-                                    href="{{ asset('storage/'.$files['identity_proof_file']) }}"
-                                    target="_blank"
-                                    class="btn btn-danger w-100"
-                                >
-                                    View PDF
-                                </a>
-
-                            @else
-
-                                <img
-                                    src="{{ asset('storage/'.$files['identity_proof_file']) }}"
-                                    class="img-fluid rounded"
-                                    alt="Identity Proof"
-                                >
-
-                            @endif
-
-                        </div>
-
-                    </div>
-
-                    @endif
-
-                    {{-- ADDRESS PROOF --}}
-                    @if(!empty($files['address_proof_file']))
-
-                    <div class="col-lg-3 col-md-6">
-
-                        <div class="document-preview-card">
-
-                            <div class="document-title">
-
-                                Address Proof
-
-                            </div>
-
-                            @if(Str::contains($files['address_proof_file'], '.pdf'))
-
-                                <a
-                                    href="{{ asset('storage/'.$files['address_proof_file']) }}"
-                                    target="_blank"
-                                    class="btn btn-danger w-100"
-                                >
-                                    View PDF
-                                </a>
-
-                            @else
-
-                                <img
-                                    src="{{ asset('storage/'.$files['address_proof_file']) }}"
-                                    class="img-fluid rounded"
-                                    alt="Address Proof"
-                                >
-
-                            @endif
-
-                        </div>
-
-                    </div>
-
-                    @endif
 
                     {{-- DOB PROOF --}}
                     @if(!empty($files['dob_proof_file']))
@@ -815,10 +793,19 @@
 
                             </div>
 
-                            @if(Str::contains($files['dob_proof_file'], '.pdf'))
+                            @php
+                                $dobExt = strtolower(
+                                    pathinfo(
+                                        $files['dob_proof_file'] ?? '',
+                                        PATHINFO_EXTENSION
+                                    )
+                                );
+                            @endphp
+
+                            @if($dobExt == 'pdf')
 
                                 <a
-                                    href="{{ asset('storage/'.$files['dob_proof_file']) }}"
+                                    href="{{ file_url($files['dob_proof_file']) }}"
                                     target="_blank"
                                     class="btn btn-danger w-100"
                                 >
@@ -828,7 +815,7 @@
                             @else
 
                                 <img
-                                    src="{{ asset('storage/'.$files['dob_proof_file']) }}"
+                                    src="{{ file_url($files['dob_proof_file']) }}"
                                     class="img-fluid rounded"
                                     alt="DOB Proof"
                                 >
@@ -854,10 +841,19 @@
 
                             </div>
 
-                            @if(Str::contains($files['supporting_document'], '.pdf'))
+                            @php
+                                $supportingExt = strtolower(
+                                    pathinfo(
+                                        $files['supporting_document'] ?? '',
+                                        PATHINFO_EXTENSION
+                                    )
+                                );
+                            @endphp
+
+                            @if($supportingExt == 'pdf')
 
                                 <a
-                                    href="{{ asset('storage/'.$files['supporting_document']) }}"
+                                    href="{{ file_url($files['supporting_document']) }}"
                                     target="_blank"
                                     class="btn btn-danger w-100"
                                 >
@@ -867,7 +863,7 @@
                             @else
 
                                 <img
-                                    src="{{ asset('storage/'.$files['supporting_document']) }}"
+                                    src="{{ file_url($files['supporting_document']) }}"
                                     class="img-fluid rounded"
                                     alt="Supporting Document"
                                 >

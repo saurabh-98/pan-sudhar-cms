@@ -443,7 +443,7 @@
 
             </div>
 
-           {{-- =====================================================
+                {{-- =====================================================
                 | DOCUMENTS
                 ====================================================== --}}
                 <div class="card admin-pan-card">
@@ -452,31 +452,30 @@
 
                         Uploaded Documents
 
-                         <button
-                        type="button"
-                        class="btn assign-btn"
-                        id="downloadAllDocumentsBtn"
-                        data-url="{{ route('admin.pan.new.download.documents', $application->id) }}"
-                    >
+                        <button
+                            type="button"
+                            class="btn assign-btn"
+                            id="downloadAllDocumentsBtn"
+                            data-url="{{ route('admin.pan.new.download.documents', $application->id) }}"
+                        >
 
-                        <span class="download-btn-text">
+                            <span class="download-btn-text">
 
-                            <i class="fa fa-download me-2"></i>
+                                <i class="fa fa-download me-2"></i>
 
-                            Download All
+                                Download All
 
-                        </span>
+                            </span>
 
-                        <span class="download-btn-loader d-none">
+                            <span class="download-btn-loader d-none">
 
-                            <i class="fa fa-spinner fa-spin me-2"></i>
+                                <i class="fa fa-spinner fa-spin me-2"></i>
 
-                            Downloading...
+                                Downloading...
 
-                        </span>
+                            </span>
 
-                    </button>
-
+                        </button>
 
                     </div>
 
@@ -497,15 +496,35 @@
 
                                         </div>
 
-                                        <img
-                                            src="{{ $application->photo_url }}"
-                                            alt="Photo"
-                                        >
+                                        @php
+                                            $photoExt = strtolower(
+                                                pathinfo(
+                                                    $application->photo ?? '',
+                                                    PATHINFO_EXTENSION
+                                                )
+                                            );
+                                        @endphp
+
+                                        @if($photoExt == 'pdf')
+
+                                            <img
+                                                src="https://cdn-icons-png.flaticon.com/512/337/337946.png"
+                                                alt="PDF"
+                                            >
+
+                                        @else
+
+                                            <img
+                                                src="{{ file_url($application->photo) }}"
+                                                alt="Photo"
+                                            >
+
+                                        @endif
 
                                         <div class="document-overlay">
 
                                             <a
-                                                href="{{ $application->photo_url }}"
+                                                href="{{ file_url($application->photo) }}"
                                                 target="_blank"
                                                 class="document-view-btn"
                                             >
@@ -537,15 +556,35 @@
 
                                         </div>
 
-                                        <img
-                                            src="{{ $application->signature_url }}"
-                                            alt="Signature"
-                                        >
+                                        @php
+                                            $signatureExt = strtolower(
+                                                pathinfo(
+                                                    $application->signature ?? '',
+                                                    PATHINFO_EXTENSION
+                                                )
+                                            );
+                                        @endphp
+
+                                        @if($signatureExt == 'pdf')
+
+                                            <img
+                                                src="https://cdn-icons-png.flaticon.com/512/337/337946.png"
+                                                alt="PDF"
+                                            >
+
+                                        @else
+
+                                            <img
+                                                src="{{ file_url($application->signature) }}"
+                                                alt="Signature"
+                                            >
+
+                                        @endif
 
                                         <div class="document-overlay">
 
                                             <a
-                                                href="{{ $application->signature_url }}"
+                                                href="{{ file_url($application->signature) }}"
                                                 target="_blank"
                                                 class="document-view-btn"
                                             >
@@ -577,15 +616,35 @@
 
                                         </div>
 
-                                        <img
-                                            src="{{ $application->aadhaar_card_url }}"
-                                            alt="Aadhaar Front"
-                                        >
+                                        @php
+                                            $aadhaarExt = strtolower(
+                                                pathinfo(
+                                                    $application->aadhaar_card ?? '',
+                                                    PATHINFO_EXTENSION
+                                                )
+                                            );
+                                        @endphp
+
+                                        @if($aadhaarExt == 'pdf')
+
+                                            <img
+                                                src="https://cdn-icons-png.flaticon.com/512/337/337946.png"
+                                                alt="PDF"
+                                            >
+
+                                        @else
+
+                                            <img
+                                                src="{{ file_url($application->aadhaar_card) }}"
+                                                alt="Aadhaar Card"
+                                            >
+
+                                        @endif
 
                                         <div class="document-overlay">
 
                                             <a
-                                                href="{{ $application->aadhaar_card_url }}"
+                                                href="{{ file_url($application->aadhaar_card) }}"
                                                 target="_blank"
                                                 class="document-view-btn"
                                             >
@@ -603,98 +662,9 @@
                                 </div>
 
                             </div>
-
-
-                            {{-- IDENTITY PROOF --}}
-                            @if($application->identity_proof_file_url)
-
-                            <div class="col-xl-3 col-lg-4 col-md-6">
-
-                                <div class="document-card">
-
-                                    <div class="document-image-wrapper">
-
-                                        <div class="document-title">
-
-                                            Identity Proof
-
-                                        </div>
-
-                                        <img
-                                            src="{{ $application->identity_proof_file_url }}"
-                                            alt="Identity Proof"
-                                        >
-
-                                        <div class="document-overlay">
-
-                                            <a
-                                                href="{{ $application->identity_proof_file_url }}"
-                                                target="_blank"
-                                                class="document-view-btn"
-                                            >
-
-                                                <i class="fa fa-eye me-2"></i>
-
-                                                View
-
-                                            </a>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            @endif
-
-                            {{-- ADDRESS PROOF --}}
-                            @if($application->address_proof_file_url)
-
-                            <div class="col-xl-3 col-lg-4 col-md-6">
-
-                                <div class="document-card">
-
-                                    <div class="document-image-wrapper">
-
-                                        <div class="document-title">
-
-                                            Address Proof
-
-                                        </div>
-
-                                        <img
-                                            src="{{ $application->address_proof_file_url }}"
-                                            alt="Address Proof"
-                                        >
-
-                                        <div class="document-overlay">
-
-                                            <a
-                                                href="{{ $application->address_proof_file_url }}"
-                                                target="_blank"
-                                                class="document-view-btn"
-                                            >
-
-                                                <i class="fa fa-eye me-2"></i>
-
-                                                View
-
-                                            </a>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            @endif
 
                             {{-- DOB PROOF --}}
-                            @if($application->dob_proof_file_url)
+                            @if($application->dob_proof_file)
 
                             <div class="col-xl-3 col-lg-4 col-md-6">
 
@@ -708,15 +678,35 @@
 
                                         </div>
 
-                                        <img
-                                            src="{{ $application->dob_proof_file_url }}"
-                                            alt="DOB Proof"
-                                        >
+                                        @php
+                                            $dobExt = strtolower(
+                                                pathinfo(
+                                                    $application->dob_proof_file ?? '',
+                                                    PATHINFO_EXTENSION
+                                                )
+                                            );
+                                        @endphp
+
+                                        @if($dobExt == 'pdf')
+
+                                            <img
+                                                src="https://cdn-icons-png.flaticon.com/512/337/337946.png"
+                                                alt="PDF"
+                                            >
+
+                                        @else
+
+                                            <img
+                                                src="{{ file_url($application->dob_proof_file) }}"
+                                                alt="DOB Proof"
+                                            >
+
+                                        @endif
 
                                         <div class="document-overlay">
 
                                             <a
-                                                href="{{ $application->dob_proof_file_url }}"
+                                                href="{{ file_url($application->dob_proof_file) }}"
                                                 target="_blank"
                                                 class="document-view-btn"
                                             >
@@ -738,7 +728,7 @@
                             @endif
 
                             {{-- SUPPORTING DOCUMENT --}}
-                            @if($application->supporting_document_url)
+                            @if($application->supporting_document)
 
                             <div class="col-xl-3 col-lg-4 col-md-6">
 
@@ -752,15 +742,35 @@
 
                                         </div>
 
-                                        <img
-                                            src="{{ $application->supporting_document_url }}"
-                                            alt="Supporting Document"
-                                        >
+                                        @php
+                                            $supportingExt = strtolower(
+                                                pathinfo(
+                                                    $application->supporting_document ?? '',
+                                                    PATHINFO_EXTENSION
+                                                )
+                                            );
+                                        @endphp
+
+                                        @if($supportingExt == 'pdf')
+
+                                            <img
+                                                src="https://cdn-icons-png.flaticon.com/512/337/337946.png"
+                                                alt="PDF"
+                                            >
+
+                                        @else
+
+                                            <img
+                                                src="{{ file_url($application->supporting_document) }}"
+                                                alt="Supporting Document"
+                                            >
+
+                                        @endif
 
                                         <div class="document-overlay">
 
                                             <a
-                                                href="{{ $application->supporting_document_url }}"
+                                                href="{{ file_url($application->supporting_document) }}"
                                                 target="_blank"
                                                 class="document-view-btn"
                                             >

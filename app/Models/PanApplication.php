@@ -4,11 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 use App\Models\User;
-
 
 class PanApplication extends Model
 {
@@ -47,36 +45,12 @@ class PanApplication extends Model
 
     protected $fillable = [
 
-        /*
-        |--------------------------------------------------------------------------
-        | USER
-        |--------------------------------------------------------------------------
-        */
-
         'user_id',
-
-        /*
-        |--------------------------------------------------------------------------
-        | ASSIGNED USER
-        |--------------------------------------------------------------------------
-        */
 
         'assigned_to',
 
-        /*
-        |--------------------------------------------------------------------------
-        | APPLICATION
-        |--------------------------------------------------------------------------
-        */
-
         'application_no',
         'pan_type',
-
-        /*
-        |--------------------------------------------------------------------------
-        | PERSONAL DETAILS
-        |--------------------------------------------------------------------------
-        */
 
         'first_name',
         'middle_name',
@@ -85,57 +59,21 @@ class PanApplication extends Model
         'dob',
         'gender',
 
-        /*
-        |--------------------------------------------------------------------------
-        | FATHER DETAILS
-        |--------------------------------------------------------------------------
-        */
-
         'father_first_name',
         'father_middle_name',
         'father_last_name',
-
-        /*
-        |--------------------------------------------------------------------------
-        | MOTHER DETAILS
-        |--------------------------------------------------------------------------
-        */
 
         'mother_first_name',
         'mother_middle_name',
         'mother_last_name',
 
-        /*
-        |--------------------------------------------------------------------------
-        | PAN PRINT
-        |--------------------------------------------------------------------------
-        */
-
         'pan_print_name',
-
-        /*
-        |--------------------------------------------------------------------------
-        | CONTACT DETAILS
-        |--------------------------------------------------------------------------
-        */
 
         'mobile_no',
         'email',
 
-        /*
-        |--------------------------------------------------------------------------
-        | AADHAAR
-        |--------------------------------------------------------------------------
-        */
-
         'aadhaar_no',
         'aadhaar_name',
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADDRESS
-        |--------------------------------------------------------------------------
-        */
 
         'house_no',
         'village',
@@ -147,81 +85,31 @@ class PanApplication extends Model
 
         'pincode',
 
-        /*
-        |--------------------------------------------------------------------------
-        | PROOFS
-        |--------------------------------------------------------------------------
-        */
-
         'identity_proof',
         'address_proof',
         'dob_proof',
 
-        /*
-        |--------------------------------------------------------------------------
-        | SIGNATURE
-        |--------------------------------------------------------------------------
-        */
-
         'signature_type',
-
-        /*
-        |--------------------------------------------------------------------------
-        | DOCUMENTS
-        |--------------------------------------------------------------------------
-        */
 
         'photo',
         'signature',
 
         'aadhaar_card',
 
-        'identity_proof_file',
-        'address_proof_file',
         'dob_proof_file',
 
         'supporting_document',
 
-        /*
-        |--------------------------------------------------------------------------
-        | PAYMENT
-        |--------------------------------------------------------------------------
-        */
-
         'amount',
         'payment_status',
 
-        /*
-        |--------------------------------------------------------------------------
-        | STATUS
-        |--------------------------------------------------------------------------
-        */
-
         'status',
-
-        /*
-        |--------------------------------------------------------------------------
-        | WALLET
-        |--------------------------------------------------------------------------
-        */
 
         'wallet_deducted',
         'wallet_deducted_at',
 
-        /*
-        |--------------------------------------------------------------------------
-        | SECURITY
-        |--------------------------------------------------------------------------
-        */
-
         'ip_address',
         'browser',
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADMIN REMARK
-        |--------------------------------------------------------------------------
-        */
 
         'admin_remark'
 
@@ -298,10 +186,6 @@ class PanApplication extends Model
         'signature_url',
 
         'aadhaar_card_url',
-
-        'identity_proof_file_url',
-
-        'address_proof_file_url',
 
         'dob_proof_file_url',
 
@@ -458,9 +342,9 @@ class PanApplication extends Model
     {
         return trim(
 
-            $this->first_name.' '.
+            $this->first_name . ' ' .
 
-            ($this->middle_name ?? '').' '.
+            ($this->middle_name ?? '') . ' ' .
 
             $this->last_name
 
@@ -477,9 +361,9 @@ class PanApplication extends Model
     {
         return trim(
 
-            $this->father_first_name.' '.
+            $this->father_first_name . ' ' .
 
-            ($this->father_middle_name ?? '').' '.
+            ($this->father_middle_name ?? '') . ' ' .
 
             $this->father_last_name
 
@@ -496,9 +380,9 @@ class PanApplication extends Model
     {
         return trim(
 
-            $this->mother_first_name.' '.
+            $this->mother_first_name . ' ' .
 
-            ($this->mother_middle_name ?? '').' '.
+            ($this->mother_middle_name ?? '') . ' ' .
 
             $this->mother_last_name
 
@@ -524,13 +408,9 @@ class PanApplication extends Model
 
     public function getPhotoUrlAttribute(): ?string
     {
-        return $this->photo
-
-            ? asset(
-                'storage/'.$this->photo
-            )
-
-            : null;
+        return file_url(
+            $this->photo
+        );
     }
 
     /*
@@ -541,69 +421,25 @@ class PanApplication extends Model
 
     public function getSignatureUrlAttribute(): ?string
     {
-        return $this->signature
-
-            ? asset(
-                'storage/'.$this->signature
-            )
-
-            : null;
+        return file_url(
+            $this->signature
+        );
     }
 
     /*
     |--------------------------------------------------------------------------
-    | AADHAAR FRONT URL
+    | AADHAAR CARD URL
     |--------------------------------------------------------------------------
     */
 
     public function getAadhaarCardUrlAttribute(): ?string
     {
-        return $this->aadhaar_card
-
-            ? asset(
-                'storage/'.$this->aadhaar_card
-            )
-
-            : null;
+        return file_url(
+            $this->aadhaar_card
+        );
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | IDENTITY PROOF FILE URL
-    |--------------------------------------------------------------------------
-    */
-
-    public function getIdentityProofFileUrlAttribute(): ?string
-    {
-        return $this->identity_proof_file
-
-            ? asset(
-                'storage/'.
-                $this->identity_proof_file
-            )
-
-            : null;
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | ADDRESS PROOF FILE URL
-    |--------------------------------------------------------------------------
-    */
-
-    public function getAddressProofFileUrlAttribute(): ?string
-    {
-        return $this->address_proof_file
-
-            ? asset(
-                'storage/'.
-                $this->address_proof_file
-            )
-
-            : null;
-    }
-
+   
     /*
     |--------------------------------------------------------------------------
     | DOB PROOF FILE URL
@@ -612,14 +448,9 @@ class PanApplication extends Model
 
     public function getDobProofFileUrlAttribute(): ?string
     {
-        return $this->dob_proof_file
-
-            ? asset(
-                'storage/'.
-                $this->dob_proof_file
-            )
-
-            : null;
+        return file_url(
+            $this->dob_proof_file
+        );
     }
 
     /*
@@ -630,14 +461,9 @@ class PanApplication extends Model
 
     public function getSupportingDocumentUrlAttribute(): ?string
     {
-        return $this->supporting_document
-
-            ? asset(
-                'storage/'.
-                $this->supporting_document
-            )
-
-            : null;
+        return file_url(
+            $this->supporting_document
+        );
     }
 
     /*
@@ -700,11 +526,11 @@ class PanApplication extends Model
             {
                 $model->application_no =
 
-                    'PAN'.
+                    'PAN'
 
-                    date('Ymd').
+                    . date('Ymd')
 
-                    rand(100000,999999);
+                    . rand(100000,999999);
             }
 
             /*
@@ -731,24 +557,41 @@ class PanApplication extends Model
                     'Pending';
             }
         });
-
-
-
-        
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | STATE RELATION
+    |--------------------------------------------------------------------------
+    */
 
     public function stateData()
     {
-        return $this->belongsTo(State::class, 'state');
+        return $this->belongsTo(
+            State::class,
+            'state'
+        );
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | DISTRICT RELATION
+    |--------------------------------------------------------------------------
+    */
 
     public function districtData()
     {
-        return $this->belongsTo(District::class, 'district');
+        return $this->belongsTo(
+            District::class,
+            'district'
+        );
     }
 
-
-
+    /*
+    |--------------------------------------------------------------------------
+    | DOCUMENTS
+    |--------------------------------------------------------------------------
+    */
 
     public function documents()
     {
@@ -766,5 +609,4 @@ class PanApplication extends Model
 
         );
     }
-    
 }
