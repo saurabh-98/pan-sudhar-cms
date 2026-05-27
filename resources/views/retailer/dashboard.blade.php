@@ -295,7 +295,7 @@
 
             </a>
 
-            <a href="{{ route('retailer.pan.correction') }}"
+            <a href="{{ route('retailer.pan-correction.history') }}"
                class="rtd-service-card">
 
                 <div class="rtd-service-icon">
