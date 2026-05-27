@@ -28,6 +28,10 @@ class PanApplicationService
         string $path
     ): ?string {
 
+        if (!$file) {
+            return null;
+        }
+
         return store_uploaded_file(
 
             $file,
@@ -70,7 +74,7 @@ class PanApplicationService
 
                 ? $this->storeFile(
                     $dto->photo,
-                    'temp/pan/photo'
+                    'pan/photo'
                 )
 
                 : ($existingFiles['photo'] ?? null);
@@ -87,7 +91,7 @@ class PanApplicationService
 
                 ? $this->storeFile(
                     $dto->signature,
-                    'temp/pan/signature'
+                    'pan/signature'
                 )
 
                 : ($existingFiles['signature'] ?? null);
@@ -104,13 +108,10 @@ class PanApplicationService
 
                 ? $this->storeFile(
                     $dto->aadhaar_card,
-                    'temp/pan/aadhaar'
+                    'pan/aadhaar'
                 )
 
                 : ($existingFiles['aadhaar_card'] ?? null);
-
-       
-
 
         /*
         |--------------------------------------------------------------------------
@@ -124,7 +125,7 @@ class PanApplicationService
 
                 ? $this->storeFile(
                     $dto->dob_proof_file,
-                    'temp/pan/dob-proof'
+                    'pan/dob-proof'
                 )
 
                 : ($existingFiles['dob_proof_file'] ?? null);
@@ -141,7 +142,7 @@ class PanApplicationService
 
                 ? $this->storeFile(
                     $dto->supporting_document,
-                    'temp/pan/document'
+                    'pan/document'
                 )
 
                 : ($existingFiles['supporting_document'] ?? null);
@@ -152,37 +153,46 @@ class PanApplicationService
         |--------------------------------------------------------------------------
         */
 
-        session([
+        $previewData = [
 
-            'pan_application' => [
+            'data' =>
 
-                'data' =>
+                $dto->previewArray(),
 
-                    $dto->previewArray(),
+            'files' => [
 
-                'files' => [
+                'photo' =>
+                    $photoPath,
 
-                    'photo' =>
-                        $photoPath,
+                'signature' =>
+                    $signaturePath,
 
-                    'signature' =>
-                        $signaturePath,
+                'aadhaar_card' =>
+                    $aadhaarCardPath,
 
-                    'aadhaar_card' =>
-                        $aadhaarCardPath,
+                'dob_proof_file' =>
+                    $dobProofFilePath,
 
-
-                    'dob_proof_file' =>
-                        $dobProofFilePath,
-
-                    'supporting_document' =>
-                        $supportingDocumentPath
-
-                ]
+                'supporting_document' =>
+                    $supportingDocumentPath
 
             ]
 
+        ];
+
+        session([
+
+            'pan_application' => $previewData
+
         ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | FORCE SESSION SAVE
+        |--------------------------------------------------------------------------
+        */
+
+        request()->session()->save();
 
         /*
         |--------------------------------------------------------------------------
@@ -190,17 +200,7 @@ class PanApplicationService
         |--------------------------------------------------------------------------
         */
 
-        return [
-
-            'data' => session(
-                'pan_application.data'
-            ),
-
-            'files' => session(
-                'pan_application.files'
-            )
-
-        ];
+        return $previewData;
     }
 
     /*
@@ -250,49 +250,6 @@ class PanApplicationService
 
             $files =
                 $session['files'] ?? [];
-
-            /*
-            |--------------------------------------------------------------------------
-            | MOVE FILES
-            |--------------------------------------------------------------------------
-            */
-
-            if (!is_vercel()) {
-
-                foreach ($files as $key => $file) {
-
-                    if ($file) {
-
-                        $newPath = str_replace(
-
-                            'temp/pan',
-
-                            'pan',
-
-                            $file
-
-                        );
-
-                        if (
-                            Storage::disk('public')
-                                ->exists($file)
-                        ) {
-
-                            Storage::disk('public')
-                                ->move(
-
-                                    $file,
-
-                                    $newPath
-
-                                );
-                        }
-
-                        $files[$key] =
-                            $newPath;
-                    }
-                }
-            }
 
             /*
             |--------------------------------------------------------------------------
@@ -409,7 +366,6 @@ class PanApplicationService
                 'aadhaar_card' =>
                     $files['aadhaar_card'] ?? null,
 
-
                 'dob_proof_file' =>
                     $files['dob_proof_file'] ?? null,
 
@@ -463,6 +419,8 @@ class PanApplicationService
             session()->forget(
                 'pan_application'
             );
+
+            request()->session()->save();
 
             /*
             |--------------------------------------------------------------------------
@@ -568,7 +526,11 @@ class PanApplicationService
 
         foreach ($files as $file) {
 
-            if ($file && !is_vercel()) {
+            if (
+                $file
+                &&
+                Storage::disk('public')->exists($file)
+            ) {
 
                 Storage::disk('public')
                     ->delete($file);

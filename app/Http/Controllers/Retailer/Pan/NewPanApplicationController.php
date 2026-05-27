@@ -46,499 +46,414 @@ class NewPanApplicationController extends Controller
     */
 
     public function index()
-{
-    if(request()->ajax())
     {
+        if(request()->ajax())
+        {
 
-        $applications = PanApplication::query()
+            $applications = PanApplication::query()
 
-            ->with([
+                ->with([
 
-                /*
-                |--------------------------------------------------------------------------
-                | RELATIONS
-                |--------------------------------------------------------------------------
-                */
+                    'user.retailer',
 
-                'user.retailer',
+                    'stateData',
 
-                'stateData',
+                    'districtData',
 
-                'districtData',
+                    'documents'
 
-                'documents'
+                ])
 
-            ])
+                ->where(
 
-            /*
-            |--------------------------------------------------------------------------
-            | RETAILER APPLICATIONS
-            |--------------------------------------------------------------------------
-            */
+                    'user_id',
 
-            ->where(
-
-                'user_id',
-
-                auth()->id()
-
-            )
-
-            ->latest();
-
-        return DataTables::of($applications)
-
-            ->addIndexColumn()
-
-            /*
-            |--------------------------------------------------------------------------
-            | SHOP NAME
-            |--------------------------------------------------------------------------
-            */
-
-            ->addColumn('shop_name', function($row){
-
-                return '
-
-                    <div class="fw-semibold text-primary">
-
-                        '
-
-                        . (
-
-                            $row->user?->retailer?->shop_name
-
-                            ?? 'N/A'
-
-                        )
-
-                        . '
-
-                    </div>
-
-                ';
-
-            })
-
-            /*
-            |--------------------------------------------------------------------------
-            | APPLICANT NAME
-            |--------------------------------------------------------------------------
-            */
-
-            ->addColumn('applicant_name', function($row){
-
-                return '
-
-                    <div>
-
-                        <div class="fw-semibold text-dark">
-
-                            '
-
-                            . e($row->applicant_name)
-
-                            . '
-
-                        </div>
-
-                        <small class="text-muted">
-
-                            '
-
-                            . e($row->mobile_no)
-
-                            . '
-
-                        </small>
-
-                    </div>
-
-                ';
-
-            })
-
-            /*
-            |--------------------------------------------------------------------------
-            | STATE NAME
-            |--------------------------------------------------------------------------
-            */
-
-            ->addColumn('state_name', function($row){
-
-                return '
-
-                    <span class="badge bg-light text-dark border">
-
-                        '
-
-                        . (
-
-                            $row->stateData?->name
-
-                            ?? 'N/A'
-
-                        )
-
-                        . '
-
-                    </span>
-
-                ';
-
-            })
-
-            /*
-            |--------------------------------------------------------------------------
-            | DISTRICT NAME
-            |--------------------------------------------------------------------------
-            */
-
-            ->addColumn('district_name', function($row){
-
-                return '
-
-                    <span class="badge bg-light text-dark border">
-
-                        '
-
-                        . (
-
-                            $row->districtData?->name
-
-                            ?? 'N/A'
-
-                        )
-
-                        . '
-
-                    </span>
-
-                ';
-
-            })
-
-            /*
-            |--------------------------------------------------------------------------
-            | PAYMENT
-            |--------------------------------------------------------------------------
-            */
-
-            ->addColumn('payment', function($row){
-
-                return $row->payment_badge;
-
-            })
-
-            /*
-            |--------------------------------------------------------------------------
-            | AMOUNT
-            |--------------------------------------------------------------------------
-            */
-
-            ->addColumn('amount', function($row){
-
-                return '
-
-                    <span class="fw-bold text-success">
-
-                        ₹'
-
-                        . number_format(
-
-                            $row->amount,
-
-                            2
-
-                        )
-
-                        . '
-
-                    </span>
-
-                ';
-
-            })
-
-            /*
-            |--------------------------------------------------------------------------
-            | CREATED DATE
-            |--------------------------------------------------------------------------
-            */
-
-            ->addColumn('created_at', function($row){
-
-                return '
-
-                    <div>
-
-                        <div class="fw-semibold">
-
-                            '
-
-                            . $row->created_at->format(
-
-                                'd M Y'
-
-                            )
-
-                            . '
-
-                        </div>
-
-                        <small class="text-muted">
-
-                            '
-
-                            . $row->created_at->format(
-
-                                'h:i A'
-
-                            )
-
-                            . '
-
-                        </small>
-
-                    </div>
-
-                ';
-
-            })
-
-            /*
-            |--------------------------------------------------------------------------
-            | STATUS
-            |--------------------------------------------------------------------------
-            */
-
-            ->addColumn('status', function($row){
-
-                return $row->status_badge;
-
-            })
-
-           /*
-            |--------------------------------------------------------------------------
-            | DOCUMENT STATUS
-            |--------------------------------------------------------------------------
-            */
-
-            ->addColumn('document_status', function($row){
-
-                /*
-                |--------------------------------------------------------------------------
-                | DOCUMENT
-                |--------------------------------------------------------------------------
-                */
-
-                $document = $row->documents->first();
-
-                /*
-                |--------------------------------------------------------------------------
-                | SHOW RECEIPT IF APPROVED/COMPLETED
-                |--------------------------------------------------------------------------
-                */
-
-                if(
-
-                    $document
-
-                    &&
-
-                    in_array(
-
-                        strtolower($row->status),
-
-                        [
-
-                            'Approved',
-
-                            'completed'
-
-                        ]
-
-                    )
+                    auth()->id()
 
                 )
-                {
+
+                ->latest();
+
+            return DataTables::of($applications)
+
+                ->addIndexColumn()
+
+                ->addColumn('shop_name', function($row){
 
                     return '
 
-                        <div class="d-flex gap-2 flex-wrap">
+                        <div class="fw-semibold text-primary">
 
-                            <a
-                                href="'
+                            '
 
-                                . asset(
+                            . (
 
-                                    'storage/'.$document->file_path
+                                $row->user?->retailer?->shop_name
 
-                                )
+                                ?? 'N/A'
 
-                                . '"
+                            )
 
-                                target="_blank"
-
-                                class="btn btn-sm btn-success"
-
-                            >
-
-                                <i class="fa fa-eye me-1"></i>
-
-                                View
-
-                            </a>
-
-                            <a
-                                href="'
-
-                                . asset(
-
-                                    'storage/'.$document->file_path
-
-                                )
-
-                                . '"
-
-                                download
-
-                                class="btn btn-sm btn-primary"
-
-                            >
-
-                                <i class="fa fa-download me-1"></i>
-
-                                Download
-
-                            </a>
+                            . '
 
                         </div>
 
                     ';
 
-                }
+                })
 
-                /*
-                |--------------------------------------------------------------------------
-                | UPLOADED BUT NOT APPROVED
-                |--------------------------------------------------------------------------
-                */
-
-                if($document)
-                {
+                ->addColumn('applicant_name', function($row){
 
                     return '
 
-                        <span class="badge bg-info">
+                        <div>
 
-                            Uploaded
+                            <div class="fw-semibold text-dark">
+
+                                '
+
+                                . e($row->applicant_name)
+
+                                . '
+
+                            </div>
+
+                            <small class="text-muted">
+
+                                '
+
+                                . e($row->mobile_no)
+
+                                . '
+
+                            </small>
+
+                        </div>
+
+                    ';
+
+                })
+
+                ->addColumn('state_name', function($row){
+
+                    return '
+
+                        <span class="badge bg-light text-dark border">
+
+                            '
+
+                            . (
+
+                                $row->stateData?->name
+
+                                ?? 'N/A'
+
+                            )
+
+                            . '
 
                         </span>
 
                     ';
 
-                }
+                })
 
-                /*
-                |--------------------------------------------------------------------------
-                | PENDING
-                |--------------------------------------------------------------------------
-                */
+                ->addColumn('district_name', function($row){
 
-                return '
+                    return '
 
-                    <span class="badge bg-warning text-dark">
+                        <span class="badge bg-light text-dark border">
 
-                        Pending
+                            '
 
-                    </span>
+                            . (
 
-                ';
+                                $row->districtData?->name
 
-            })
-
-            /*
-            |--------------------------------------------------------------------------
-            | ACTION
-            |--------------------------------------------------------------------------
-            */
-
-            ->addColumn('action', function($row){
-
-                return '
-
-                    <div class="d-flex gap-2">
-
-                        <a
-                            href="'
-
-                            . route(
-
-                                'retailer.pan.view',
-
-                                $row->id
+                                ?? 'N/A'
 
                             )
 
-                            . '"
+                            . '
 
-                            class="btn btn-sm btn-primary"
+                        </span>
 
-                            title="View"
+                    ';
 
-                        >
+                })
 
-                            <i class="fa fa-eye"></i>
+                ->addColumn('payment', function($row){
 
-                        </a>
+                    return $row->payment_badge;
 
-                    </div>
+                })
 
-                ';
+                ->addColumn('amount', function($row){
 
-            })
+                    return '
 
-            /*
-            |--------------------------------------------------------------------------
-            | RAW COLUMNS
-            |--------------------------------------------------------------------------
-            */
+                        <span class="fw-bold text-success">
 
-            ->rawColumns([
+                            ₹'
 
-                'shop_name',
+                            . number_format(
 
-                'applicant_name',
+                                $row->amount,
 
-                'state_name',
+                                2
 
-                'district_name',
+                            )
 
-                'payment',
+                            . '
 
-                'amount',
+                        </span>
 
-                'created_at',
+                    ';
 
-                'status',
+                })
 
-                'document_status',
+                ->addColumn('created_at', function($row){
 
-                'action'
+                    return '
 
-            ])
+                        <div>
 
-            ->make(true);
+                            <div class="fw-semibold">
 
+                                '
+
+                                . $row->created_at->format(
+
+                                    'd M Y'
+
+                                )
+
+                                . '
+
+                            </div>
+
+                            <small class="text-muted">
+
+                                '
+
+                                . $row->created_at->format(
+
+                                    'h:i A'
+
+                                )
+
+                                . '
+
+                            </small>
+
+                        </div>
+
+                    ';
+
+                })
+
+                ->addColumn('status', function($row){
+
+                    return $row->status_badge;
+
+                })
+
+                ->addColumn('document_status', function($row){
+
+                    $document = $row->documents->first();
+
+                    if(
+
+                        $document
+
+                        &&
+
+                        file_exists_custom(
+                            $document->file_path
+                        )
+
+                        &&
+
+                        in_array(
+
+                            strtolower($row->status),
+
+                            [
+
+                                'approved',
+
+                                'completed'
+
+                            ]
+
+                        )
+
+                    )
+                    {
+
+                        return '
+
+                            <div class="d-flex gap-2 flex-wrap">
+
+                                <a
+                                    href="'
+
+                                    . file_url(
+
+                                        $document->file_path
+
+                                    )
+
+                                    . '"
+
+                                    target="_blank"
+
+                                    class="btn btn-sm btn-success"
+
+                                >
+
+                                    <i class="fa fa-eye me-1"></i>
+
+                                    View
+
+                                </a>
+
+                                <a
+                                    href="'
+
+                                    . file_url(
+
+                                        $document->file_path
+
+                                    )
+
+                                    . '"
+
+                                    download
+
+                                    class="btn btn-sm btn-primary"
+
+                                >
+
+                                    <i class="fa fa-download me-1"></i>
+
+                                    Download
+
+                                </a>
+
+                            </div>
+
+                        ';
+
+                    }
+
+                    if(
+
+                        $document
+
+                        &&
+
+                        file_exists_custom(
+                            $document->file_path
+                        )
+
+                    )
+                    {
+
+                        return '
+
+                            <span class="badge bg-info">
+
+                                Uploaded
+
+                            </span>
+
+                        ';
+
+                    }
+
+                    return '
+
+                        <span class="badge bg-warning text-dark">
+
+                            Pending
+
+                        </span>
+
+                    ';
+
+                })
+
+                ->addColumn('action', function($row){
+
+                    return '
+
+                        <div class="d-flex gap-2">
+
+                            <a
+                                href="'
+
+                                . route(
+
+                                    'retailer.pan.view',
+
+                                    $row->id
+
+                                )
+
+                                . '"
+
+                                class="btn btn-sm btn-primary"
+
+                                title="View"
+
+                            >
+
+                                <i class="fa fa-eye"></i>
+
+                            </a>
+
+                        </div>
+
+                    ';
+
+                })
+
+                ->rawColumns([
+
+                    'shop_name',
+
+                    'applicant_name',
+
+                    'state_name',
+
+                    'district_name',
+
+                    'payment',
+
+                    'amount',
+
+                    'created_at',
+
+                    'status',
+
+                    'document_status',
+
+                    'action'
+
+                ])
+
+                ->make(true);
+
+        }
+
+        return view(
+
+            'retailer.pan.index'
+
+        );
     }
 
-    return view(
-
-        'retailer.pan.index'
-
-    );
-}
     /*
     |--------------------------------------------------------------------------
     | CREATE FORM
@@ -591,17 +506,9 @@ class NewPanApplicationController extends Controller
         StorePanApplicationRequest $request
     ): JsonResponse {
 
-        DB::beginTransaction();
-
         try {
 
             $user = auth()->user();
-
-            /*
-            |--------------------------------------------------------------------------
-            | WALLET CHECK
-            |--------------------------------------------------------------------------
-            */
 
             if (
                 $user->wallet_balance
@@ -618,32 +525,14 @@ class NewPanApplicationController extends Controller
                 ], 422);
             }
 
-            /*
-            |--------------------------------------------------------------------------
-            | DTO
-            |--------------------------------------------------------------------------
-            */
-
             $dto =
                 PanApplicationDTO::fromRequest(
                     $request
                 );
 
-            /*
-            |--------------------------------------------------------------------------
-            | PREVIEW
-            |--------------------------------------------------------------------------
-            */
-
             $preview =
                 $this->panService
                     ->preview($dto);
-
-            /*
-            |--------------------------------------------------------------------------
-            | EXTRA DATA
-            |--------------------------------------------------------------------------
-            */
 
             $preview['data']['state_name'] =
 
@@ -663,20 +552,19 @@ class NewPanApplicationController extends Controller
 
                 )->value('name');
 
-            /*
-            |--------------------------------------------------------------------------
-            | SESSION
-            |--------------------------------------------------------------------------
-            */
-
             session([
 
-                'pan_application' =>
-                    $preview
+                'pan_application' => $preview
 
             ]);
 
-            DB::commit();
+            /*
+            |--------------------------------------------------------------------------
+            | FORCE SESSION SAVE
+            |--------------------------------------------------------------------------
+            */
+
+            $request->session()->save();
 
             return response()->json([
 
@@ -694,8 +582,6 @@ class NewPanApplicationController extends Controller
             ]);
 
         } catch (\Throwable $e) {
-
-            DB::rollBack();
 
             Log::error(
 
@@ -739,7 +625,19 @@ class NewPanApplicationController extends Controller
             'pan_application'
         );
 
-        if (!$preview) {
+        if (
+
+            !$preview
+
+            ||
+
+            empty($preview['data'])
+
+            ||
+
+            empty($preview['files'])
+
+        ) {
 
             return redirect()
 
@@ -755,6 +653,8 @@ class NewPanApplicationController extends Controller
 
                 );
         }
+
+        request()->session()->save();
 
         return view(
 
@@ -785,12 +685,6 @@ class NewPanApplicationController extends Controller
 
         try {
 
-            /*
-            |--------------------------------------------------------------------------
-            | USER
-            |--------------------------------------------------------------------------
-            */
-
             $user = User::query()
 
                 ->lockForUpdate()
@@ -804,12 +698,6 @@ class NewPanApplicationController extends Controller
                 ->lockForUpdate()
 
                 ->first();
-
-            /*
-            |--------------------------------------------------------------------------
-            | SESSION CHECK
-            |--------------------------------------------------------------------------
-            */
 
             $session =
                 session('pan_application');
@@ -830,9 +718,41 @@ class NewPanApplicationController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | BALANCE CHECK
+            | FILE CHECK
             |--------------------------------------------------------------------------
             */
+
+            foreach (
+
+                $session['files'] ?? []
+
+                as $file
+
+            ) {
+
+                if (
+
+                    $file
+
+                    &&
+
+                    !file_exists_custom($file)
+
+                ) {
+
+                    DB::rollBack();
+
+                    return response()->json([
+
+                        'status' => false,
+
+                        'message' =>
+
+                            'Uploaded file missing. Please upload again.'
+
+                    ], 422);
+                }
+            }
 
             if (
                 $user->wallet_balance
@@ -851,21 +771,9 @@ class NewPanApplicationController extends Controller
                 ], 422);
             }
 
-            /*
-            |--------------------------------------------------------------------------
-            | STORE APPLICATION
-            |--------------------------------------------------------------------------
-            */
-
             $application =
                 $this->panService
                     ->storeFromSession();
-
-            /*
-            |--------------------------------------------------------------------------
-            | RETAILER WALLET
-            |--------------------------------------------------------------------------
-            */
 
             $retailerBefore =
                 $user->wallet_balance;
@@ -875,12 +783,6 @@ class NewPanApplicationController extends Controller
 
             $user->save();
 
-            /*
-            |--------------------------------------------------------------------------
-            | ADMIN WALLET
-            |--------------------------------------------------------------------------
-            */
-
             $adminBefore =
                 $admin->wallet_balance;
 
@@ -888,12 +790,6 @@ class NewPanApplicationController extends Controller
                 self::PAN_CHARGE;
 
             $admin->save();
-
-            /*
-            |--------------------------------------------------------------------------
-            | APPLICATION STATUS
-            |--------------------------------------------------------------------------
-            */
 
             $application->update([
 
@@ -910,12 +806,6 @@ class NewPanApplicationController extends Controller
                     'Processing'
 
             ]);
-
-            /*
-            |--------------------------------------------------------------------------
-            | RETAILER TRANSACTION
-            |--------------------------------------------------------------------------
-            */
 
             WalletTransaction::create([
 
@@ -950,12 +840,6 @@ class NewPanApplicationController extends Controller
 
             ]);
 
-            /*
-            |--------------------------------------------------------------------------
-            | ADMIN TRANSACTION
-            |--------------------------------------------------------------------------
-            */
-
             WalletTransaction::create([
 
                 'user_id' =>
@@ -989,15 +873,11 @@ class NewPanApplicationController extends Controller
 
             ]);
 
-            /*
-            |--------------------------------------------------------------------------
-            | CLEAR SESSION
-            |--------------------------------------------------------------------------
-            */
-
             Session::forget(
                 'pan_application'
             );
+
+            request()->session()->save();
 
             DB::commit();
 

@@ -50,6 +50,7 @@ class PanApplication extends Model
         'assigned_to',
 
         'application_no',
+
         'pan_type',
 
         'first_name',
@@ -124,7 +125,9 @@ class PanApplication extends Model
     protected $hidden = [
 
         'aadhaar_no',
+
         'browser',
+
         'ip_address'
 
     ];
@@ -169,27 +172,7 @@ class PanApplication extends Model
 
         'payment_badge',
 
-        'full_address',
-
-        'masked_aadhaar',
-
-        'applicant_name',
-
-        'father_full_name',
-
-        'mother_full_name',
-
-        'assigned_user_name',
-
-        'photo_url',
-
-        'signature_url',
-
-        'aadhaar_card_url',
-
-        'dob_proof_file_url',
-
-        'supporting_document_url'
+        'applicant_name'
 
     ];
 
@@ -324,11 +307,19 @@ class PanApplication extends Model
 
     public function getMaskedAadhaarAttribute(): string
     {
+        if (empty($this->aadhaar_no)) {
+
+            return '';
+        }
+
         return 'XXXXXXXX'
 
             . substr(
+
                 $this->aadhaar_no,
+
                 -4
+
             );
     }
 
@@ -340,15 +331,17 @@ class PanApplication extends Model
 
     public function getApplicantNameAttribute(): string
     {
-        return trim(
+        return collect([
 
-            $this->first_name . ' ' .
+            $this->first_name,
 
-            ($this->middle_name ?? '') . ' ' .
+            $this->middle_name,
 
             $this->last_name
 
-        );
+        ])
+        ->filter()
+        ->implode(' ');
     }
 
     /*
@@ -359,15 +352,17 @@ class PanApplication extends Model
 
     public function getFatherFullNameAttribute(): string
     {
-        return trim(
+        return collect([
 
-            $this->father_first_name . ' ' .
+            $this->father_first_name,
 
-            ($this->father_middle_name ?? '') . ' ' .
+            $this->father_middle_name,
 
             $this->father_last_name
 
-        );
+        ])
+        ->filter()
+        ->implode(' ');
     }
 
     /*
@@ -378,15 +373,17 @@ class PanApplication extends Model
 
     public function getMotherFullNameAttribute(): string
     {
-        return trim(
+        return collect([
 
-            $this->mother_first_name . ' ' .
+            $this->mother_first_name,
 
-            ($this->mother_middle_name ?? '') . ' ' .
+            $this->mother_middle_name,
 
             $this->mother_last_name
 
-        );
+        ])
+        ->filter()
+        ->implode(' ');
     }
 
     /*
@@ -408,6 +405,11 @@ class PanApplication extends Model
 
     public function getPhotoUrlAttribute(): ?string
     {
+        if (!$this->photo) {
+
+            return null;
+        }
+
         return file_url(
             $this->photo
         );
@@ -421,6 +423,11 @@ class PanApplication extends Model
 
     public function getSignatureUrlAttribute(): ?string
     {
+        if (!$this->signature) {
+
+            return null;
+        }
+
         return file_url(
             $this->signature
         );
@@ -434,12 +441,16 @@ class PanApplication extends Model
 
     public function getAadhaarCardUrlAttribute(): ?string
     {
+        if (!$this->aadhaar_card) {
+
+            return null;
+        }
+
         return file_url(
             $this->aadhaar_card
         );
     }
 
-   
     /*
     |--------------------------------------------------------------------------
     | DOB PROOF FILE URL
@@ -448,6 +459,11 @@ class PanApplication extends Model
 
     public function getDobProofFileUrlAttribute(): ?string
     {
+        if (!$this->dob_proof_file) {
+
+            return null;
+        }
+
         return file_url(
             $this->dob_proof_file
         );
@@ -461,8 +477,28 @@ class PanApplication extends Model
 
     public function getSupportingDocumentUrlAttribute(): ?string
     {
+        if (!$this->supporting_document) {
+
+            return null;
+        }
+
         return file_url(
             $this->supporting_document
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | FILE EXISTS CHECK
+    |--------------------------------------------------------------------------
+    */
+
+    public function hasFile(
+        string $column
+    ): bool {
+
+        return !empty(
+            $this->{$column}
         );
     }
 
@@ -524,6 +560,7 @@ class PanApplication extends Model
 
             if (empty($model->application_no))
             {
+
                 $model->application_no =
 
                     'PAN'
@@ -541,6 +578,7 @@ class PanApplication extends Model
 
             if(empty($model->status))
             {
+
                 $model->status =
                     'Pending';
             }
@@ -553,6 +591,7 @@ class PanApplication extends Model
 
             if(empty($model->payment_status))
             {
+
                 $model->payment_status =
                     'Pending';
             }
@@ -568,8 +607,11 @@ class PanApplication extends Model
     public function stateData()
     {
         return $this->belongsTo(
+
             State::class,
+
             'state'
+
         );
     }
 
@@ -582,8 +624,11 @@ class PanApplication extends Model
     public function districtData()
     {
         return $this->belongsTo(
+
             District::class,
+
             'district'
+
         );
     }
 

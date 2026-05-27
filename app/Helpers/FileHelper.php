@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 if (!function_exists('is_vercel')) {
 
@@ -30,6 +31,10 @@ if (!function_exists('upload_base_path')) {
         |--------------------------------------------------------------------------
         | VERCEL
         |--------------------------------------------------------------------------
+        |
+        | Use temporary directory only
+        | for runtime filesystem.
+        |
         */
 
         if (is_vercel()) {
@@ -119,64 +124,80 @@ if (!function_exists('store_uploaded_file')) {
 
         /*
         |--------------------------------------------------------------------------
-        | DESTINATION
-        |--------------------------------------------------------------------------
-        */
-
-        $destination =
-            upload_path($folder);
-
-        /*
-        |--------------------------------------------------------------------------
-        | FILE NAME
+        | UNIQUE FILE NAME
         |--------------------------------------------------------------------------
         */
 
         $filename =
 
-            time()
+            uniqid()
 
             . '_'
 
-            . uniqid()
+            . time()
+
+            . '_'
+
+            . mt_rand(1000, 9999)
 
             . '.'
 
-            . $file->getClientOriginalExtension();
+            . strtolower(
+
+                $file->getClientOriginalExtension()
+
+            );
 
         /*
         |--------------------------------------------------------------------------
-        | MOVE FILE
+        | VERCEL
         |--------------------------------------------------------------------------
         */
 
-        $file->move(
+        if (is_vercel()) {
 
-            $destination,
+            $destination =
+                upload_path($folder);
 
-            $filename
+            $file->move(
 
-        );
+                $destination,
+
+                $filename
+
+            );
+
+            return ltrim(
+
+                trim($folder, '/')
+
+                . '/'
+
+                . $filename,
+
+                '/'
+
+            );
+        }
 
         /*
         |--------------------------------------------------------------------------
-        | RETURN CLEAN RELATIVE PATH
+        | LOCALHOST / CPANEL / VPS
         |--------------------------------------------------------------------------
         */
 
-        return ltrim(
+        return $file->storeAs(
 
-            trim($folder, '/')
+            trim($folder, '/'),
 
-            . '/'
+            $filename,
 
-            . $filename,
-
-            '/'
+            'public'
 
         );
     }
 }
+
 if (!function_exists('file_url')) {
 
     /*
@@ -217,8 +238,10 @@ if (!function_exists('file_url')) {
         |--------------------------------------------------------------------------
         */
 
-        return asset(
-            'storage/' . ltrim($path, '/')
+        return Storage::url(
+
+            ltrim($path, '/')
+
         );
     }
 }
@@ -252,7 +275,7 @@ if (!function_exists('file_exists_custom')) {
 
                 sys_get_temp_dir()
 
-                . '/'
+                . DIRECTORY_SEPARATOR
 
                 . ltrim($path, '/')
 
@@ -261,20 +284,82 @@ if (!function_exists('file_exists_custom')) {
 
         /*
         |--------------------------------------------------------------------------
-        | LOCALHOST
+        | LOCALHOST / CPANEL / VPS
         |--------------------------------------------------------------------------
         */
 
-        return File::exists(
+        return Storage::disk('public')
 
-            storage_path(
-
-                'app/public/' .
+            ->exists(
 
                 ltrim($path, '/')
 
-            )
+            );
+    }
+}
 
-        );
+if (!function_exists('delete_uploaded_file')) {
+
+    /*
+    |--------------------------------------------------------------------------
+    | DELETE FILE
+    |--------------------------------------------------------------------------
+    */
+
+    function delete_uploaded_file(
+        ?string $path
+    ): bool {
+
+        if (!$path) {
+
+            return false;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | VERCEL
+        |--------------------------------------------------------------------------
+        */
+
+        if (is_vercel()) {
+
+            $fullPath =
+
+                sys_get_temp_dir()
+
+                . DIRECTORY_SEPARATOR
+
+                . ltrim($path, '/');
+
+            if (File::exists($fullPath)) {
+
+                return File::delete(
+                    $fullPath
+                );
+            }
+
+            return false;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | LOCALHOST / CPANEL / VPS
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+
+            Storage::disk('public')
+
+                ->exists($path)
+
+        ) {
+
+            return Storage::disk('public')
+
+                ->delete($path);
+        }
+
+        return false;
     }
 }
