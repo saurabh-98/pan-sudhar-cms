@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Retailer\Pan;
 
 use App\Http\Controllers\Controller;
+
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 
 use App\DTO\PanApplicationDTO;
 
@@ -47,8 +47,7 @@ class NewPanApplicationController extends Controller
 
     public function index()
     {
-        if(request()->ajax())
-        {
+        if (request()->ajax()) {
 
             $applications = PanApplication::query()
 
@@ -65,11 +64,8 @@ class NewPanApplicationController extends Controller
                 ])
 
                 ->where(
-
                     'user_id',
-
                     auth()->id()
-
                 )
 
                 ->latest();
@@ -78,7 +74,7 @@ class NewPanApplicationController extends Controller
 
                 ->addIndexColumn()
 
-                ->addColumn('shop_name', function($row){
+                ->addColumn('shop_name', function ($row) {
 
                     return '
 
@@ -99,10 +95,9 @@ class NewPanApplicationController extends Controller
                         </div>
 
                     ';
-
                 })
 
-                ->addColumn('applicant_name', function($row){
+                ->addColumn('applicant_name', function ($row) {
 
                     return '
 
@@ -131,10 +126,9 @@ class NewPanApplicationController extends Controller
                         </div>
 
                     ';
-
                 })
 
-                ->addColumn('state_name', function($row){
+                ->addColumn('state_name', function ($row) {
 
                     return '
 
@@ -155,10 +149,9 @@ class NewPanApplicationController extends Controller
                         </span>
 
                     ';
-
                 })
 
-                ->addColumn('district_name', function($row){
+                ->addColumn('district_name', function ($row) {
 
                     return '
 
@@ -179,16 +172,14 @@ class NewPanApplicationController extends Controller
                         </span>
 
                     ';
-
                 })
 
-                ->addColumn('payment', function($row){
+                ->addColumn('payment', function ($row) {
 
                     return $row->payment_badge;
-
                 })
 
-                ->addColumn('amount', function($row){
+                ->addColumn('amount', function ($row) {
 
                     return '
 
@@ -197,11 +188,8 @@ class NewPanApplicationController extends Controller
                             ₹'
 
                             . number_format(
-
                                 $row->amount,
-
                                 2
-
                             )
 
                             . '
@@ -209,10 +197,9 @@ class NewPanApplicationController extends Controller
                         </span>
 
                     ';
-
                 })
 
-                ->addColumn('created_at', function($row){
+                ->addColumn('created_at', function ($row) {
 
                     return '
 
@@ -223,9 +210,7 @@ class NewPanApplicationController extends Controller
                                 '
 
                                 . $row->created_at->format(
-
                                     'd M Y'
-
                                 )
 
                                 . '
@@ -237,9 +222,7 @@ class NewPanApplicationController extends Controller
                                 '
 
                                 . $row->created_at->format(
-
                                     'h:i A'
-
                                 )
 
                                 . '
@@ -249,20 +232,18 @@ class NewPanApplicationController extends Controller
                         </div>
 
                     ';
-
                 })
 
-                ->addColumn('status', function($row){
+                ->addColumn('status', function ($row) {
 
                     return $row->status_badge;
-
                 })
 
-                ->addColumn('document_status', function($row){
+                ->addColumn('document_status', function ($row) {
 
                     $document = $row->documents->first();
 
-                    if(
+                    if (
 
                         $document
 
@@ -288,8 +269,7 @@ class NewPanApplicationController extends Controller
 
                         )
 
-                    )
-                    {
+                    ) {
 
                         return '
 
@@ -299,9 +279,7 @@ class NewPanApplicationController extends Controller
                                     href="'
 
                                     . file_url(
-
                                         $document->file_path
-
                                     )
 
                                     . '"
@@ -322,9 +300,7 @@ class NewPanApplicationController extends Controller
                                     href="'
 
                                     . file_url(
-
                                         $document->file_path
-
                                     )
 
                                     . '"
@@ -344,10 +320,9 @@ class NewPanApplicationController extends Controller
                             </div>
 
                         ';
-
                     }
 
-                    if(
+                    if (
 
                         $document
 
@@ -357,8 +332,7 @@ class NewPanApplicationController extends Controller
                             $document->file_path
                         )
 
-                    )
-                    {
+                    ) {
 
                         return '
 
@@ -369,7 +343,6 @@ class NewPanApplicationController extends Controller
                             </span>
 
                         ';
-
                     }
 
                     return '
@@ -381,10 +354,9 @@ class NewPanApplicationController extends Controller
                         </span>
 
                     ';
-
                 })
 
-                ->addColumn('action', function($row){
+                ->addColumn('action', function ($row) {
 
                     return '
 
@@ -394,18 +366,13 @@ class NewPanApplicationController extends Controller
                                 href="'
 
                                 . route(
-
                                     'retailer.pan.view',
-
                                     $row->id
-
                                 )
 
                                 . '"
 
                                 class="btn btn-sm btn-primary"
-
-                                title="View"
 
                             >
 
@@ -416,7 +383,6 @@ class NewPanApplicationController extends Controller
                         </div>
 
                     ';
-
                 })
 
                 ->rawColumns([
@@ -444,13 +410,10 @@ class NewPanApplicationController extends Controller
                 ])
 
                 ->make(true);
-
         }
 
         return view(
-
             'retailer.pan.index'
-
         );
     }
 
@@ -510,9 +473,17 @@ class NewPanApplicationController extends Controller
 
             $user = auth()->user();
 
+            /*
+            |--------------------------------------------------------------------------
+            | WALLET CHECK
+            |--------------------------------------------------------------------------
+            */
+
             if (
+
                 $user->wallet_balance
                 < self::PAN_CHARGE
+
             ) {
 
                 return response()->json([
@@ -525,46 +496,62 @@ class NewPanApplicationController extends Controller
                 ], 422);
             }
 
+            /*
+            |--------------------------------------------------------------------------
+            | DTO
+            |--------------------------------------------------------------------------
+            */
+
             $dto =
+
                 PanApplicationDTO::fromRequest(
                     $request
                 );
 
+            /*
+            |--------------------------------------------------------------------------
+            | FORCE FILE INIT
+            |--------------------------------------------------------------------------
+            */
+
+            $request->files->all();
+
+            /*
+            |--------------------------------------------------------------------------
+            | GENERATE PREVIEW
+            |--------------------------------------------------------------------------
+            */
+
             $preview =
+
                 $this->panService
                     ->preview($dto);
+
+            /*
+            |--------------------------------------------------------------------------
+            | EXTRA DATA
+            |--------------------------------------------------------------------------
+            */
 
             $preview['data']['state_name'] =
 
                 State::where(
-
                     'id',
                     $request->state
-
                 )->value('name');
 
             $preview['data']['district_name'] =
 
                 District::where(
-
                     'id',
                     $request->district
-
                 )->value('name');
-
-            session([
-
-                'pan_application' => $preview
-
-            ]);
 
             /*
             |--------------------------------------------------------------------------
-            | FORCE SESSION SAVE
+            | RETURN
             |--------------------------------------------------------------------------
             */
-
-            $request->session()->save();
 
             return response()->json([
 
@@ -633,10 +620,6 @@ class NewPanApplicationController extends Controller
 
             empty($preview['data'])
 
-            ||
-
-            empty($preview['files'])
-
         ) {
 
             return redirect()
@@ -654,8 +637,6 @@ class NewPanApplicationController extends Controller
                 );
         }
 
-        request()->session()->save();
-
         return view(
 
             'retailer.pan.preview',
@@ -666,7 +647,7 @@ class NewPanApplicationController extends Controller
                     $preview['data'],
 
                 'files' =>
-                    $preview['files']
+                    $preview['files'] ?? []
 
             ]
 
@@ -698,6 +679,32 @@ class NewPanApplicationController extends Controller
                 ->lockForUpdate()
 
                 ->first();
+
+            /*
+            |--------------------------------------------------------------------------
+            | ADMIN CHECK
+            |--------------------------------------------------------------------------
+            */
+
+            if (!$admin) {
+
+                DB::rollBack();
+
+                return response()->json([
+
+                    'status' => false,
+
+                    'message' =>
+                        'Admin account not found.'
+
+                ], 500);
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | SESSION
+            |--------------------------------------------------------------------------
+            */
 
             $session =
                 session('pan_application');
@@ -748,15 +755,23 @@ class NewPanApplicationController extends Controller
 
                         'message' =>
 
-                            'Uploaded file missing. Please upload again.'
+                            'Some uploaded documents expired after deployment. Please upload documents again.'
 
                     ], 422);
                 }
             }
 
+            /*
+            |--------------------------------------------------------------------------
+            | WALLET CHECK
+            |--------------------------------------------------------------------------
+            */
+
             if (
+
                 $user->wallet_balance
                 < self::PAN_CHARGE
+
             ) {
 
                 DB::rollBack();
@@ -771,25 +786,54 @@ class NewPanApplicationController extends Controller
                 ], 422);
             }
 
+            /*
+            |--------------------------------------------------------------------------
+            | STORE APPLICATION
+            |--------------------------------------------------------------------------
+            */
+
             $application =
+
                 $this->panService
                     ->storeFromSession();
+
+            /*
+            |--------------------------------------------------------------------------
+            | BALANCES
+            |--------------------------------------------------------------------------
+            */
 
             $retailerBefore =
                 $user->wallet_balance;
 
-            $user->wallet_balance -=
-                self::PAN_CHARGE;
-
-            $user->save();
-
             $adminBefore =
                 $admin->wallet_balance;
 
-            $admin->wallet_balance +=
-                self::PAN_CHARGE;
+            /*
+            |--------------------------------------------------------------------------
+            | WALLET UPDATE
+            |--------------------------------------------------------------------------
+            */
 
-            $admin->save();
+            $user->decrement(
+                'wallet_balance',
+                self::PAN_CHARGE
+            );
+
+            $admin->increment(
+                'wallet_balance',
+                self::PAN_CHARGE
+            );
+
+            $user->refresh();
+
+            $admin->refresh();
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE APPLICATION
+            |--------------------------------------------------------------------------
+            */
 
             $application->update([
 
@@ -806,6 +850,12 @@ class NewPanApplicationController extends Controller
                     'Processing'
 
             ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | RETAILER TRANSACTION
+            |--------------------------------------------------------------------------
+            */
 
             WalletTransaction::create([
 
@@ -840,6 +890,12 @@ class NewPanApplicationController extends Controller
 
             ]);
 
+            /*
+            |--------------------------------------------------------------------------
+            | ADMIN TRANSACTION
+            |--------------------------------------------------------------------------
+            */
+
             WalletTransaction::create([
 
                 'user_id' =>
@@ -873,13 +929,19 @@ class NewPanApplicationController extends Controller
 
             ]);
 
-            Session::forget(
-                'pan_application'
-            );
-
-            request()->session()->save();
+            /*
+            |--------------------------------------------------------------------------
+            | COMMIT
+            |--------------------------------------------------------------------------
+            */
 
             DB::commit();
+
+            /*
+            |--------------------------------------------------------------------------
+            | RETURN
+            |--------------------------------------------------------------------------
+            */
 
             return response()->json([
 
@@ -891,11 +953,8 @@ class NewPanApplicationController extends Controller
                 'redirect_url' =>
 
                     route(
-
                         'retailer.pan.acknowledgement',
-
                         $application->id
-
                     )
 
             ]);

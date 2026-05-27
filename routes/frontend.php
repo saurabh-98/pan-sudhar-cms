@@ -32,20 +32,23 @@ Route::get(
 
 /*
 |--------------------------------------------------------------------------
-| TEMP FILE VIEW ROUTE
+| SECURE FILE VIEW ROUTE
 |--------------------------------------------------------------------------
 |
-| Compatible With:
+| Works On:
 | - Localhost
 | - VPS
 | - cPanel
 | - Vercel
 |
+| Uses:
+| public/uploads
+|
 */
 
 Route::get(
 
-    '/temp-file/{path}',
+    '/uploads/{path}',
 
     function ($path) {
 
@@ -88,11 +91,11 @@ Route::get(
 
         $fullPath =
 
-            sys_get_temp_dir()
+            public_path(
 
-            . DIRECTORY_SEPARATOR
+                'uploads/' . $path
 
-            . $path;
+            );
 
         /*
         |--------------------------------------------------------------------------
@@ -127,6 +130,8 @@ Route::get(
 
             'image/png',
 
+            'image/webp',
+
             'application/pdf'
 
         ];
@@ -152,7 +157,7 @@ Route::get(
 
         /*
         |--------------------------------------------------------------------------
-        | RETURN FILE RESPONSE
+        | RETURN FILE
         |--------------------------------------------------------------------------
         */
 
@@ -164,13 +169,11 @@ Route::get(
 
                 'Cache-Control' =>
 
-                    'no-store, no-cache, must-revalidate, max-age=0',
+                    'public, max-age=86400',
 
-                'Pragma' =>
-                    'no-cache',
+                'X-Content-Type-Options' =>
 
-                'Expires' =>
-                    'Sat, 01 Jan 2000 00:00:00 GMT'
+                    'nosniff'
 
             ]
 

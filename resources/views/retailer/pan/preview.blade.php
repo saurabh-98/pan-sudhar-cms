@@ -634,7 +634,7 @@
 
             </div>
 
-          {{-- =====================================================
+            {{-- =====================================================
             | DOCUMENTS
             ====================================================== --}}
             <div class="mb-5">
@@ -648,6 +648,12 @@
                 <div class="row g-4">
 
                     {{-- PHOTO --}}
+                    @if(
+                        !empty($files['photo'])
+                        &&
+                        file_exists_custom($files['photo'])
+                    )
+
                     <div class="col-lg-3 col-md-6">
 
                         <div class="document-preview-card">
@@ -661,13 +667,13 @@
                             @php
                                 $photoExt = strtolower(
                                     pathinfo(
-                                        $files['photo'] ?? '',
+                                        $files['photo'],
                                         PATHINFO_EXTENSION
                                     )
                                 );
                             @endphp
 
-                            @if($photoExt == 'pdf')
+                            @if($photoExt === 'pdf')
 
                                 <a
                                     href="{{ file_url($files['photo']) }}"
@@ -683,6 +689,7 @@
                                     src="{{ file_url($files['photo']) }}"
                                     class="img-fluid rounded"
                                     alt="Photo"
+                                    loading="lazy"
                                 >
 
                             @endif
@@ -691,7 +698,15 @@
 
                     </div>
 
+                    @endif
+
                     {{-- SIGNATURE --}}
+                    @if(
+                        !empty($files['signature'])
+                        &&
+                        file_exists_custom($files['signature'])
+                    )
+
                     <div class="col-lg-3 col-md-6">
 
                         <div class="document-preview-card">
@@ -705,13 +720,13 @@
                             @php
                                 $signatureExt = strtolower(
                                     pathinfo(
-                                        $files['signature'] ?? '',
+                                        $files['signature'],
                                         PATHINFO_EXTENSION
                                     )
                                 );
                             @endphp
 
-                            @if($signatureExt == 'pdf')
+                            @if($signatureExt === 'pdf')
 
                                 <a
                                     href="{{ file_url($files['signature']) }}"
@@ -727,6 +742,7 @@
                                     src="{{ file_url($files['signature']) }}"
                                     class="img-fluid rounded"
                                     alt="Signature"
+                                    loading="lazy"
                                 >
 
                             @endif
@@ -735,7 +751,15 @@
 
                     </div>
 
+                    @endif
+
                     {{-- AADHAAR CARD --}}
+                    @if(
+                        !empty($files['aadhaar_card'])
+                        &&
+                        file_exists_custom($files['aadhaar_card'])
+                    )
+
                     <div class="col-lg-3 col-md-6">
 
                         <div class="document-preview-card">
@@ -749,13 +773,13 @@
                             @php
                                 $aadhaarExt = strtolower(
                                     pathinfo(
-                                        $files['aadhaar_card'] ?? '',
+                                        $files['aadhaar_card'],
                                         PATHINFO_EXTENSION
                                     )
                                 );
                             @endphp
 
-                            @if($aadhaarExt == 'pdf')
+                            @if($aadhaarExt === 'pdf')
 
                                 <a
                                     href="{{ file_url($files['aadhaar_card']) }}"
@@ -771,6 +795,7 @@
                                     src="{{ file_url($files['aadhaar_card']) }}"
                                     class="img-fluid rounded"
                                     alt="Aadhaar Card"
+                                    loading="lazy"
                                 >
 
                             @endif
@@ -779,9 +804,16 @@
 
                     </div>
 
+                    @endif
 
                     {{-- DOB PROOF --}}
-                    @if(!empty($files['dob_proof_file']))
+                    @if(
+                        !empty($files['dob_proof_file'])
+                        &&
+                        file_exists_custom(
+                            $files['dob_proof_file']
+                        )
+                    )
 
                     <div class="col-lg-3 col-md-6">
 
@@ -796,13 +828,13 @@
                             @php
                                 $dobExt = strtolower(
                                     pathinfo(
-                                        $files['dob_proof_file'] ?? '',
+                                        $files['dob_proof_file'],
                                         PATHINFO_EXTENSION
                                     )
                                 );
                             @endphp
 
-                            @if($dobExt == 'pdf')
+                            @if($dobExt === 'pdf')
 
                                 <a
                                     href="{{ file_url($files['dob_proof_file']) }}"
@@ -818,6 +850,7 @@
                                     src="{{ file_url($files['dob_proof_file']) }}"
                                     class="img-fluid rounded"
                                     alt="DOB Proof"
+                                    loading="lazy"
                                 >
 
                             @endif
@@ -829,7 +862,13 @@
                     @endif
 
                     {{-- SUPPORTING DOCUMENT --}}
-                    @if(!empty($files['supporting_document']))
+                    @if(
+                        !empty($files['supporting_document'])
+                        &&
+                        file_exists_custom(
+                            $files['supporting_document']
+                        )
+                    )
 
                     <div class="col-lg-3 col-md-6">
 
@@ -844,13 +883,13 @@
                             @php
                                 $supportingExt = strtolower(
                                     pathinfo(
-                                        $files['supporting_document'] ?? '',
+                                        $files['supporting_document'],
                                         PATHINFO_EXTENSION
                                     )
                                 );
                             @endphp
 
-                            @if($supportingExt == 'pdf')
+                            @if($supportingExt === 'pdf')
 
                                 <a
                                     href="{{ file_url($files['supporting_document']) }}"
@@ -866,6 +905,7 @@
                                     src="{{ file_url($files['supporting_document']) }}"
                                     class="img-fluid rounded"
                                     alt="Supporting Document"
+                                    loading="lazy"
                                 >
 
                             @endif

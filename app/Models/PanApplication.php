@@ -134,6 +134,32 @@ class PanApplication extends Model
 
     /*
     |--------------------------------------------------------------------------
+    | APPENDS
+    |--------------------------------------------------------------------------
+    */
+
+    protected $appends = [
+
+        'status_badge',
+
+        'payment_badge',
+
+        'applicant_name',
+
+        'photo_url',
+
+        'signature_url',
+
+        'aadhaar_card_url',
+
+        'dob_proof_file_url',
+
+        'supporting_document_url'
+
+    ];
+
+    /*
+    |--------------------------------------------------------------------------
     | CASTS
     |--------------------------------------------------------------------------
     */
@@ -153,26 +179,10 @@ class PanApplication extends Model
             'datetime',
 
         'created_at' =>
-            'datetime:d M Y h:i A',
+            'datetime',
 
         'updated_at' =>
-            'datetime:d M Y h:i A'
-
-    ];
-
-    /*
-    |--------------------------------------------------------------------------
-    | APPENDS
-    |--------------------------------------------------------------------------
-    */
-
-    protected $appends = [
-
-        'status_badge',
-
-        'payment_badge',
-
-        'applicant_name'
+            'datetime'
 
     ];
 
@@ -212,27 +222,88 @@ class PanApplication extends Model
 
     /*
     |--------------------------------------------------------------------------
+    | STATE RELATION
+    |--------------------------------------------------------------------------
+    */
+
+    public function stateData()
+    {
+        return $this->belongsTo(
+
+            State::class,
+
+            'state'
+
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | DISTRICT RELATION
+    |--------------------------------------------------------------------------
+    */
+
+    public function districtData()
+    {
+        return $this->belongsTo(
+
+            District::class,
+
+            'district'
+
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | DOCUMENTS
+    |--------------------------------------------------------------------------
+    */
+
+    public function documents()
+    {
+        return $this->hasMany(
+
+            ServiceDocument::class,
+
+            'service_id'
+
+        )->where(
+
+            'service_type',
+
+            'pan'
+
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
     | STATUS BADGE
     |--------------------------------------------------------------------------
     */
 
     public function getStatusBadgeAttribute(): string
     {
-        return match ($this->status) {
+        return match (
 
-            'Approved' =>
+            strtolower($this->status)
+
+        ) {
+
+            'approved' =>
 
                 '<span class="badge bg-success">
                     Approved
                 </span>',
 
-            'Rejected' =>
+            'rejected' =>
 
                 '<span class="badge bg-danger">
                     Rejected
                 </span>',
 
-            'Processing' =>
+            'processing' =>
 
                 '<span class="badge bg-warning text-dark">
                     Processing
@@ -254,15 +325,19 @@ class PanApplication extends Model
 
     public function getPaymentBadgeAttribute(): string
     {
-        return match ($this->payment_status) {
+        return match (
 
-            'Paid' =>
+            strtolower($this->payment_status)
+
+        ) {
+
+            'paid' =>
 
                 '<span class="badge bg-success">
                     Paid
                 </span>',
 
-            'Failed' =>
+            'failed' =>
 
                 '<span class="badge bg-danger">
                     Failed
@@ -290,8 +365,11 @@ class PanApplication extends Model
             $this->village,
             $this->post_office,
             $this->area,
-            $this->district,
-            $this->state,
+
+            $this->districtData?->name,
+
+            $this->stateData?->name,
+
             $this->pincode
 
         ])
@@ -405,7 +483,15 @@ class PanApplication extends Model
 
     public function getPhotoUrlAttribute(): ?string
     {
-        if (!$this->photo) {
+        if (
+
+            empty($this->photo)
+
+            ||
+
+            !file_exists_custom($this->photo)
+
+        ) {
 
             return null;
         }
@@ -423,7 +509,15 @@ class PanApplication extends Model
 
     public function getSignatureUrlAttribute(): ?string
     {
-        if (!$this->signature) {
+        if (
+
+            empty($this->signature)
+
+            ||
+
+            !file_exists_custom($this->signature)
+
+        ) {
 
             return null;
         }
@@ -441,7 +535,15 @@ class PanApplication extends Model
 
     public function getAadhaarCardUrlAttribute(): ?string
     {
-        if (!$this->aadhaar_card) {
+        if (
+
+            empty($this->aadhaar_card)
+
+            ||
+
+            !file_exists_custom($this->aadhaar_card)
+
+        ) {
 
             return null;
         }
@@ -459,7 +561,15 @@ class PanApplication extends Model
 
     public function getDobProofFileUrlAttribute(): ?string
     {
-        if (!$this->dob_proof_file) {
+        if (
+
+            empty($this->dob_proof_file)
+
+            ||
+
+            !file_exists_custom($this->dob_proof_file)
+
+        ) {
 
             return null;
         }
@@ -477,7 +587,17 @@ class PanApplication extends Model
 
     public function getSupportingDocumentUrlAttribute(): ?string
     {
-        if (!$this->supporting_document) {
+        if (
+
+            empty($this->supporting_document)
+
+            ||
+
+            !file_exists_custom(
+                $this->supporting_document
+            )
+
+        ) {
 
             return null;
         }
@@ -497,7 +617,16 @@ class PanApplication extends Model
         string $column
     ): bool {
 
-        return !empty(
+        if (
+
+            empty($this->{$column})
+
+        ) {
+
+            return false;
+        }
+
+        return file_exists_custom(
             $this->{$column}
         );
     }
@@ -558,8 +687,11 @@ class PanApplication extends Model
             |--------------------------------------------------------------------------
             */
 
-            if (empty($model->application_no))
-            {
+            if (
+
+                empty($model->application_no)
+
+            ) {
 
                 $model->application_no =
 
@@ -576,8 +708,11 @@ class PanApplication extends Model
             |--------------------------------------------------------------------------
             */
 
-            if(empty($model->status))
-            {
+            if (
+
+                empty($model->status)
+
+            ) {
 
                 $model->status =
                     'Pending';
@@ -589,69 +724,43 @@ class PanApplication extends Model
             |--------------------------------------------------------------------------
             */
 
-            if(empty($model->payment_status))
-            {
+            if (
+
+                empty($model->payment_status)
+
+            ) {
 
                 $model->payment_status =
                     'Pending';
             }
         });
-    }
 
-    /*
-    |--------------------------------------------------------------------------
-    | STATE RELATION
-    |--------------------------------------------------------------------------
-    */
+        /*
+        |--------------------------------------------------------------------------
+        | DELETE FILES
+        |--------------------------------------------------------------------------
+        */
 
-    public function stateData()
-    {
-        return $this->belongsTo(
+        static::deleting(function ($model) {
 
-            State::class,
+            $files = [
 
-            'state'
+                $model->photo,
 
-        );
-    }
+                $model->signature,
 
-    /*
-    |--------------------------------------------------------------------------
-    | DISTRICT RELATION
-    |--------------------------------------------------------------------------
-    */
+                $model->aadhaar_card,
 
-    public function districtData()
-    {
-        return $this->belongsTo(
+                $model->dob_proof_file,
 
-            District::class,
+                $model->supporting_document
 
-            'district'
+            ];
 
-        );
-    }
+            foreach ($files as $file) {
 
-    /*
-    |--------------------------------------------------------------------------
-    | DOCUMENTS
-    |--------------------------------------------------------------------------
-    */
-
-    public function documents()
-    {
-        return $this->hasMany(
-
-            ServiceDocument::class,
-
-            'service_id'
-
-        )->where(
-
-            'service_type',
-
-            'pan'
-
-        );
+                delete_uploaded_file($file);
+            }
+        });
     }
 }

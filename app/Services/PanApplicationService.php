@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 use App\DTO\PanApplicationDTO;
 use App\Models\PanApplication;
@@ -29,6 +28,7 @@ class PanApplicationService
     ): ?string {
 
         if (!$file) {
+
             return null;
         }
 
@@ -50,6 +50,14 @@ class PanApplicationService
     public function preview(
         PanApplicationDTO $dto
     ): array {
+
+        /*
+        |--------------------------------------------------------------------------
+        | ENSURE FOLDERS
+        |--------------------------------------------------------------------------
+        */
+
+        ensure_upload_directories();
 
         /*
         |--------------------------------------------------------------------------
@@ -149,7 +157,7 @@ class PanApplicationService
 
         /*
         |--------------------------------------------------------------------------
-        | SESSION STORE
+        | SESSION DATA
         |--------------------------------------------------------------------------
         */
 
@@ -180,6 +188,12 @@ class PanApplicationService
 
         ];
 
+        /*
+        |--------------------------------------------------------------------------
+        | STORE SESSION
+        |--------------------------------------------------------------------------
+        */
+
         session([
 
             'pan_application' => $previewData
@@ -188,7 +202,7 @@ class PanApplicationService
 
         /*
         |--------------------------------------------------------------------------
-        | FORCE SESSION SAVE
+        | FORCE SAVE SESSION
         |--------------------------------------------------------------------------
         */
 
@@ -357,6 +371,12 @@ class PanApplicationService
                 'signature_type' =>
                     $data['signature_type'] ?? null,
 
+                /*
+                |--------------------------------------------------------------------------
+                | FILES
+                |--------------------------------------------------------------------------
+                */
+
                 'photo' =>
                     $files['photo'] ?? null,
 
@@ -372,6 +392,12 @@ class PanApplicationService
                 'supporting_document' =>
                     $files['supporting_document'] ?? null,
 
+                /*
+                |--------------------------------------------------------------------------
+                | PAYMENT
+                |--------------------------------------------------------------------------
+                */
+
                 'amount' =>
                     107,
 
@@ -386,6 +412,12 @@ class PanApplicationService
 
                 'wallet_deducted_at' =>
                     null,
+
+                /*
+                |--------------------------------------------------------------------------
+                | META
+                |--------------------------------------------------------------------------
+                */
 
                 'ip_address' =>
                     request()->ip(),
@@ -407,8 +439,10 @@ class PanApplicationService
             |--------------------------------------------------------------------------
             */
 
-            $application = $this->repository
-                ->create($storeData);
+            $application =
+
+                $this->repository
+                    ->create($storeData);
 
             /*
             |--------------------------------------------------------------------------
@@ -478,6 +512,7 @@ class PanApplicationService
     ): bool {
 
         $application =
+
             $this->find(
                 $id,
                 $userId
@@ -505,10 +540,17 @@ class PanApplicationService
     ): bool {
 
         $application =
+
             $this->find(
                 $id,
                 $userId
             );
+
+        /*
+        |--------------------------------------------------------------------------
+        | DELETE FILES
+        |--------------------------------------------------------------------------
+        */
 
         $files = [
 
@@ -526,16 +568,14 @@ class PanApplicationService
 
         foreach ($files as $file) {
 
-            if (
-                $file
-                &&
-                Storage::disk('public')->exists($file)
-            ) {
-
-                Storage::disk('public')
-                    ->delete($file);
-            }
+            delete_uploaded_file($file);
         }
+
+        /*
+        |--------------------------------------------------------------------------
+        | DELETE RECORD
+        |--------------------------------------------------------------------------
+        */
 
         return $this->repository
             ->delete($application);
