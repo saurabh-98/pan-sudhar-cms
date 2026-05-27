@@ -160,18 +160,23 @@ if (!function_exists('store_uploaded_file')) {
 
         /*
         |--------------------------------------------------------------------------
-        | RETURN RELATIVE PATH
+        | RETURN CLEAN RELATIVE PATH
         |--------------------------------------------------------------------------
         */
 
-        return trim($folder, '/')
+        return ltrim(
+
+            trim($folder, '/')
 
             . '/'
 
-            . $filename;
+            . $filename,
+
+            '/'
+
+        );
     }
 }
-
 if (!function_exists('file_url')) {
 
     /*
