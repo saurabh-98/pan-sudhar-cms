@@ -202,7 +202,7 @@ class DashboardController extends Controller
 
                 'title' => 'PAN Correction',
                 'icon'  => 'fa-pen',
-                'url'   => route('retailer.pan.correction'),
+                'url'   => route('retailer.pan-correction.history'),
 
             ],
 
