@@ -363,3 +363,34 @@ if (!function_exists('delete_uploaded_file')) {
         return false;
     }
 }
+
+if (!function_exists('ensure_upload_directories')) {
+
+    /*
+    |--------------------------------------------------------------------------
+    | CREATE DEFAULT DIRECTORIES
+    |--------------------------------------------------------------------------
+    */
+
+    function ensure_upload_directories(): void
+    {
+        $folders = [
+
+            'pan/photo',
+
+            'pan/signature',
+
+            'pan/aadhaar',
+
+            'pan/dob-proof',
+
+            'pan/document'
+
+        ];
+
+        foreach ($folders as $folder) {
+
+            upload_path($folder);
+        }
+    }
+}

@@ -526,6 +526,7 @@ class NewPanApplicationController extends Controller
 
                 $this->panService
                     ->preview($dto);
+           
 
             /*
             |--------------------------------------------------------------------------
@@ -609,16 +610,27 @@ class NewPanApplicationController extends Controller
     public function previewPage()
     {
         $preview = session(
-            'pan_application'
+            'pan_application',
+            []
         );
+
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDATE SESSION
+        |--------------------------------------------------------------------------
+        */
 
         if (
 
-            !$preview
+            empty($preview)
 
             ||
 
-            empty($preview['data'])
+            !isset($preview['data'])
+
+            ||
+
+            !is_array($preview['data'])
 
         ) {
 
@@ -637,6 +649,62 @@ class NewPanApplicationController extends Controller
                 );
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | ENSURE SAFE KEYS
+        |--------------------------------------------------------------------------
+        */
+
+        $preview['data']['state_name'] =
+
+            $preview['data']['state_name']
+
+            ??
+
+            State::where(
+                'id',
+                $preview['data']['state'] ?? null
+            )->value('name')
+
+            ??
+
+            'N/A';
+
+        $preview['data']['district_name'] =
+
+            $preview['data']['district_name']
+
+            ??
+
+            District::where(
+                'id',
+                $preview['data']['district'] ?? null
+            )->value('name')
+
+            ??
+
+            'N/A';
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE SESSION
+        |--------------------------------------------------------------------------
+        */
+
+        session([
+
+            'pan_application' => $preview
+
+        ]);
+
+        request()->session()->save();
+
+        /*
+        |--------------------------------------------------------------------------
+        | RETURN VIEW
+        |--------------------------------------------------------------------------
+        */
+
         return view(
 
             'retailer.pan.preview',
@@ -644,16 +712,19 @@ class NewPanApplicationController extends Controller
             [
 
                 'data' =>
+
                     $preview['data'],
 
                 'files' =>
-                    $preview['files'] ?? []
+
+                    $preview['files']
+                    ?? []
 
             ]
 
         );
     }
-
+    
     /*
     |--------------------------------------------------------------------------
     | FINAL SUBMIT
