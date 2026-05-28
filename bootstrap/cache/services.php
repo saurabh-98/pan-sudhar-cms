@@ -1,1 +1,10 @@
-<?php return [];
+
+<?php
+
+return [
+    'providers' => [],
+    'eager' => [],
+    'deferred' => [],
+    'when' => [],
+];
+
