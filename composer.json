@@ -11,14 +11,14 @@
 
     "require": {
         "php": "^8.2",
+        "cloudinary-labs/cloudinary-laravel": "^3.0",
+        "endroid/qr-code": "^5.0",
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.10.1",
-
-        "endroid/qr-code": "^5.0",
         "mews/captcha": "^3.4",
         "razorpay/razorpay": "^2.9",
         "spatie/laravel-permission": "^6.25",
-       "yajra/laravel-datatables-oracle": "^11.0"
+        "yajra/laravel-datatables-oracle": "^11.0"
     },
 
     "require-dev": {

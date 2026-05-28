@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 
 if (!function_exists('is_vercel')) {
 
@@ -14,93 +13,6 @@ if (!function_exists('is_vercel')) {
     function is_vercel(): bool
     {
         return (bool) env('VERCEL');
-    }
-}
-
-if (!function_exists('upload_base_path')) {
-
-    /*
-    |--------------------------------------------------------------------------
-    | BASE UPLOAD PATH
-    |--------------------------------------------------------------------------
-    */
-
-    function upload_base_path(): string
-    {
-        /*
-        |--------------------------------------------------------------------------
-        | VERCEL
-        |--------------------------------------------------------------------------
-        |
-        | Use temporary directory only
-        | for runtime filesystem.
-        |
-        */
-
-        if (is_vercel()) {
-
-            return sys_get_temp_dir();
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | LOCALHOST / CPANEL / VPS
-        |--------------------------------------------------------------------------
-        */
-
-        return storage_path('app/public');
-    }
-}
-
-if (!function_exists('upload_path')) {
-
-    /*
-    |--------------------------------------------------------------------------
-    | FULL UPLOAD PATH
-    |--------------------------------------------------------------------------
-    */
-
-    function upload_path(
-        string $folder = ''
-    ): string {
-
-        $basePath = upload_base_path();
-
-        $fullPath =
-
-            rtrim(
-                $basePath,
-                DIRECTORY_SEPARATOR
-            )
-
-            . DIRECTORY_SEPARATOR .
-
-            trim(
-                $folder,
-                DIRECTORY_SEPARATOR
-            );
-
-        /*
-        |--------------------------------------------------------------------------
-        | CREATE DIRECTORY
-        |--------------------------------------------------------------------------
-        */
-
-        if (!File::exists($fullPath)) {
-
-            File::makeDirectory(
-
-                $fullPath,
-
-                0777,
-
-                true,
-
-                true
-            );
-        }
-
-        return $fullPath;
     }
 }
 
@@ -117,18 +29,70 @@ if (!function_exists('store_uploaded_file')) {
         string $folder
     ): ?string {
 
-        if (!$file) {
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDATE FILE
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+
+            !$file
+
+            ||
+
+            !$file->isValid()
+
+        ) {
 
             return null;
         }
 
         /*
         |--------------------------------------------------------------------------
-        | UNIQUE FILE NAME
+        | ALLOWED EXTENSIONS
         |--------------------------------------------------------------------------
         */
 
-        $filename =
+        $allowed = [
+
+            'jpg',
+
+            'jpeg',
+
+            'png',
+
+            'webp',
+
+            'pdf'
+
+        ];
+
+        $extension = strtolower(
+
+            $file->getClientOriginalExtension()
+
+        );
+
+        if (
+
+            !in_array(
+                $extension,
+                $allowed
+            )
+
+        ) {
+
+            return null;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | UNIQUE PUBLIC ID
+        |--------------------------------------------------------------------------
+        */
+
+        $publicId =
 
             uniqid()
 
@@ -138,63 +102,40 @@ if (!function_exists('store_uploaded_file')) {
 
             . '_'
 
-            . mt_rand(1000, 9999)
+            . mt_rand(1000, 9999);
 
-            . '.'
+        /*
+        |--------------------------------------------------------------------------
+        | UPLOAD TO CLOUDINARY
+        |--------------------------------------------------------------------------
+        */
 
-            . strtolower(
+        $uploadedFile = cloudinary()
 
-                $file->getClientOriginalExtension()
+            ->upload(
+
+                $file->getRealPath(),
+
+                [
+
+                    'folder' => $folder,
+
+                    'public_id' => $publicId,
+
+                    'resource_type' => 'auto'
+
+                ]
 
             );
 
         /*
         |--------------------------------------------------------------------------
-        | VERCEL
+        | RETURN SECURE URL
         |--------------------------------------------------------------------------
         */
 
-        if (is_vercel()) {
-
-            $destination =
-                upload_path($folder);
-
-            $file->move(
-
-                $destination,
-
-                $filename
-
-            );
-
-            return ltrim(
-
-                trim($folder, '/')
-
-                . '/'
-
-                . $filename,
-
-                '/'
-
-            );
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | LOCALHOST / CPANEL / VPS
-        |--------------------------------------------------------------------------
-        */
-
-        return $file->storeAs(
-
-            trim($folder, '/'),
-
-            $filename,
-
-            'public'
-
-        );
+        return $uploadedFile
+            ->getSecurePath();
     }
 }
 
@@ -210,26 +151,10 @@ if (!function_exists('file_url')) {
         ?string $path
     ): ?string {
 
-        if (!$path) {
-
-            return null;
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | ALWAYS USE SECURE ROUTE
-        |--------------------------------------------------------------------------
-        */
-
-        return url(
-
-            '/temp-file/' .
-
-            ltrim($path, '/')
-
-        );
+        return $path;
     }
 }
+
 if (!function_exists('file_exists_custom')) {
 
     /*
@@ -242,43 +167,7 @@ if (!function_exists('file_exists_custom')) {
         ?string $path
     ): bool {
 
-        if (!$path) {
-
-            return false;
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | VERCEL
-        |--------------------------------------------------------------------------
-        */
-
-        if (is_vercel()) {
-
-            return File::exists(
-
-                sys_get_temp_dir()
-
-                . DIRECTORY_SEPARATOR
-
-                . ltrim($path, '/')
-
-            );
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | LOCALHOST / CPANEL / VPS
-        |--------------------------------------------------------------------------
-        */
-
-        return Storage::disk('public')
-
-            ->exists(
-
-                ltrim($path, '/')
-
-            );
+        return !empty($path);
     }
 }
 
@@ -294,57 +183,82 @@ if (!function_exists('delete_uploaded_file')) {
         ?string $path
     ): bool {
 
+        /*
+        |--------------------------------------------------------------------------
+        | EMPTY PATH
+        |--------------------------------------------------------------------------
+        */
+
         if (!$path) {
 
             return false;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | VERCEL
-        |--------------------------------------------------------------------------
-        */
+        try {
 
-        if (is_vercel()) {
+            /*
+            |--------------------------------------------------------------------------
+            | EXTRACT PUBLIC ID
+            |--------------------------------------------------------------------------
+            */
 
-            $fullPath =
+            $parts = parse_url($path);
 
-                sys_get_temp_dir()
+            if (
 
-                . DIRECTORY_SEPARATOR
+                !isset($parts['path'])
 
-                . ltrim($path, '/');
+            ) {
 
-            if (File::exists($fullPath)) {
-
-                return File::delete(
-                    $fullPath
-                );
+                return false;
             }
+
+            $pathInfo = pathinfo(
+                $parts['path']
+            );
+
+            $publicId =
+
+                str_replace(
+
+                    '/',
+
+                    '',
+
+                    dirname(
+                        $pathInfo['dirname']
+                    )
+
+                )
+
+                . '/'
+
+                . $pathInfo['filename'];
+
+            /*
+            |--------------------------------------------------------------------------
+            | DELETE FROM CLOUDINARY
+            |--------------------------------------------------------------------------
+            */
+
+            cloudinary()->destroy(
+
+                $publicId,
+
+                [
+
+                    'resource_type' => 'auto'
+
+                ]
+
+            );
+
+            return true;
+
+        } catch (\Throwable $e) {
 
             return false;
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | LOCALHOST / CPANEL / VPS
-        |--------------------------------------------------------------------------
-        */
-
-        if (
-
-            Storage::disk('public')
-
-                ->exists($path)
-
-        ) {
-
-            return Storage::disk('public')
-
-                ->delete($path);
-        }
-
-        return false;
     }
 }
 
@@ -354,27 +268,14 @@ if (!function_exists('ensure_upload_directories')) {
     |--------------------------------------------------------------------------
     | CREATE DEFAULT DIRECTORIES
     |--------------------------------------------------------------------------
+    |--------------------------------------------------------------------------
+    |
+    | Not required for Cloudinary.
+    |
     */
 
     function ensure_upload_directories(): void
     {
-        $folders = [
-
-            'pan/photo',
-
-            'pan/signature',
-
-            'pan/aadhaar',
-
-            'pan/dob-proof',
-
-            'pan/document'
-
-        ];
-
-        foreach ($folders as $folder) {
-
-            upload_path($folder);
-        }
+        return;
     }
 }
