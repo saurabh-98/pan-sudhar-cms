@@ -25,27 +25,4 @@
       "dest": "/api/index.php"
     }
   ]
-}#!/bin/bash
-
-echo "Preparing Laravel runtime directories..."
-
-mkdir -p bootstrap/cache
-mkdir -p storage/framework/cache
-mkdir -p storage/framework/sessions
-mkdir -p storage/framework/views
-mkdir -p storage/logs
-
-touch bootstrap/cache/.gitignore
-
-chmod -R 775 bootstrap/cache
-chmod -R 775 storage
-
-echo "Installing composer dependencies..."
-
-composer install --no-dev --optimize-autoloader
-
-echo "Clearing Laravel cache..."
-
-php artisan optimize:clear || true
-
-echo "Build complete."
+}
