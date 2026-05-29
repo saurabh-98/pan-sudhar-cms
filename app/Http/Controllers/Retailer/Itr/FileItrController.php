@@ -579,6 +579,8 @@ public function history()
 
         ]);
 
+        
+
     }
 
     return view('retailer.itr.history');

@@ -648,126 +648,159 @@
 
     </div>
 
-    {{-- =====================================================
-    | DOCUMENTS
-    ====================================================== --}}
-    <div class="card show-card mb-4">
+ {{-- =====================================================
+| DOCUMENTS
+====================================================== --}}
+<div class="card show-card mb-4">
 
-        <div class="card-header show-card-header">
+    <div class="card-header show-card-header">
+        Uploaded Documents
+    </div>
 
-            Uploaded Documents
+    <div class="card-body">
 
-        </div>
+        <div class="row g-4">
 
-        <div class="card-body">
 
-            <div class="row g-4">
+            {{-- PHOTO --}}
+            <div class="col-xl-3 col-lg-4 col-md-6">
 
-                {{-- PHOTO --}}
-                <div class="col-xl-3 col-lg-4 col-md-6">
+                <div class="document-card">
 
-                    <div class="document-card">
+                    <div class="document-title">
+                        Photo
+                    </div>
 
-                        <div class="document-title">
+                    <div class="document-preview">
 
-                            Photo
-
-                        </div>
-
-                        <div class="document-preview">
+                        @if(!empty($application->photo))
 
                             <img
-                                src="{{ $application->photo_url }}"
+                                src="{{ file_url($application->photo) }}"
                                 class="img-fluid"
                                 alt="Photo"
                             >
 
-                        </div>
+                        @else
 
-                        <div class="document-footer">
+                            <span class="text-danger">
+                                Not Uploaded
+                            </span>
 
-                            <a
-                                href="{{ $application->photo_url }}"
-                                target="_blank"
-                                class="btn document-btn"
-                            >
-
-                                <i class="fas fa-eye me-2"></i>
-
-                                View Document
-
-                            </a>
-
-                        </div>
+                        @endif
 
                     </div>
 
+
+                    @if(!empty($application->photo))
+
+                    <div class="document-footer">
+
+                        <a
+                            href="{{ file_url($application->photo) }}"
+                            target="_blank"
+                            class="btn document-btn"
+                        >
+                            <i class="fas fa-eye me-2"></i>
+
+                            View Document
+                        </a>
+
+                    </div>
+
+                    @endif
+
                 </div>
 
-                {{-- SIGNATURE --}}
-                <div class="col-xl-3 col-lg-4 col-md-6">
+            </div>
 
-                    <div class="document-card">
 
-                        <div class="document-title">
 
-                            Signature
+            {{-- SIGNATURE --}}
+            <div class="col-xl-3 col-lg-4 col-md-6">
 
-                        </div>
+                <div class="document-card">
 
-                        <div class="document-preview">
+                    <div class="document-title">
+                        Signature
+                    </div>
+
+                    <div class="document-preview">
+
+                        @if(!empty($application->signature))
 
                             <img
-                                src="{{ $application->signature_url }}"
+                                src="{{ file_url($application->signature) }}"
                                 class="img-fluid"
                                 alt="Signature"
                             >
 
-                        </div>
+                        @else
 
-                        <div class="document-footer">
+                            <span class="text-danger">
+                                Not Uploaded
+                            </span>
 
-                            <a
-                                href="{{ $application->signature_url }}"
-                                target="_blank"
-                                class="btn document-btn"
-                            >
-
-                                <i class="fas fa-eye me-2"></i>
-
-                                View Document
-
-                            </a>
-
-                        </div>
+                        @endif
 
                     </div>
 
+
+                    @if(!empty($application->signature))
+
+                    <div class="document-footer">
+
+                        <a
+                            href="{{ file_url($application->signature) }}"
+                            target="_blank"
+                            class="btn document-btn"
+                        >
+
+                            <i class="fas fa-eye me-2"></i>
+
+                            View Document
+
+                        </a>
+
+                    </div>
+
+                    @endif
+
+
                 </div>
 
-                {{-- AADHAAR CARD --}}
-                <div class="col-xl-3 col-lg-4 col-md-6">
+            </div>
 
-                    <div class="document-card">
 
-                        <div class="document-title">
 
-                            Aadhaar Card
 
-                        </div>
+            {{-- AADHAAR CARD --}}
+            <div class="col-xl-3 col-lg-4 col-md-6">
 
-                        <div class="document-preview">
+                <div class="document-card">
 
-                            @if(Str::contains($application->aadhaar_card, '.pdf'))
+                    <div class="document-title">
+                        Aadhaar Card
+                    </div>
+
+
+                    <div class="document-preview">
+
+
+                        @if(!empty($application->aadhaar_card))
+
+
+                            @if(Str::contains(
+                                strtolower($application->aadhaar_card),
+                                '.pdf'
+                            ))
 
                                 <div class="pdf-preview">
 
                                     <i class="fas fa-file-pdf"></i>
 
                                     <span>
-
                                         PDF Document
-
                                     </span>
 
                                 </div>
@@ -775,41 +808,233 @@
                             @else
 
                                 <img
-                                    src="{{ $application->aadhaar_card_url }}"
+                                    src="{{ file_url($application->aadhaar_card) }}"
                                     class="img-fluid"
-                                    alt="Aadhaar Card"
+                                    alt="Aadhaar"
                                 >
 
                             @endif
 
-                        </div>
 
-                        <div class="document-footer">
+                        @else
 
-                            <a
-                                href="{{ $application->aadhaar_card_url }}"
-                                target="_blank"
-                                class="btn document-btn"
-                            >
 
-                                <i class="fas fa-eye me-2"></i>
+                            <span class="text-danger">
+                                Not Uploaded
+                            </span>
 
-                                View Document
 
-                            </a>
+                        @endif
 
-                        </div>
 
                     </div>
+
+
+                    @if(!empty($application->aadhaar_card))
+
+                    <div class="document-footer">
+
+                        <a
+                            href="{{ file_url($application->aadhaar_card) }}"
+                            target="_blank"
+                            class="btn document-btn"
+                        >
+
+                            <i class="fas fa-eye me-2"></i>
+
+                            View Document
+
+                        </a>
+
+                    </div>
+
+                    @endif
 
                 </div>
 
             </div>
 
+
+
+
+
+            {{-- DOB PROOF --}}
+            <div class="col-xl-3 col-lg-4 col-md-6">
+
+                <div class="document-card">
+
+
+                    <div class="document-title">
+                        DOB Proof
+                    </div>
+
+
+                    <div class="document-preview">
+
+
+                        @if(!empty($application->dob_proof_file))
+
+
+                            @if(Str::contains(
+                                strtolower($application->dob_proof_file),
+                                '.pdf'
+                            ))
+
+                                <div class="pdf-preview">
+
+                                    <i class="fas fa-file-pdf"></i>
+
+                                    <span>
+                                        PDF Document
+                                    </span>
+
+                                </div>
+
+                            @else
+
+
+                                <img
+                                    src="{{ file_url($application->dob_proof_file) }}"
+                                    class="img-fluid"
+                                    alt="DOB Proof"
+                                >
+
+                            @endif
+
+
+                        @else
+
+                            <span class="text-danger">
+                                Not Uploaded
+                            </span>
+
+                        @endif
+
+                    </div>
+
+
+
+                    @if(!empty($application->dob_proof_file))
+
+                    <div class="document-footer">
+
+                        <a
+                            href="{{ file_url($application->dob_proof_file) }}"
+                            target="_blank"
+                            class="btn document-btn"
+                        >
+
+                            <i class="fas fa-eye me-2"></i>
+
+                            View Document
+
+                        </a>
+
+                    </div>
+
+                    @endif
+
+
+                </div>
+
+            </div>
+
+
+
+
+
+
+            {{-- SUPPORTING DOCUMENT --}}
+            <div class="col-xl-3 col-lg-4 col-md-6">
+
+                <div class="document-card">
+
+
+                    <div class="document-title">
+                        Supporting Document
+                    </div>
+
+
+                    <div class="document-preview">
+
+
+                        @if(!empty($application->supporting_document))
+
+
+                            @if(Str::contains(
+                                strtolower($application->supporting_document),
+                                '.pdf'
+                            ))
+
+                                <div class="pdf-preview">
+
+                                    <i class="fas fa-file-pdf"></i>
+
+                                    <span>
+                                        PDF Document
+                                    </span>
+
+                                </div>
+
+
+                            @else
+
+                                <img
+                                    src="{{ file_url($application->supporting_document) }}"
+                                    class="img-fluid"
+                                    alt="Supporting Document"
+                                >
+
+                            @endif
+
+
+                        @else
+
+
+                            <span class="text-danger">
+                                Not Uploaded
+                            </span>
+
+
+                        @endif
+
+
+                    </div>
+
+
+
+                    @if(!empty($application->supporting_document))
+
+                    <div class="document-footer">
+
+                        <a
+                            href="{{ file_url($application->supporting_document) }}"
+                            target="_blank"
+                            class="btn document-btn"
+                        >
+
+                            <i class="fas fa-eye me-2"></i>
+
+                            View Document
+
+                        </a>
+
+                    </div>
+
+                    @endif
+
+
+                </div>
+
+            </div>
+
+
+
         </div>
 
     </div>
 
+</div>
 </div>
 
 @endsection

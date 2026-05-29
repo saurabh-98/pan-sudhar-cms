@@ -48,175 +48,189 @@ class PanApplicationService
     */
 
     public function preview(
-        PanApplicationDTO $dto
-    ): array {
+    PanApplicationDTO $dto
+): array {
 
-        /*
-        |--------------------------------------------------------------------------
-        | ENSURE FOLDERS
-        |--------------------------------------------------------------------------
-        */
 
-        ensure_upload_directories();
+    /*
+    |--------------------------------------------------------------------------
+    | ENSURE FOLDERS
+    |--------------------------------------------------------------------------
+    */
 
-        /*
-        |--------------------------------------------------------------------------
-        | EXISTING FILES
-        |--------------------------------------------------------------------------
-        */
+    ensure_upload_directories();
 
-        $existingFiles = session(
-            'pan_application.files',
-            []
-        );
 
-        /*
-        |--------------------------------------------------------------------------
-        | PHOTO
-        |--------------------------------------------------------------------------
-        */
 
-        $photoPath =
+    /*
+    |--------------------------------------------------------------------------
+    | EXISTING FILES
+    |--------------------------------------------------------------------------
+    */
 
-            $dto->photo
+    $oldPreview = session(
+        'pan_application',
+        []
+    );
+    
 
-                ? $this->storeFile(
-                    $dto->photo,
-                    'pan/photo'
-                )
 
-                : ($existingFiles['photo'] ?? null);
+    $existingFiles = $oldPreview['files'] ?? [];
 
-        /*
-        |--------------------------------------------------------------------------
-        | SIGNATURE
-        |--------------------------------------------------------------------------
-        */
 
-        $signaturePath =
 
-            $dto->signature
+    /*
+    |--------------------------------------------------------------------------
+    | PHOTO
+    |--------------------------------------------------------------------------
+    */
 
-                ? $this->storeFile(
-                    $dto->signature,
-                    'pan/signature'
-                )
+    $photoPath = $dto->photo
 
-                : ($existingFiles['signature'] ?? null);
+        ? $this->storeFile(
+            $dto->photo,
+            'pan/photo'
+        )
 
-        /*
-        |--------------------------------------------------------------------------
-        | AADHAAR CARD
-        |--------------------------------------------------------------------------
-        */
+        : ($existingFiles['photo'] ?? null);
 
-        $aadhaarCardPath =
 
-            $dto->aadhaar_card
 
-                ? $this->storeFile(
-                    $dto->aadhaar_card,
-                    'pan/aadhaar'
-                )
+    /*
+    |--------------------------------------------------------------------------
+    | SIGNATURE
+    |--------------------------------------------------------------------------
+    */
 
-                : ($existingFiles['aadhaar_card'] ?? null);
+    $signaturePath = $dto->signature
 
-        /*
-        |--------------------------------------------------------------------------
-        | DOB PROOF
-        |--------------------------------------------------------------------------
-        */
+        ? $this->storeFile(
+            $dto->signature,
+            'pan/signature'
+        )
 
-        $dobProofFilePath =
+        : ($existingFiles['signature'] ?? null);
 
-            $dto->dob_proof_file
 
-                ? $this->storeFile(
-                    $dto->dob_proof_file,
-                    'pan/dob-proof'
-                )
 
-                : ($existingFiles['dob_proof_file'] ?? null);
+    /*
+    |--------------------------------------------------------------------------
+    | AADHAAR
+    |--------------------------------------------------------------------------
+    */
 
-        /*
-        |--------------------------------------------------------------------------
-        | SUPPORTING DOCUMENT
-        |--------------------------------------------------------------------------
-        */
+    $aadhaarCardPath = $dto->aadhaar_card
 
-        $supportingDocumentPath =
+        ? $this->storeFile(
+            $dto->aadhaar_card,
+            'pan/aadhaar'
+        )
 
-            $dto->supporting_document
+        : ($existingFiles['aadhaar_card'] ?? null);
 
-                ? $this->storeFile(
-                    $dto->supporting_document,
-                    'pan/document'
-                )
 
-                : ($existingFiles['supporting_document'] ?? null);
 
-        /*
-        |--------------------------------------------------------------------------
-        | SESSION DATA
-        |--------------------------------------------------------------------------
-        */
+    /*
+    |--------------------------------------------------------------------------
+    | DOB PROOF
+    |--------------------------------------------------------------------------
+    */
 
-        $previewData = [
+    $dobProofFilePath = $dto->dob_proof_file
 
-            'data' =>
+        ? $this->storeFile(
+            $dto->dob_proof_file,
+            'pan/dob-proof'
+        )
 
-                $dto->previewArray(),
+        : ($existingFiles['dob_proof_file'] ?? null);
 
-            'files' => [
 
-                'photo' =>
-                    $photoPath,
 
-                'signature' =>
-                    $signaturePath,
+    /*
+    |--------------------------------------------------------------------------
+    | SUPPORTING DOCUMENT
+    |--------------------------------------------------------------------------
+    */
 
-                'aadhaar_card' =>
-                    $aadhaarCardPath,
+    $supportingDocumentPath = $dto->supporting_document
 
-                'dob_proof_file' =>
-                    $dobProofFilePath,
+        ? $this->storeFile(
+            $dto->supporting_document,
+            'pan/document'
+        )
 
-                'supporting_document' =>
-                    $supportingDocumentPath
+        : ($existingFiles['supporting_document'] ?? null);
 
-            ]
 
-        ];
 
-        /*
-        |--------------------------------------------------------------------------
-        | STORE SESSION
-        |--------------------------------------------------------------------------
-        */
+    /*
+    |--------------------------------------------------------------------------
+    | PREVIEW DATA
+    |--------------------------------------------------------------------------
+    */
 
-        session([
+    $previewData = [
 
-            'pan_application' => $previewData
+        'data' => $dto->previewArray(),
 
-        ]);
+        'files' => [
 
-        /*
-        |--------------------------------------------------------------------------
-        | FORCE SAVE SESSION
-        |--------------------------------------------------------------------------
-        */
+            'photo' =>
+                $photoPath,
 
-        request()->session()->save();
+            'signature' =>
+                $signaturePath,
 
-        /*
-        |--------------------------------------------------------------------------
-        | RETURN
-        |--------------------------------------------------------------------------
-        */
+            'aadhaar_card' =>
+                $aadhaarCardPath,
 
-        return $previewData;
-    }
+            'dob_proof_file' =>
+                $dobProofFilePath,
 
+            'supporting_document' =>
+                $supportingDocumentPath
+
+        ]
+
+    ];
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | STORE SESSION
+    |--------------------------------------------------------------------------
+    */
+
+    session()->put(
+
+        'pan_application',
+
+        $previewData
+
+    );
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | FORCE SAVE SESSION
+    |--------------------------------------------------------------------------
+    */
+
+    session()->save();
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | RETURN TO CONTROLLER
+    |--------------------------------------------------------------------------
+    */
+
+    return $previewData;
+}
     /*
     |--------------------------------------------------------------------------
     | STORE APPLICATION

@@ -443,7 +443,7 @@
 
             </div>
 
-                {{-- =====================================================
+               {{-- =====================================================
                 | DOCUMENTS
                 ====================================================== --}}
                 <div class="card admin-pan-card">
@@ -479,321 +479,149 @@
 
                     </div>
 
+
                     <div class="card-body">
 
                         <div class="row g-4">
 
-                            {{-- PHOTO --}}
-                            <div class="col-xl-3 col-lg-4 col-md-6">
 
-                                <div class="document-card">
+                            @php
 
-                                    <div class="document-image-wrapper">
+                                $documents = [
 
-                                        <div class="document-title">
+                                    'Photo' =>
+                                        $application->photo,
 
-                                            Photo
+                                    'Signature' =>
+                                        $application->signature,
+
+                                    'Aadhaar Card' =>
+                                        $application->aadhaar_card,
+
+                                    'DOB Proof' =>
+                                        $application->dob_proof_file,
+
+                                    'Supporting Document' =>
+                                        $application->supporting_document,
+
+                                ];
+
+                            @endphp
+
+
+
+                            @foreach($documents as $title => $file)
+
+
+                                @if(!empty($file))
+
+
+                                    @php
+
+                                        $extension = strtolower(
+
+                                            pathinfo(
+
+                                                parse_url(
+                                                    $file,
+                                                    PHP_URL_PATH
+                                                ),
+
+                                                PATHINFO_EXTENSION
+
+                                            )
+
+                                        );
+
+                                    @endphp
+
+
+
+                                    <div class="col-xl-3 col-lg-4 col-md-6">
+
+
+                                        <div class="document-card">
+
+
+                                            <div class="document-image-wrapper">
+
+
+                                                <div class="document-title">
+
+                                                    {{ $title }}
+
+                                                </div>
+
+
+
+
+                                                {{-- PDF --}}
+
+                                                @if($extension === 'pdf')
+
+
+                                                    <img
+                                                        src="https://cdn-icons-png.flaticon.com/512/337/337946.png"
+                                                        alt="PDF"
+                                                    >
+
+
+
+                                                {{-- IMAGE --}}
+
+                                                @else
+
+
+                                                    <img
+                                                        src="{{ file_url($file) }}"
+                                                        alt="{{ $title }}"
+                                                    >
+
+
+                                                @endif
+
+
+
+
+                                                <div class="document-overlay">
+
+
+                                                    <a
+                                                        href="{{ file_url($file) }}"
+                                                        target="_blank"
+                                                        class="document-view-btn"
+                                                    >
+
+                                                        <i class="fa fa-eye me-2"></i>
+
+                                                        View
+
+                                                    </a>
+
+
+                                                </div>
+
+
+                                            </div>
+
 
                                         </div>
 
-                                        @php
-                                            $photoExt = strtolower(
-                                                pathinfo(
-                                                    $application->photo ?? '',
-                                                    PATHINFO_EXTENSION
-                                                )
-                                            );
-                                        @endphp
-
-                                        @if($photoExt == 'pdf')
-
-                                            <img
-                                                src="https://cdn-icons-png.flaticon.com/512/337/337946.png"
-                                                alt="PDF"
-                                            >
-
-                                        @else
-
-                                            <img
-                                                src="{{ file_url($application->photo) }}"
-                                                alt="Photo"
-                                            >
-
-                                        @endif
-
-                                        <div class="document-overlay">
-
-                                            <a
-                                                href="{{ file_url($application->photo) }}"
-                                                target="_blank"
-                                                class="document-view-btn"
-                                            >
-
-                                                <i class="fa fa-eye me-2"></i>
-
-                                                View
-
-                                            </a>
-
-                                        </div>
 
                                     </div>
 
-                                </div>
 
-                            </div>
+                                @endif
 
-                            {{-- SIGNATURE --}}
-                            <div class="col-xl-3 col-lg-4 col-md-6">
 
-                                <div class="document-card">
+                            @endforeach
 
-                                    <div class="document-image-wrapper">
-
-                                        <div class="document-title">
-
-                                            Signature
-
-                                        </div>
-
-                                        @php
-                                            $signatureExt = strtolower(
-                                                pathinfo(
-                                                    $application->signature ?? '',
-                                                    PATHINFO_EXTENSION
-                                                )
-                                            );
-                                        @endphp
-
-                                        @if($signatureExt == 'pdf')
-
-                                            <img
-                                                src="https://cdn-icons-png.flaticon.com/512/337/337946.png"
-                                                alt="PDF"
-                                            >
-
-                                        @else
-
-                                            <img
-                                                src="{{ file_url($application->signature) }}"
-                                                alt="Signature"
-                                            >
-
-                                        @endif
-
-                                        <div class="document-overlay">
-
-                                            <a
-                                                href="{{ file_url($application->signature) }}"
-                                                target="_blank"
-                                                class="document-view-btn"
-                                            >
-
-                                                <i class="fa fa-eye me-2"></i>
-
-                                                View
-
-                                            </a>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            {{-- AADHAAR CARD --}}
-                            <div class="col-xl-3 col-lg-4 col-md-6">
-
-                                <div class="document-card">
-
-                                    <div class="document-image-wrapper">
-
-                                        <div class="document-title">
-
-                                            Aadhaar Card
-
-                                        </div>
-
-                                        @php
-                                            $aadhaarExt = strtolower(
-                                                pathinfo(
-                                                    $application->aadhaar_card ?? '',
-                                                    PATHINFO_EXTENSION
-                                                )
-                                            );
-                                        @endphp
-
-                                        @if($aadhaarExt == 'pdf')
-
-                                            <img
-                                                src="https://cdn-icons-png.flaticon.com/512/337/337946.png"
-                                                alt="PDF"
-                                            >
-
-                                        @else
-
-                                            <img
-                                                src="{{ file_url($application->aadhaar_card) }}"
-                                                alt="Aadhaar Card"
-                                            >
-
-                                        @endif
-
-                                        <div class="document-overlay">
-
-                                            <a
-                                                href="{{ file_url($application->aadhaar_card) }}"
-                                                target="_blank"
-                                                class="document-view-btn"
-                                            >
-
-                                                <i class="fa fa-eye me-2"></i>
-
-                                                View
-
-                                            </a>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            {{-- DOB PROOF --}}
-                            @if($application->dob_proof_file)
-
-                            <div class="col-xl-3 col-lg-4 col-md-6">
-
-                                <div class="document-card">
-
-                                    <div class="document-image-wrapper">
-
-                                        <div class="document-title">
-
-                                            DOB Proof
-
-                                        </div>
-
-                                        @php
-                                            $dobExt = strtolower(
-                                                pathinfo(
-                                                    $application->dob_proof_file ?? '',
-                                                    PATHINFO_EXTENSION
-                                                )
-                                            );
-                                        @endphp
-
-                                        @if($dobExt == 'pdf')
-
-                                            <img
-                                                src="https://cdn-icons-png.flaticon.com/512/337/337946.png"
-                                                alt="PDF"
-                                            >
-
-                                        @else
-
-                                            <img
-                                                src="{{ file_url($application->dob_proof_file) }}"
-                                                alt="DOB Proof"
-                                            >
-
-                                        @endif
-
-                                        <div class="document-overlay">
-
-                                            <a
-                                                href="{{ file_url($application->dob_proof_file) }}"
-                                                target="_blank"
-                                                class="document-view-btn"
-                                            >
-
-                                                <i class="fa fa-eye me-2"></i>
-
-                                                View
-
-                                            </a>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            @endif
-
-                            {{-- SUPPORTING DOCUMENT --}}
-                            @if($application->supporting_document)
-
-                            <div class="col-xl-3 col-lg-4 col-md-6">
-
-                                <div class="document-card">
-
-                                    <div class="document-image-wrapper">
-
-                                        <div class="document-title">
-
-                                            Supporting Document
-
-                                        </div>
-
-                                        @php
-                                            $supportingExt = strtolower(
-                                                pathinfo(
-                                                    $application->supporting_document ?? '',
-                                                    PATHINFO_EXTENSION
-                                                )
-                                            );
-                                        @endphp
-
-                                        @if($supportingExt == 'pdf')
-
-                                            <img
-                                                src="https://cdn-icons-png.flaticon.com/512/337/337946.png"
-                                                alt="PDF"
-                                            >
-
-                                        @else
-
-                                            <img
-                                                src="{{ file_url($application->supporting_document) }}"
-                                                alt="Supporting Document"
-                                            >
-
-                                        @endif
-
-                                        <div class="document-overlay">
-
-                                            <a
-                                                href="{{ file_url($application->supporting_document) }}"
-                                                target="_blank"
-                                                class="document-view-btn"
-                                            >
-
-                                                <i class="fa fa-eye me-2"></i>
-
-                                                View
-
-                                            </a>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            @endif
 
                         </div>
 
+
                     </div>
+
 
                 </div>
         </div>

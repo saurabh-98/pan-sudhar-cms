@@ -465,141 +465,182 @@ class NewPanApplicationController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function preview(
-        StorePanApplicationRequest $request
-    ): JsonResponse {
+    /*
+|--------------------------------------------------------------------------
+| PREVIEW
+|--------------------------------------------------------------------------
+*/
 
-        try {
+public function preview(
+    StorePanApplicationRequest $request
+): JsonResponse {
 
-            $user = auth()->user();
+    try {
 
-            /*
-            |--------------------------------------------------------------------------
-            | WALLET CHECK
-            |--------------------------------------------------------------------------
-            */
+        $user = auth()->user();
 
-            if (
 
-                $user->wallet_balance
-                < self::PAN_CHARGE
+        /*
+        |--------------------------------------------------------------------------
+        | WALLET CHECK
+        |--------------------------------------------------------------------------
+        */
 
-            ) {
-
-                return response()->json([
-
-                    'status' => false,
-
-                    'message' =>
-                        'Insufficient wallet balance.'
-
-                ], 422);
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | DTO
-            |--------------------------------------------------------------------------
-            */
-
-            $dto =
-
-                PanApplicationDTO::fromRequest(
-                    $request
-                );
-
-            /*
-            |--------------------------------------------------------------------------
-            | FORCE FILE INIT
-            |--------------------------------------------------------------------------
-            */
-
-            $request->files->all();
-
-            /*
-            |--------------------------------------------------------------------------
-            | GENERATE PREVIEW
-            |--------------------------------------------------------------------------
-            */
-
-            $preview =
-
-                $this->panService
-                    ->preview($dto);
-           
-
-            /*
-            |--------------------------------------------------------------------------
-            | EXTRA DATA
-            |--------------------------------------------------------------------------
-            */
-
-            $preview['data']['state_name'] =
-
-                State::where(
-                    'id',
-                    $request->state
-                )->value('name');
-
-            $preview['data']['district_name'] =
-
-                District::where(
-                    'id',
-                    $request->district
-                )->value('name');
-
-            /*
-            |--------------------------------------------------------------------------
-            | RETURN
-            |--------------------------------------------------------------------------
-            */
-
-            return response()->json([
-
-                'status' => true,
-
-                'message' =>
-                    'Preview generated successfully.',
-
-                'redirect_url' =>
-
-                    route(
-                        'retailer.pan.preview.page'
-                    )
-
-            ]);
-
-        } catch (\Throwable $e) {
-
-            Log::error(
-
-                'PAN PREVIEW ERROR',
-
-                [
-
-                    'message' =>
-                        $e->getMessage(),
-
-                    'line' =>
-                        $e->getLine(),
-
-                    'file' =>
-                        $e->getFile()
-
-                ]
-
-            );
+        if ($user->wallet_balance < self::PAN_CHARGE) {
 
             return response()->json([
 
                 'status' => false,
 
                 'message' =>
-                    $e->getMessage()
+                    'Insufficient wallet balance.'
 
-            ], 500);
+            ], 422);
         }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DTO
+        |--------------------------------------------------------------------------
+        */
+
+        $dto = PanApplicationDTO::fromRequest(
+            $request
+        );
+
+        
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FORCE FILE INITIALIZE
+        |--------------------------------------------------------------------------
+        */
+
+        $request->files->all();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | GENERATE PREVIEW WITH FILE SESSION
+        |--------------------------------------------------------------------------
+        */
+
+        $preview = $this->panService
+            ->preview($dto);
+
+        
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ADD STATE NAME
+        |--------------------------------------------------------------------------
+        */
+
+        $preview['data']['state_name'] =
+
+            State::where(
+                'id',
+                $request->state
+            )->value('name');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ADD DISTRICT NAME
+        |--------------------------------------------------------------------------
+        */
+
+        $preview['data']['district_name'] =
+
+            District::where(
+                'id',
+                $request->district
+            )->value('name');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | IMPORTANT - SAVE UPDATED PREVIEW AGAIN
+        |--------------------------------------------------------------------------
+        */
+
+        session()->put(
+
+            'pan_application',
+
+            $preview
+
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FORCE SESSION WRITE
+        |--------------------------------------------------------------------------
+        */
+
+        session()->save();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RETURN RESPONSE
+        |--------------------------------------------------------------------------
+        */
+
+        return response()->json([
+
+            'status' => true,
+
+            'message' =>
+                'Preview generated successfully.',
+
+            'redirect_url' =>
+
+                route(
+                    'retailer.pan.preview.page'
+                )
+
+        ]);
+
+
+    } catch (\Throwable $e) {
+
+
+        Log::error(
+
+            'PAN PREVIEW ERROR',
+
+            [
+
+                'message' =>
+                    $e->getMessage(),
+
+                'line' =>
+                    $e->getLine(),
+
+                'file' =>
+                    $e->getFile()
+
+            ]
+
+        );
+
+
+        return response()->json([
+
+            'status' => false,
+
+            'message' =>
+                $e->getMessage()
+
+        ], 500);
     }
+}
+
 
     /*
     |--------------------------------------------------------------------------
