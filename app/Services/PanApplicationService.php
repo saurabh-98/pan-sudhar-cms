@@ -11,14 +11,13 @@ use App\Repositories\PanApplicationRepository;
 class PanApplicationService
 {
     public function __construct(
-
         protected PanApplicationRepository $repository
-
     ) {}
+
 
     /*
     |--------------------------------------------------------------------------
-    | STORE FILE
+    | STORE FILE (CLOUDINARY)
     |--------------------------------------------------------------------------
     */
 
@@ -32,6 +31,7 @@ class PanApplicationService
             return null;
         }
 
+
         return store_uploaded_file(
 
             $file,
@@ -41,222 +41,187 @@ class PanApplicationService
         );
     }
 
+
+
     /*
     |--------------------------------------------------------------------------
-    | PREVIEW SESSION
+    | PREVIEW
     |--------------------------------------------------------------------------
     */
 
     public function preview(
-    PanApplicationDTO $dto
-): array {
+        PanApplicationDTO $dto
+    ): array {
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | ENSURE FOLDERS
-    |--------------------------------------------------------------------------
-    */
+        /*
+        |--------------------------------------------------------------------------
+        | OLD SESSION FILES
+        |--------------------------------------------------------------------------
+        */
 
-    ensure_upload_directories();
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | EXISTING FILES
-    |--------------------------------------------------------------------------
-    */
-
-    $oldPreview = session(
-        'pan_application',
-        []
-    );
-    
-
-
-    $existingFiles = $oldPreview['files'] ?? [];
+        $oldPreview =
+            get_pan_session();
 
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | PHOTO
-    |--------------------------------------------------------------------------
-    */
-
-    $photoPath = $dto->photo
-
-        ? $this->storeFile(
-            $dto->photo,
-            'pan/photo'
-        )
-
-        : ($existingFiles['photo'] ?? null);
+        $existingFiles =
+            $oldPreview['files'] ?? [];
 
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | SIGNATURE
-    |--------------------------------------------------------------------------
-    */
+        /*
+        |--------------------------------------------------------------------------
+        | UPLOAD / KEEP OLD FILES
+        |--------------------------------------------------------------------------
+        */
 
-    $signaturePath = $dto->signature
+        $photoPath =
+            $dto->photo
 
-        ? $this->storeFile(
-            $dto->signature,
-            'pan/signature'
-        )
+                ? $this->storeFile(
+                    $dto->photo,
+                    'pan/photo'
+                )
 
-        : ($existingFiles['signature'] ?? null);
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | AADHAAR
-    |--------------------------------------------------------------------------
-    */
-
-    $aadhaarCardPath = $dto->aadhaar_card
-
-        ? $this->storeFile(
-            $dto->aadhaar_card,
-            'pan/aadhaar'
-        )
-
-        : ($existingFiles['aadhaar_card'] ?? null);
+                : ($existingFiles['photo'] ?? null);
 
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | DOB PROOF
-    |--------------------------------------------------------------------------
-    */
+        $signaturePath =
+            $dto->signature
 
-    $dobProofFilePath = $dto->dob_proof_file
+                ? $this->storeFile(
+                    $dto->signature,
+                    'pan/signature'
+                )
 
-        ? $this->storeFile(
-            $dto->dob_proof_file,
-            'pan/dob-proof'
-        )
-
-        : ($existingFiles['dob_proof_file'] ?? null);
+                : ($existingFiles['signature'] ?? null);
 
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | SUPPORTING DOCUMENT
-    |--------------------------------------------------------------------------
-    */
+        $aadhaarCardPath =
+            $dto->aadhaar_card
 
-    $supportingDocumentPath = $dto->supporting_document
+                ? $this->storeFile(
+                    $dto->aadhaar_card,
+                    'pan/aadhaar'
+                )
 
-        ? $this->storeFile(
-            $dto->supporting_document,
-            'pan/document'
-        )
-
-        : ($existingFiles['supporting_document'] ?? null);
+                : ($existingFiles['aadhaar_card'] ?? null);
 
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | PREVIEW DATA
-    |--------------------------------------------------------------------------
-    */
+        $dobProofFilePath =
+            $dto->dob_proof_file
 
-    $previewData = [
+                ? $this->storeFile(
+                    $dto->dob_proof_file,
+                    'pan/dob-proof'
+                )
 
-        'data' => $dto->previewArray(),
-
-        'files' => [
-
-            'photo' =>
-                $photoPath,
-
-            'signature' =>
-                $signaturePath,
-
-            'aadhaar_card' =>
-                $aadhaarCardPath,
-
-            'dob_proof_file' =>
-                $dobProofFilePath,
-
-            'supporting_document' =>
-                $supportingDocumentPath
-
-        ]
-
-    ];
+                : ($existingFiles['dob_proof_file'] ?? null);
 
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | STORE SESSION
-    |--------------------------------------------------------------------------
-    */
+        $supportingDocumentPath =
+            $dto->supporting_document
 
-    session()->put(
+                ? $this->storeFile(
+                    $dto->supporting_document,
+                    'pan/document'
+                )
 
-        'pan_application',
+                : ($existingFiles['supporting_document'] ?? null);
 
-        $previewData
 
-    );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PREVIEW DATA
+        |--------------------------------------------------------------------------
+        */
+
+        $previewData = [
+
+            'data' =>
+
+                $dto->previewArray(),
+
+
+            'files' => [
+
+                'photo' =>
+                    $photoPath,
+
+
+                'signature' =>
+                    $signaturePath,
+
+
+                'aadhaar_card' =>
+                    $aadhaarCardPath,
+
+
+                'dob_proof_file' =>
+                    $dobProofFilePath,
+
+
+                'supporting_document' =>
+                    $supportingDocumentPath
+
+            ]
+
+        ];
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SAVE SESSION USING HELPER
+        |--------------------------------------------------------------------------
+        */
+
+        save_pan_session(
+            $previewData
+        );
+
+
+
+        return $previewData;
+
+    }
+
+
 
 
 
     /*
     |--------------------------------------------------------------------------
-    | FORCE SAVE SESSION
-    |--------------------------------------------------------------------------
-    */
-
-    session()->save();
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | RETURN TO CONTROLLER
-    |--------------------------------------------------------------------------
-    */
-
-    return $previewData;
-}
-    /*
-    |--------------------------------------------------------------------------
-    | STORE APPLICATION
+    | FINAL STORE
     |--------------------------------------------------------------------------
     */
 
     public function storeFromSession(): PanApplication
     {
+
         return DB::transaction(function () {
+
 
             /*
             |--------------------------------------------------------------------------
-            | SESSION
+            | GET SESSION
             |--------------------------------------------------------------------------
             */
 
             $session =
-                session('pan_application');
+                get_pan_session();
 
-            /*
-            |--------------------------------------------------------------------------
-            | CHECK SESSION
-            |--------------------------------------------------------------------------
-            */
+
 
             if (!$session) {
+
 
                 abort(
 
@@ -267,17 +232,18 @@ class PanApplicationService
                 );
             }
 
-            /*
-            |--------------------------------------------------------------------------
-            | DATA
-            |--------------------------------------------------------------------------
-            */
+
 
             $data =
                 $session['data'] ?? [];
 
+
+
             $files =
                 $session['files'] ?? [];
+
+
+
 
             /*
             |--------------------------------------------------------------------------
@@ -287,8 +253,11 @@ class PanApplicationService
 
             $storeData = [
 
+
                 'user_id' =>
                     auth()->id(),
+
+
 
                 'application_no' =>
 
@@ -298,92 +267,16 @@ class PanApplicationService
 
                     . rand(1000,9999),
 
+
+
                 'pan_type' =>
                     'New PAN',
 
-                'first_name' =>
-                    $data['first_name'] ?? null,
 
-                'middle_name' =>
-                    $data['middle_name'] ?? null,
 
-                'last_name' =>
-                    $data['last_name'] ?? null,
+                ...$data,
 
-                'gender' =>
-                    $data['gender'] ?? null,
 
-                'father_first_name' =>
-                    $data['father_first_name'] ?? null,
-
-                'father_middle_name' =>
-                    $data['father_middle_name'] ?? null,
-
-                'father_last_name' =>
-                    $data['father_last_name'] ?? null,
-
-                'mother_first_name' =>
-                    $data['mother_first_name'] ?? null,
-
-                'mother_middle_name' =>
-                    $data['mother_middle_name'] ?? null,
-
-                'mother_last_name' =>
-                    $data['mother_last_name'] ?? null,
-
-                'pan_print_name' =>
-                    $data['pan_print_name'] ?? null,
-
-                'mobile_no' =>
-                    $data['mobile_no'] ?? null,
-
-                'email' =>
-                    $data['email'] ?? null,
-
-                'house_no' =>
-                    $data['house_no'] ?? null,
-
-                'village' =>
-                    $data['village'] ?? null,
-
-                'post_office' =>
-                    $data['post_office'] ?? null,
-
-                'area' =>
-                    $data['area'] ?? null,
-
-                'state' =>
-                    $data['state'] ?? null,
-
-                'district' =>
-                    $data['district'] ?? null,
-
-                'pincode' =>
-                    $data['pincode'] ?? null,
-
-                'identity_proof' =>
-                    $data['identity_proof'] ?? null,
-
-                'address_proof' =>
-                    $data['address_proof'] ?? null,
-
-                'dob_proof' =>
-                    $data['dob_proof'] ?? null,
-
-                'dob' =>
-                    $data['dob'] ?? null,
-
-                'confirm_dob' =>
-                    $data['confirm_dob'] ?? null,
-
-                'aadhaar_no' =>
-                    $data['aadhaar_no'] ?? null,
-
-                'aadhaar_name' =>
-                    $data['aadhaar_name'] ?? null,
-
-                'signature_type' =>
-                    $data['signature_type'] ?? null,
 
                 /*
                 |--------------------------------------------------------------------------
@@ -391,20 +284,31 @@ class PanApplicationService
                 |--------------------------------------------------------------------------
                 */
 
+
                 'photo' =>
                     $files['photo'] ?? null,
+
+
 
                 'signature' =>
                     $files['signature'] ?? null,
 
+
+
                 'aadhaar_card' =>
                     $files['aadhaar_card'] ?? null,
+
+
 
                 'dob_proof_file' =>
                     $files['dob_proof_file'] ?? null,
 
+
+
                 'supporting_document' =>
                     $files['supporting_document'] ?? null,
+
+
 
                 /*
                 |--------------------------------------------------------------------------
@@ -412,51 +316,52 @@ class PanApplicationService
                 |--------------------------------------------------------------------------
                 */
 
+
                 'amount' =>
                     107,
+
 
                 'payment_status' =>
                     'Pending',
 
+
                 'status' =>
                     'Pending',
+
 
                 'wallet_deducted' =>
                     false,
 
+
                 'wallet_deducted_at' =>
                     null,
 
-                /*
-                |--------------------------------------------------------------------------
-                | META
-                |--------------------------------------------------------------------------
-                */
 
                 'ip_address' =>
                     request()->ip(),
 
+
                 'browser' =>
                     request()->userAgent(),
 
-                'created_at' =>
-                    now(),
-
-                'updated_at' =>
-                    now()
-
             ];
+
+
 
             /*
             |--------------------------------------------------------------------------
-            | CREATE APPLICATION
+            | CREATE
             |--------------------------------------------------------------------------
             */
 
             $application =
 
                 $this->repository
+
                     ->create($storeData);
+
+
+
 
             /*
             |--------------------------------------------------------------------------
@@ -464,60 +369,55 @@ class PanApplicationService
             |--------------------------------------------------------------------------
             */
 
-            session()->forget(
-                'pan_application'
-            );
+            clear_pan_session();
 
-            request()->session()->save();
 
-            /*
-            |--------------------------------------------------------------------------
-            | RETURN
-            |--------------------------------------------------------------------------
-            */
+
 
             return $application;
 
         });
+
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | HISTORY
-    |--------------------------------------------------------------------------
-    */
+
+
+
 
     public function history(
         int $userId
     )
     {
+
         return $this->repository
+
             ->history($userId);
+
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | FIND
-    |--------------------------------------------------------------------------
-    */
+
+
 
     public function find(
         int $id,
         int $userId
     ): PanApplication {
 
+
         return $this->repository
+
             ->findByUser(
+
                 $id,
+
                 $userId
+
             );
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | UPDATE
-    |--------------------------------------------------------------------------
-    */
+
+
+
 
     public function update(
         $request,
@@ -525,14 +425,20 @@ class PanApplicationService
         int $userId
     ): bool {
 
+
         $application =
 
             $this->find(
+
                 $id,
+
                 $userId
+
             );
 
+
         return $this->repository
+
             ->update(
 
                 $application,
@@ -540,58 +446,71 @@ class PanApplicationService
                 $request->validated()
 
             );
+
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | DELETE
-    |--------------------------------------------------------------------------
-    */
+
+
+
 
     public function delete(
         int $id,
         int $userId
     ): bool {
 
+
         $application =
 
             $this->find(
+
                 $id,
+
                 $userId
+
             );
 
-        /*
-        |--------------------------------------------------------------------------
-        | DELETE FILES
-        |--------------------------------------------------------------------------
-        */
 
-        $files = [
+
+        foreach ([
+
 
             $application->photo,
 
+
             $application->signature,
+
 
             $application->aadhaar_card,
 
+
             $application->dob_proof_file,
+
 
             $application->supporting_document
 
-        ];
 
-        foreach ($files as $file) {
+        ] as $file) {
 
-            delete_uploaded_file($file);
+
+
+            delete_uploaded_file(
+
+                $file
+
+            );
+
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | DELETE RECORD
-        |--------------------------------------------------------------------------
-        */
+
 
         return $this->repository
-            ->delete($application);
+
+            ->delete(
+
+                $application
+
+            );
+
     }
+
 }

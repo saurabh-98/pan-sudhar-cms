@@ -425,10 +425,7 @@ class NewPanApplicationController extends Controller
 
     public function create()
     {
-        $preview = session(
-            'pan_application',
-            []
-        );
+        $preview = get_pan_session();
 
         return view(
 
@@ -441,14 +438,17 @@ class NewPanApplicationController extends Controller
                     $this->stateService
                         ->getAll(),
 
+
                 'walletBalance' =>
 
                     auth()->user()
                         ->wallet_balance,
 
+
                 'data' =>
 
                     $preview['data'] ?? [],
+
 
                 'files' =>
 
@@ -459,207 +459,192 @@ class NewPanApplicationController extends Controller
         );
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | PREVIEW
-    |--------------------------------------------------------------------------
-    */
+  
 
-    /*
-|--------------------------------------------------------------------------
-| PREVIEW
-|--------------------------------------------------------------------------
-*/
-
-public function preview(
-    StorePanApplicationRequest $request
-): JsonResponse {
-
-    try {
-
-        $user = auth()->user();
+    public function preview(
+        StorePanApplicationRequest $request
+    ): JsonResponse {
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | WALLET CHECK
-        |--------------------------------------------------------------------------
-        */
+        try {
 
-        if ($user->wallet_balance < self::PAN_CHARGE) {
+
+            $user = auth()->user();
+
+
+
+            if ($user->wallet_balance < self::PAN_CHARGE) {
+
+
+                return response()->json([
+
+                    'status' => false,
+
+                    'message' =>
+                        'Insufficient wallet balance.'
+
+                ],422);
+
+            }
+
+
+
+            $dto = PanApplicationDTO::fromRequest(
+
+                $request
+
+            );
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | CLOUDINARY UPLOAD + SESSION SAVE FROM SERVICE
+            |--------------------------------------------------------------------------
+            */
+
+
+            $preview =
+
+                $this->panService
+
+                    ->preview($dto);
+
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | ADD STATE NAME
+            |--------------------------------------------------------------------------
+            */
+
+
+            $preview['data']['state_name'] =
+
+                State::where(
+
+                    'id',
+
+                    $request->state
+
+                )->value('name')
+
+                ??
+
+                'N/A';
+
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | ADD DISTRICT NAME
+            |--------------------------------------------------------------------------
+            */
+
+
+            $preview['data']['district_name'] =
+
+
+                District::where(
+
+                    'id',
+
+                    $request->district
+
+                )->value('name')
+
+                ??
+
+                'N/A';
+
+
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE SESSION
+            |--------------------------------------------------------------------------
+            */
+
+
+            save_pan_session(
+
+                $preview
+
+            );
+
+
+
+
 
             return response()->json([
 
-                'status' => false,
 
-                'message' =>
-                    'Insufficient wallet balance.'
+                'status'=>true,
 
-            ], 422);
+
+                'message'=>
+                    'Preview generated successfully.',
+
+
+
+                'redirect_url'=>
+
+                    route(
+
+                        'retailer.pan.preview.page'
+
+                    )
+
+            ]);
+
+
+
+        } catch(\Throwable $e){
+
+
+
+            Log::error(
+
+                'PAN PREVIEW ERROR',
+
+                [
+
+                    'message'=>$e->getMessage(),
+
+                    'line'=>$e->getLine(),
+
+                    'file'=>$e->getFile()
+
+                ]
+
+            );
+
+
+
+            return response()->json([
+
+                'status'=>false,
+
+                'message'=>$e->getMessage()
+
+            ],500);
+
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | DTO
-        |--------------------------------------------------------------------------
-        */
-
-        $dto = PanApplicationDTO::fromRequest(
-            $request
-        );
-
-        
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | FORCE FILE INITIALIZE
-        |--------------------------------------------------------------------------
-        */
-
-        $request->files->all();
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | GENERATE PREVIEW WITH FILE SESSION
-        |--------------------------------------------------------------------------
-        */
-
-        $preview = $this->panService
-            ->preview($dto);
-
-        
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADD STATE NAME
-        |--------------------------------------------------------------------------
-        */
-
-        $preview['data']['state_name'] =
-
-            State::where(
-                'id',
-                $request->state
-            )->value('name');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADD DISTRICT NAME
-        |--------------------------------------------------------------------------
-        */
-
-        $preview['data']['district_name'] =
-
-            District::where(
-                'id',
-                $request->district
-            )->value('name');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | IMPORTANT - SAVE UPDATED PREVIEW AGAIN
-        |--------------------------------------------------------------------------
-        */
-
-        session()->put(
-
-            'pan_application',
-
-            $preview
-
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | FORCE SESSION WRITE
-        |--------------------------------------------------------------------------
-        */
-
-        session()->save();
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | RETURN RESPONSE
-        |--------------------------------------------------------------------------
-        */
-
-        return response()->json([
-
-            'status' => true,
-
-            'message' =>
-                'Preview generated successfully.',
-
-            'redirect_url' =>
-
-                route(
-                    'retailer.pan.preview.page'
-                )
-
-        ]);
-
-
-    } catch (\Throwable $e) {
-
-
-        Log::error(
-
-            'PAN PREVIEW ERROR',
-
-            [
-
-                'message' =>
-                    $e->getMessage(),
-
-                'line' =>
-                    $e->getLine(),
-
-                'file' =>
-                    $e->getFile()
-
-            ]
-
-        );
-
-
-        return response()->json([
-
-            'status' => false,
-
-            'message' =>
-                $e->getMessage()
-
-        ], 500);
     }
-}
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | PREVIEW PAGE
-    |--------------------------------------------------------------------------
-    */
+   
 
     public function previewPage()
     {
-        $preview = session(
-            'pan_application',
-            []
-        );
 
-        /*
-        |--------------------------------------------------------------------------
-        | VALIDATE SESSION
-        |--------------------------------------------------------------------------
-        */
+        $preview = get_pan_session();
+
+
 
         if (
 
@@ -675,10 +660,13 @@ public function preview(
 
         ) {
 
+
             return redirect()
 
                 ->route(
+
                     'retailer.pan.apply'
+
                 )
 
                 ->with(
@@ -688,63 +676,12 @@ public function preview(
                     'Preview session expired.'
 
                 );
+
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | ENSURE SAFE KEYS
-        |--------------------------------------------------------------------------
-        */
 
-        $preview['data']['state_name'] =
 
-            $preview['data']['state_name']
 
-            ??
-
-            State::where(
-                'id',
-                $preview['data']['state'] ?? null
-            )->value('name')
-
-            ??
-
-            'N/A';
-
-        $preview['data']['district_name'] =
-
-            $preview['data']['district_name']
-
-            ??
-
-            District::where(
-                'id',
-                $preview['data']['district'] ?? null
-            )->value('name')
-
-            ??
-
-            'N/A';
-
-        /*
-        |--------------------------------------------------------------------------
-        | UPDATE SESSION
-        |--------------------------------------------------------------------------
-        */
-
-        session([
-
-            'pan_application' => $preview
-
-        ]);
-
-        request()->session()->save();
-
-        /*
-        |--------------------------------------------------------------------------
-        | RETURN VIEW
-        |--------------------------------------------------------------------------
-        */
 
         return view(
 
@@ -752,20 +689,25 @@ public function preview(
 
             [
 
-                'data' =>
+                'data'=>
 
                     $preview['data'],
 
-                'files' =>
+
+                'files'=>
 
                     $preview['files']
-                    ?? []
+
+                    ??
+
+                    []
 
             ]
 
         );
+
     }
-    
+
     /*
     |--------------------------------------------------------------------------
     | FINAL SUBMIT
@@ -778,11 +720,20 @@ public function preview(
 
         try {
 
+
+            /*
+            |--------------------------------------------------------------------------
+            | USERS LOCK
+            |--------------------------------------------------------------------------
+            */
+
             $user = User::query()
 
                 ->lockForUpdate()
 
                 ->find(auth()->id());
+
+
 
             $admin = User::query()
 
@@ -792,6 +743,8 @@ public function preview(
 
                 ->first();
 
+
+
             /*
             |--------------------------------------------------------------------------
             | ADMIN CHECK
@@ -800,7 +753,9 @@ public function preview(
 
             if (!$admin) {
 
+
                 DB::rollBack();
+
 
                 return response()->json([
 
@@ -809,21 +764,28 @@ public function preview(
                     'message' =>
                         'Admin account not found.'
 
-                ], 500);
+                ],500);
+
             }
+
+
+
 
             /*
             |--------------------------------------------------------------------------
-            | SESSION
+            | SESSION (VERCEL SAFE HELPER)
             |--------------------------------------------------------------------------
             */
 
-            $session =
-                session('pan_application');
+            $session = get_pan_session();
+
+
 
             if (!$session) {
 
+
                 DB::rollBack();
+
 
                 return response()->json([
 
@@ -832,12 +794,18 @@ public function preview(
                     'message' =>
                         'Preview session expired. Please apply again.'
 
-                ], 422);
+                ],422);
+
             }
+
+
+
+
+
 
             /*
             |--------------------------------------------------------------------------
-            | FILE CHECK
+            | CLOUDINARY FILE CHECK
             |--------------------------------------------------------------------------
             */
 
@@ -849,29 +817,30 @@ public function preview(
 
             ) {
 
-                if (
 
-                    $file
+                if (!$file) {
 
-                    &&
-
-                    !file_exists_custom($file)
-
-                ) {
 
                     DB::rollBack();
+
 
                     return response()->json([
 
                         'status' => false,
 
                         'message' =>
+                            'Uploaded document missing. Please upload again.'
 
-                            'Some uploaded documents expired after deployment. Please upload documents again.'
+                    ],422);
 
-                    ], 422);
                 }
+
             }
+
+
+
+
+
 
             /*
             |--------------------------------------------------------------------------
@@ -882,11 +851,14 @@ public function preview(
             if (
 
                 $user->wallet_balance
+
                 < self::PAN_CHARGE
 
             ) {
 
+
                 DB::rollBack();
+
 
                 return response()->json([
 
@@ -895,8 +867,15 @@ public function preview(
                     'message' =>
                         'Insufficient wallet balance.'
 
-                ], 422);
+                ],422);
+
             }
+
+
+
+
+
+
 
             /*
             |--------------------------------------------------------------------------
@@ -907,19 +886,34 @@ public function preview(
             $application =
 
                 $this->panService
+
                     ->storeFromSession();
+
+
+
+
+
+
 
             /*
             |--------------------------------------------------------------------------
-            | BALANCES
+            | BALANCE BEFORE
             |--------------------------------------------------------------------------
             */
 
             $retailerBefore =
                 $user->wallet_balance;
 
+
+
             $adminBefore =
                 $admin->wallet_balance;
+
+
+
+
+
+
 
             /*
             |--------------------------------------------------------------------------
@@ -928,18 +922,35 @@ public function preview(
             */
 
             $user->decrement(
+
                 'wallet_balance',
+
                 self::PAN_CHARGE
+
             );
 
+
+
             $admin->increment(
+
                 'wallet_balance',
+
                 self::PAN_CHARGE
+
             );
+
+
 
             $user->refresh();
 
             $admin->refresh();
+
+
+
+
+
+
+
 
             /*
             |--------------------------------------------------------------------------
@@ -949,19 +960,26 @@ public function preview(
 
             $application->update([
 
-                'wallet_deducted' =>
-                    true,
 
-                'wallet_deducted_at' =>
-                    now(),
+                'wallet_deducted' => true,
 
-                'payment_status' =>
-                    'Paid',
 
-                'status' =>
-                    'Processing'
+                'wallet_deducted_at' => now(),
+
+
+                'payment_status' => 'Paid',
+
+
+                'status' => 'Processing'
 
             ]);
+
+
+
+
+
+
+
 
             /*
             |--------------------------------------------------------------------------
@@ -971,23 +989,30 @@ public function preview(
 
             WalletTransaction::create([
 
+
                 'user_id' =>
                     $user->id,
+
 
                 'amount' =>
                     self::PAN_CHARGE,
 
+
                 'before_balance' =>
                     $retailerBefore,
+
 
                 'after_balance' =>
                     $user->wallet_balance,
 
+
                 'type' =>
                     'debit',
 
+
                 'status' =>
                     'success',
+
 
                 'transaction_no' =>
 
@@ -997,10 +1022,18 @@ public function preview(
 
                     . rand(1000,9999),
 
+
                 'remark' =>
                     'New PAN Application Charge'
 
             ]);
+
+
+
+
+
+
+
 
             /*
             |--------------------------------------------------------------------------
@@ -1010,23 +1043,30 @@ public function preview(
 
             WalletTransaction::create([
 
+
                 'user_id' =>
                     $admin->id,
+
 
                 'amount' =>
                     self::PAN_CHARGE,
 
+
                 'before_balance' =>
                     $adminBefore,
+
 
                 'after_balance' =>
                     $admin->wallet_balance,
 
+
                 'type' =>
                     'credit',
 
+
                 'status' =>
                     'success',
+
 
                 'transaction_no' =>
 
@@ -1036,10 +1076,18 @@ public function preview(
 
                     . rand(1000,9999),
 
+
                 'remark' =>
                     'PAN Application Received Amount'
 
             ]);
+
+
+
+
+
+
+
 
             /*
             |--------------------------------------------------------------------------
@@ -1049,31 +1097,44 @@ public function preview(
 
             DB::commit();
 
-            /*
-            |--------------------------------------------------------------------------
-            | RETURN
-            |--------------------------------------------------------------------------
-            */
+
+
+
+
+
 
             return response()->json([
 
+
                 'status' => true,
+
 
                 'message' =>
                     'PAN Application Submitted Successfully.',
 
+
                 'redirect_url' =>
 
                     route(
+
                         'retailer.pan.acknowledgement',
+
                         $application->id
+
                     )
 
             ]);
 
+
+
+
+
         } catch (\Throwable $e) {
 
+
             DB::rollBack();
+
+
 
             Log::error(
 
@@ -1084,8 +1145,10 @@ public function preview(
                     'message' =>
                         $e->getMessage(),
 
+
                     'line' =>
                         $e->getLine(),
+
 
                     'file' =>
                         $e->getFile()
@@ -1094,17 +1157,24 @@ public function preview(
 
             );
 
+
+
+
             return response()->json([
 
+
                 'status' => false,
+
 
                 'message' =>
                     $e->getMessage()
 
-            ], 500);
+
+            ],500);
+
         }
     }
-
+    
     /*
     |--------------------------------------------------------------------------
     | SHOW
