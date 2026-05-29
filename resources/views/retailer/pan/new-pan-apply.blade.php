@@ -913,16 +913,94 @@
             </div>
 
 
-                    {{-- STEP 8 DOCUMENTS --}}
+                   {{-- STEP 8 DOCUMENTS --}}
+
+                    @php
+
+                        function cloudFileExtension($file)
+                        {
+                            return strtolower(
+
+                                pathinfo(
+
+                                    parse_url(
+                                        file_url($file),
+                                        PHP_URL_PATH
+                                    ),
+
+                                    PATHINFO_EXTENSION
+
+                                )
+
+                            );
+                        }
+
+
+                        $documents = [
+
+                            [
+                                'title' => 'Applicant Photo',
+                                'name'  => 'photo',
+                                'icon'  => 'fa-camera',
+                                'text'  => 'JPG / PNG',
+                                'accept'=> '.jpg,.jpeg,.png'
+                            ],
+
+
+                            [
+                                'title' => 'Signature',
+                                'name'  => 'signature',
+                                'icon'  => 'fa-signature',
+                                'text'  => 'JPG / PNG',
+                                'accept'=> '.jpg,.jpeg,.png'
+                            ],
+
+
+                            [
+                                'title' => 'Aadhaar Card',
+                                'name'  => 'aadhaar_card',
+                                'icon'  => 'fa-id-card',
+                                'text'  => 'Upload Front + Back in Single File',
+                                'accept'=> '.jpg,.jpeg,.png,.pdf'
+                            ],
+
+
+                            [
+                                'title' => 'DOB Proof',
+                                'name'  => 'dob_proof_file',
+                                'icon'  => 'fa-calendar-days',
+                                'text'  => 'JPG / PDF',
+                                'accept'=> '.jpg,.jpeg,.png,.pdf'
+                            ],
+
+
+                            [
+                                'title' => 'Supporting Document',
+                                'name'  => 'supporting_document',
+                                'icon'  => 'fa-file-circle-plus',
+                                'text'  => 'JPG / PDF',
+                                'accept'=> '.jpg,.jpeg,.png,.pdf'
+                            ]
+
+                        ];
+
+                    @endphp
+
+
+
                     <div class="pan-step-card">
+
 
                         <div class="step-heading">
 
+
                             <div class="step-left">
+
 
                                 <div class="step-number">
                                     8
                                 </div>
+
 
                                 <div>
 
@@ -930,543 +1008,218 @@
                                         Upload Documents
                                     </h4>
 
+
                                     <p>
                                         Upload all mandatory PAN application documents
                                     </p>
 
                                 </div>
 
+
                             </div>
+
 
                         </div>
 
+
+
                         <div class="row g-4">
 
-                            {{-- PHOTO --}}
-                            <div class="col-lg-3 col-md-6">
 
-                                <div class="upload-wrapper">
+                            @foreach($documents as $doc)
 
-                                    <label class="upload-box">
 
-                                        <input
-                                            type="file"
-                                            name="photo"
-                                            class="document-input d-none"
-                                            accept=".jpg,.jpeg,.png"
-                                        >
+                                @php
 
-                                        <div class="upload-preview">
+                                    $file =
+                                        $files[$doc['name']]
+                                        ??
+                                        null;
 
-                                            @if(
-                                                !empty($files['photo'])
-                                                &&
-                                                file_exists_custom($files['photo'])
-                                            )
 
-                                                @php
-                                                    $photoExt = strtolower(
-                                                        pathinfo(
-                                                            $files['photo'],
-                                                            PATHINFO_EXTENSION
-                                                        )
-                                                    );
-                                                @endphp
+                                    $exists =
+                                        $file
+                                        &&
+                                        file_exists_custom($file);
 
-                                                @if($photoExt === 'pdf')
 
-                                                    <img
-                                                        src="{{ asset('assets/images/pdf-icon.png') }}"
-                                                        class="preview-image"
-                                                        alt="PDF"
-                                                    >
+                                    $ext =
+                                        $exists
+                                        ?
+                                        cloudFileExtension($file)
+                                        :
+                                        null;
 
-                                                @else
 
-                                                    <img
-                                                        src="{{ file_url($files['photo']) }}"
-                                                        class="preview-image"
-                                                        alt="Photo"
-                                                        loading="lazy"
-                                                        onerror="this.style.display='none';"
-                                                    >
+                                @endphp
 
-                                                @endif
 
-                                            @else
 
-                                                <img
-                                                    class="preview-image d-none"
-                                                    alt="Photo"
-                                                >
+                                <div class="col-lg-3 col-md-6">
 
-                                            @endif
 
-                                            <div class="default-upload {{ (!empty($files['photo']) && file_exists_custom($files['photo'])) ? 'd-none' : '' }}">
+                                    <div class="upload-wrapper">
 
-                                                <div class="upload-icon">
 
-                                                    <i class="fa fa-camera"></i>
+                                        <label class="upload-box">
 
-                                                </div>
 
-                                                <h5>
-                                                    Applicant Photo
-                                                </h5>
+                                            <input
 
-                                                <p>
-                                                    JPG / PNG
-                                                </p>
+                                                type="file"
 
-                                            </div>
+                                                name="{{ $doc['name'] }}"
 
-                                        </div>
+                                                class="document-input d-none"
 
-                                    </label>
+                                                accept="{{ $doc['accept'] }}"
 
-                                    <div class="file-details {{ (!empty($files['photo']) && file_exists_custom($files['photo'])) ? '' : 'd-none' }}">
+                                            >
 
-                                        <span class="file-name">
 
-                                            {{ (!empty($files['photo']) && file_exists_custom($files['photo'])) ? basename($files['photo']) : '' }}
 
-                                        </span>
+                                            <div class="upload-preview">
 
-                                        <button
-                                            type="button"
-                                            class="remove-file-btn"
-                                        >
-                                            <i class="fa fa-times"></i>
-                                        </button>
 
-                                    </div>
 
-                                </div>
+                                                @if($exists)
 
-                            </div>
 
-                            {{-- SIGNATURE --}}
-                            <div class="col-lg-3 col-md-6">
+                                                    @if($ext === 'pdf')
 
-                                <div class="upload-wrapper">
 
-                                    <label class="upload-box">
+                                                        <img
 
-                                        <input
-                                            type="file"
-                                            name="signature"
-                                            class="document-input d-none"
-                                            accept=".jpg,.jpeg,.png"
-                                        >
+                                                            src="{{ asset('assets/images/pdf-icon.png') }}"
 
-                                        <div class="upload-preview">
+                                                            class="preview-image"
 
-                                            @if(
-                                                !empty($files['signature'])
-                                                &&
-                                                file_exists_custom($files['signature'])
-                                            )
+                                                            alt="PDF"
 
-                                                @php
-                                                    $signatureExt = strtolower(
-                                                        pathinfo(
-                                                            $files['signature'],
-                                                            PATHINFO_EXTENSION
-                                                        )
-                                                    );
-                                                @endphp
+                                                        >
 
-                                                @if($signatureExt === 'pdf')
 
-                                                    <img
-                                                        src="{{ asset('assets/images/pdf-icon.png') }}"
-                                                        class="preview-image"
-                                                        alt="PDF"
-                                                    >
+                                                    @else
+
+
+                                                        <img
+
+                                                            src="{{ file_url($file) }}"
+
+                                                            class="preview-image"
+
+                                                            alt="{{ $doc['title'] }}"
+
+                                                            loading="lazy"
+
+                                                        >
+
+
+                                                    @endif
+
 
                                                 @else
 
+
                                                     <img
-                                                        src="{{ file_url($files['signature']) }}"
-                                                        class="preview-image"
-                                                        alt="Signature"
-                                                        loading="lazy"
-                                                        onerror="this.style.display='none';"
+
+                                                        class="preview-image d-none"
+
+                                                        alt="{{ $doc['title'] }}"
+
                                                     >
+
 
                                                 @endif
 
-                                            @else
 
-                                                <img
-                                                    class="preview-image d-none"
-                                                    alt="Signature"
-                                                >
 
-                                            @endif
 
-                                            <div class="default-upload {{ (!empty($files['signature']) && file_exists_custom($files['signature'])) ? 'd-none' : '' }}">
+                                                <div class="default-upload {{ $exists ? 'd-none' : '' }}">
 
-                                                <div class="upload-icon">
 
-                                                    <i class="fa fa-signature"></i>
+                                                    <div class="upload-icon">
 
-                                                </div>
 
-                                                <h5>
-                                                    Signature
-                                                </h5>
+                                                        <i class="fa {{ $doc['icon'] }}"></i>
 
-                                                <p>
-                                                    JPG / PNG
-                                                </p>
 
-                                            </div>
+                                                    </div>
 
-                                        </div>
 
-                                    </label>
+                                                    <h5>
 
-                                    <div class="file-details {{ (!empty($files['signature']) && file_exists_custom($files['signature'])) ? '' : 'd-none' }}">
+                                                        {{ $doc['title'] }}
 
-                                        <span class="file-name">
+                                                    </h5>
 
-                                            {{ (!empty($files['signature']) && file_exists_custom($files['signature'])) ? basename($files['signature']) : '' }}
 
-                                        </span>
+                                                    <p>
 
-                                        <button
-                                            type="button"
-                                            class="remove-file-btn"
-                                        >
-                                            <i class="fa fa-times"></i>
-                                        </button>
+                                                        {{ $doc['text'] }}
 
-                                    </div>
+                                                    </p>
 
-                                </div>
-
-                            </div>
-
-                            {{-- AADHAAR CARD --}}
-                            <div class="col-lg-6 col-md-12">
-
-                                <div class="upload-wrapper h-100">
-
-                                    <label class="upload-box h-100">
-
-                                        <input
-                                            type="file"
-                                            name="aadhaar_card"
-                                            class="document-input d-none"
-                                            accept=".jpg,.jpeg,.png,.pdf"
-                                        >
-
-                                        <div class="upload-preview">
-
-                                            @if(
-                                                !empty($files['aadhaar_card'])
-                                                &&
-                                                file_exists_custom($files['aadhaar_card'])
-                                            )
-
-                                                @php
-                                                    $aadhaarExt = strtolower(
-                                                        pathinfo(
-                                                            $files['aadhaar_card'],
-                                                            PATHINFO_EXTENSION
-                                                        )
-                                                    );
-                                                @endphp
-
-                                                @if($aadhaarExt === 'pdf')
-
-                                                    <img
-                                                        src="{{ asset('assets/images/pdf-icon.png') }}"
-                                                        class="preview-image"
-                                                        alt="PDF"
-                                                    >
-
-                                                @else
-
-                                                    <img
-                                                        src="{{ file_url($files['aadhaar_card']) }}"
-                                                        class="preview-image"
-                                                        alt="Aadhaar Card"
-                                                        loading="lazy"
-                                                        onerror="this.style.display='none';"
-                                                    >
-
-                                                @endif
-
-                                            @else
-
-                                                <img
-                                                    class="preview-image d-none"
-                                                    alt="Aadhaar Card"
-                                                >
-
-                                            @endif
-
-                                            <div class="default-upload {{ (!empty($files['aadhaar_card']) && file_exists_custom($files['aadhaar_card'])) ? 'd-none' : '' }}">
-
-                                                <div class="upload-icon">
-
-                                                    <i class="fa fa-id-card"></i>
 
                                                 </div>
 
-                                                <h5>
-                                                    Aadhaar Card
-                                                </h5>
-
-                                                <p>
-                                                    Upload Front + Back in Single File
-                                                </p>
 
                                             </div>
 
-                                        </div>
 
-                                    </label>
+                                        </label>
 
-                                    <div class="file-details {{ (!empty($files['aadhaar_card']) && file_exists_custom($files['aadhaar_card'])) ? '' : 'd-none' }}">
 
-                                        <span class="file-name">
 
-                                            {{ (!empty($files['aadhaar_card']) && file_exists_custom($files['aadhaar_card'])) ? basename($files['aadhaar_card']) : '' }}
 
-                                        </span>
+                                        <div class="file-details {{ $exists ? '' : 'd-none' }}">
 
-                                        <button
-                                            type="button"
-                                            class="remove-file-btn"
-                                        >
-                                            <i class="fa fa-times"></i>
-                                        </button>
 
-                                    </div>
+                                            <span class="file-name">
 
-                                </div>
+                                                {{ $exists ? basename($file) : '' }}
 
-                            </div>
+                                            </span>
 
-                            {{-- DOB PROOF --}}
-                            <div class="col-lg-3 col-md-6">
 
-                                <div class="upload-wrapper">
 
-                                    <label class="upload-box">
+                                            <button
 
-                                        <input
-                                            type="file"
-                                            name="dob_proof_file"
-                                            class="document-input d-none"
-                                            accept=".jpg,.jpeg,.png,.pdf"
-                                        >
+                                                type="button"
 
-                                        <div class="upload-preview">
+                                                class="remove-file-btn"
 
-                                            @if(
-                                                !empty($files['dob_proof_file'])
-                                                &&
-                                                file_exists_custom($files['dob_proof_file'])
-                                            )
+                                            >
 
-                                                @php
-                                                    $dobProofExt = strtolower(
-                                                        pathinfo(
-                                                            $files['dob_proof_file'],
-                                                            PATHINFO_EXTENSION
-                                                        )
-                                                    );
-                                                @endphp
+                                                <i class="fa fa-times"></i>
 
-                                                @if($dobProofExt === 'pdf')
+                                            </button>
 
-                                                    <img
-                                                        src="{{ asset('assets/images/pdf-icon.png') }}"
-                                                        class="preview-image"
-                                                        alt="PDF"
-                                                    >
-
-                                                @else
-
-                                                    <img
-                                                        src="{{ file_url($files['dob_proof_file']) }}"
-                                                        class="preview-image"
-                                                        alt="DOB Proof"
-                                                        loading="lazy"
-                                                        onerror="this.style.display='none';"
-                                                    >
-
-                                                @endif
-
-                                            @else
-
-                                                <img
-                                                    class="preview-image d-none"
-                                                    alt="DOB Proof"
-                                                >
-
-                                            @endif
-
-                                            <div class="default-upload {{ (!empty($files['dob_proof_file']) && file_exists_custom($files['dob_proof_file'])) ? 'd-none' : '' }}">
-
-                                                <div class="upload-icon">
-
-                                                    <i class="fa fa-calendar-days"></i>
-
-                                                </div>
-
-                                                <h5>
-                                                    DOB Proof
-                                                </h5>
-
-                                                <p>
-                                                    JPG / PDF
-                                                </p>
-
-                                            </div>
 
                                         </div>
 
-                                    </label>
 
-                                    <div class="file-details {{ (!empty($files['dob_proof_file']) && file_exists_custom($files['dob_proof_file'])) ? '' : 'd-none' }}">
-
-                                        <span class="file-name">
-
-                                            {{ (!empty($files['dob_proof_file']) && file_exists_custom($files['dob_proof_file'])) ? basename($files['dob_proof_file']) : '' }}
-
-                                        </span>
-
-                                        <button
-                                            type="button"
-                                            class="remove-file-btn"
-                                        >
-                                            <i class="fa fa-times"></i>
-                                        </button>
 
                                     </div>
 
-                                </div>
-
-                            </div>
-
-                            {{-- SUPPORTING DOCUMENT --}}
-                            <div class="col-lg-3 col-md-6">
-
-                                <div class="upload-wrapper">
-
-                                    <label class="upload-box">
-
-                                        <input
-                                            type="file"
-                                            name="supporting_document"
-                                            class="document-input d-none"
-                                            accept=".jpg,.jpeg,.png,.pdf"
-                                        >
-
-                                        <div class="upload-preview">
-
-                                            @if(
-                                                !empty($files['supporting_document'])
-                                                &&
-                                                file_exists_custom($files['supporting_document'])
-                                            )
-
-                                                @php
-                                                    $supportingDocumentExt = strtolower(
-                                                        pathinfo(
-                                                            $files['supporting_document'],
-                                                            PATHINFO_EXTENSION
-                                                        )
-                                                    );
-                                                @endphp
-
-                                                @if($supportingDocumentExt === 'pdf')
-
-                                                    <img
-                                                        src="{{ asset('assets/images/pdf-icon.png') }}"
-                                                        class="preview-image"
-                                                        alt="PDF"
-                                                    >
-
-                                                @else
-
-                                                    <img
-                                                        src="{{ file_url($files['supporting_document']) }}"
-                                                        class="preview-image"
-                                                        alt="Supporting Document"
-                                                        loading="lazy"
-                                                        onerror="this.style.display='none';"
-                                                    >
-
-                                                @endif
-
-                                            @else
-
-                                                <img
-                                                    class="preview-image d-none"
-                                                    alt="Supporting Document"
-                                                >
-
-                                            @endif
-
-                                            <div class="default-upload {{ (!empty($files['supporting_document']) && file_exists_custom($files['supporting_document'])) ? 'd-none' : '' }}">
-
-                                                <div class="upload-icon">
-
-                                                    <i class="fa fa-file-circle-plus"></i>
-
-                                                </div>
-
-                                                <h5>
-                                                    Supporting Document
-                                                </h5>
-
-                                                <p>
-                                                    JPG / PDF
-                                                </p>
-
-                                            </div>
-
-                                        </div>
-
-                                    </label>
-
-                                    <div class="file-details {{ (!empty($files['supporting_document']) && file_exists_custom($files['supporting_document'])) ? '' : 'd-none' }}">
-
-                                        <span class="file-name">
-
-                                            {{ (!empty($files['supporting_document']) && file_exists_custom($files['supporting_document'])) ? basename($files['supporting_document']) : '' }}
-
-                                        </span>
-
-                                        <button
-                                            type="button"
-                                            class="remove-file-btn"
-                                        >
-                                            <i class="fa fa-times"></i>
-                                        </button>
-
-                                    </div>
 
                                 </div>
 
-                            </div>
+
+                            @endforeach
+
+
+
+
 
                             {{-- EXISTING FILES --}}
-                            @foreach([
-                                'photo',
-                                'signature',
-                                'aadhaar_card',
-                                'identity_proof_file',
-                                'address_proof_file',
-                                'dob_proof_file',
-                                'supporting_document'
-                            ] as $field)
+                            @foreach($documents as $doc)
+
+
+                                @php
+                                    $field = $doc['name'];
+                                @endphp
+
 
                                 @if(
                                     !empty($files[$field])
@@ -1474,17 +1227,26 @@
                                     file_exists_custom($files[$field])
                                 )
 
+
                                     <input
+
                                         type="hidden"
+
                                         name="existing_files[{{ $field }}]"
+
                                         value="{{ $files[$field] }}"
+
                                     >
+
 
                                 @endif
 
+
                             @endforeach
 
+
                         </div>
+
 
                     </div>
 

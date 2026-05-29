@@ -634,292 +634,153 @@
 
             </div>
 
-            {{-- =====================================================
+          {{-- =====================================================
             | DOCUMENTS
             ====================================================== --}}
+
             <div class="mb-5">
 
                 <h4 class="border-bottom pb-3 mb-4 fw-bold">
-
                     Uploaded Documents
-
                 </h4>
+
+
+                @php
+
+                    $documents = [
+
+                        'Photo' =>
+                            $files['photo'] ?? null,
+
+
+                        'Signature' =>
+                            $files['signature'] ?? null,
+
+
+                        'Aadhaar Card' =>
+                            $files['aadhaar_card'] ?? null,
+
+
+                        'DOB Proof' =>
+                            $files['dob_proof_file'] ?? null,
+
+
+                        'Supporting Document' =>
+                            $files['supporting_document'] ?? null,
+
+                    ];
+
+
+                @endphp
+
 
                 <div class="row g-4">
 
-                    {{-- PHOTO --}}
-                    @if(
-                        !empty($files['photo'])
-                        &&
-                        file_exists_custom($files['photo'])
-                    )
 
-                    <div class="col-lg-3 col-md-6">
+                    @foreach($documents as $title => $file)
 
-                        <div class="document-preview-card">
 
-                            <div class="document-title">
-
-                                Photo
-
-                            </div>
-
-                            @php
-                                $photoExt = strtolower(
-                                    pathinfo(
-                                        $files['photo'],
-                                        PATHINFO_EXTENSION
-                                    )
-                                );
-                            @endphp
-
-                            @if($photoExt === 'pdf')
-
-                                <a
-                                    href="{{ file_url($files['photo']) }}"
-                                    target="_blank"
-                                    class="btn btn-danger w-100"
-                                >
-                                    View PDF
-                                </a>
-
-                            @else
-
-                                <img
-                                    src="{{ file_url($files['photo']) }}"
-                                    class="img-fluid rounded"
-                                    alt="Photo"
-                                    loading="lazy"
-                                >
-
-                            @endif
-
-                        </div>
-
-                    </div>
-
-                    @endif
-
-                    {{-- SIGNATURE --}}
-                    @if(
-                        !empty($files['signature'])
-                        &&
-                        file_exists_custom($files['signature'])
-                    )
-
-                    <div class="col-lg-3 col-md-6">
-
-                        <div class="document-preview-card">
-
-                            <div class="document-title">
-
-                                Signature
-
-                            </div>
-
-                            @php
-                                $signatureExt = strtolower(
-                                    pathinfo(
-                                        $files['signature'],
-                                        PATHINFO_EXTENSION
-                                    )
-                                );
-                            @endphp
-
-                            @if($signatureExt === 'pdf')
-
-                                <a
-                                    href="{{ file_url($files['signature']) }}"
-                                    target="_blank"
-                                    class="btn btn-danger w-100"
-                                >
-                                    View PDF
-                                </a>
-
-                            @else
-
-                                <img
-                                    src="{{ file_url($files['signature']) }}"
-                                    class="img-fluid rounded"
-                                    alt="Signature"
-                                    loading="lazy"
-                                >
-
-                            @endif
-
-                        </div>
-
-                    </div>
-
-                    @endif
-
-                    {{-- AADHAAR CARD --}}
-                    @if(
-                        !empty($files['aadhaar_card'])
-                        &&
-                        file_exists_custom($files['aadhaar_card'])
-                    )
-
-                    <div class="col-lg-3 col-md-6">
-
-                        <div class="document-preview-card">
-
-                            <div class="document-title">
-
-                                Aadhaar Card
-
-                            </div>
-
-                            @php
-                                $aadhaarExt = strtolower(
-                                    pathinfo(
-                                        $files['aadhaar_card'],
-                                        PATHINFO_EXTENSION
-                                    )
-                                );
-                            @endphp
-
-                            @if($aadhaarExt === 'pdf')
-
-                                <a
-                                    href="{{ file_url($files['aadhaar_card']) }}"
-                                    target="_blank"
-                                    class="btn btn-danger w-100"
-                                >
-                                    View PDF
-                                </a>
-
-                            @else
-
-                                <img
-                                    src="{{ file_url($files['aadhaar_card']) }}"
-                                    class="img-fluid rounded"
-                                    alt="Aadhaar Card"
-                                    loading="lazy"
-                                >
-
-                            @endif
-
-                        </div>
-
-                    </div>
-
-                    @endif
-
-                    {{-- DOB PROOF --}}
-                    @if(
-                        !empty($files['dob_proof_file'])
-                        &&
-                        file_exists_custom(
-                            $files['dob_proof_file']
+                        @if(
+                            !empty($file)
+                            &&
+                            file_exists_custom($file)
                         )
-                    )
 
-                    <div class="col-lg-3 col-md-6">
 
-                        <div class="document-preview-card">
+                        @php
 
-                            <div class="document-title">
+                            $url = file_url($file);
 
-                                DOB Proof
+
+                            $extension = strtolower(
+
+                                pathinfo(
+
+                                    parse_url(
+                                        $url,
+                                        PHP_URL_PATH
+                                    ),
+
+                                    PATHINFO_EXTENSION
+
+                                )
+
+                            );
+
+
+                        @endphp
+
+
+
+                        <div class="col-lg-3 col-md-6">
+
+
+                            <div class="document-preview-card">
+
+
+                                <div class="document-title">
+
+                                    {{ $title }}
+
+                                </div>
+
+
+
+                                @if($extension === 'pdf')
+
+
+                                    <a
+
+                                        href="{{ $url }}"
+
+                                        target="_blank"
+
+                                        class="btn btn-danger w-100 mt-3"
+
+                                    >
+
+                                        View PDF
+
+                                    </a>
+
+
+
+                                @else
+
+
+                                    <img
+
+                                        src="{{ $url }}"
+
+                                        class="img-fluid rounded"
+
+                                        alt="{{ $title }}"
+
+                                        loading="lazy"
+
+                                    >
+
+
+                                @endif
+
 
                             </div>
 
-                            @php
-                                $dobExt = strtolower(
-                                    pathinfo(
-                                        $files['dob_proof_file'],
-                                        PATHINFO_EXTENSION
-                                    )
-                                );
-                            @endphp
-
-                            @if($dobExt === 'pdf')
-
-                                <a
-                                    href="{{ file_url($files['dob_proof_file']) }}"
-                                    target="_blank"
-                                    class="btn btn-danger w-100"
-                                >
-                                    View PDF
-                                </a>
-
-                            @else
-
-                                <img
-                                    src="{{ file_url($files['dob_proof_file']) }}"
-                                    class="img-fluid rounded"
-                                    alt="DOB Proof"
-                                    loading="lazy"
-                                >
-
-                            @endif
 
                         </div>
 
-                    </div>
 
-                    @endif
+                        @endif
 
-                    {{-- SUPPORTING DOCUMENT --}}
-                    @if(
-                        !empty($files['supporting_document'])
-                        &&
-                        file_exists_custom(
-                            $files['supporting_document']
-                        )
-                    )
 
-                    <div class="col-lg-3 col-md-6">
+                    @endforeach
 
-                        <div class="document-preview-card">
-
-                            <div class="document-title">
-
-                                Supporting Document
-
-                            </div>
-
-                            @php
-                                $supportingExt = strtolower(
-                                    pathinfo(
-                                        $files['supporting_document'],
-                                        PATHINFO_EXTENSION
-                                    )
-                                );
-                            @endphp
-
-                            @if($supportingExt === 'pdf')
-
-                                <a
-                                    href="{{ file_url($files['supporting_document']) }}"
-                                    target="_blank"
-                                    class="btn btn-danger w-100"
-                                >
-                                    View PDF
-                                </a>
-
-                            @else
-
-                                <img
-                                    src="{{ file_url($files['supporting_document']) }}"
-                                    class="img-fluid rounded"
-                                    alt="Supporting Document"
-                                    loading="lazy"
-                                >
-
-                            @endif
-
-                        </div>
-
-                    </div>
-
-                    @endif
 
                 </div>
 
-            </div>
 
+            </div>
+            
             {{-- =====================================================
             | WALLET INFO
             ====================================================== --}}
