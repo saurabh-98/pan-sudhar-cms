@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\File;
 
 /*
 |--------------------------------------------------------------------------
-| CHECK VERCEL
+| CHECK VERCEL / CLOUDINARY MODE
 |--------------------------------------------------------------------------
 */
 
@@ -13,8 +13,8 @@ if (!function_exists('is_vercel')) {
 
     function is_vercel(): bool
     {
-        return 
-            env('APP_ENV') === 'production'
+        return
+            app()->environment('production')
             ||
             env('VERCEL') === '1'
             ||
@@ -22,18 +22,17 @@ if (!function_exists('is_vercel')) {
     }
 }
 
+
 /*
 |--------------------------------------------------------------------------
-| NORMALIZE LOCAL PATH
+| NORMALIZE FILE PATH
 |--------------------------------------------------------------------------
 */
 
 if (!function_exists('normalize_file_path')) {
 
-    function normalize_file_path(
-        ?string $path
-    ): ?string {
-
+    function normalize_file_path(?string $path): ?string
+    {
 
         if (!$path) {
 
@@ -41,33 +40,28 @@ if (!function_exists('normalize_file_path')) {
         }
 
 
-        // Cloudinary or external URL
+        // Cloudinary URL
         if (str_starts_with($path, 'http')) {
 
             return $path;
         }
 
 
-        // already correct
+        // already local path
         if (str_starts_with($path, 'uploads/')) {
 
             return $path;
         }
 
 
-        // old saved value:
-        // pan/photo/a.jpg
         return 'uploads/' . $path;
-
     }
 }
 
 
-
-
 /*
 |--------------------------------------------------------------------------
-| STORE FILE
+| STORE UPLOADED FILE
 |--------------------------------------------------------------------------
 */
 
@@ -89,6 +83,12 @@ if (!function_exists('store_uploaded_file')) {
         }
 
 
+        /*
+        |--------------------------------------------------------------------------
+        | EXTENSION CHECK
+        |--------------------------------------------------------------------------
+        */
+
         $allowed = [
 
             'jpg',
@@ -105,7 +105,7 @@ if (!function_exists('store_uploaded_file')) {
         );
 
 
-        if (!in_array($extension,$allowed)) {
+        if (!in_array($extension, $allowed)) {
 
             return null;
         }
@@ -122,18 +122,13 @@ if (!function_exists('store_uploaded_file')) {
 
             . '_'
 
-            . rand(1000,9999)
-
-            . '.'
-
-            . $extension;
-
+            . rand(1000,9999);
 
 
 
         /*
         |--------------------------------------------------------------------------
-        | VERCEL - CLOUDINARY
+        | VERCEL -> CLOUDINARY
         |--------------------------------------------------------------------------
         */
 
@@ -141,6 +136,11 @@ if (!function_exists('store_uploaded_file')) {
 
 
             try {
+
+
+                logger()->info(
+                    'Cloudinary upload started'
+                );
 
 
                 $upload = cloudinary()
@@ -151,28 +151,44 @@ if (!function_exists('store_uploaded_file')) {
 
                         [
 
-                            'folder' =>
-                                $folder,
+                            'folder' => str_replace(
+                                '/',
+                                '_',
+                                $folder
+                            ),
 
-                            'public_id' =>
-                                pathinfo(
-                                    $fileName,
-                                    PATHINFO_FILENAME
-                                ),
 
-                            'resource_type' =>
-                                'auto'
+                            'public_id' => $fileName,
+
+
+                            'resource_type' => 'auto'
 
                         ]
 
                     );
 
 
+                logger()->info(
+
+                    'Cloudinary upload success',
+
+                    [
+
+                        'url' =>
+                            $upload['secure_url']
+                            ?? null
+
+                    ]
+
+                );
+
+
                 return $upload['secure_url']
                     ?? null;
 
 
-            } catch(Throwable $e) {
+
+            } catch (\Throwable $e) {
 
 
                 logger()->error(
@@ -181,7 +197,7 @@ if (!function_exists('store_uploaded_file')) {
 
                     [
 
-                        'error'=>
+                        'error' =>
                             $e->getMessage()
 
                     ]
@@ -190,22 +206,34 @@ if (!function_exists('store_uploaded_file')) {
 
 
                 return null;
-
             }
         }
 
 
 
-
         /*
         |--------------------------------------------------------------------------
-        | LOCAL
+        | LOCAL STORAGE
         |--------------------------------------------------------------------------
         */
 
+
+        $localName =
+
+            $fileName
+
+            . '.'
+
+            . $extension;
+
+
+
         $destination = public_path(
+
             'uploads/' . $folder
+
         );
+
 
 
         if (!File::exists($destination)) {
@@ -220,7 +248,6 @@ if (!function_exists('store_uploaded_file')) {
                 true
 
             );
-
         }
 
 
@@ -229,9 +256,10 @@ if (!function_exists('store_uploaded_file')) {
 
             $destination,
 
-            $fileName
+            $localName
 
         );
+
 
 
         return
@@ -242,7 +270,7 @@ if (!function_exists('store_uploaded_file')) {
 
             . '/'
 
-            . $fileName;
+            . $localName;
 
     }
 
@@ -250,20 +278,17 @@ if (!function_exists('store_uploaded_file')) {
 
 
 
-
 /*
 |--------------------------------------------------------------------------
-| GET FILE URL
+| GET PUBLIC FILE URL
 |--------------------------------------------------------------------------
 */
 
 if (!function_exists('file_url')) {
 
 
-    function file_url(
-        ?string $path
-    ): ?string {
-
+    function file_url(?string $path): ?string
+    {
 
         $path = normalize_file_path($path);
 
@@ -271,32 +296,25 @@ if (!function_exists('file_url')) {
         if (!$path) {
 
             return null;
-
         }
 
 
-
+        // Cloudinary
         if (str_starts_with($path,'http')) {
 
             return $path;
-
         }
 
 
-
         return asset($path);
-
     }
-
 }
-
-
 
 
 
 /*
 |--------------------------------------------------------------------------
-| CHECK EXISTS
+| FILE EXISTS CHECK
 |--------------------------------------------------------------------------
 */
 
@@ -314,7 +332,6 @@ if (!function_exists('file_exists_custom')) {
         if (!$path) {
 
             return false;
-
         }
 
 
@@ -322,7 +339,6 @@ if (!function_exists('file_exists_custom')) {
         if (str_starts_with($path,'http')) {
 
             return true;
-
         }
 
 
@@ -333,9 +349,7 @@ if (!function_exists('file_exists_custom')) {
         );
 
     }
-
 }
-
 
 
 
@@ -368,21 +382,24 @@ if (!function_exists('delete_uploaded_file')) {
 
             /*
             |--------------------------------------------------------------------------
-            | CLOUDINARY
+            | CLOUDINARY DELETE
             |--------------------------------------------------------------------------
             */
 
             if (str_starts_with($path,'http')) {
 
 
-                $info = pathinfo(
+                $urlPath = parse_url(
 
-                    parse_url(
-                        $path,
-                        PHP_URL_PATH
-                    )
+                    $path,
+
+                    PHP_URL_PATH
 
                 );
+
+
+                $info = pathinfo($urlPath);
+
 
 
                 cloudinary()
@@ -394,8 +411,8 @@ if (!function_exists('delete_uploaded_file')) {
                         [
 
                             'resource_type'
-                            =>
-                            'auto'
+                                =>
+                                'auto'
 
                         ]
 
@@ -403,19 +420,19 @@ if (!function_exists('delete_uploaded_file')) {
 
 
                 return true;
-
             }
-
 
 
 
             /*
             |--------------------------------------------------------------------------
-            | LOCAL
+            | LOCAL DELETE
             |--------------------------------------------------------------------------
             */
 
+
             $local = public_path($path);
+
 
 
             if (File::exists($local)) {
@@ -425,7 +442,6 @@ if (!function_exists('delete_uploaded_file')) {
 
 
                 return true;
-
             }
 
 
@@ -433,16 +449,16 @@ if (!function_exists('delete_uploaded_file')) {
 
 
 
-        } catch(Throwable $e) {
+        } catch(\Throwable $e) {
 
 
             logger()->error(
 
-                'File Delete Failed',
+                'Delete Failed',
 
                 [
 
-                    'error'=>
+                    'error' =>
                         $e->getMessage()
 
                 ]
@@ -451,11 +467,9 @@ if (!function_exists('delete_uploaded_file')) {
 
 
             return false;
-
         }
 
     }
-
 }
 
 
@@ -463,7 +477,7 @@ if (!function_exists('delete_uploaded_file')) {
 
 /*
 |--------------------------------------------------------------------------
-| ENSURE DIRECTORIES
+| CREATE LOCAL DIRECTORIES
 |--------------------------------------------------------------------------
 */
 
@@ -474,11 +488,12 @@ if (!function_exists('ensure_upload_directories')) {
     {
 
 
+        // no folders required on Vercel
         if (is_vercel()) {
 
             return;
-
         }
+
 
 
         $folders = [
@@ -496,6 +511,7 @@ if (!function_exists('ensure_upload_directories')) {
         ];
 
 
+
         foreach ($folders as $folder) {
 
 
@@ -504,6 +520,7 @@ if (!function_exists('ensure_upload_directories')) {
                 'uploads/'.$folder
 
             );
+
 
 
             if (!File::exists($path)) {
@@ -518,11 +535,7 @@ if (!function_exists('ensure_upload_directories')) {
                     true
 
                 );
-
             }
-
         }
-
     }
-
 }
