@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\File;
+use Cloudinary\Cloudinary;
 
 
 /*
@@ -25,7 +26,7 @@ if (!function_exists('is_vercel')) {
 
 /*
 |--------------------------------------------------------------------------
-| NORMALIZE FILE PATH
+| NORMALIZE PATH
 |--------------------------------------------------------------------------
 */
 
@@ -37,15 +38,15 @@ if (!function_exists('normalize_file_path')) {
             return null;
         }
 
-        if (str_starts_with($path, 'http')) {
+        if (str_starts_with($path,'http')) {
             return $path;
         }
 
-        if (str_starts_with($path, 'uploads/')) {
+        if (str_starts_with($path,'uploads/')) {
             return $path;
         }
 
-        return 'uploads/' . $path;
+        return 'uploads/'.$path;
     }
 }
 
@@ -53,7 +54,7 @@ if (!function_exists('normalize_file_path')) {
 
 /*
 |--------------------------------------------------------------------------
-| STORE FILE
+| STORE UPLOADED FILE
 |--------------------------------------------------------------------------
 */
 
@@ -68,15 +69,8 @@ if (!function_exists('store_uploaded_file')) {
 
         if (!$file || !$file->isValid()) {
 
-
-            logger()->error(
-                'Invalid uploaded file'
-            );
-
-
             return null;
         }
-
 
 
         $allowed = [
@@ -88,28 +82,12 @@ if (!function_exists('store_uploaded_file')) {
         ];
 
 
-
         $extension = strtolower(
-
             $file->getClientOriginalExtension()
-
         );
 
 
-
-        if (!in_array($extension, $allowed)) {
-
-
-            logger()->error(
-
-                'Invalid extension',
-
-                [
-                    'extension'=>$extension
-                ]
-
-            );
-
+        if (!in_array($extension,$allowed)) {
 
             return null;
         }
@@ -117,22 +95,17 @@ if (!function_exists('store_uploaded_file')) {
 
 
         $fileName =
-
             uniqid()
-
             .'_'
-
             .time()
-
             .'_'
-
             .rand(1000,9999);
 
 
 
         /*
         |--------------------------------------------------------------------------
-        | VERCEL CLOUDINARY
+        | VERCEL CLOUDINARY USING SDK DIRECTLY
         |--------------------------------------------------------------------------
         */
 
@@ -143,40 +116,27 @@ if (!function_exists('store_uploaded_file')) {
             try {
 
 
-                $realPath = $file->getRealPath();
+                $realPath =
+                    $file->getRealPath();
 
 
 
-                if (!$realPath) {
-
-
-                    logger()->error(
-                        'Cloudinary temp file missing'
-                    );
-
+                if (!$realPath || !file_exists($realPath)) {
 
                     return null;
                 }
 
 
 
-                logger()->info(
+                $cloudinary = new Cloudinary(
 
-                    'Cloudinary Upload Start',
-
-                    [
-
-                        'path'=>$realPath,
-
-                        'folder'=>$folder
-
-                    ]
+                    env('CLOUDINARY_URL')
 
                 );
 
 
 
-                $upload = cloudinary()
+                $upload = $cloudinary
 
                     ->uploadApi()
 
@@ -198,8 +158,7 @@ if (!function_exists('store_uploaded_file')) {
                                 $fileName,
 
 
-                            'resource_type'
-                                =>
+                            'resource_type'=>
                                 'auto'
 
                         ]
@@ -208,53 +167,32 @@ if (!function_exists('store_uploaded_file')) {
 
 
 
+                return
 
-                logger()->info(
+                    $upload['secure_url']
 
-                    'Cloudinary Upload Done',
+                    ??
 
-                    [
-
-                        'url' =>
-                            $upload['secure_url']
-                            ?? null
-
-                    ]
-
-                );
-
-
-
-
-                return $upload['secure_url']
-                    ?? null;
-
+                    null;
 
 
 
             } catch(\Throwable $e) {
 
 
-
                 logger()->error(
 
-                    'Cloudinary Failed',
+                    'Cloudinary SDK Failed',
 
                     [
 
-                        'message' =>
-                            $e->getMessage(),
+                        'error'=>$e->getMessage(),
 
-                        'file'=>
-                            $e->getFile(),
-
-                        'line'=>
-                            $e->getLine()
+                        'line'=>$e->getLine()
 
                     ]
 
                 );
-
 
 
                 return null;
@@ -262,6 +200,7 @@ if (!function_exists('store_uploaded_file')) {
             }
 
         }
+
 
 
 
@@ -273,17 +212,13 @@ if (!function_exists('store_uploaded_file')) {
 
 
         $localName =
-
             $fileName.'.'.$extension;
 
 
-
-        $destination = public_path(
-
-            'uploads/'.$folder
-
-        );
-
+        $destination =
+            public_path(
+                'uploads/'.$folder
+            );
 
 
         if (!File::exists($destination)) {
@@ -301,29 +236,19 @@ if (!function_exists('store_uploaded_file')) {
         }
 
 
-
         $file->move(
-
             $destination,
-
             $localName
-
         );
 
 
-
         return
-
             'uploads/'
-
             .$folder
-
             .'/'
-
             .$localName;
 
     }
-
 }
 
 
@@ -342,7 +267,8 @@ if (!function_exists('file_url')) {
     function file_url(?string $path): ?string
     {
 
-        $path = normalize_file_path($path);
+        $path =
+            normalize_file_path($path);
 
 
         if (!$path) {
@@ -364,9 +290,10 @@ if (!function_exists('file_url')) {
 
 
 
+
 /*
 |--------------------------------------------------------------------------
-| EXISTS
+| EXISTS CHECK
 |--------------------------------------------------------------------------
 */
 
@@ -376,7 +303,9 @@ if (!function_exists('file_exists_custom')) {
     function file_exists_custom(?string $path): bool
     {
 
-        $path = normalize_file_path($path);
+
+        $path =
+            normalize_file_path($path);
 
 
         if (!$path) {
@@ -392,7 +321,9 @@ if (!function_exists('file_exists_custom')) {
 
 
         return File::exists(
+
             public_path($path)
+
         );
     }
 }
@@ -400,10 +331,9 @@ if (!function_exists('file_exists_custom')) {
 
 
 
-
 /*
 |--------------------------------------------------------------------------
-| DELETE
+| DELETE FILE
 |--------------------------------------------------------------------------
 */
 
@@ -413,7 +343,10 @@ if (!function_exists('delete_uploaded_file')) {
     function delete_uploaded_file(?string $path): bool
     {
 
-        $path = normalize_file_path($path);
+
+        $path =
+            normalize_file_path($path);
+
 
 
         if (!$path) {
@@ -422,10 +355,19 @@ if (!function_exists('delete_uploaded_file')) {
         }
 
 
+
         try {
 
 
             if (str_starts_with($path,'http')) {
+
+
+                $cloudinary =
+                    new Cloudinary(
+
+                        env('CLOUDINARY_URL')
+
+                    );
 
 
                 $info = pathinfo(
@@ -441,20 +383,26 @@ if (!function_exists('delete_uploaded_file')) {
                 );
 
 
-                cloudinary()
+
+                $cloudinary
                     ->uploadApi()
                     ->destroy(
 
                         $info['filename'],
 
                         [
-                            'resource_type'=>'auto'
+
+                            'resource_type'
+                                =>
+                                'auto'
+
                         ]
 
                     );
 
 
                 return true;
+
             }
 
 
@@ -463,7 +411,9 @@ if (!function_exists('delete_uploaded_file')) {
 
 
                 File::delete(
+
                     public_path($path)
+
                 );
 
 
@@ -474,32 +424,23 @@ if (!function_exists('delete_uploaded_file')) {
             return false;
 
 
+
         } catch(\Throwable $e) {
 
 
-            logger()->error(
-
-                'Delete failed',
-
-                [
-                    'error'=>$e->getMessage()
-                ]
-
-            );
-
-
             return false;
+
         }
+
     }
 }
 
 
 
 
-
 /*
 |--------------------------------------------------------------------------
-| CREATE LOCAL FOLDERS
+| LOCAL DIRECTORIES
 |--------------------------------------------------------------------------
 */
 
@@ -514,6 +455,7 @@ if (!function_exists('ensure_upload_directories')) {
 
             return;
         }
+
 
 
         foreach ([
@@ -531,11 +473,10 @@ if (!function_exists('ensure_upload_directories')) {
         ] as $folder) {
 
 
-            $path = public_path(
-
-                'uploads/'.$folder
-
-            );
+            $path =
+                public_path(
+                    'uploads/'.$folder
+                );
 
 
             if (!File::exists($path)) {
@@ -551,6 +492,9 @@ if (!function_exists('ensure_upload_directories')) {
 
                 );
             }
+
         }
+
     }
+
 }
