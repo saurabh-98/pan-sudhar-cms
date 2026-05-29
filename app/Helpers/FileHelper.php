@@ -13,10 +13,14 @@ if (!function_exists('is_vercel')) {
 
     function is_vercel(): bool
     {
-        return (bool) env('VERCEL', false);
+        return 
+            env('APP_ENV') === 'production'
+            ||
+            env('VERCEL') === '1'
+            ||
+            env('FILESYSTEM_DISK') === 'cloudinary';
     }
 }
-
 
 /*
 |--------------------------------------------------------------------------
