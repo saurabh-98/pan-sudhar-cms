@@ -488,39 +488,6 @@ class NewPanApplicationController extends Controller
             }
 
 
-           
-
-
-            dd([
-
-                'content_type' =>
-                    $request->header('content-type'),
-
-
-                'all_files' =>
-                    $request->allFiles(),
-
-
-                'photo_has' =>
-                    $request->hasFile('photo'),
-
-
-                'photo' =>
-                    $request->file('photo'),
-
-
-                'signature_has' =>
-                    $request->hasFile('signature'),
-
-
-                'aadhaar_has' =>
-                    $request->hasFile('aadhaar_card'),
-
-            ]);
-
-
-
-
             $dto = PanApplicationDTO::fromRequest(
 
                 $request
