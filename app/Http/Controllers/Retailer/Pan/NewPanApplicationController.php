@@ -508,8 +508,7 @@ class NewPanApplicationController extends Controller
                 $this->panService
 
                     ->preview($dto);
-            dd($preview);
-
+           
 
 
 
