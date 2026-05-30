@@ -634,7 +634,7 @@
 
             </div>
 
-          {{-- =====================================================
+            {{-- =====================================================
             | DOCUMENTS
             ====================================================== --}}
 
@@ -644,7 +644,6 @@
                     Uploaded Documents
                 </h4>
 
-
                 @php
 
                     $documents = [
@@ -652,33 +651,25 @@
                         'Photo' =>
                             $files['photo'] ?? null,
 
-
                         'Signature' =>
                             $files['signature'] ?? null,
-
 
                         'Aadhaar Card' =>
                             $files['aadhaar_card'] ?? null,
 
-
                         'DOB Proof' =>
                             $files['dob_proof_file'] ?? null,
-
 
                         'Supporting Document' =>
                             $files['supporting_document'] ?? null,
 
                     ];
 
-
                 @endphp
-
 
                 <div class="row g-4">
 
-
                     @foreach($documents as $title => $file)
-
 
                         @if(
                             !empty($file)
@@ -686,98 +677,96 @@
                             file_exists_custom($file)
                         )
 
+                            @php
 
-                        @php
+                                $url = file_url($file);
 
-                            $url = file_url($file);
+                                /*
+                                |--------------------------------------------------------------------------
+                                | DETECT PDF FOR BOTH:
+                                | LOCAL STORAGE
+                                | CLOUDINARY RAW FILES
+                                |--------------------------------------------------------------------------
+                                */
 
+                                $extension = strtolower(
+                                    pathinfo(
+                                        $file,
+                                        PATHINFO_EXTENSION
+                                    )
+                                );
 
-                            $extension = strtolower(
+                                $isPdf =
+                                    $extension === 'pdf'
+                                    ||
+                                    str_contains(
+                                        strtolower($url),
+                                        '/raw/upload/'
+                                    )
+                                    ||
+                                    str_contains(
+                                        strtolower($url),
+                                        '.pdf'
+                                    );
 
-                                pathinfo(
+                            @endphp
 
-                                    parse_url(
-                                        $url,
-                                        PHP_URL_PATH
-                                    ),
+                            <div class="col-lg-3 col-md-6">
 
-                                    PATHINFO_EXTENSION
+                                <div class="document-preview-card">
 
-                                )
+                                    <div class="document-title">
 
-                            );
+                                        {{ $title }}
 
+                                    </div>
 
-                        @endphp
+                                    @if($isPdf)
 
+                                        <div class="text-center p-3">
 
+                                            <a
+                                                href="{{ $url }}"
+                                                target="_blank"
+                                                class="btn btn-danger w-100"
+                                            >
+                                                View PDF
+                                            </a>
 
-                        <div class="col-lg-3 col-md-6">
+                                            <div class="mt-2 small text-muted">
+                                                PDF Document
+                                            </div>
 
+                                        </div>
 
-                            <div class="document-preview-card">
+                                    @else
 
+                                        <a
+                                            href="{{ $url }}"
+                                            target="_blank"
+                                        >
 
-                                <div class="document-title">
+                                            <img
+                                                src="{{ $url }}"
+                                                class="img-fluid rounded"
+                                                alt="{{ $title }}"
+                                                loading="lazy"
+                                                onerror="this.onerror=null;this.src='{{ asset('assets/images/no-image.png') }}';"
+                                            >
 
-                                    {{ $title }}
+                                        </a>
+
+                                    @endif
 
                                 </div>
 
-
-
-                                @if($extension === 'pdf')
-
-
-                                    <a
-
-                                        href="{{ $url }}"
-
-                                        target="_blank"
-
-                                        class="btn btn-danger w-100 mt-3"
-
-                                    >
-
-                                        View PDF
-
-                                    </a>
-
-
-
-                                @else
-
-
-                                    <img
-
-                                        src="{{ $url }}"
-
-                                        class="img-fluid rounded"
-
-                                        alt="{{ $title }}"
-
-                                        loading="lazy"
-
-                                    >
-
-
-                                @endif
-
-
                             </div>
-
-
-                        </div>
-
 
                         @endif
 
-
                     @endforeach
 
-
                 </div>
-
 
             </div>
             

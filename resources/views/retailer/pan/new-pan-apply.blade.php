@@ -919,20 +919,61 @@
 
                         function cloudFileExtension($file)
                         {
-                            return strtolower(
+                            if (!$file) {
+                                return null;
+                            }
 
+                            /*
+                            |--------------------------------------------------------------------------
+                            | LOCAL FILE
+                            |--------------------------------------------------------------------------
+                            */
+
+                            $ext = strtolower(
                                 pathinfo(
-
-                                    parse_url(
-                                        file_url($file),
-                                        PHP_URL_PATH
-                                    ),
-
+                                    $file,
                                     PATHINFO_EXTENSION
-
                                 )
-
                             );
+
+                            if (!empty($ext)) {
+                                return $ext;
+                            }
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | CLOUDINARY URL
+                            |--------------------------------------------------------------------------
+                            */
+
+                            $url = file_url($file);
+
+                            if (!$url) {
+                                return null;
+                            }
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | PDF UPLOADED AS RAW
+                            |--------------------------------------------------------------------------
+                            */
+
+                            if (
+                                str_contains(
+                                    strtolower($url),
+                                    '/raw/upload/'
+                                )
+                            ) {
+                                return 'pdf';
+                            }
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | IMAGE
+                            |--------------------------------------------------------------------------
+                            */
+
+                            return 'jpg';
                         }
 
 
@@ -946,7 +987,6 @@
                                 'accept'=> '.jpg,.jpeg,.png'
                             ],
 
-
                             [
                                 'title' => 'Signature',
                                 'name'  => 'signature',
@@ -954,7 +994,6 @@
                                 'text'  => 'JPG / PNG',
                                 'accept'=> '.jpg,.jpeg,.png'
                             ],
-
 
                             [
                                 'title' => 'Aadhaar Card',
@@ -964,7 +1003,6 @@
                                 'accept'=> '.jpg,.jpeg,.png,.pdf'
                             ],
 
-
                             [
                                 'title' => 'DOB Proof',
                                 'name'  => 'dob_proof_file',
@@ -972,7 +1010,6 @@
                                 'text'  => 'JPG / PDF',
                                 'accept'=> '.jpg,.jpeg,.png,.pdf'
                             ],
-
 
                             [
                                 'title' => 'Supporting Document',
@@ -987,20 +1024,15 @@
                     @endphp
 
 
-
                     <div class="pan-step-card">
-
 
                         <div class="step-heading">
 
-
                             <div class="step-left">
-
 
                                 <div class="step-number">
                                     8
                                 </div>
-
 
                                 <div>
 
@@ -1008,26 +1040,20 @@
                                         Upload Documents
                                     </h4>
 
-
                                     <p>
                                         Upload all mandatory PAN application documents
                                     </p>
 
                                 </div>
 
-
                             </div>
-
 
                         </div>
 
 
-
                         <div class="row g-4">
 
-
                             @foreach($documents as $doc)
-
 
                                 @php
 
@@ -1036,12 +1062,10 @@
                                         ??
                                         null;
 
-
                                     $exists =
-                                        $file
+                                        !empty($file)
                                         &&
                                         file_exists_custom($file);
-
 
                                     $ext =
                                         $exists
@@ -1050,102 +1074,76 @@
                                         :
                                         null;
 
+                                    $isPdf =
+                                        $ext === 'pdf';
 
                                 @endphp
 
 
-
                                 <div class="col-lg-3 col-md-6">
-
 
                                     <div class="upload-wrapper">
 
-
                                         <label class="upload-box">
 
-
                                             <input
-
                                                 type="file"
-
                                                 name="{{ $doc['name'] }}"
-
                                                 class="document-input d-none"
-
                                                 accept="{{ $doc['accept'] }}"
-
                                             >
-
-
 
                                             <div class="upload-preview">
 
-
-
                                                 @if($exists)
 
+                                                    @if($isPdf)
 
-                                                    @if($ext === 'pdf')
-
-
-                                                        <img
-
-                                                            src="{{ asset('assets/images/pdf-icon.png') }}"
-
-                                                            class="preview-image"
-
-                                                            alt="PDF"
-
+                                                        <a
+                                                            href="{{ file_url($file) }}"
+                                                            target="_blank"
                                                         >
 
+                                                            <img
+                                                                src="{{ asset('assets/images/pdf-icon.png') }}"
+                                                                class="preview-image"
+                                                                alt="PDF Document"
+                                                            >
+
+                                                        </a>
 
                                                     @else
 
-
                                                         <img
-
                                                             src="{{ file_url($file) }}"
-
                                                             class="preview-image"
-
                                                             alt="{{ $doc['title'] }}"
-
                                                             loading="lazy"
-
+                                                            onerror="
+                                                                this.onerror=null;
+                                                                this.src='{{ asset('assets/images/no-image.png') }}';
+                                                            "
                                                         >
-
 
                                                     @endif
 
-
                                                 @else
 
-
                                                     <img
-
                                                         class="preview-image d-none"
-
                                                         alt="{{ $doc['title'] }}"
-
                                                     >
-
 
                                                 @endif
 
 
-
-
                                                 <div class="default-upload {{ $exists ? 'd-none' : '' }}">
-
 
                                                     <div class="upload-icon">
 
-
                                                         <i class="fa {{ $doc['icon'] }}"></i>
 
-
                                                     </div>
-
 
                                                     <h5>
 
@@ -1153,73 +1151,51 @@
 
                                                     </h5>
 
-
                                                     <p>
 
                                                         {{ $doc['text'] }}
 
                                                     </p>
 
-
                                                 </div>
 
-
                                             </div>
-
 
                                         </label>
 
 
-
-
                                         <div class="file-details {{ $exists ? '' : 'd-none' }}">
-
 
                                             <span class="file-name">
 
-                                                {{ $exists ? basename($file) : '' }}
+                                                {{ $exists ? basename(parse_url(file_url($file), PHP_URL_PATH)) : '' }}
 
                                             </span>
 
-
-
                                             <button
-
                                                 type="button"
-
                                                 class="remove-file-btn"
-
                                             >
-
                                                 <i class="fa fa-times"></i>
-
                                             </button>
-
 
                                         </div>
 
-
-
                                     </div>
 
-
                                 </div>
-
 
                             @endforeach
 
 
 
-
-
                             {{-- EXISTING FILES --}}
-                            @foreach($documents as $doc)
 
+                            @foreach($documents as $doc)
 
                                 @php
                                     $field = $doc['name'];
                                 @endphp
-
 
                                 @if(
                                     !empty($files[$field])
@@ -1227,26 +1203,17 @@
                                     file_exists_custom($files[$field])
                                 )
 
-
                                     <input
-
                                         type="hidden"
-
                                         name="existing_files[{{ $field }}]"
-
                                         value="{{ $files[$field] }}"
-
                                     >
-
 
                                 @endif
 
-
                             @endforeach
 
-
                         </div>
-
 
                     </div>
 

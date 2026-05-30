@@ -656,18 +656,52 @@
 
         function documentExtension($file)
         {
-            return strtolower(
+            if (!$file) {
+                return null;
+            }
 
+            /*
+            |--------------------------------------------------------------------------
+            | LOCAL FILE
+            |--------------------------------------------------------------------------
+            */
+
+            $ext = strtolower(
                 pathinfo(
-
-                    parse_url(
-                        file_url($file),
-                        PHP_URL_PATH
-                    ),
-
+                    $file,
                     PATHINFO_EXTENSION
                 )
             );
+
+            if (!empty($ext)) {
+                return $ext;
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | CLOUDINARY RAW PDF
+            |--------------------------------------------------------------------------
+            */
+
+            $url = file_url($file);
+
+            if (
+                $url &&
+                str_contains(
+                    strtolower($url),
+                    '/raw/upload/'
+                )
+            ) {
+                return 'pdf';
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | DEFAULT IMAGE
+            |--------------------------------------------------------------------------
+            */
+
+            return 'jpg';
         }
 
 
@@ -676,18 +710,14 @@
             'Photo' =>
                 $application->photo,
 
-
             'Signature' =>
                 $application->signature,
-
 
             'Aadhaar Card' =>
                 $application->aadhaar_card,
 
-
             'DOB Proof' =>
                 $application->dob_proof_file,
-
 
             'Supporting Document' =>
                 $application->supporting_document,
@@ -696,10 +726,7 @@
 
     @endphp
 
-
-
     <div class="card show-card mb-4">
-
 
         <div class="card-header show-card-header">
 
@@ -707,21 +734,15 @@
 
         </div>
 
-
         <div class="card-body">
-
 
             <div class="row g-4">
 
-
                 @foreach($documents as $title => $file)
-
 
                     <div class="col-xl-3 col-lg-4 col-md-6">
 
-
                         <div class="document-card">
-
 
                             <div class="document-title">
 
@@ -729,14 +750,9 @@
 
                             </div>
 
-
-
                             <div class="document-preview">
 
-
-
                                 @if(!empty($file))
-
 
                                     @php
 
@@ -745,52 +761,56 @@
                                         $extension =
                                             documentExtension($file);
 
+                                        $isPdf =
+                                            $extension === 'pdf';
+
                                     @endphp
 
+                                    @if($isPdf)
 
+                                        <a
+                                            href="{{ $url }}"
+                                            target="_blank"
+                                            class="text-decoration-none"
+                                        >
 
-                                    @if($extension === 'pdf')
+                                            <div class="pdf-preview">
 
+                                                <i class="fas fa-file-pdf fa-4x text-danger"></i>
 
-                                        <div class="pdf-preview">
+                                                <div class="mt-2">
 
+                                                    PDF Document
 
-                                            <i class="fas fa-file-pdf"></i>
+                                                </div>
 
+                                            </div>
 
-                                            <span>
-
-                                                PDF Document
-
-                                            </span>
-
-
-                                        </div>
-
-
+                                        </a>
 
                                     @else
 
-
-                                        <img
-
-                                            src="{{ $url }}"
-
-                                            class="img-fluid"
-
-                                            alt="{{ $title }}"
-
-                                            loading="lazy"
-
+                                        <a
+                                            href="{{ $url }}"
+                                            target="_blank"
                                         >
 
+                                            <img
+                                                src="{{ $url }}"
+                                                class="img-fluid"
+                                                alt="{{ $title }}"
+                                                loading="lazy"
+                                                onerror="
+                                                    this.onerror=null;
+                                                    this.src='{{ asset('assets/images/no-image.png') }}';
+                                                "
+                                            >
+
+                                        </a>
 
                                     @endif
 
-
-
                                 @else
-
 
                                     <span class="text-danger">
 
@@ -798,65 +818,42 @@
 
                                     </span>
 
-
                                 @endif
-
-
 
                             </div>
 
-
-
-
                             @if(!empty($file))
-
 
                                 <div class="document-footer">
 
-
                                     <a
-
-                                        href="{{ file_url($file) }}"
-
+                                        href="{{ $url }}"
                                         target="_blank"
-
                                         class="btn document-btn"
-
                                     >
-
 
                                         <i class="fas fa-eye me-2"></i>
 
-
                                         View Document
-
 
                                     </a>
 
-
                                 </div>
-
 
                             @endif
 
-
-
                         </div>
-
 
                     </div>
 
-
                 @endforeach
-
 
             </div>
 
-
         </div>
 
-
     </div>
+    
 </div>
 
 @endsection
