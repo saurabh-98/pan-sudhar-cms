@@ -59,18 +59,15 @@ if (!function_exists('normalize_file_path')) {
 
 if (!function_exists('store_uploaded_file')) {
 
-
     function store_uploaded_file(
         $file,
         string $folder
     ): ?string {
 
-
         if (!$file || !$file->isValid()) {
 
             return null;
         }
-
 
         $allowed = [
             'jpg',
@@ -80,17 +77,14 @@ if (!function_exists('store_uploaded_file')) {
             'pdf'
         ];
 
-
         $extension = strtolower(
             $file->getClientOriginalExtension()
         );
-
 
         if (!in_array($extension, $allowed)) {
 
             return null;
         }
-
 
         $fileName =
             uniqid()
@@ -98,8 +92,6 @@ if (!function_exists('store_uploaded_file')) {
             .time()
             .'_'
             .rand(1000,9999);
-
-
 
         /*
         |--------------------------------------------------------------------------
@@ -109,19 +101,18 @@ if (!function_exists('store_uploaded_file')) {
 
         if (is_vercel()) {
 
-
             try {
-
 
                 $realPath = $file->getRealPath();
 
-
-                if (!$realPath || !file_exists($realPath)) {
+                if (
+                    !$realPath
+                    ||
+                    !file_exists($realPath)
+                ) {
 
                     return null;
                 }
-
-
 
                 $cloudinary = new Cloudinary(
 
@@ -129,16 +120,12 @@ if (!function_exists('store_uploaded_file')) {
 
                 );
 
-
-
                 /*
                 |--------------------------------------------------------------------------
-                | IMPORTANT:
-                | PDF = raw/upload
-                | Images = image/upload
+                | PDF = RAW
+                | IMAGE = IMAGE
                 |--------------------------------------------------------------------------
                 */
-
 
                 $resourceType =
 
@@ -152,7 +139,19 @@ if (!function_exists('store_uploaded_file')) {
 
                     'image';
 
+                /*
+                |--------------------------------------------------------------------------
+                | PRESERVE PDF EXTENSION
+                |--------------------------------------------------------------------------
+                */
 
+                $publicId = $fileName;
+
+                if ($extension === 'pdf') {
+
+                    $publicId .= '.pdf';
+
+                }
 
                 $upload = $cloudinary
 
@@ -162,7 +161,6 @@ if (!function_exists('store_uploaded_file')) {
 
                         $realPath,
 
-
                         [
 
                             'folder' => str_replace(
@@ -171,26 +169,51 @@ if (!function_exists('store_uploaded_file')) {
                                 $folder
                             ),
 
-
                             'public_id' =>
-                                $fileName,
-
+                                $publicId,
 
                             'resource_type' =>
-                                $resourceType
+                                $resourceType,
+
+                            'use_filename' => true,
+
+                            'unique_filename' => false,
+
+                            'overwrite' => true,
 
                         ]
 
                     );
 
+                $url =
+                    $upload['secure_url']
+                    ??
+                    null;
 
+                /*
+                |--------------------------------------------------------------------------
+                | ENSURE PDF URL ENDS WITH .PDF
+                |--------------------------------------------------------------------------
+                */
 
-                return $upload['secure_url'] ?? null;
+                if (
+                    $extension === 'pdf'
+                    &&
+                    $url
+                    &&
+                    !str_ends_with(
+                        strtolower($url),
+                        '.pdf'
+                    )
+                ) {
 
+                    $url .= '.pdf';
 
+                }
 
-            } catch(\Throwable $e) {
+                return $url;
 
+            } catch (\Throwable $e) {
 
                 logger()->error(
 
@@ -205,15 +228,9 @@ if (!function_exists('store_uploaded_file')) {
 
                 );
 
-
                 return null;
-
             }
-
         }
-
-
-
 
         /*
         |--------------------------------------------------------------------------
@@ -221,19 +238,17 @@ if (!function_exists('store_uploaded_file')) {
         |--------------------------------------------------------------------------
         */
 
-
         $localName =
-            $fileName.'.'.$extension;
-
+            $fileName
+            .'.'
+            .$extension;
 
         $destination =
             public_path(
                 'uploads/'.$folder
             );
 
-
         if (!File::exists($destination)) {
-
 
             File::makeDirectory(
 
@@ -246,7 +261,6 @@ if (!function_exists('store_uploaded_file')) {
             );
         }
 
-
         $file->move(
 
             $destination,
@@ -255,17 +269,14 @@ if (!function_exists('store_uploaded_file')) {
 
         );
 
-
         return
 
             'uploads/'
             .$folder
             .'/'
             .$localName;
-
     }
 }
-
 
 
 /*
@@ -344,80 +355,170 @@ if (!function_exists('file_exists_custom')) {
 
 if (!function_exists('delete_uploaded_file')) {
 
-
     function delete_uploaded_file(?string $path): bool
     {
 
         $path =
             normalize_file_path($path);
 
-
         if (!$path) {
 
             return false;
         }
 
-
         try {
 
+            /*
+            |--------------------------------------------------------------------------
+            | CLOUDINARY FILE
+            |--------------------------------------------------------------------------
+            */
 
-            if (str_starts_with($path,'http')) {
-
+            if (str_starts_with($path, 'http')) {
 
                 $cloudinary =
                     new Cloudinary(
                         env('CLOUDINARY_URL')
                     );
 
-
-                $info = pathinfo(
-
+                $urlPath =
                     parse_url(
                         $path,
                         PHP_URL_PATH
+                    );
+
+                /*
+                |--------------------------------------------------------------------------
+                | REMOVE VERSION
+                |--------------------------------------------------------------------------
+                |
+                | Example:
+                | /demo/raw/upload/v1780123019/pan_aadhaar/file.pdf
+                |
+                */
+
+                $parts =
+                    explode(
+                        '/',
+                        trim($urlPath, '/')
+                    );
+
+                $uploadIndex =
+                    array_search(
+                        'upload',
+                        $parts
+                    );
+
+                if ($uploadIndex === false) {
+
+                    return false;
+                }
+
+                $publicIdParts =
+                    array_slice(
+                        $parts,
+                        $uploadIndex + 2
+                    );
+
+                $publicId =
+                    implode(
+                        '/',
+                        $publicIdParts
+                    );
+
+                /*
+                |--------------------------------------------------------------------------
+                | REMOVE EXTENSION
+                |--------------------------------------------------------------------------
+                */
+
+                $publicId =
+                    preg_replace(
+                        '/\.[^.]+$/',
+                        '',
+                        $publicId
+                    );
+
+                /*
+                |--------------------------------------------------------------------------
+                | DETECT RESOURCE TYPE
+                |--------------------------------------------------------------------------
+                */
+
+                $resourceType =
+                    str_contains(
+                        strtolower($path),
+                        '/raw/upload/'
+                    )
+                    ||
+                    str_ends_with(
+                        strtolower($path),
+                        '.pdf'
                     )
 
-                );
+                    ? 'raw'
 
+                    : 'image';
 
                 $cloudinary
                     ->uploadApi()
                     ->destroy(
 
-                        $info['filename'],
+                        $publicId,
 
                         [
-                            'resource_type'=>'auto'
+
+                            'resource_type' =>
+                                $resourceType
+
                         ]
 
                     );
 
-
                 return true;
             }
 
+            /*
+            |--------------------------------------------------------------------------
+            | LOCAL FILE
+            |--------------------------------------------------------------------------
+            */
 
-
-            if (File::exists(public_path($path))) {
-
+            if (
+                File::exists(
+                    public_path($path)
+                )
+            ) {
 
                 File::delete(
                     public_path($path)
                 );
 
-
                 return true;
             }
 
-
             return false;
 
+        } catch (\Throwable $e) {
 
-        } catch(\Throwable $e) {
+            logger()->error(
+
+                'File delete failed',
+
+                [
+
+                    'path' =>
+                        $path,
+
+                    'error' =>
+                        $e->getMessage()
+
+                ]
+
+            );
 
             return false;
         }
-
     }
 }
 
