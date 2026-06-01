@@ -234,17 +234,17 @@
                     </a>
 
                     <!-- =====================================================
-                    | BUSINESS DEVELOPMENT EXECUTIVE
+                    |  EXECUTIVE
                     ===================================================== -->
 
-                    <a href=""
+                    <a href="{{route('executive.login')}}"
                     class="action-btn bde-btn">
 
                         <i class="fa-solid fa-briefcase"></i>
 
                         <span>
 
-                            BDE Login
+                            Executive Login
 
                         </span>
 

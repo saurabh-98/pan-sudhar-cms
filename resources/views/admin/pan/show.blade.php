@@ -627,414 +627,67 @@
         </div>
 
       {{-- ======================================================
-| RIGHT SECTION
-====================================================== --}}
-<div class="col-xl-4">
+        | RIGHT SECTION
+        ====================================================== --}}
+        <div class="col-xl-4">
 
-    {{-- ======================================================
-    | ADMIN PANEL
-    ====================================================== --}}
-    @if(auth()->user()->hasRole('admin'))
+            {{-- ======================================================
+            | ADMIN PANEL
+            ====================================================== --}}
+            @if(auth()->user()->hasRole('admin'))
 
-        <div class="card admin-pan-card sticky-top action-panel-card border-0 shadow-lg mb-4">
+                <div class="card admin-pan-card sticky-top action-panel-card border-0 shadow-lg mb-4">
 
-            {{-- HEADER --}}
-            <div class="card-header pan-card-header d-flex align-items-center justify-content-between">
-
-                <div>
-
-                    <h5 class="mb-0 fw-bold">
-
-                        <i class="fa fa-user-shield me-2"></i>
-
-                        Action Panel
-
-                    </h5>
-
-                </div>
-
-                <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill">
-
-                    Admin Control
-
-                </span>
-
-            </div>
-
-            {{-- BODY --}}
-            <div class="card-body">
-
-                {{-- RETAILER INFO --}}
-                <div class="action-info-card mb-4">
-
-                    <div class="d-flex align-items-center gap-3">
-
-                        <div class="action-avatar">
-
-                            {{ strtoupper(substr($application->user->name ?? 'N',0,1)) }}
-
-                        </div>
+                    {{-- HEADER --}}
+                    <div class="card-header pan-card-header d-flex align-items-center justify-content-between">
 
                         <div>
 
-                            <label class="info-label">
+                            <h5 class="mb-0 fw-bold">
 
-                                Retailer
+                                <i class="fa fa-user-shield me-2"></i>
 
-                            </label>
+                                Action Panel
 
-                            <h6 class="info-value mb-0">
-
-                                {{ $application->user->name ?? 'N/A' }}
-
-                            </h6>
+                            </h5>
 
                         </div>
 
-                    </div>
+                        <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill">
 
-                </div>
-
-                {{-- ASSIGNED EXECUTIVE --}}
-                <div class="action-info-card mb-4">
-
-                    <label class="info-label d-block mb-2">
-
-                        Assigned Executive
-
-                    </label>
-
-                    @if($application->assignedUser)
-
-                        <div class="assigned-user-box">
-
-                            <i class="fa fa-user-check me-2"></i>
-
-                            {{ $application->assignedUser->name }}
-
-                        </div>
-
-                    @else
-
-                        <div class="not-assigned-box">
-
-                            <i class="fa fa-user-clock me-2"></i>
-
-                            Not Assigned Yet
-
-                        </div>
-
-                    @endif
-
-                </div>
-
-                {{-- ASSIGN FORM --}}
-                <form
-                    id="assignApplicationForm"
-                    action="{{ route('admin.pan.assign', $application->id) }}"
-                    method="POST"
-                >
-
-                    @csrf
-
-                    {{-- EXECUTIVE SELECT --}}
-                    <div class="mb-4">
-
-                        <label class="form-label fw-semibold">
-
-                            <i class="fa fa-users me-2"></i>
-
-                            Assign To Executive
-
-                        </label>
-
-                        <select
-                            name="assigned_to"
-                            class="form-select admin-select"
-                            required
-                        >
-
-                            <option value="">
-
-                                Select Executive
-
-                            </option>
-
-                            @foreach($users as $user)
-
-                                @if($user->hasRole('Executive'))
-
-                                    <option
-                                        value="{{ $user->id }}"
-                                        {{ $application->assigned_to == $user->id ? 'selected' : '' }}
-                                    >
-
-                                        {{ $user->name }}
-
-                                    </option>
-
-                                @endif
-
-                            @endforeach
-
-                        </select>
-
-                        <small class="text-danger error-assigned_to"></small>
-
-                    </div>
-
-                    {{-- REMARKS --}}
-                    <div class="mb-4">
-
-                        <label class="form-label fw-semibold">
-
-                            <i class="fa fa-comment-dots me-2"></i>
-
-                            Remarks / Instructions
-
-                        </label>
-
-                        <textarea
-                            name="remarks"
-                            rows="5"
-                            class="form-control admin-textarea"
-                            placeholder="Write instructions, verification remarks or notes for executive..."
-                        >{{ old('remarks', $application->remarks) }}</textarea>
-
-                        <small class="text-danger error-remarks"></small>
-
-                    </div>
-
-                    {{-- BUTTON --}}
-                    <button
-                        type="submit"
-                        class="btn assign-btn w-100 py-3"
-                        id="assignBtn"
-                    >
-
-                        <span class="btn-text">
-
-                            <i class="fa fa-paper-plane me-2"></i>
-
-                            Assign Application
+                            Admin Control
 
                         </span>
 
-                        <span class="btn-loader d-none">
-
-                            <i class="fa fa-spinner fa-spin me-2"></i>
-
-                            Processing...
-
-                        </span>
-
-                    </button>
-
-                </form>
-
-            </div>
-
-        </div>
-
-    @endif
-
-
-    {{-- ======================================================
-    | EXECUTIVE DOCUMENT UPLOAD PANEL
-    ====================================================== --}}
-    @if(
-        auth()->user()->hasRole('Executive')
-        &&
-        $application->documents->count() == 0
-    )
-
-        <div class="card border-0 shadow-lg mb-4">
-
-            <div class="card-header bg-primary text-white">
-
-                <h5 class="mb-0 fw-bold">
-
-                    <i class="fa fa-upload me-2"></i>
-
-                    Upload Documents
-
-                </h5>
-
-            </div>
-
-            <div class="card-body">
-
-                <form
-                    id="documentUploadForm"
-                    action="{{ route('admin.pan.document.upload', $application->id) }}"
-                    method="POST"
-                    enctype="multipart/form-data"
-                >
-
-                    @csrf
-
-                    {{-- FILE --}}
-                    <div class="mb-3">
-
-                        <label class="form-label fw-semibold">
-
-                            Select File
-
-                        </label>
-
-                        <input
-                            type="file"
-                            name="support_file"
-                            id="support_file"
-                            class="form-control"
-                            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-                            required
-                        >
-
-                        <small class="text-muted">
-
-                            PDF, JPG, PNG, DOC, DOCX allowed
-
-                        </small>
-
-                        <small
-                            class="text-danger error-support_file"
-                        ></small>
-
                     </div>
 
-                    {{-- REMARKS --}}
-                    <div
-                        id="uploadRemarksBox"
-                        class="mb-3 d-none"
-                    >
+                    {{-- BODY --}}
+                    <div class="card-body">
 
-                        <label class="form-label fw-semibold">
+                        {{-- RETAILER INFO --}}
+                        <div class="action-info-card mb-4">
 
-                            Upload Remarks
+                            <div class="d-flex align-items-center gap-3">
 
-                        </label>
+                                <div class="action-avatar">
 
-                        <textarea
-                            name="upload_remarks"
-                            rows="4"
-                            class="form-control"
-                            placeholder="Write remarks related to uploaded document..."
-                        ></textarea>
-
-                        <small
-                            class="text-danger error-upload_remarks"
-                        ></small>
-
-                    </div>
-
-                    {{-- BUTTON --}}
-                    <button
-                        type="submit"
-                        class="btn btn-primary w-100"
-                        id="uploadBtn"
-                    >
-
-                        <span class="btn-text">
-
-                            <i class="fa fa-cloud-upload-alt me-2"></i>
-
-                            Upload Document
-
-                        </span>
-
-                        <span
-                            class="btn-loader d-none"
-                        >
-
-                            <i class="fa fa-spinner fa-spin me-2"></i>
-
-                            Uploading...
-
-                        </span>
-
-                    </button>
-
-                </form>
-
-            </div>
-
-        </div>
-
-    @endif
-
-
-   {{-- ======================================================
-    | DOCUMENTS VISIBLE FOR ALL
-    ====================================================== --}}
-    @php
-
-        $doc = $application->documents->first();
-
-    @endphp
-
-    @if($doc)
-
-        <div class="card border-0 shadow-lg">
-
-            <div class="card-header bg-light">
-
-                <h5 class="mb-0 fw-bold">
-
-                    <i class="fa fa-folder-open me-2"></i>
-
-                    Uploaded Document
-
-                </h5>
-
-            </div>
-
-            <div class="card-body">
-
-                <div class="uploaded-doc-card p-3 border rounded shadow-sm">
-
-                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
-
-                        <div>
-
-
-                            @if($doc->remarks)
-
-                                <div class="mb-2">
-
-                                    <span class="fw-semibold text-dark">
-
-                                        Remarks:
-
-                                    </span>
-
-                                    <p class="text-muted small mb-0">
-
-                                        {{ $doc->remarks }}
-
-                                    </p>
-
-                                </div>
-
-                            @endif
-
-                            <div class="small text-secondary">
-
-                                <div class="mb-1">
-
-                                    <i class="fa fa-user me-1"></i>
-
-                                    Uploaded By:
-                                    {{ $doc->user->name ?? 'N/A' }}
+                                    {{ strtoupper(substr($application->user->name ?? 'N',0,1)) }}
 
                                 </div>
 
                                 <div>
 
-                                    <i class="fa fa-clock me-1"></i>
+                                    <label class="info-label">
 
-                                    Uploaded On:
-                                    {{ $doc->created_at->format('d M Y h:i A') }}
+                                        Retailer
+
+                                    </label>
+
+                                    <h6 class="info-value mb-0">
+
+                                        {{ $application->user->name ?? 'N/A' }}
+
+                                    </h6>
 
                                 </div>
 
@@ -1042,19 +695,370 @@
 
                         </div>
 
-                        <div>
+                        {{-- ASSIGNED EXECUTIVE --}}
+                        <div class="action-info-card mb-4">
 
-                            <a
-                                href="{{ asset('storage/' . $doc->file_path) }}"
-                                target="_blank"
-                                class="btn btn-sm btn-primary"
+                            <label class="info-label d-block mb-2">
+
+                                Assigned Executive
+
+                            </label>
+
+                            @if($application->assignedUser)
+
+                                <div class="assigned-user-box">
+
+                                    <i class="fa fa-user-check me-2"></i>
+
+                                    {{ $application->assignedUser->name }}
+
+                                </div>
+
+                            @else
+
+                                <div class="not-assigned-box">
+
+                                    <i class="fa fa-user-clock me-2"></i>
+
+                                    Not Assigned Yet
+
+                                </div>
+
+                            @endif
+
+                        </div>
+
+                        {{-- ASSIGN FORM --}}
+                        <form
+                            id="assignApplicationForm"
+                            action="{{ route('admin.pan.assign', $application->id) }}"
+                            method="POST"
+                        >
+
+                            @csrf
+
+                            {{-- EXECUTIVE SELECT --}}
+                            <div class="mb-4">
+
+                                <label class="form-label fw-semibold">
+
+                                    <i class="fa fa-users me-2"></i>
+
+                                    Assign To Executive
+
+                                </label>
+
+                                <select
+                                    name="assigned_to"
+                                    class="form-select admin-select"
+                                    required
+                                >
+
+                                    <option value="">
+
+                                        Select Executive
+
+                                    </option>
+
+                                    @foreach($users as $user)
+
+                                        @if($user->hasRole('Executive'))
+
+                                            <option
+                                                value="{{ $user->id }}"
+                                                {{ $application->assigned_to == $user->id ? 'selected' : '' }}
+                                            >
+
+                                                {{ $user->name }}
+
+                                            </option>
+
+                                        @endif
+
+                                    @endforeach
+
+                                </select>
+
+                                <small class="text-danger error-assigned_to"></small>
+
+                            </div>
+
+                            {{-- REMARKS --}}
+                            <div class="mb-4">
+
+                                <label class="form-label fw-semibold">
+
+                                    <i class="fa fa-comment-dots me-2"></i>
+
+                                    Remarks / Instructions
+
+                                </label>
+
+                                <textarea
+                                    name="remarks"
+                                    rows="5"
+                                    class="form-control admin-textarea"
+                                    placeholder="Write instructions, verification remarks or notes for executive..."
+                                >{{ old('remarks', $application->remarks) }}</textarea>
+
+                                <small class="text-danger error-remarks"></small>
+
+                            </div>
+
+                            {{-- BUTTON --}}
+                            <button
+                                type="submit"
+                                class="btn assign-btn w-100 py-3"
+                                id="assignBtn"
                             >
 
-                                <i class="fa fa-eye me-1"></i>
+                                <span class="btn-text">
 
-                                View
+                                    <i class="fa fa-paper-plane me-2"></i>
 
-                            </a>
+                                    Assign Application
+
+                                </span>
+
+                                <span class="btn-loader d-none">
+
+                                    <i class="fa fa-spinner fa-spin me-2"></i>
+
+                                    Processing...
+
+                                </span>
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            @endif
+
+
+            {{-- ======================================================
+            | EXECUTIVE DOCUMENT UPLOAD PANEL
+            ====================================================== --}}
+            @if(
+                auth()->user()->hasRole('Executive')
+                &&
+                $application->documents->count() == 0
+            )
+
+                <div class="card border-0 shadow-lg mb-4">
+
+                    <div class="card-header bg-primary text-white">
+
+                        <h5 class="mb-0 fw-bold">
+
+                            <i class="fa fa-upload me-2"></i>
+
+                            Upload Documents
+
+                        </h5>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <form
+                            id="documentUploadForm"
+                            action="{{ route('admin.pan.document.upload', $application->id) }}"
+                            method="POST"
+                            enctype="multipart/form-data"
+                        >
+
+                            @csrf
+
+                            {{-- FILE --}}
+                            <div class="mb-3">
+
+                                <label class="form-label fw-semibold">
+
+                                    Select File
+
+                                </label>
+
+                                <input
+                                    type="file"
+                                    name="support_file"
+                                    id="support_file"
+                                    class="form-control"
+                                    accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                                    required
+                                >
+
+                                <small class="text-muted">
+
+                                    PDF, JPG, PNG, DOC, DOCX allowed
+
+                                </small>
+
+                                <small
+                                    class="text-danger error-support_file"
+                                ></small>
+
+                            </div>
+
+                            {{-- REMARKS --}}
+                            <div
+                                id="uploadRemarksBox"
+                                class="mb-3 d-none"
+                            >
+
+                                <label class="form-label fw-semibold">
+
+                                    Upload Remarks
+
+                                </label>
+
+                                <textarea
+                                    name="upload_remarks"
+                                    rows="4"
+                                    class="form-control"
+                                    placeholder="Write remarks related to uploaded document..."
+                                ></textarea>
+
+                                <small
+                                    class="text-danger error-upload_remarks"
+                                ></small>
+
+                            </div>
+
+                            {{-- BUTTON --}}
+                            <button
+                                type="submit"
+                                class="btn btn-primary w-100"
+                                id="uploadBtn"
+                            >
+
+                                <span class="btn-text">
+
+                                    <i class="fa fa-cloud-upload-alt me-2"></i>
+
+                                    Upload Document
+
+                                </span>
+
+                                <span
+                                    class="btn-loader d-none"
+                                >
+
+                                    <i class="fa fa-spinner fa-spin me-2"></i>
+
+                                    Uploading...
+
+                                </span>
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            @endif
+
+
+        {{-- ======================================================
+            | DOCUMENTS VISIBLE FOR ALL
+            ====================================================== --}}
+            @php
+
+                $doc = $application->documents->first();
+
+            @endphp
+
+            @if($doc)
+
+                <div class="card border-0 shadow-lg">
+
+                    <div class="card-header bg-light">
+
+                        <h5 class="mb-0 fw-bold">
+
+                            <i class="fa fa-folder-open me-2"></i>
+
+                            Uploaded Document
+
+                        </h5>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="uploaded-doc-card p-3 border rounded shadow-sm">
+
+                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+
+                                <div>
+
+
+                                    @if($doc->remarks)
+
+                                        <div class="mb-2">
+
+                                            <span class="fw-semibold text-dark">
+
+                                                Remarks:
+
+                                            </span>
+
+                                            <p class="text-muted small mb-0">
+
+                                                {{ $doc->remarks }}
+
+                                            </p>
+
+                                        </div>
+
+                                    @endif
+
+                                    <div class="small text-secondary">
+
+                                        <div class="mb-1">
+
+                                            <i class="fa fa-user me-1"></i>
+
+                                            Uploaded By:
+                                            {{ $doc->user->name ?? 'N/A' }}
+
+                                        </div>
+
+                                        <div>
+
+                                            <i class="fa fa-clock me-1"></i>
+
+                                            Uploaded On:
+                                            {{ $doc->created_at->format('d M Y h:i A') }}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                             <div>
+
+                                    <a
+                                        href="{{ file_url($doc->file_path) }}"
+                                        target="_blank"
+                                        class="btn btn-sm btn-primary"
+                                    >
+
+                                        <i class="fa fa-eye me-1"></i>
+
+                                        View
+
+                                    </a>
+
+                                </div>
+
+                            </div>
 
                         </div>
 
@@ -1062,13 +1066,9 @@
 
                 </div>
 
-            </div>
+            @endif
 
         </div>
-
-    @endif
-
-</div>
 
 
     </div>

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ExecutiveLoginController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\AdmissionController;
 use App\Http\Controllers\NewsController;
@@ -349,3 +350,31 @@ Route::get(
     }
 
 )->where('path', '.*');
+
+
+/*
+|--------------------------------------------------------------------------
+| EXECUTIVE AUTH
+|--------------------------------------------------------------------------
+*/
+
+Route::controller(
+    ExecutiveLoginController::class
+)->group(function () {
+
+    Route::get(
+        '/executive/login',
+        'showLogin'
+    )->name('executive.login');
+
+    Route::post(
+        '/executive/login',
+        'login'
+    )->name('executive.login.submit');
+
+    Route::post(
+        '/executive/logout',
+        'logout'
+    )->name('executive.logout');
+
+});

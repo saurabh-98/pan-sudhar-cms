@@ -4,856 +4,45 @@ namespace App\Http\Controllers\Retailer\Pan;
 
 use App\Http\Controllers\Controller;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\View\View;
-
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+
+use App\DTO\PanCorrectionDTO;
+
+use App\Http\Requests\PanCorrectionPreviewRequest;
+
+use App\Models\District;
+use App\Models\PanCorrectionApplication;
+use App\Models\State;
+use App\Models\User;
+use App\Models\WalletTransaction;
+
+use App\Services\DistrictService;
+use App\Services\PanCorrectionService;
+use App\Services\StateService;
 
 use Yajra\DataTables\Facades\DataTables;
 
-use App\Models\State;
-use App\Models\District;
-use App\Models\Retailer;
-use App\Models\ServiceDocument;
-use App\Models\PanCorrectionApplication;
-
 class PanCorrectionController extends Controller
 {
+    protected const PAN_CHARGE = 107;
 
-    /*
-    |--------------------------------------------------------------------------
-    | APPLY PAGE
-    |--------------------------------------------------------------------------
-    */
+    public function __construct(
 
-    public function create(Request $request): View
+        protected PanCorrectionService $panCorrectionService,
+
+        protected StateService $stateService,
+
+        protected DistrictService $districtService
+
+    ) {}
+
+    
+
+    public function index()
     {
-        
-        return view(
-
-            'retailer.pan-correction.apply',
-
-            [
-
-                'states' => State::latest()->get(),
-
-                'files'  => session(
-
-                    'uploaded_files',
-
-                    []
-
-                ),
-
-                'data'   => $request->all()
-
-            ]
-
-        );
-
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | PREVIEW
-    |--------------------------------------------------------------------------
-    */
-
-    public function preview(
-    Request $request
-    ): JsonResponse
-    {
-
-        /*
-        |--------------------------------------------------------------------------
-        | VALIDATION
-        |--------------------------------------------------------------------------
-        */
-
-        $request->validate([
-
-            /*
-            |--------------------------------------------------------------------------
-            | APPLICANT
-            |--------------------------------------------------------------------------
-            */
-
-            'first_name' =>
-
-                'required|string|max:255',
-
-            'middle_name' =>
-
-                'nullable|string|max:255',
-
-            'last_name' =>
-
-                'required|string|max:255',
-
-            'old_pan_number' => [
-
-                'required',
-
-                'string',
-
-                'size:10',
-
-                'regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/'
-
-            ],
-
-            'gender' =>
-
-                'required|string',
-
-            /*
-            |--------------------------------------------------------------------------
-            | PARENTS
-            |--------------------------------------------------------------------------
-            */
-
-            'father_first_name' =>
-
-                'required|string|max:255',
-
-            'father_middle_name' =>
-
-                'nullable|string|max:255',
-
-            'father_last_name' =>
-
-                'required|string|max:255',
-
-            'mother_first_name' =>
-
-                'required|string|max:255',
-
-            'mother_middle_name' =>
-
-                'nullable|string|max:255',
-
-            'mother_last_name' =>
-
-                'required|string|max:255',
-
-            /*
-            |--------------------------------------------------------------------------
-            | CONTACT
-            |--------------------------------------------------------------------------
-            */
-
-            'mobile_no' =>
-
-                'required|digits:10',
-
-            'email' =>
-
-                'required|email',
-
-            /*
-            |--------------------------------------------------------------------------
-            | ADDRESS
-            |--------------------------------------------------------------------------
-            */
-
-            'house_no' =>
-
-                'required|string|max:255',
-
-            'village' =>
-
-                'required|string|max:255',
-
-            'post_office' =>
-
-                'required|string|max:255',
-
-            'area' =>
-
-                'required|string|max:255',
-
-            'state' =>
-
-                'required|exists:states,id',
-
-            'district' =>
-
-                'required|exists:districts,id',
-
-            'pincode' =>
-
-                'required|digits:6',
-
-            /*
-            |--------------------------------------------------------------------------
-            | DOB
-            |--------------------------------------------------------------------------
-            */
-
-            'dob' =>
-
-                'required|date',
-
-            'confirm_dob' =>
-
-                'required|same:dob',
-
-            /*
-            |--------------------------------------------------------------------------
-            | AADHAAR
-            |--------------------------------------------------------------------------
-            */
-
-            'aadhaar_no' =>
-
-                'required|digits:12',
-
-            'aadhaar_name' =>
-
-                'required|string|max:255',
-
-            /*
-            |--------------------------------------------------------------------------
-            | FILES
-            |--------------------------------------------------------------------------
-            */
-
-            'photo' =>
-
-                'nullable|file|mimes:jpg,jpeg,png,pdf|max:4096',
-
-            'signature' =>
-
-                'nullable|file|mimes:jpg,jpeg,png,pdf|max:4096',
-
-            'aadhaar_card' =>
-
-                'nullable|file|mimes:jpg,jpeg,png,pdf|max:4096',
-
-            'identity_proof_file' =>
-
-                'nullable|file|mimes:jpg,jpeg,png,pdf|max:4096',
-
-            'address_proof_file' =>
-
-                'nullable|file|mimes:jpg,jpeg,png,pdf|max:4096',
-
-            'dob_proof_file' =>
-
-                'nullable|file|mimes:jpg,jpeg,png,pdf|max:4096',
-
-            'supporting_document' =>
-
-                'nullable|file|mimes:jpg,jpeg,png,pdf|max:4096',
-
-        ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | STORE FILES
-        |--------------------------------------------------------------------------
-        */
-
-        $uploadedFiles = [];
-
-        $fileFields = [
-
-            'photo',
-
-            'signature',
-
-            'aadhaar_card',
-
-            'identity_proof_file',
-
-            'address_proof_file',
-
-            'dob_proof_file',
-
-            'supporting_document'
-
-        ];
-
-        foreach($fileFields as $field)
-        {
-
-            /*
-            |--------------------------------------------------------------------------
-            | NEW FILE
-            |--------------------------------------------------------------------------
-            */
-
-            if($request->hasFile($field))
-            {
-
-                $uploadedFiles[$field] =
-
-                    $request->file($field)
-
-                    ->store(
-
-                        'pan-correction-documents',
-
-                        'public'
-
-                    );
-
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | EXISTING FILE
-            |--------------------------------------------------------------------------
-            */
-
-            elseif(
-                $request->existing_files &&
-                isset(
-                    $request->existing_files[$field]
-                )
-            )
-            {
-
-                $uploadedFiles[$field] =
-
-                    $request->existing_files[$field];
-
-            }
-
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | REMOVE FILE OBJECTS FROM SESSION
-        |--------------------------------------------------------------------------
-        */
-
-        $formData = $request->except([
-
-            '_token',
-
-            'photo',
-
-            'signature',
-
-            'aadhaar_card',
-
-            'identity_proof_file',
-
-            'address_proof_file',
-
-            'dob_proof_file',
-
-            'supporting_document'
-
-        ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | STORE SESSION
-        |--------------------------------------------------------------------------
-        */
-
-        session([
-
-            'pan_correction_preview' => $formData,
-
-            'uploaded_files' => $uploadedFiles
-
-        ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | SUCCESS
-        |--------------------------------------------------------------------------
-        */
-
-        return response()->json([
-
-            'status' => true,
-
-            'redirect_url' =>
-
-                route(
-
-                    'retailer.pan-correction.preview-page'
-
-                )
-
-        ]);
-
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | PREVIEW PAGE
-    |--------------------------------------------------------------------------
-    */
-
-    public function previewPage(): View
-    {
-
-        if(
-            !session()->has(
-                'pan_correction_preview'
-            )
-        )
-        {
-
-            return redirect()->route(
-
-                'retailer.pan-correction.apply'
-
-            );
-
-        }
-
-        return view(
-
-            'retailer.pan-correction.preview',
-
-            [
-
-                'data' => session(
-
-                    'pan_correction_preview'
-
-                ),
-
-                'files' => session(
-
-                    'uploaded_files',
-
-                    []
-
-                )
-
-            ]
-
-        );
-
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | FINAL SUBMIT
-    |--------------------------------------------------------------------------
-    */
-
-    public function store(
-    Request $request
-): JsonResponse
-{
-
-    /*
-    |--------------------------------------------------------------------------
-    | SESSION CHECK
-    |--------------------------------------------------------------------------
-    */
-
-    if(
-        !session()->has(
-            'pan_correction_preview'
-        )
-    )
-    {
-
-        return response()->json([
-
-            'status' => false,
-
-            'message' =>
-
-                'Session expired.'
-
-        ], 422);
-
-    }
-
-    DB::beginTransaction();
-
-    try{
-
-        /*
-        |--------------------------------------------------------------------------
-        | USER
-        |--------------------------------------------------------------------------
-        */
-
-        $user = auth()->user();
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADMIN USER
-        |--------------------------------------------------------------------------
-        */
-
-        $admin = \App\Models\User::where(
-
-            'role',
-
-            'Admin'
-
-        )->first();
-
-        /*
-        |--------------------------------------------------------------------------
-        | SERVICE CHARGE
-        |--------------------------------------------------------------------------
-        */
-
-        $serviceCharge = 107;
-
-        /*
-        |--------------------------------------------------------------------------
-        | WALLET CHECK
-        |--------------------------------------------------------------------------
-        */
-
-        if(
-            ($user->wallet_balance ?? 0)
-            < $serviceCharge
-        )
-        {
-
-            return response()->json([
-
-                'status' => false,
-
-                'message' =>
-
-                    'Insufficient wallet balance.'
-
-            ], 422);
-
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | DATA
-        |--------------------------------------------------------------------------
-        */
-
-        $data = session(
-
-            'pan_correction_preview'
-
-        );
-
-        $files = session(
-
-            'uploaded_files',
-
-            []
-
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | CREATE APPLICATION
-        |--------------------------------------------------------------------------
-        */
-
-        $application =
-
-        PanCorrectionApplication::create([
-
-            'user_id' => $user->id,
-
-            'first_name' => $data['first_name'],
-
-            'middle_name' =>
-                $data['middle_name'] ?? null,
-
-            'last_name' =>
-                $data['last_name'],
-
-            'old_pan_number' =>
-                strtoupper(
-                    $data['old_pan_number']
-                ),
-
-            'gender' =>
-                $data['gender'],
-
-            'father_first_name' =>
-                $data['father_first_name'],
-
-            'father_middle_name' =>
-                $data['father_middle_name'] ?? null,
-
-            'father_last_name' =>
-                $data['father_last_name'],
-
-            'mother_first_name' =>
-                $data['mother_first_name'],
-
-            'mother_middle_name' =>
-                $data['mother_middle_name'] ?? null,
-
-            'mother_last_name' =>
-                $data['mother_last_name'],
-
-            'pan_print_name' =>
-                $data['pan_print_name'] ?? null,
-
-            'mobile_no' =>
-                $data['mobile_no'],
-
-            'email' =>
-                $data['email'],
-
-            'house_no' =>
-                $data['house_no'],
-
-            'village' =>
-                $data['village'],
-
-            'post_office' =>
-                $data['post_office'],
-
-            'area' =>
-                $data['area'],
-
-            'state' =>
-                $data['state'],
-
-            'district' =>
-                $data['district'],
-
-            'pincode' =>
-                $data['pincode'],
-
-            'identity_proof' =>
-                $data['identity_proof'] ?? null,
-
-            'address_proof' =>
-                $data['address_proof'] ?? null,
-
-            'dob' =>
-                $data['dob'],
-
-            'dob_proof' =>
-                $data['dob_proof'] ?? null,
-
-            'aadhaar_no' =>
-                $data['aadhaar_no'],
-
-            'aadhaar_name' =>
-                $data['aadhaar_name'],
-
-            'signature_type' =>
-                $data['signature_type'] ?? null,
-
-            'photo' =>
-                $files['photo'] ?? null,
-
-            'signature' =>
-                $files['signature'] ?? null,
-
-            'aadhaar_card' =>
-                $files['aadhaar_card'] ?? null,
-
-            'identity_proof_file' =>
-                $files['identity_proof_file'] ?? null,
-
-            'address_proof_file' =>
-                $files['address_proof_file'] ?? null,
-
-            'dob_proof_file' =>
-                $files['dob_proof_file'] ?? null,
-
-            'supporting_document' =>
-                $files['supporting_document'] ?? null,
-
-            'status' => 'Pending',
-
-            'payment_status' => 'Paid',
-
-            'amount' => $serviceCharge
-
-        ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | DEDUCT RETAILER WALLET
-        |--------------------------------------------------------------------------
-        */
-
-        $user->decrement(
-
-            'wallet_balance',
-
-            $serviceCharge
-
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | CREDIT ADMIN WALLET
-        |--------------------------------------------------------------------------
-        */
-
-        if($admin)
-        {
-
-            $admin->increment(
-
-                'wallet_balance',
-
-                $serviceCharge
-
-            );
-
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | RETAILER WALLET TRANSACTION
-        |--------------------------------------------------------------------------
-        */
-
-        \App\Models\WalletTransaction::create([
-
-            'user_id' => $user->id,
-
-            'amount' => $serviceCharge,
-
-            'type' => 'debit',
-
-            'remark' =>
-
-                'PAN Correction Application Charge Deducted'
-
-        ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADMIN WALLET TRANSACTION
-        |--------------------------------------------------------------------------
-        */
-
-        if($admin)
-        {
-
-            \App\Models\WalletTransaction::create([
-
-                'user_id' => $admin->id,
-
-                'amount' => $serviceCharge,
-
-                'type' => 'credit',
-
-                'remark' =>
-
-                    'PAN Correction Charge Received'
-
-            ]);
-
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | CLEAR SESSION
-        |--------------------------------------------------------------------------
-        */
-
-        session()->forget([
-
-            'pan_correction_preview',
-
-            'uploaded_files'
-
-        ]);
-
-        DB::commit();
-
-        /*
-        |--------------------------------------------------------------------------
-        | SUCCESS
-        |--------------------------------------------------------------------------
-        */
-
-        return response()->json([
-
-            'status' => true,
-
-            'message' =>
-
-                'PAN correction application submitted successfully.',
-
-            'redirect_url' =>
-
-                route(
-
-                    'retailer.pan-correction.history'
-
-                )
-
-        ]);
-
-    }catch(\Exception $e){
-
-        DB::rollBack();
-
-        /*
-        |--------------------------------------------------------------------------
-        | DELETE FILES
-        |--------------------------------------------------------------------------
-        */
-
-        foreach(
-
-            session(
-
-                'uploaded_files',
-
-                []
-
-            ) as $file
-        ){
-
-            if(
-                Storage::disk('public')
-                ->exists($file)
-            ){
-
-                Storage::disk('public')
-                ->delete($file);
-
-            }
-
-        }
-
-        return response()->json([
-
-            'status' => false,
-
-            'message' =>
-
-                $e->getMessage()
-
-        ], 500);
-
-    }
-
-}
-
-    /*
-    |--------------------------------------------------------------------------
-    | HISTORY
-    |--------------------------------------------------------------------------
-    */
-
-    public function history()
-    {
-
-        if(request()->ajax())
-        {
+        if (request()->ajax()) {
 
             $applications = PanCorrectionApplication::query()
 
@@ -870,11 +59,8 @@ class PanCorrectionController extends Controller
                 ])
 
                 ->where(
-
                     'user_id',
-
                     auth()->id()
-
                 )
 
                 ->latest();
@@ -883,13 +69,7 @@ class PanCorrectionController extends Controller
 
                 ->addIndexColumn()
 
-                /*
-                |--------------------------------------------------------------------------
-                | SHOP NAME
-                |--------------------------------------------------------------------------
-                */
-
-                ->addColumn('shop_name', function($row){
+                ->addColumn('shop_name', function ($row) {
 
                     return '
 
@@ -910,16 +90,111 @@ class PanCorrectionController extends Controller
                         </div>
 
                     ';
-
                 })
 
-                /*
-                |--------------------------------------------------------------------------
-                | APPLICANT
-                |--------------------------------------------------------------------------
-                */
+                ->addColumn('applicant_name', function ($row) {
 
-                ->addColumn('applicant_name', function($row){
+                    return '
+
+                        <div>
+
+                            <div class="fw-semibold text-dark">
+
+                                '
+
+                                . e($row->applicant_name)
+
+                                . '
+
+                            </div>
+
+                            <small class="text-muted">
+
+                                '
+
+                                . e($row->mobile_no)
+
+                                . '
+
+                            </small>
+
+                        </div>
+
+                    ';
+                })
+
+                ->addColumn('state_name', function ($row) {
+
+                    return '
+
+                        <span class="badge bg-light text-dark border">
+
+                            '
+
+                            . (
+
+                                $row->stateData?->name
+
+                                ?? 'N/A'
+
+                            )
+
+                            . '
+
+                        </span>
+
+                    ';
+                })
+
+                ->addColumn('district_name', function ($row) {
+
+                    return '
+
+                        <span class="badge bg-light text-dark border">
+
+                            '
+
+                            . (
+
+                                $row->districtData?->name
+
+                                ?? 'N/A'
+
+                            )
+
+                            . '
+
+                        </span>
+
+                    ';
+                })
+
+                ->addColumn('payment', function ($row) {
+
+                    return $row->payment_badge;
+                })
+
+                ->addColumn('amount', function ($row) {
+
+                    return '
+
+                        <span class="fw-bold text-success">
+
+                            ₹'
+
+                            . number_format(
+                                $row->amount,
+                                2
+                            )
+
+                            . '
+
+                        </span>
+
+                    ';
+                })
+
+                ->addColumn('created_at', function ($row) {
 
                     return '
 
@@ -929,7 +204,9 @@ class PanCorrectionController extends Controller
 
                                 '
 
-                                . e($row->full_name)
+                                . $row->created_at->format(
+                                    'd M Y'
+                                )
 
                                 . '
 
@@ -937,11 +214,11 @@ class PanCorrectionController extends Controller
 
                             <small class="text-muted">
 
-                                OLD PAN:
-
                                 '
 
-                                . e($row->old_pan_number)
+                                . $row->created_at->format(
+                                    'h:i A'
+                                )
 
                                 . '
 
@@ -950,104 +227,26 @@ class PanCorrectionController extends Controller
                         </div>
 
                     ';
-
                 })
 
-                /*
-                |--------------------------------------------------------------------------
-                | STATE
-                |--------------------------------------------------------------------------
-                */
-
-                ->addColumn('state_name', function($row){
-
-                    return $row->stateData?->name
-
-                        ?? 'N/A';
-
-                })
-
-                /*
-                |--------------------------------------------------------------------------
-                | DISTRICT
-                |--------------------------------------------------------------------------
-                */
-
-                ->addColumn('district_name', function($row){
-
-                    return $row->districtData?->name
-
-                        ?? 'N/A';
-
-                })
-
-                /*
-                |--------------------------------------------------------------------------
-                | PAYMENT
-                |--------------------------------------------------------------------------
-                */
-
-                ->addColumn('payment_status', function($row){
-
-                    return $row->payment_badge;
-
-                })
-
-                /*
-                |--------------------------------------------------------------------------
-                | AMOUNT
-                |--------------------------------------------------------------------------
-                */
-
-                ->addColumn('amount', function($row){
-
-                    return '
-
-                        <span class="fw-bold text-success">
-
-                            ₹'
-
-                            . number_format(
-
-                                $row->amount,
-
-                                2
-
-                            )
-
-                            . '
-
-                        </span>
-
-                    ';
-
-                })
-
-                /*
-                |--------------------------------------------------------------------------
-                | STATUS
-                |--------------------------------------------------------------------------
-                */
-
-                ->addColumn('status', function($row){
+                ->addColumn('status', function ($row) {
 
                     return $row->status_badge;
-
                 })
 
-                /*
-                |--------------------------------------------------------------------------
-                | RECEIPT
-                |--------------------------------------------------------------------------
-                */
-
-                ->addColumn('document_status', function($row){
+                ->addColumn('document_status', function ($row) {
 
                     $document = $row->documents->first();
 
-                    if(
+                    if (
 
                         $document
+
+                        &&
+
+                        file_exists_custom(
+                            $document->file_path
+                        )
 
                         &&
 
@@ -1057,7 +256,7 @@ class PanCorrectionController extends Controller
 
                             [
 
-                                'Approved',
+                                'approved',
 
                                 'completed'
 
@@ -1065,22 +264,17 @@ class PanCorrectionController extends Controller
 
                         )
 
-                    )
-                    {
+                    ) {
 
                         return '
 
-                            <div class="d-flex gap-2">
+                            <div class="d-flex gap-2 flex-wrap">
 
                                 <a
                                     href="'
 
-                                    . asset(
-
-                                        'storage/' .
-
+                                    . file_url(
                                         $document->file_path
-
                                     )
 
                                     . '"
@@ -1091,19 +285,17 @@ class PanCorrectionController extends Controller
 
                                 >
 
-                                    <i class="fa fa-eye"></i>
+                                    <i class="fa fa-eye me-1"></i>
+
+                                    View
 
                                 </a>
 
                                 <a
                                     href="'
 
-                                    . asset(
-
-                                        'storage/' .
-
+                                    . file_url(
                                         $document->file_path
-
                                     )
 
                                     . '"
@@ -1114,18 +306,28 @@ class PanCorrectionController extends Controller
 
                                 >
 
-                                    <i class="fa fa-download"></i>
+                                    <i class="fa fa-download me-1"></i>
+
+                                    Download
 
                                 </a>
 
                             </div>
 
                         ';
-
                     }
 
-                    if($document)
-                    {
+                    if (
+
+                        $document
+
+                        &&
+
+                        file_exists_custom(
+                            $document->file_path
+                        )
+
+                    ) {
 
                         return '
 
@@ -1136,7 +338,6 @@ class PanCorrectionController extends Controller
                             </span>
 
                         ';
-
                     }
 
                     return '
@@ -1148,93 +349,36 @@ class PanCorrectionController extends Controller
                         </span>
 
                     ';
-
                 })
 
-                /*
-                |--------------------------------------------------------------------------
-                | DATE
-                |--------------------------------------------------------------------------
-                */
-
-                ->addColumn('created_at', function($row){
+                ->addColumn('action', function ($row) {
 
                     return '
 
-                        <div>
+                        <div class="d-flex gap-2">
 
-                            '
+                            <a
+                                href="'
 
-                            . $row->created_at->format(
-
-                                'd M Y'
-
-                            )
-
-                            . '
-
-                            <br>
-
-                            <small class="text-muted">
-
-                                '
-
-                                . $row->created_at->format(
-
-                                    'h:i A'
-
+                                . route(
+                                    'retailer.pan-correction.show',
+                                    $row->id
                                 )
 
-                                . '
+                                . '"
 
-                            </small>
+                                class="btn btn-sm btn-primary"
+
+                            >
+
+                                <i class="fa fa-eye"></i>
+
+                            </a>
 
                         </div>
 
                     ';
-
                 })
-
-                /*
-                |--------------------------------------------------------------------------
-                | ACTION
-                |--------------------------------------------------------------------------
-                */
-
-                ->addColumn('action', function($row){
-
-                    return '
-
-                        <a
-                            href="'
-
-                            . route(
-
-                                'retailer.pan-correction.show',
-
-                                $row->id
-
-                            )
-
-                            . '"
-
-                            class="btn btn-sm btn-primary"
-
-                        >
-
-                            <i class="fa fa-eye"></i>
-
-                        </a>
-
-                    ';
-
-                })
-
-                /*
-                |--------------------------------------------------------------------------
-                | RAW COLUMNS
-                |--------------------------------------------------------------------------
-                */
 
                 ->rawColumns([
 
@@ -1242,84 +386,1045 @@ class PanCorrectionController extends Controller
 
                     'applicant_name',
 
+                    'old_pan_number',
+
+                    'state_name',
+
+                    'district_name',
+
                     'payment',
 
                     'amount',
 
+                    'created_at',
+
                     'status',
 
                     'document_status',
-
-                    'created_at',
 
                     'action'
 
                 ])
 
                 ->make(true);
-
         }
 
         return view(
-
             'retailer.pan-correction.history'
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | CREATE FORM
+    |--------------------------------------------------------------------------
+    */
+
+    public function create()
+    {
+        $preview = get_pan_correction_session();
+
+        return view(
+
+            'retailer.pan-correction.apply',
+
+            [
+
+                'states' =>
+
+                    $this->stateService
+                        ->getAll(),
+
+
+                'walletBalance' =>
+
+                    auth()->user()
+                        ->wallet_balance,
+
+
+                'data' =>
+
+                    $preview['data'] ?? [],
+
+
+                'files' =>
+
+                    $preview['files'] ?? []
+
+            ]
+
+        );
+    }
+
+  
+
+    public function preview(
+        PanCorrectionPreviewRequest $request
+    ): JsonResponse {
+
+
+        try {
+
+
+            $user = auth()->user();
+
+
+
+            if ($user->wallet_balance < self::PAN_CHARGE) {
+
+
+                return response()->json([
+
+                    'status' => false,
+
+                    'message' =>
+                        'Insufficient wallet balance.'
+
+                ],422);
+
+            }
+
+
+            $dto = PanCorrectionDTO::fromRequest(
+
+                $request
+
+            );
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | CLOUDINARY UPLOAD + SESSION SAVE FROM SERVICE
+            |--------------------------------------------------------------------------
+            */
+
+
+            $preview =
+
+                $this->panCorrectionService
+
+                    ->preview($dto);
+
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | ADD STATE NAME
+            |--------------------------------------------------------------------------
+            */
+
+
+            $preview['data']['state_name'] =
+
+                State::where(
+
+                    'id',
+
+                    $request->state
+
+                )->value('name')
+
+                ??
+
+                'N/A';
+
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | ADD DISTRICT NAME
+            |--------------------------------------------------------------------------
+            */
+
+
+            $preview['data']['district_name'] =
+
+
+                District::where(
+
+                    'id',
+
+                    $request->district
+
+                )->value('name')
+
+                ??
+
+                'N/A';
+
+
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE SESSION
+            |--------------------------------------------------------------------------
+            */
+
+
+            save_pan_correction_session(
+
+                $preview
+
+            );
+
+
+
+
+
+            return response()->json([
+
+
+                'status'=>true,
+
+
+                'message'=>
+                    'Preview generated successfully.',
+
+
+
+                'redirect_url'=>
+
+                    route(
+
+                        'retailer.pan-correction.preview-page'
+
+                    )
+
+            ]);
+
+
+
+        } catch(\Throwable $e){
+
+
+
+            Log::error(
+
+                'PAN PREVIEW ERROR',
+
+                [
+
+                    'message'=>$e->getMessage(),
+
+                    'line'=>$e->getLine(),
+
+                    'file'=>$e->getFile()
+
+                ]
+
+            );
+
+
+
+            return response()->json([
+
+                'status'=>false,
+
+                'message'=>$e->getMessage()
+
+            ],500);
+
+        }
+
+    }
+
+   
+
+    public function previewPage()
+    {
+
+        $preview = get_pan_correction_session();
+
+
+
+        if (
+
+            empty($preview)
+
+            ||
+
+            !isset($preview['data'])
+
+            ||
+
+            !is_array($preview['data'])
+
+        ) {
+
+
+            return redirect()
+
+                ->route(
+
+                    'retailer.pan-correction.apply'
+
+                )
+
+                ->with(
+
+                    'error',
+
+                    'Preview session expired.'
+
+                );
+
+        }
+
+
+
+
+
+        return view(
+
+            'retailer.pan-correction.preview',
+
+            [
+
+                'data'=>
+
+                    $preview['data'],
+
+
+                'files'=>
+
+                    $preview['files']
+
+                    ??
+
+                    []
+
+            ]
 
         );
 
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | FINAL SUBMIT
+    |--------------------------------------------------------------------------
+    */
 
+    public function finalSubmit(): JsonResponse
+    {
+        DB::beginTransaction();
+
+        try {
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | USERS LOCK
+            |--------------------------------------------------------------------------
+            */
+
+            $user = User::query()
+
+                ->lockForUpdate()
+
+                ->find(auth()->id());
+
+
+
+            $admin = User::query()
+
+                ->role('Admin')
+
+                ->lockForUpdate()
+
+                ->first();
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | ADMIN CHECK
+            |--------------------------------------------------------------------------
+            */
+
+            if (!$admin) {
+
+
+                DB::rollBack();
+
+
+                return response()->json([
+
+                    'status' => false,
+
+                    'message' =>
+                        'Admin account not found.'
+
+                ],500);
+
+            }
+
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | SESSION (VERCEL SAFE HELPER)
+            |--------------------------------------------------------------------------
+            */
+
+            $session = get_pan_correction_session();
+
+
+
+            if (!$session) {
+
+
+                DB::rollBack();
+
+
+                return response()->json([
+
+                    'status' => false,
+
+                    'message' =>
+                        'Preview session expired. Please apply again.'
+
+                ],422);
+
+            }
+
+
+
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | CLOUDINARY FILE CHECK
+            |--------------------------------------------------------------------------
+            */
+
+            foreach (
+
+                $session['files'] ?? []
+
+                as $file
+
+            ) {
+
+
+                if (!$file) {
+
+
+                    DB::rollBack();
+
+
+                    return response()->json([
+
+                        'status' => false,
+
+                        'message' =>
+                            'Uploaded document missing. Please upload again.'
+
+                    ],422);
+
+                }
+
+            }
+
+
+
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | WALLET CHECK
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+
+                $user->wallet_balance
+
+                < self::PAN_CHARGE
+
+            ) {
+
+
+                DB::rollBack();
+
+
+                return response()->json([
+
+                    'status' => false,
+
+                    'message' =>
+                        'Insufficient wallet balance.'
+
+                ],422);
+
+            }
+
+
+
+
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | STORE APPLICATION
+            |--------------------------------------------------------------------------
+            */
+
+            $application =
+
+                $this->panCorrectionService
+
+                    ->storeFromSession();
+
+
+
+
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | BALANCE BEFORE
+            |--------------------------------------------------------------------------
+            */
+
+            $retailerBefore =
+                $user->wallet_balance;
+
+
+
+            $adminBefore =
+                $admin->wallet_balance;
+
+
+
+
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | WALLET UPDATE
+            |--------------------------------------------------------------------------
+            */
+
+            $user->decrement(
+
+                'wallet_balance',
+
+                self::PAN_CHARGE
+
+            );
+
+
+
+            $admin->increment(
+
+                'wallet_balance',
+
+                self::PAN_CHARGE
+
+            );
+
+
+
+            $user->refresh();
+
+            $admin->refresh();
+
+
+
+
+
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE APPLICATION
+            |--------------------------------------------------------------------------
+            */
+
+            $application->update([
+
+
+                'wallet_deducted' => true,
+
+
+                'wallet_deducted_at' => now(),
+
+
+                'payment_status' => 'Paid',
+
+
+                'status' => 'Processing'
+
+            ]);
+
+
+
+
+
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | RETAILER TRANSACTION
+            |--------------------------------------------------------------------------
+            */
+
+            WalletTransaction::create([
+
+
+                'user_id' =>
+                    $user->id,
+
+
+                'amount' =>
+                    self::PAN_CHARGE,
+
+
+                'before_balance' =>
+                    $retailerBefore,
+
+
+                'after_balance' =>
+                    $user->wallet_balance,
+
+
+                'type' =>
+                    'debit',
+
+
+                'status' =>
+                    'success',
+
+
+                'transaction_no' =>
+
+                    'TXN'
+
+                    . now()->format('YmdHis')
+
+                    . rand(1000,9999),
+
+
+                'remark' =>
+                    'PAN Correction  Application Charge'
+
+            ]);
+
+
+
+
+
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | ADMIN TRANSACTION
+            |--------------------------------------------------------------------------
+            */
+
+            WalletTransaction::create([
+
+
+                'user_id' =>
+                    $admin->id,
+
+
+                'amount' =>
+                    self::PAN_CHARGE,
+
+
+                'before_balance' =>
+                    $adminBefore,
+
+
+                'after_balance' =>
+                    $admin->wallet_balance,
+
+
+                'type' =>
+                    'credit',
+
+
+                'status' =>
+                    'success',
+
+
+                'transaction_no' =>
+
+                    'ADM'
+
+                    . now()->format('YmdHis')
+
+                    . rand(1000,9999),
+
+
+                'remark' =>
+                    'PAN Correction Application Received Amount'
+
+            ]);
+
+
+
+
+
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | COMMIT
+            |--------------------------------------------------------------------------
+            */
+
+            DB::commit();
+
+
+
+
+
+
+
+            return response()->json([
+
+
+                'status' => true,
+
+
+                'message' =>
+                    'PAN Correction Application Submitted Successfully.',
+
+
+                'redirect_url' =>
+
+                    route(
+
+                        'retailer.pan-correction.receiving',
+
+                        $application->id
+
+                    )
+
+            ]);
+
+
+
+
+
+        } catch (\Throwable $e) {
+
+
+            DB::rollBack();
+
+
+
+            Log::error(
+
+                'PAN FINAL SUBMIT ERROR',
+
+                [
+
+                    'message' =>
+                        $e->getMessage(),
+
+
+                    'line' =>
+                        $e->getLine(),
+
+
+                    'file' =>
+                        $e->getFile()
+
+                ]
+
+            );
+
+
+
+
+            return response()->json([
+
+
+                'status' => false,
+
+
+                'message' =>
+                    $e->getMessage()
+
+
+            ],500);
+
+        }
+    }
+    
     /*
     |--------------------------------------------------------------------------
     | SHOW
     |--------------------------------------------------------------------------
     */
 
-    public function show(
-        int $id
-    ): View
+    public function show(int $id)
     {
-
-        $application =
-
-        PanCorrectionApplication::query()
-
-            ->with([
-
-                'user.retailer',
-
-                'stateData',
-
-                'districtData',
-
-                'documents.user',
-
-                'assignedUser'
-
-            ])
-
-            ->where(
-
-                'user_id',
-
-                auth()->id()
-
-            )
-
-            ->findOrFail($id);
-
         return view(
 
             'retailer.pan-correction.show',
 
-            compact(
+            [
 
-                'application'
+                'application' =>
 
-            )
+                    $this->panCorrectionService->find(
+                        $id,
+                        auth()->id()
+                    )
+
+            ]
+
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | EDIT
+    |--------------------------------------------------------------------------
+    */
+
+    public function edit(int $id)
+    {
+        return view(
+
+            'retailer.pan-correction.edit',
+
+            [
+
+                'application' =>
+
+                    $this->panCorrectionService->find(
+                        $id,
+                        auth()->id()
+                    ),
+
+                'states' =>
+
+                    $this->stateService
+                        ->getAll()
+
+            ]
+
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE
+    |--------------------------------------------------------------------------
+    */
+
+    public function update(
+        UpdatePanCorrectionRequest $request,
+        int $id
+    )
+    {
+        $this->panCorrectionService->update(
+
+            $request,
+
+            $id,
+
+            auth()->id()
 
         );
 
+        return redirect()
+
+            ->route(
+                'retailer.pan-correction.history'
+            )
+
+            ->with(
+
+                'success',
+
+                'PAN Correction Application Updated Successfully.'
+
+            );
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | DELETE
+    |--------------------------------------------------------------------------
+    */
+
+    public function destroy(int $id)
+    {
+        $this->panCorrectionService->delete(
+
+            $id,
+
+            auth()->id()
+
+        );
+
+        return redirect()
+
+            ->back()
+
+            ->with(
+
+                'success',
+
+                'PAN Correction Application Deleted Successfully.'
+
+            );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | STATUS
+    |--------------------------------------------------------------------------
+    */
+
+    public function status(int $id)
+    {
+        return view(
+
+            'retailer.pan-correction.status',
+
+            [
+
+                'application' =>
+
+                    $this->panCorrectionService->find(
+                        $id,
+                        auth()->id()
+                    )
+
+            ]
+
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | ACKNOWLEDGEMENT
+    |--------------------------------------------------------------------------
+    */
+
+    public function acknowledgement(int $id)
+    {
+
+
+        return view(
+
+            'retailer.pan-correction.acknowledge',
+
+            [
+
+                'application' =>
+
+                    $this->panCorrectionService->find(
+                        $id,
+                        auth()->id()
+                    )
+
+            ]
+
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | PRINT
+    |--------------------------------------------------------------------------
+    */
+
+    public function print(int $id)
+    {
+        return view(
+
+            'retailer.pan-correction.print',
+
+            [
+
+                'application' =>
+
+                    $this->panService->find(
+                        $id,
+                        auth()->id()
+                    )
+
+            ]
+
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | STATES
+    |--------------------------------------------------------------------------
+    */
+
+    public function getStates(): JsonResponse
+    {
+        return response()->json(
+
+            State::query()
+
+                ->select(
+                    'id',
+                    'name'
+                )
+
+                ->orderBy('name')
+
+                ->get()
+
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | DISTRICTS
+    |--------------------------------------------------------------------------
+    */
+
+    public function getDistricts(
+        int $stateId
+    ): JsonResponse {
+
+        return response()->json(
+
+            District::query()
+
+                ->where(
+                    'state_id',
+                    $stateId
+                )
+
+                ->select(
+                    'id',
+                    'name'
+                )
+
+                ->orderBy('name')
+
+                ->get()
+
+        );
+    }
 }

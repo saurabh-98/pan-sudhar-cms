@@ -104,10 +104,7 @@
 
     </div>
 
-    {{-- =====================================================
-    | MENU WRAPPER
-    ====================================================== --}}
-    <div class="stf-menu-wrapper">
+   <div class="stf-menu-wrapper">
 
         <ul class="stf-menu">
 
@@ -145,7 +142,6 @@
 
             </li>
 
-
             {{-- =====================================================
             | PAN SERVICES
             ====================================================== --}}
@@ -181,31 +177,6 @@
                         New
 
                     </span>
-
-                </a>
-
-            </li>
-
-            {{-- PAN CORRECTION --}}
-            <li>
-
-                <a
-                    href="{{ route('retailer.pan-correction.history') }}"
-                    class="stf-link
-                    {{ request()->routeIs('retailer.pan-correction.*') ? 'stf-active' : '' }}"
-                >
-
-                    <div class="stf-link-left">
-
-                        <i class="fa fa-pen"></i>
-
-                        <span>
-
-                            PAN Correction
-
-                        </span>
-
-                    </div>
 
                 </a>
 
@@ -261,6 +232,70 @@
 
             </li>
 
+            {{-- =====================================================
+            | PAN CORRECTION SERVICES
+            ====================================================== --}}
+            <li class="stf-menu-title mt-4">
+
+                PAN CORRECTION SERVICES
+
+            </li>
+
+            {{-- APPLY CORRECTION --}}
+            <li>
+
+                <a
+                    href="{{ route('retailer.pan-correction.apply') }}"
+                    class="stf-link
+                    {{ request()->routeIs('retailer.pan-correction.apply') ? 'stf-active' : '' }}"
+                >
+
+                    <div class="stf-link-left">
+
+                        <i class="fa fa-pen"></i>
+
+                        <span>
+
+                            Apply Correction
+
+                        </span>
+
+                    </div>
+
+                    <span class="stf-badge">
+
+                        New
+
+                    </span>
+
+                </a>
+
+            </li>
+
+            {{-- CORRECTION HISTORY --}}
+            <li>
+
+                <a
+                    href="{{ route('retailer.pan-correction.history') }}"
+                    class="stf-link
+                    {{ request()->routeIs('retailer.pan-correction.history') || request()->routeIs('retailer.pan-correction.show') ? 'stf-active' : '' }}"
+                >
+
+                    <div class="stf-link-left">
+
+                        <i class="fa fa-history"></i>
+
+                        <span>
+
+                            Correction History
+
+                        </span>
+
+                    </div>
+
+                </a>
+
+            </li>
 
             {{-- =====================================================
             | ITR SERVICES
@@ -275,9 +310,9 @@
             <li>
 
                 <a
-                    href="{{ route('retailer.itr.file') }}"
+                    href="{{ route('retailer.itr.index') }}"
                     class="stf-link
-                    {{ request()->routeIs('retailer.itr.file') ? 'stf-active' : '' }}"
+                    {{ request()->routeIs('retailer.itr.index') ? 'stf-active' : '' }}"
                 >
 
                     <div class="stf-link-left">
@@ -326,82 +361,6 @@
                 </a>
 
             </li>
-
-            {{-- ITR CORRECTION --}}
-            <li>
-
-                <a
-                    href="{{ route('retailer.itr.correction') }}"
-                    class="stf-link
-                    {{ request()->routeIs('retailer.itr.correction') ? 'stf-active' : '' }}"
-                >
-
-                    <div class="stf-link-left">
-
-                        <i class="fa fa-pen"></i>
-
-                        <span>
-
-                            ITR Correction
-
-                        </span>
-
-                    </div>
-
-                </a>
-
-            </li>
-
-            {{-- FORM 16 --}}
-            <li>
-
-                <a
-                    href="{{ route('retailer.itr.form16') }}"
-                    class="stf-link
-                    {{ request()->routeIs('retailer.itr.form16') ? 'stf-active' : '' }}"
-                >
-
-                    <div class="stf-link-left">
-
-                        <i class="fa fa-file-alt"></i>
-
-                        <span>
-
-                            Form 16 Upload
-
-                        </span>
-
-                    </div>
-
-                </a>
-
-            </li>
-
-            {{-- GST RETURN --}}
-            <li>
-
-                <a
-                    href="{{ route('retailer.itr.gst.return') }}"
-                    class="stf-link
-                    {{ request()->routeIs('retailer.itr.gst.return') ? 'stf-active' : '' }}"
-                >
-
-                    <div class="stf-link-left">
-
-                        <i class="fa fa-receipt"></i>
-
-                        <span>
-
-                            GST Return
-
-                        </span>
-
-                    </div>
-
-                </a>
-
-            </li>
-
 
             {{-- =====================================================
             | ACCOUNT

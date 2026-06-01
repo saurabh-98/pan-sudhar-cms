@@ -122,6 +122,28 @@
 
         @endcan
 
+
+        @can('retailer-approval.view')
+
+        <li>
+
+            <a href="{{ route('admin.retailer-approvals.index') }}"
+            class="sbx-link">
+
+                <i class="fa fa-user-check"></i>
+
+                <span>
+
+                    Retailer Approvals
+
+                </span>
+
+            </a>
+
+        </li>
+
+        @endcan
+
         {{-- =====================================================
             | WALLET MANAGEMENT
             ====================================================== --}}
@@ -225,6 +247,36 @@
                 <span>
 
                     New PAN Applications
+
+                </span>
+
+                @if($panCount > 0)
+
+                    <span class="sbx-count-badge">
+
+                        {{ $panCount }}
+
+                    </span>
+
+                @endif
+
+            </a>
+
+        </li>
+
+        {{-- PAN CORRECTION APPLICATIONS --}}
+        <li>
+
+            <a href="{{ route('admin.pan-correction.index') }}"
+               class="sbx-link
+               {{ request()->routeIs('admin.pan-correction.*')
+                    ? 'sbx-active' : '' }}">
+
+                <i class="fa fa-id-card"></i>
+
+                <span>
+
+                     PAN Correction Applications
 
                 </span>
 

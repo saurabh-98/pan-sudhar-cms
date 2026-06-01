@@ -178,7 +178,7 @@ class PanApplicationDTO
             */
 
             first_name:
-                $request->middle_name
+                $request->first_name
                     ? trim($request->first_name)
                     : null,
 

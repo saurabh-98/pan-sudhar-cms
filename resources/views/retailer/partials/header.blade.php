@@ -82,6 +82,22 @@
 
         </div>
 
+
+        @if(session()->has('admin_id'))
+
+        <div class="ms-3">
+            <a
+                href="{{ route('admin.retailer-approvals.back-to-admin') }}"
+                class="btn btn-danger btn-sm">
+
+                <i class="fas fa-arrow-left"></i>
+                Back To Admin
+
+            </a>
+        </div>
+
+        @endif
+
         <!-- =====================================================
         | NOTIFICATION
         ====================================================== -->

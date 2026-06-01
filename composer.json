@@ -38,7 +38,9 @@
 
         "files": [
             "app/Helpers/FileHelper.php",
-            "app/Helpers/PanSessionHelper.php"
+            "app/Helpers/PanSessionHelper.php",
+            "app/Helpers/PanCorrectionSessionHelper.php",
+            "app/Helpers/ItrSessionHelper.php"
         ]
     },
 

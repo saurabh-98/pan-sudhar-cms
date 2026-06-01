@@ -305,6 +305,9 @@ function closePopup(){
 
 </script>
 
+
+
+
 @yield('scripts')
 
 </body>

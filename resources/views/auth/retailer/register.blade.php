@@ -1015,35 +1015,40 @@ $(document).ready(function () {
 
                 success: function (response) {
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | SUCCESS ALERT
-                    |--------------------------------------------------------------------------
-                    */
-
                     Swal.fire({
 
                         icon: 'success',
 
-                        title: 'Registration Successful',
+                        title: 'Registration Submitted',
 
                         html: `
 
-                            <div style="text-align:left">
+                            <div style="text-align:center">
 
-                                <b>Email ID:</b>
-                                ${response.credentials.email}
+                                <p>
 
-                                <br><br>
+                                    Your retailer registration request has been submitted successfully.
 
-                                <b>Password:</b>
-                                ${response.credentials.password}
+                                </p>
+
+                                <p>
+
+                                    Please wait for department approval.
+
+                                </p>
+
+                                <p>
+
+                                    Login credentials will be generated and shared
+                                    after approval.
+
+                                </p>
 
                             </div>
 
                         `,
 
-                        confirmButtonText: 'Login Now'
+                        confirmButtonText: 'OK'
 
                     }).then(() => {
 
@@ -1053,7 +1058,6 @@ $(document).ready(function () {
                     });
 
                 },
-
                 error: function (xhr) {
 
                     $('.btn-login-parent')

@@ -124,21 +124,38 @@ class AuthController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function logout(
-        Request $request
-    ) {
+    public function logout(Request $request)
+{
+    $user = Auth::user();
 
-        $this->authService->logout(
-            $request
-        );
+    Auth::logout();
 
-        return redirect('/login')
-            ->with(
-                'success',
-                'Logged out successfully'
-            );
+    $request->session()->invalidate();
+
+    $request->session()->regenerateToken();
+
+    if ($user) {
+
+        if ($user->hasRole('Executive')) {
+
+            return redirect()
+                ->route('executive.login');
+        }
+
+        if (
+            $user->hasRole('Admin')
+            ||
+            $user->hasRole('Super Admin')
+        ) {
+
+            return redirect()
+                ->route('login');
+        }
     }
 
+    return redirect()
+        ->route('login');
+}
     /*
     |--------------------------------------------------------------------------
     | REGISTER PAGE

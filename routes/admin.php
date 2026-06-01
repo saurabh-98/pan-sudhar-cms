@@ -33,8 +33,10 @@ use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\UpiController;
 use App\Http\Controllers\Admin\WalletController;
 use App\Http\Controllers\Admin\AdminNewPanController;
+use App\Http\Controllers\Admin\AdminPanCorrectionController;
 use App\Http\Controllers\Admin\AdminItrController as ItrFileController;
 use App\Http\Controllers\Admin\AdminWalletController ;
+use App\Http\Controllers\Admin\RetailerApprovalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -700,67 +702,133 @@ Route::prefix('pages')
 
 
     /*
-|--------------------------------------------------------------------------
-| NEW PAN MODULE
-|--------------------------------------------------------------------------
-*/
-
-Route::prefix('pan')
-    ->name('pan.')
-    ->middleware('permission:pan.view')
-    ->group(function () {
-
-    /*
     |--------------------------------------------------------------------------
-    | PAN APPLICATION LIST
+    | NEW PAN MODULE
     |--------------------------------------------------------------------------
     */
 
-    Route::get(
-        '/',
-        [AdminNewPanController::class, 'index']
-    )->name('index');
+    Route::prefix('pan')
+        ->name('pan.')
+        ->middleware('permission:pan.view')
+        ->group(function () {
 
-    /*
-    |--------------------------------------------------------------------------
-    | PAN APPLICATION SHOW
+        /*
+        |--------------------------------------------------------------------------
+        | PAN APPLICATION LIST
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/',
+            [AdminNewPanController::class, 'index']
+        )->name('index');
+
+        /*
+        |--------------------------------------------------------------------------
+        | PAN APPLICATION SHOW
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/show/{id}',
+            [AdminNewPanController::class, 'show']
+        )->name('show');
+
+        /*
+        |--------------------------------------------------------------------------
+        | ASSIGN APPLICATION
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post(
+            '/assign/{id}',
+            [AdminNewPanController::class, 'assign']
+        )->name('assign');
+
+    
+
+        Route::post(
+            '/pan/document-upload/{id}',
+            [AdminNewPanController::class, 'uploadDocument']
+        )->name('document.upload');
+
+        Route::get(
+
+                '/pan/{id}/download-documents',
+
+                [AdminNewPanController::class, 'downloadDocuments']
+
+            )->name('new.download.documents');
+
+
+
+    });
+
+
+      /*  |--------------------------------------------------------------------------
+    |  PAN CORRECTION MODULE
     |--------------------------------------------------------------------------
     */
 
-    Route::get(
-        '/show/{id}',
-        [AdminNewPanController::class, 'show']
-    )->name('show');
+    Route::prefix('pan-correction')
+        ->name('pan-correction.')
+        ->middleware('permission:pan.view')
+        ->group(function () {
 
-    /*
-    |--------------------------------------------------------------------------
-    | ASSIGN APPLICATION
-    |--------------------------------------------------------------------------
-    */
+        /*
+        |--------------------------------------------------------------------------
+        | PAN APPLICATION LIST
+        |--------------------------------------------------------------------------
+        */
 
-    Route::post(
-        '/assign/{id}',
-        [AdminNewPanController::class, 'assign']
-    )->name('assign');
+        Route::get(
+            '/',
+            [AdminPanCorrectionController::class, 'index']
+        )->name('index');
 
-   
+        /*
+        |--------------------------------------------------------------------------
+        | PAN APPLICATION SHOW
+        |--------------------------------------------------------------------------
+        */
 
-    Route::post(
-        '/pan/document-upload/{id}',
-        [AdminNewPanController::class, 'uploadDocument']
-    )->name('document.upload');
+        Route::get(
+            '/show/{id}',
+            [AdminPanCorrectionController::class, 'show']
+        )->name('show');
 
-     Route::get(
+        /*
+        |--------------------------------------------------------------------------
+        | ASSIGN APPLICATION
+        |--------------------------------------------------------------------------
+        */
 
-            '/pan/{id}/download-documents',
+        Route::post(
+            '/assign/{id}',
+            [AdminPanCorrectionController::class, 'assign']
+        )->name('assign');
 
-            [AdminNewPanController::class, 'downloadDocuments']
+    
 
-        )->name('new.download.documents');
+        Route::post(
+            '/pan/document-upload/{id}',
+            [AdminPanCorrectionController::class, 'uploadDocument']
+        )->name('document.upload');
+
+        Route::get(
+
+                '/pan-correction/{id}/download-documents',
+
+                [AdminPanCorrectionController::class, 'downloadDocuments']
+
+            )->name('new.download.documents');
 
 
 
-});
+    });
+
+
+
 
 
 
@@ -983,5 +1051,48 @@ Route::prefix('admin-wallet')
     )->name('delete');
 
 });
+
+
+    Route::prefix('retailer-approvals')
+    ->name('retailer-approvals.')
+    ->group(function () {
+
+        Route::get(
+            '/',
+            [RetailerApprovalController::class, 'index']
+        )->name('index');
+
+        Route::post(
+            '/approve/{id}',
+            [RetailerApprovalController::class, 'approve']
+        )->name('approve');
+
+        Route::post(
+            '/reject/{id}',
+            [RetailerApprovalController::class, 'reject']
+        )->name('reject');
+
+        /*
+        |--------------------------------------------------------------------------
+        | LOGIN AS RETAILER
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/login-as/{userId}',
+            [RetailerApprovalController::class, 'loginAsRetailer']
+        )->name('login-as');
+
+        /*
+        |--------------------------------------------------------------------------
+        | BACK TO ADMIN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/back-to-admin',
+            [RetailerApprovalController::class, 'backToAdmin']
+        )->name('back-to-admin');
+        });
 
 });

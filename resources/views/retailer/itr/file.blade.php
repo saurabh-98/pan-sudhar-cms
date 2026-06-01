@@ -291,7 +291,7 @@
                                     | NAME
                                     ========================================================= -->
 
-                                    <div class="col-lg-6 mb-4">
+                                    <div class="col-lg-4 mb-4">
 
                                         <label class="itr-label">
 
@@ -310,14 +310,35 @@
 
                                     </div>
 
+                                    <!-- =========================================================
+                                    | MOBILE
+                                    ========================================================= -->
 
+                                    <div class="col-lg-4 mb-4">
 
+                                        <label class="itr-label">
+
+                                            Mobile Number As Per Aadhaar
+
+                                            <span>*</span>
+
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            name="mobile"
+                                            class="itr-input"
+                                            maxlength="10"
+                                            placeholder="Enter 10 Digit Mobile Number"
+                                        >
+
+                                    </div>
 
                                     <!-- =========================================================
                                     | EMAIL
                                     ========================================================= -->
 
-                                    <div class="col-lg-6 mb-4">
+                                    <div class="col-lg-4 mb-4">
 
                                         <label class="itr-label">
 
@@ -335,7 +356,6 @@
                                         >
 
                                     </div>
-
 
 
 
@@ -453,6 +473,18 @@
 
                                         <strong
                                             id="preview_name"
+                                        ></strong>
+
+                                    </div>
+
+                                    <div class="preview-user-item">
+
+                                        <span>
+                                            Mobile Number
+                                        </span>
+
+                                        <strong
+                                            id="preview_mobile"
                                         ></strong>
 
                                     </div>
@@ -859,7 +891,41 @@ $(document).ready(function(){
     }
 
 
+    function validateMobile(){
 
+        let input =
+        $('input[name="mobile"]');
+
+        let value =
+        input.val().trim();
+
+        let regex =
+        /^[6-9][0-9]{9}$/;
+
+        if(value === ''){
+
+            showError(
+                input,
+                'Mobile number is required.'
+            );
+
+            return false;
+        }
+
+        if(!regex.test(value)){
+
+            showError(
+                input,
+                'Enter valid 10 digit mobile number.'
+            );
+
+            return false;
+        }
+
+        removeError(input);
+
+        return true;
+    }
 
     /* =========================================================
     | EMAIL VALIDATION
@@ -1104,7 +1170,22 @@ $(document).ready(function(){
         validateName
     );
 
+    $('input[name="mobile"]').on(
+        'keyup blur',
+        validateMobile
+    );
 
+    $('input[name="mobile"]').on(
+        'input',
+        function(){
+
+            this.value =
+            this.value
+            .replace(/\D/g, '')
+            .slice(0,10);
+
+        }
+    );
 
     $('input[name="email"]').on(
         'keyup blur',
@@ -1151,6 +1232,10 @@ $(document).ready(function(){
         }
 
         if(!validateName()){
+            valid = false;
+        }
+
+        if(!validateMobile()){
             valid = false;
         }
 
@@ -1206,7 +1291,10 @@ $(document).ready(function(){
         );
 
 
-
+        $('#preview_mobile').text(
+            $('input[name="mobile"]').val()
+        );
+        
         $('#preview_email').text(
 
             $('input[name="email"]').val()

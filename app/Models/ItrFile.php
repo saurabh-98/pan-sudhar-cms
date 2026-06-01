@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ItrFile extends Model
 {
@@ -16,9 +17,25 @@ class ItrFile extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'itr_files';
+    protected $table =
+        'itr_files';
 
+    /*
+    |--------------------------------------------------------------------------
+    | PRIMARY KEY
+    |--------------------------------------------------------------------------
+    */
 
+    protected $primaryKey =
+        'id';
+
+    /*
+    |--------------------------------------------------------------------------
+    | PAGINATION
+    |--------------------------------------------------------------------------
+    */
+
+    protected $perPage = 20;
 
     /*
     |--------------------------------------------------------------------------
@@ -30,31 +47,59 @@ class ItrFile extends Model
 
         'user_id',
 
+        'application_no',
+
+        'name',
+
+        'mobile',
+
+        'email',
+
+        'remarks',
+
+        'admin_remarks',
+
         'aadhaar_front',
 
         'aadhaar_back',
 
         'pan_card',
 
-        'name',
-
-        'email',
-
-        'remarks',
-
         'charge',
+
+        'payment_status',
 
         'status',
 
-        'assigned_to',
+        'wallet_deducted',
 
-        'assigned_at',
+        'wallet_deducted_at',
 
-        'admin_remarks',
+        'ip_address',
+
+        'browser',
 
     ];
 
+    /*
+    |--------------------------------------------------------------------------
+    | APPENDS
+    |--------------------------------------------------------------------------
+    */
 
+    protected $appends = [
+
+        'status_badge',
+
+        'applicant_name',
+
+        'aadhaar_front_url',
+
+        'aadhaar_back_url',
+
+        'pan_card_url'
+
+    ];
 
     /*
     |--------------------------------------------------------------------------
@@ -64,51 +109,47 @@ class ItrFile extends Model
 
     protected $casts = [
 
-        'created_at' => 'datetime',
+        'charge' =>
+            'decimal:2',
 
-        'updated_at' => 'datetime',
+        'wallet_deducted' =>
+            'boolean',
 
-        'assigned_at' => 'datetime',
+        'wallet_deducted_at' =>
+            'datetime',
+
+        'created_at' =>
+            'datetime',
+
+        'updated_at' =>
+            'datetime',
 
     ];
 
-
-
     /*
     |--------------------------------------------------------------------------
-    | USER RELATION
+    | USER
     |--------------------------------------------------------------------------
     */
 
-    public function user()
+    public function user(): BelongsTo
     {
-
         return $this->belongsTo(
             User::class,
             'user_id'
         );
-
     }
-
-
 
     /*
     |--------------------------------------------------------------------------
-    | ASSIGNED EMPLOYEE
+    | APPLICANT NAME
     |--------------------------------------------------------------------------
     */
 
-    public function assignedEmployee()
+    public function getApplicantNameAttribute(): string
     {
-
-        return $this->belongsTo(
-            User::class,
-            'assigned_to'
-        );
-
+        return $this->name ?? '';
     }
-
-
 
     /*
     |--------------------------------------------------------------------------
@@ -116,67 +157,37 @@ class ItrFile extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function getStatusBadgeAttribute()
+    public function getStatusBadgeAttribute(): string
     {
+        return match (
+            strtolower($this->status)
+        ) {
 
-        if($this->status == 'approved')
-        {
+            'approved' =>
 
-            return '
-
-                <span class="badge bg-success">
-
+                '<span class="badge bg-success">
                     Approved
+                </span>',
 
-                </span>
+            'rejected' =>
 
-            ';
+                '<span class="badge bg-danger">
+                    Rejected
+                </span>',
 
-        }
+            'processing' =>
 
-        elseif($this->status == 'pending')
-        {
-
-            return '
-
-                <span class="badge bg-warning text-dark">
-
-                    Pending
-
-                </span>
-
-            ';
-
-        }
-
-        elseif($this->status == 'processing')
-        {
-
-            return '
-
-                <span class="badge bg-info">
-
+                '<span class="badge bg-warning text-dark">
                     Processing
+                </span>',
 
-                </span>
+            default =>
 
-            ';
-
-        }
-
-        return '
-
-            <span class="badge bg-danger">
-
-                Rejected
-
-            </span>
-
-        ';
-
+                '<span class="badge bg-secondary">
+                    Pending
+                </span>',
+        };
     }
-
-
 
     /*
     |--------------------------------------------------------------------------
@@ -184,23 +195,22 @@ class ItrFile extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function getAadhaarFrontUrlAttribute()
+    public function getAadhaarFrontUrlAttribute(): ?string
     {
-
-        if($this->aadhaar_front)
-        {
-
-            return asset(
-                'storage/' . $this->aadhaar_front
-            );
-
+        if (
+            empty($this->aadhaar_front)
+            ||
+            !file_exists_custom(
+                $this->aadhaar_front
+            )
+        ) {
+            return null;
         }
 
-        return null;
-
+        return file_url(
+            $this->aadhaar_front
+        );
     }
-
-
 
     /*
     |--------------------------------------------------------------------------
@@ -208,23 +218,22 @@ class ItrFile extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function getAadhaarBackUrlAttribute()
+    public function getAadhaarBackUrlAttribute(): ?string
     {
-
-        if($this->aadhaar_back)
-        {
-
-            return asset(
-                'storage/' . $this->aadhaar_back
-            );
-
+        if (
+            empty($this->aadhaar_back)
+            ||
+            !file_exists_custom(
+                $this->aadhaar_back
+            )
+        ) {
+            return null;
         }
 
-        return null;
-
+        return file_url(
+            $this->aadhaar_back
+        );
     }
-
-
 
     /*
     |--------------------------------------------------------------------------
@@ -232,54 +241,147 @@ class ItrFile extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function getPanCardUrlAttribute()
+    public function getPanCardUrlAttribute(): ?string
     {
-
-        if($this->pan_card)
-        {
-
-            return asset(
-                'storage/' . $this->pan_card
-            );
-
+        if (
+            empty($this->pan_card)
+            ||
+            !file_exists_custom(
+                $this->pan_card
+            )
+        ) {
+            return null;
         }
 
-        return null;
-
+        return file_url(
+            $this->pan_card
+        );
     }
-
-
 
     /*
     |--------------------------------------------------------------------------
-    | ASSIGNED USER NAME
+    | FILE EXISTS
     |--------------------------------------------------------------------------
     */
 
-    public function getAssignedUserNameAttribute()
-    {
+    public function hasFile(
+        string $column
+    ): bool {
 
-        return $this->assignedEmployee->name
-            ?? 'Not Assigned';
+        if (
+            empty(
+                $this->{$column}
+            )
+        ) {
+            return false;
+        }
 
-    }
-
-    public function documents()
-    {
-        return $this->hasMany(
-
-            ServiceDocument::class,
-
-            'service_id'
-
-        )->where(
-
-            'service_type',
-
-            'pan'
-
+        return file_exists_custom(
+            $this->{$column}
         );
     }
-    
 
+    /*
+    |--------------------------------------------------------------------------
+    | SCOPES
+    |--------------------------------------------------------------------------
+    */
+
+    public function scopePending($query)
+    {
+        return $query->where(
+            'status',
+            'Pending'
+        );
+    }
+
+    public function scopeApproved($query)
+    {
+        return $query->where(
+            'status',
+            'Approved'
+        );
+    }
+
+    public function scopeRejected($query)
+    {
+        return $query->where(
+            'status',
+            'Rejected'
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | BOOT
+    |--------------------------------------------------------------------------
+    */
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function (
+            $model
+        ) {
+
+            if (
+                empty(
+                    $model->application_no
+                )
+            ) {
+
+                $model->application_no =
+
+                    'ITR'
+
+                    . date('Ymd')
+
+                    . rand(
+                        100000,
+                        999999
+                    );
+            }
+
+            if (
+                empty(
+                    $model->status
+                )
+            ) {
+
+                $model->status =
+                    'Pending';
+            }
+
+            if (
+                empty(
+                    $model->payment_status
+                )
+            ) {
+
+                $model->payment_status =
+                    'Pending';
+            }
+        });
+
+        static::deleting(function (
+            $model
+        ) {
+
+            foreach ([
+
+                $model->aadhaar_front,
+
+                $model->aadhaar_back,
+
+                $model->pan_card
+
+            ] as $file) {
+
+                delete_uploaded_file(
+                    $file
+                );
+            }
+        });
+    }
 }

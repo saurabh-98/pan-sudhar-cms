@@ -242,7 +242,7 @@ class DashboardController extends Controller
 
                 'title' => 'File ITR',
                 'icon'  => 'fa-file-invoice-dollar',
-                'url'   => route('retailer.itr.file'),
+                'url'   => route('retailer.itr.index'),
 
             ],
 
@@ -258,7 +258,7 @@ class DashboardController extends Controller
 
                 'title' => 'ITR Correction',
                 'icon'  => 'fa-edit',
-                'url'   => route('retailer.itr.correction'),
+                'url'   => route('retailer.itr.index'),
 
             ],
 
@@ -266,7 +266,7 @@ class DashboardController extends Controller
 
                 'title' => 'Form 16',
                 'icon'  => 'fa-file-alt',
-                'url'   => route('retailer.itr.form16'),
+                'url'   => route('retailer.itr.index'),
 
             ],
 
@@ -274,7 +274,7 @@ class DashboardController extends Controller
 
                 'title' => 'GST Return',
                 'icon'  => 'fa-receipt',
-                'url'   => route('retailer.itr.gst.return'),
+                'url'   => route('retailer.itr.index'),
 
             ],
 

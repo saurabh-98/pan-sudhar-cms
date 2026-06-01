@@ -350,111 +350,51 @@ Route::prefix('pan')
 */
 
 Route::prefix('itr')
-->name('itr.')
-->group(function () {
+    ->name('itr.')
+    ->controller(FileItrController::class)
+    ->group(function () {
 
-    /*
-    |--------------------------------------------------------------------------
-    | FILE ITR
-    |--------------------------------------------------------------------------
-    */
+        Route::get(
+            '/',
+            'index'
+        )->name('index');
 
-    Route::get(
+        Route::post(
+            '/preview',
+            'preview'
+        )->name('preview');
 
-        '/file',
+        Route::get(
+            '/preview-page',
+            'previewPage'
+        )->name('preview-page');
 
-        [FileItrController::class,
-        'index']
+        Route::post(
+            '/final-submit',
+            'finalSubmit'
+        )->name('final-submit');
 
-    )->name('file');
+        Route::get(
+            '/acknowledgement/{id}',
+            'acknowledgement'
+        )->name('acknowledgement');
 
+        Route::get(
+            '/history',
+            'history'
+        )->name('history');
 
+        
+        Route::get(
+            '/show/{id}',
+            'show'
+        )->name('show');
 
-    /*
-    |--------------------------------------------------------------------------
-    | STORE FILE ITR
-    |--------------------------------------------------------------------------
-    */
-
-    Route::post(
-
-        '/store',
-
-        [FileItrController::class,
-        'store']
-
-    )->name('store');
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | ITR HISTORY
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get(
-
-        '/history',
-
-        [FileItrController::class,
-        'history']
-
-    )->name('history');
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | ITR CORRECTION
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get(
-
-        '/correction',
-
-        [ItrCorrectionController::class,
-        'index']
-
-    )->name('correction');
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | FORM 16
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get(
-
-        '/form16',
-
-        [Form16Controller::class,
-        'index']
-
-    )->name('form16');
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | GST RETURN
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get(
-
-        '/gst-return',
-
-        [GstReturnController::class,
-        'index']
-
-    )->name('gst.return');
-
-});
-
+        Route::delete(
+            '/delete/{id}',
+            'destroy'
+        )->name('delete');
+    });
 
   /*
 |--------------------------------------------------------------------------
@@ -522,7 +462,7 @@ Route::prefix('pan-correction')
 
             '/store',
 
-            'store'
+            'finalSubmit'
 
         )->name('store');
 
@@ -536,7 +476,7 @@ Route::prefix('pan-correction')
 
             '/history',
 
-            'history'
+            'index'
 
         )->name('history');
 
@@ -553,6 +493,23 @@ Route::prefix('pan-correction')
             'show'
 
         )->name('show');
+
+
+        Route::get(
+            '/receiving/{id}',
+            'acknowledgement'
+        )->name('receiving');
+
+        /*
+        |--------------------------------------------------------------------------
+        | PRINT
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/print/{id}',
+            'print'
+        )->name('print');
 
     });
 

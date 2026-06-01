@@ -29,16 +29,16 @@
         | LEFT SIDE
         ===================================================== -->
 
-        <div class="sg-auth-left">
+       <div class="sg-auth-left">
 
             <div class="sg-auth-overlay">
 
                 <!-- BADGE -->
                 <span class="sg-auth-badge">
 
-                    <i class="fa-solid fa-graduation-cap"></i>
+                    <i class="fa-solid fa-id-card"></i>
 
-                    Smart School ERP Platform
+                    PAN Sudhar Portal
 
                 </span>
 
@@ -46,16 +46,18 @@
                 <h1>
 
                     Welcome To
-                    <span>School ERP</span>
+                    <span>PAN Sudhar Portal</span>
 
                 </h1>
 
                 <!-- SUBTITLE -->
                 <p>
 
-                    Manage admissions, students, departments,
-                    teachers, academics, reports, attendance,
-                    and digital learning in one modern platform.
+                    Manage PAN Correction Applications,
+                    Document Verification, Executive Assignment,
+                    Application Tracking, Approval Workflow,
+                    Department Operations and Status Monitoring
+                    through one secure digital platform.
 
                 </p>
 
@@ -66,13 +68,13 @@
 
                         <h3>
 
-                            5000+
+                            10,000+
 
                         </h3>
 
                         <span>
 
-                            Students
+                            Applications
 
                         </span>
 
@@ -82,13 +84,13 @@
 
                         <h3>
 
-                            120+
+                            250+
 
                         </h3>
 
                         <span>
 
-                            Faculty
+                            Executives
 
                         </span>
 
@@ -98,13 +100,66 @@
 
                         <h3>
 
-                            15+
+                            24×7
 
                         </h3>
 
                         <span>
 
-                            Departments
+                            Tracking
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- FEATURES -->
+                <div class="mt-4">
+
+                    <div class="d-flex align-items-center mb-3">
+
+                        <i class="fa-solid fa-circle-check me-2"></i>
+
+                        <span>
+
+                            PAN Correction Application Management
+
+                        </span>
+
+                    </div>
+
+                    <div class="d-flex align-items-center mb-3">
+
+                        <i class="fa-solid fa-circle-check me-2"></i>
+
+                        <span>
+
+                            Document Verification & Approval Workflow
+
+                        </span>
+
+                    </div>
+
+                    <div class="d-flex align-items-center mb-3">
+
+                        <i class="fa-solid fa-circle-check me-2"></i>
+
+                        <span>
+
+                            Executive Assignment & Tracking
+
+                        </span>
+
+                    </div>
+
+                    <div class="d-flex align-items-center">
+
+                        <i class="fa-solid fa-circle-check me-2"></i>
+
+                        <span>
+
+                            Real-Time Status Monitoring
 
                         </span>
 
@@ -115,8 +170,7 @@
             </div>
 
         </div>
-
-        <!-- =====================================================
+      <!-- =====================================================
         | RIGHT SIDE
         ===================================================== -->
 
@@ -127,33 +181,33 @@
                 <!-- LOGO -->
                 <div class="sg-login-logo">
 
-                    🎓
+                    🪪
 
                 </div>
 
                 <!-- TITLE -->
                 <h2 class="sg-login-title">
 
-                    Department Login
+                    PAN Correction Department Login
 
                 </h2>
 
                 <p class="sg-login-subtitle">
 
-                    Access your school management dashboard
+                    Access PAN Sudhar Department Dashboard
 
                 </p>
 
                 <!-- FORM -->
                 <form method="POST"
-                      action="{{ route('login.post') }}">
+                    action="{{ route('login.post') }}">
 
                     @csrf
 
                     <!-- ROLE -->
                     <input type="hidden"
-                           name="role"
-                           value="admin">
+                        name="role"
+                        value="admin">
 
                     <!-- EMAIL -->
                     <div class="sg-input-group">
@@ -165,14 +219,15 @@
                         </span>
 
                         <input type="email"
-                               name="email"
-                               required
-                               class="sg-input-field"
-                               placeholder=" ">
+                            name="email"
+                            required
+                            class="sg-input-field"
+                            placeholder=" "
+                            autocomplete="username">
 
                         <label>
 
-                            Email Address
+                            Department Email Address
 
                         </label>
 
@@ -188,15 +243,16 @@
                         </span>
 
                         <input type="password"
-                               id="password"
-                               name="password"
-                               required
-                               class="sg-input-field"
-                               placeholder=" ">
+                            id="password"
+                            name="password"
+                            required
+                            class="sg-input-field"
+                            placeholder=" "
+                            autocomplete="current-password">
 
                         <label>
 
-                            Password
+                            Department Password
 
                         </label>
 
@@ -215,7 +271,7 @@
                         <label class="sg-remember">
 
                             <input type="checkbox"
-                                   name="remember">
+                                name="remember">
 
                             <span>
 
@@ -226,7 +282,7 @@
                         </label>
 
                         <a href="{{ route('password.request') }}"
-                           class="sg-forgot-link">
+                        class="sg-forgot-link">
 
                             Forgot Password?
 
@@ -240,7 +296,7 @@
 
                         <i class="fa-solid fa-right-to-bracket"></i>
 
-                        Login To Dashboard
+                        Login To Department Panel
 
                     </button>
 
@@ -251,9 +307,16 @@
 
                     <p>
 
-                        Secure School ERP Login System
+                        Secure PAN Sudhar Department Portal
 
                     </p>
+
+                    <small>
+
+                        PAN Correction Application Management &
+                        Verification System
+
+                    </small>
 
                 </div>
 

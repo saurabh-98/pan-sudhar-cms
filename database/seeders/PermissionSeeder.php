@@ -73,17 +73,7 @@ class PermissionSeeder extends Seeder
             'users.edit',
             'users.delete',
 
-            /*
-            |--------------------------------------------------------------------------
-            | CUSTOMERS
-            |--------------------------------------------------------------------------
-            */
-
-            'customers.view',
-            'customers.create',
-            'customers.edit',
-            'customers.delete',
-
+            
             /*
             |--------------------------------------------------------------------------
             | PROFILE
@@ -127,27 +117,9 @@ class PermissionSeeder extends Seeder
             'notice.edit',
             'notice.delete',
 
-            /*
-            |--------------------------------------------------------------------------
-            | MESSAGES
-            |--------------------------------------------------------------------------
-            */
+            
 
-            'messages.view',
-            'messages.send',
-            'messages.read',
-            'messages.delete',
-
-            /*
-            |--------------------------------------------------------------------------
-            | REPORTS
-            |--------------------------------------------------------------------------
-            */
-
-            'reports.view',
-            'reports.students',
-            'reports.attendance',
-
+          
             /*
             |--------------------------------------------------------------------------
             | CMS
@@ -181,64 +153,7 @@ class PermissionSeeder extends Seeder
             'footer.delete',
             'footer.settings',
 
-            /*
-            |--------------------------------------------------------------------------
-            | HR
-            |--------------------------------------------------------------------------
-            */
-
-            'departments.view',
-            'departments.create',
-            'departments.edit',
-            'departments.delete',
-
-            'designations.view',
-            'designations.create',
-            'designations.edit',
-            'designations.delete',
-
-            'employees.view',
-            'employees.create',
-            'employees.edit',
-            'employees.delete',
-
-            /*
-            |--------------------------------------------------------------------------
-            | PAYROLL
-            |--------------------------------------------------------------------------
-            */
-
-            'salary.view',
-            'salary.create',
-            'salary.edit',
-
-            'payroll.view',
-            'payroll.generate',
-            'payroll.pay',
-
-            'payslip.view',
-            'payslip.download',
-
-            /*
-            |--------------------------------------------------------------------------
-            | EVENTS
-            |--------------------------------------------------------------------------
-            */
-
-            'events.view',
-            'events.create',
-            'events.edit',
-            'events.delete',
-
-            /*
-            |--------------------------------------------------------------------------
-            | NOTIFICATIONS
-            |--------------------------------------------------------------------------
-            */
-
-            'notifications.view',
-            'notifications.send',
-
+          
             /*
             |--------------------------------------------------------------------------
             | SETTINGS
@@ -306,6 +221,10 @@ class PermissionSeeder extends Seeder
             'gallery.create',
             'gallery.edit',
             'gallery.delete',
+
+            'retailer-approval.view',
+            'retailer-approval.approve',
+            'retailer-approval.reject',
 
         ];
 

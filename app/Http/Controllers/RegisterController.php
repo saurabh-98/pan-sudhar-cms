@@ -172,74 +172,11 @@ class RegisterController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | USER ID = EMAIL
-        |--------------------------------------------------------------------------
-        */
-
-        $userId =
-        strtolower(
-            trim($request->email)
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | PASSWORD = MOBILE
-        |--------------------------------------------------------------------------
-        */
-
-        $plainPassword =
-        trim($request->mobile);
-
-        /*
-        |--------------------------------------------------------------------------
-        | CREATE USER
-        |--------------------------------------------------------------------------
-        */
-
-        $user = User::create([
-
-    
-            'name' =>
-
-                trim($request->name),
-
-            'mobile' =>
-
-                trim($request->mobile),
-
-            'email' =>
-
-                strtolower(
-                    trim($request->email)
-                ),
-
-
-            'password' =>
-
-                Hash::make(
-                    $plainPassword
-                ),
-
-            'status' => 1,
-
-        ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | ASSIGN ROLE
-        |--------------------------------------------------------------------------
-        */
-
-        $user->assignRole('retailer');
-
-        /*
-        |--------------------------------------------------------------------------
-        | CREATE RETAILER
+        | CREATE RETAILER REQUEST
         |--------------------------------------------------------------------------
         */
 
         DB::table('retailers')->insert([
-
 
             'shop_name' =>
 
@@ -267,23 +204,31 @@ class RegisterController extends Controller
 
                 $request->district_id,
 
-            'password' =>
-
-                trim($request->mobile),
+            /*
+            |--------------------------------------------------------------------------
+            | PENDING APPROVAL
+            |--------------------------------------------------------------------------
+            */
 
             'status' =>
 
-                'approved',
+                'pending',
 
-            'is_verified' => 1,
+            'is_verified' =>
+
+                0,
 
             'registered_ip' =>
 
                 $request->ip(),
 
-            'created_at' => now(),
+            'created_at' =>
 
-            'updated_at' => now(),
+                now(),
+
+            'updated_at' =>
+
+                now(),
 
         ]);
 
@@ -295,64 +240,42 @@ class RegisterController extends Controller
         |--------------------------------------------------------------------------
         */
 
-       /*
-        |--------------------------------------------------------------------------
-        | SUCCESS RESPONSE
-        |--------------------------------------------------------------------------
-        */
-
         return response()->json([
 
             'success' => true,
 
             'message' =>
 
-                'Retailer registered successfully.',
-
-            /*
-            |--------------------------------------------------------------------------
-            | LOGIN CREDENTIALS
-            |--------------------------------------------------------------------------
-            */
-
-            'credentials' => [
-
-                'email' =>
-
-                    $userId,
-
-                'password' =>
-
-                    $plainPassword,
-
-            ],
+                'Registration submitted successfully. Your account is pending department approval. Login credentials will be generated after approval.',
 
             'redirect' =>
 
-                route('retailer.login')
+                route('home')
 
         ]);
 
-            } catch (\Exception $e) {
+    } catch (\Exception $e) {
 
-                DB::rollBack();
+        DB::rollBack();
 
-                return response()->json([
+        return response()->json([
 
-                    'success' => false,
+            'success' => false,
 
-                    'message' =>
+            'message' =>
 
-                        'Something went wrong.',
+                'Something went wrong.',
 
-                    'error' =>
+            'error' =>
 
-                        $e->getMessage()
+                $e->getMessage()
 
-                ], 500);
+        ], 500);
 
-            }
-        }
+    }
+}
+
+
 
     /*
     |--------------------------------------------------------------------------

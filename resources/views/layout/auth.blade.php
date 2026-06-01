@@ -14,7 +14,6 @@
     <!-- Custom CSS -->
     
     <link href="{{ asset('assets/css/auth.css') }}" rel="stylesheet">
-     <link href="{{ asset('assets/css/student-auth.css') }}" rel="stylesheet">
 
     <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -51,7 +50,7 @@
 
     <!-- JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{{ asset('assets/js/script.js') }}"></script>
+    
 
     <!-- 🔥 PARTICLES LIB -->
     <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>

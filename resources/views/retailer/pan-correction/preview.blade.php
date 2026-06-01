@@ -304,73 +304,125 @@
 
             </div>
 
-            {{-- =====================================================
+          {{-- =====================================================
             | DOCUMENTS
             ====================================================== --}}
-            <div class="preview-section">
 
-                <div class="preview-heading">
+            <div class="mb-5">
 
-                    <i class="fa fa-file"></i>
-
+                <h4 class="border-bottom pb-3 mb-4 fw-bold">
                     Uploaded Documents
+                </h4>
 
-                </div>
+                @php
+
+                    $documents = [
+
+                        'Photo' =>
+                            $files['photo'] ?? null,
+
+                        'Signature' =>
+                            $files['signature'] ?? null,
+
+                        'Aadhaar Card' =>
+                            $files['aadhaar_card'] ?? null,
+
+                        'DOB Proof' =>
+                            $files['dob_proof_file'] ?? null,
+
+                        'Supporting Document' =>
+                            $files['supporting_document'] ?? null,
+
+                    ];
+
+                @endphp
 
                 <div class="row g-4">
 
-                    @foreach($files as $title => $file)
+                    @foreach($documents as $title => $file)
 
-                        <div class="col-lg-3 col-md-4 col-sm-6">
+                        @if(
+                            !empty($file)
+                            &&
+                            file_exists_custom($file)
+                        )
 
-                            <div class="document-card">
+                            @php
 
-                                <div class="document-card-header">
+                                $url = file_url($file);
 
-                                    {{ ucwords(str_replace('_', ' ', $title)) }}
+                                /*
+                                |--------------------------------------------------------------------------
+                                | DETECT PDF FOR BOTH:
+                                | LOCAL STORAGE
+                                | CLOUDINARY RAW FILES
+                                |--------------------------------------------------------------------------
+                                */
 
-                                </div>
+                                $extension = strtolower(
+                                    pathinfo(
+                                        $file,
+                                        PATHINFO_EXTENSION
+                                    )
+                                );
 
-                                <div class="document-card-body">
+                                $isPdf =
+                                    $extension === 'pdf'
+                                    ||
+                                    str_contains(
+                                        strtolower($url),
+                                        '/raw/upload/'
+                                    )
+                                    ||
+                                    str_contains(
+                                        strtolower($url),
+                                        '.pdf'
+                                    );
 
-                                    @php
+                            @endphp
 
-                                        $extension = pathinfo($file, PATHINFO_EXTENSION);
+                            <div class="col-lg-3 col-md-6">
 
-                                    @endphp
+                                <div class="document-preview-card">
 
-                                    @if(in_array(strtolower($extension), ['jpg','jpeg','png','webp']))
+                                    <div class="document-title">
 
-                                        <img
-                                            src="{{ asset('storage/'.$file) }}"
-                                            class="img-fluid rounded"
-                                        >
+                                        {{ $title }}
 
-                                    @elseif(strtolower($extension) == 'pdf')
+                                    </div>
 
-                                        <a
-                                            href="{{ asset('storage/'.$file) }}"
-                                            target="_blank"
-                                            class="btn btn-danger w-100"
-                                        >
+                                    @if($isPdf)
 
-                                            <i class="fa fa-file-pdf me-2"></i>
+                                        <div class="text-center p-3">
 
-                                            View PDF
+                                            <a
+                                                href="{{ $url }}"
+                                                target="_blank"
+                                                class="btn btn-danger w-100"
+                                            >
+                                                View PDF
+                                            </a>
 
-                                        </a>
+                                            <div class="mt-2 small text-muted">
+                                                PDF Document
+                                            </div>
+
+                                        </div>
 
                                     @else
 
                                         <a
-                                            href="{{ asset('storage/'.$file) }}"
+                                            href="{{ $url }}"
                                             target="_blank"
-                                            class="btn btn-dark w-100"
                                         >
 
-                                            <i class="fa fa-download me-2"></i>
-
-                                            Download File
+                                            <img
+                                                src="{{ $url }}"
+                                                class="img-fluid rounded"
+                                                alt="{{ $title }}"
+                                                loading="lazy"
+                                                onerror="this.onerror=null;this.src='{{ asset('assets/images/no-image.png') }}';"
+                                            >
 
                                         </a>
 
@@ -380,7 +432,7 @@
 
                             </div>
 
-                        </div>
+                        @endif
 
                     @endforeach
 

@@ -3,46 +3,60 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\User;
 
 class PanCorrectionApplication extends Model
 {
     use HasFactory;
 
-    /*
+
+     /*
     |--------------------------------------------------------------------------
     | TABLE
     |--------------------------------------------------------------------------
     */
 
     protected $table =
-
         'pan_correction_applications';
 
     /*
     |--------------------------------------------------------------------------
-    | FILLABLE
+    | PRIMARY KEY
     |--------------------------------------------------------------------------
     */
+
+    protected $primaryKey = 'id';
+
+    /*
+    |--------------------------------------------------------------------------
+    | PAGINATION
+    |--------------------------------------------------------------------------
+    */
+
+    protected $perPage = 20;
+
+
+    
 
     protected $fillable = [
 
         'user_id',
 
+        'assigned_to',
+
+        'application_no',
+
+        'pan_type',
+
         'first_name',
         'middle_name',
         'last_name',
-
         'old_pan_number',
-
+        'dob',
         'gender',
-
-        'pan_print_name',
 
         'father_first_name',
         'father_middle_name',
@@ -52,8 +66,13 @@ class PanCorrectionApplication extends Model
         'mother_middle_name',
         'mother_last_name',
 
+        'pan_print_name',
+
         'mobile_no',
         'email',
+
+        'aadhaar_no',
+        'aadhaar_name',
 
         'house_no',
         'village',
@@ -62,54 +81,52 @@ class PanCorrectionApplication extends Model
 
         'state',
         'district',
+
         'pincode',
 
         'identity_proof',
         'address_proof',
         'dob_proof',
 
-        'dob',
-
-        'aadhaar_no',
-        'aadhaar_name',
-
         'signature_type',
 
         'photo',
         'signature',
+
         'aadhaar_card',
 
-        'identity_proof_file',
-        'address_proof_file',
         'dob_proof_file',
 
         'supporting_document',
 
-        'assigned_to',
-        'assigned_at',
-
-        'status',
+        'amount',
         'payment_status',
 
-        'amount',
+        'status',
 
-        'remarks'
+        'wallet_deducted',
+        'wallet_deducted_at',
+
+        'ip_address',
+        'browser',
+
+        'admin_remark'
 
     ];
 
     /*
     |--------------------------------------------------------------------------
-    | CASTS
+    | HIDDEN
     |--------------------------------------------------------------------------
     */
 
-    protected $casts = [
+    protected $hidden = [
 
-        'dob' => 'date',
+        'aadhaar_no',
 
-        'assigned_at' => 'datetime',
+        'browser',
 
-        'amount' => 'decimal:2'
+        'ip_address'
 
     ];
 
@@ -121,80 +138,67 @@ class PanCorrectionApplication extends Model
 
     protected $appends = [
 
-        'full_name',
+        'status_badge',
 
         'payment_badge',
 
-        'status_badge'
+        'applicant_name',
+
+        'photo_url',
+
+        'signature_url',
+
+        'aadhaar_card_url',
+
+        'dob_proof_file_url',
+
+        'supporting_document_url'
 
     ];
 
     /*
     |--------------------------------------------------------------------------
-    | USER
+    | CASTS
+    |--------------------------------------------------------------------------
+    */
+
+    protected $casts = [
+
+        'dob' =>
+            'date:Y-m-d',
+
+        'amount' =>
+            'decimal:2',
+
+        'wallet_deducted' =>
+            'boolean',
+
+        'wallet_deducted_at' =>
+            'datetime',
+
+        'created_at' =>
+            'datetime',
+
+        'updated_at' =>
+            'datetime'
+
+    ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | USER RELATIONSHIP
     |--------------------------------------------------------------------------
     */
 
     public function user(): BelongsTo
     {
-
         return $this->belongsTo(
 
-            User::class
+            User::class,
+
+            'user_id'
 
         );
-
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | RETAILER
-    |--------------------------------------------------------------------------
-    */
-
-    public function retailer()
-    {
-
-        return $this->user?->retailer();
-
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | STATE
-    |--------------------------------------------------------------------------
-    */
-
-    public function stateData(): BelongsTo
-    {
-
-        return $this->belongsTo(
-
-            State::class,
-
-            'state'
-
-        );
-
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | DISTRICT
-    |--------------------------------------------------------------------------
-    */
-
-    public function districtData(): BelongsTo
-    {
-
-        return $this->belongsTo(
-
-            District::class,
-
-            'district'
-
-        );
-
     }
 
     /*
@@ -205,7 +209,6 @@ class PanCorrectionApplication extends Model
 
     public function assignedUser(): BelongsTo
     {
-
         return $this->belongsTo(
 
             User::class,
@@ -213,7 +216,40 @@ class PanCorrectionApplication extends Model
             'assigned_to'
 
         );
+    }
 
+    /*
+    |--------------------------------------------------------------------------
+    | STATE RELATION
+    |--------------------------------------------------------------------------
+    */
+
+    public function stateData()
+    {
+        return $this->belongsTo(
+
+            State::class,
+
+            'state'
+
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | DISTRICT RELATION
+    |--------------------------------------------------------------------------
+    */
+
+    public function districtData()
+    {
+        return $this->belongsTo(
+
+            District::class,
+
+            'district'
+
+        );
     }
 
     /*
@@ -222,46 +258,62 @@ class PanCorrectionApplication extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function documents(): HasMany
-    {
+    public function documents()
+{
+    return $this->hasMany(
 
-        return $this->hasMany(
+        ServiceDocument::class,
 
-            ServiceDocument::class,
+        'service_id',
 
-            'service_id'
+        'id'
 
-        )
+    )->where(
 
-        ->where(
+        'service_type',
 
-            'service_type',
+        'pan_correction'
 
-            'pan_correction'
-
-        );
-
-    }
-
+    );
+}
     /*
     |--------------------------------------------------------------------------
-    | FULL NAME
+    | STATUS BADGE
     |--------------------------------------------------------------------------
     */
 
-    public function getFullNameAttribute(): string
+    public function getStatusBadgeAttribute(): string
     {
+        return match (
 
-        return trim(
+            strtolower($this->status)
 
-            $this->first_name.' '.
+        ) {
 
-            $this->middle_name.' '.
+            'approved' =>
 
-            $this->last_name
+                '<span class="badge bg-success">
+                    Approved
+                </span>',
 
-        );
+            'rejected' =>
 
+                '<span class="badge bg-danger">
+                    Rejected
+                </span>',
+
+            'processing' =>
+
+                '<span class="badge bg-warning text-dark">
+                    Processing
+                </span>',
+
+            default =>
+
+                '<span class="badge bg-secondary">
+                    Pending
+                </span>',
+        };
     }
 
     /*
@@ -272,16 +324,19 @@ class PanCorrectionApplication extends Model
 
     public function getPaymentBadgeAttribute(): string
     {
+        return match (
 
-        return match($this->payment_status){
+            strtolower($this->payment_status)
 
-            'Paid' =>
+        ) {
+
+            'paid' =>
 
                 '<span class="badge bg-success">
                     Paid
                 </span>',
 
-            'Failed' =>
+            'failed' =>
 
                 '<span class="badge bg-danger">
                     Failed
@@ -291,54 +346,420 @@ class PanCorrectionApplication extends Model
 
                 '<span class="badge bg-warning text-dark">
                     Pending
-                </span>'
-
+                </span>',
         };
-
     }
 
     /*
     |--------------------------------------------------------------------------
-    | STATUS BADGE
+    | FULL ADDRESS
     |--------------------------------------------------------------------------
     */
 
-    public function getStatusBadgeAttribute(): string
+    public function getFullAddressAttribute(): string
     {
+        return collect([
 
-        return match($this->status){
+            $this->house_no,
+            $this->village,
+            $this->post_office,
+            $this->area,
 
-            'Approved' =>
+            $this->districtData?->name,
 
-                '<span class="badge bg-primary">
-                    Approved
-                </span>',
+            $this->stateData?->name,
 
-            'Processing' =>
+            $this->pincode
 
-                '<span class="badge bg-info">
-                    Processing
-                </span>',
+        ])
+        ->filter()
+        ->implode(', ');
+    }
 
-            'Completed' =>
+    /*
+    |--------------------------------------------------------------------------
+    | MASKED AADHAAR
+    |--------------------------------------------------------------------------
+    */
 
-                '<span class="badge bg-success">
-                    Completed
-                </span>',
+    public function getMaskedAadhaarAttribute(): string
+    {
+        if (empty($this->aadhaar_no)) {
 
-            'Rejected' =>
+            return '';
+        }
 
-                '<span class="badge bg-danger">
-                    Rejected
-                </span>',
+        return 'XXXXXXXX'
 
-            default =>
+            . substr(
 
-                '<span class="badge bg-warning text-dark">
-                    Pending
-                </span>'
+                $this->aadhaar_no,
 
-        };
+                -4
 
+            );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | APPLICANT NAME
+    |--------------------------------------------------------------------------
+    */
+
+    public function getApplicantNameAttribute(): string
+    {
+        return collect([
+
+            $this->first_name,
+
+            $this->middle_name,
+
+            $this->last_name
+
+        ])
+        ->filter()
+        ->implode(' ');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | FATHER FULL NAME
+    |--------------------------------------------------------------------------
+    */
+
+    public function getFatherFullNameAttribute(): string
+    {
+        return collect([
+
+            $this->father_first_name,
+
+            $this->father_middle_name,
+
+            $this->father_last_name
+
+        ])
+        ->filter()
+        ->implode(' ');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | MOTHER FULL NAME
+    |--------------------------------------------------------------------------
+    */
+
+    public function getMotherFullNameAttribute(): string
+    {
+        return collect([
+
+            $this->mother_first_name,
+
+            $this->mother_middle_name,
+
+            $this->mother_last_name
+
+        ])
+        ->filter()
+        ->implode(' ');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | ASSIGNED USER NAME
+    |--------------------------------------------------------------------------
+    */
+
+    public function getAssignedUserNameAttribute(): ?string
+    {
+        return $this->assignedUser?->name;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | PHOTO URL
+    |--------------------------------------------------------------------------
+    */
+
+    public function getPhotoUrlAttribute(): ?string
+    {
+        if (
+
+            empty($this->photo)
+
+            ||
+
+            !file_exists_custom($this->photo)
+
+        ) {
+
+            return null;
+        }
+
+        return file_url(
+            $this->photo
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | SIGNATURE URL
+    |--------------------------------------------------------------------------
+    */
+
+    public function getSignatureUrlAttribute(): ?string
+    {
+        if (
+
+            empty($this->signature)
+
+            ||
+
+            !file_exists_custom($this->signature)
+
+        ) {
+
+            return null;
+        }
+
+        return file_url(
+            $this->signature
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | AADHAAR CARD URL
+    |--------------------------------------------------------------------------
+    */
+
+    public function getAadhaarCardUrlAttribute(): ?string
+    {
+        if (
+
+            empty($this->aadhaar_card)
+
+            ||
+
+            !file_exists_custom($this->aadhaar_card)
+
+        ) {
+
+            return null;
+        }
+
+        return file_url(
+            $this->aadhaar_card
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | DOB PROOF FILE URL
+    |--------------------------------------------------------------------------
+    */
+
+    public function getDobProofFileUrlAttribute(): ?string
+    {
+        if (
+
+            empty($this->dob_proof_file)
+
+            ||
+
+            !file_exists_custom($this->dob_proof_file)
+
+        ) {
+
+            return null;
+        }
+
+        return file_url(
+            $this->dob_proof_file
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | SUPPORTING DOCUMENT URL
+    |--------------------------------------------------------------------------
+    */
+
+    public function getSupportingDocumentUrlAttribute(): ?string
+    {
+        if (
+
+            empty($this->supporting_document)
+
+            ||
+
+            !file_exists_custom(
+                $this->supporting_document
+            )
+
+        ) {
+
+            return null;
+        }
+
+        return file_url(
+            $this->supporting_document
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | FILE EXISTS CHECK
+    |--------------------------------------------------------------------------
+    */
+
+    public function hasFile(
+        string $column
+    ): bool {
+
+        if (
+
+            empty($this->{$column})
+
+        ) {
+
+            return false;
+        }
+
+        return file_exists_custom(
+            $this->{$column}
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | QUERY SCOPES
+    |--------------------------------------------------------------------------
+    */
+
+    public function scopePending($query)
+    {
+        return $query->where(
+            'status',
+            'Pending'
+        );
+    }
+
+    public function scopeApproved($query)
+    {
+        return $query->where(
+            'status',
+            'Approved'
+        );
+    }
+
+    public function scopeRejected($query)
+    {
+        return $query->where(
+            'status',
+            'Rejected'
+        );
+    }
+
+    public function scopeProcessing($query)
+    {
+        return $query->where(
+            'status',
+            'Processing'
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | BOOT
+    |--------------------------------------------------------------------------
+    */
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | APPLICATION NUMBER
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+
+                empty($model->application_no)
+
+            ) {
+
+                $model->application_no =
+
+                    'PAN'
+
+                    . date('Ymd')
+
+                    . rand(100000,999999);
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | DEFAULT STATUS
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+
+                empty($model->status)
+
+            ) {
+
+                $model->status =
+                    'Pending';
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | DEFAULT PAYMENT
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+
+                empty($model->payment_status)
+
+            ) {
+
+                $model->payment_status =
+                    'Pending';
+            }
+        });
+
+        /*
+        |--------------------------------------------------------------------------
+        | DELETE FILES
+        |--------------------------------------------------------------------------
+        */
+
+        static::deleting(function ($model) {
+
+            $files = [
+
+                $model->photo,
+
+                $model->signature,
+
+                $model->aadhaar_card,
+
+                $model->dob_proof_file,
+
+                $model->supporting_document
+
+            ];
+
+            foreach ($files as $file) {
+
+                delete_uploaded_file($file);
+            }
+        });
     }
 }
