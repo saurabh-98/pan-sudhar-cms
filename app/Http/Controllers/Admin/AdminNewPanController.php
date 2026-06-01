@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Http;
 
 use App\Models\PanApplication;
 use App\Models\User;
@@ -13,7 +14,6 @@ use App\Models\WalletTransaction;
 use App\Models\ServiceDocument;
 
 use ZipArchive;
-use Illuminate\Support\Facades\File;
 
 class AdminNewPanController extends Controller
 {
@@ -711,11 +711,8 @@ class AdminNewPanController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function downloadDocuments(
-    int $id
-)
+    public function downloadDocuments(int $id)
 {
-
     /*
     |--------------------------------------------------------------------------
     | APPLICATION
@@ -737,7 +734,6 @@ class AdminNewPanController extends Controller
         &&
         $application->assigned_to != auth()->id()
     ) {
-
         abort(
             403,
             'Unauthorized Access'
@@ -759,32 +755,18 @@ class AdminNewPanController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | TEMP DIRECTORY
-    |--------------------------------------------------------------------------
-    */
-
-    $tempPath =
-        storage_path('app/temp');
-
-    if (!File::exists($tempPath)) {
-
-        File::makeDirectory(
-            $tempPath,
-            0755,
-            true
-        );
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | ZIP PATH
+    | TEMP ZIP PATH
     |--------------------------------------------------------------------------
     */
 
     $zipPath =
-        $tempPath
+        sys_get_temp_dir()
         .
-        '/'
+        DIRECTORY_SEPARATOR
+        .
+        uniqid('pan_', true)
+        .
+        '_'
         .
         $zipFileName;
 
@@ -794,321 +776,352 @@ class AdminNewPanController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    $zip = new ZipArchive;
+    $zip = new ZipArchive();
 
     if (
         $zip->open(
             $zipPath,
             ZipArchive::CREATE |
             ZipArchive::OVERWRITE
-        ) === true
+        ) !== true
     ) {
 
-        /*
-        |--------------------------------------------------------------------------
-        | APPLICATION DOCUMENTS
-        |--------------------------------------------------------------------------
-        */
-
-        $documents = [
-
-            'Photo' =>
-                $application->photo,
-
-            'Signature' =>
-                $application->signature,
-
-            'Aadhaar_Card' =>
-                $application->aadhaar_card,
-
-            'DOB_Proof' =>
-                $application->dob_proof_file,
-
-            'Supporting_Document' =>
-                $application->supporting_document,
-
-        ];
-
-        foreach ($documents as $label => $file) {
-
-            if (empty($file)) {
-
-                continue;
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | CLOUDINARY FILE
-            |--------------------------------------------------------------------------
-            */
-
-            if (
-                str_starts_with(
-                    $file,
-                    'http'
-                )
-            ) {
-
-                try {
-
-                    $content =
-                        @file_get_contents(
-                            $file
-                        );
-
-                    if ($content !== false) {
-
-                        $path =
-                            parse_url(
-                                $file,
-                                PHP_URL_PATH
-                            );
-
-                        $extension =
-                            pathinfo(
-                                $path,
-                                PATHINFO_EXTENSION
-                            );
-
-                        if (empty($extension)) {
-
-                            $extension = 'pdf';
-                        }
-
-                        $zip->addFromString(
-
-                            $label
-                            .
-                            '.'
-                            .
-                            $extension,
-
-                            $content
-
-                        );
-                    }
-
-                } catch (\Throwable $e) {
-
-                    logger()->error(
-
-                        'Cloudinary ZIP Error',
-
-                        [
-
-                            'file'  => $file,
-
-                            'error' => $e->getMessage()
-
-                        ]
-
-                    );
-                }
-
-                continue;
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | LOCAL FILE
-            |--------------------------------------------------------------------------
-            */
-
-            $normalizedFile =
-                normalize_file_path(
-                    $file
-                );
-
-            if (
-                file_exists_custom(
-                    $normalizedFile
-                )
-            ) {
-
-                $filePath =
-                    public_path(
-                        $normalizedFile
-                    );
-
-                $extension =
-                    pathinfo(
-                        $filePath,
-                        PATHINFO_EXTENSION
-                    );
-
-                $zip->addFile(
-
-                    $filePath,
-
-                    $label
-                    .
-                    '.'
-                    .
-                    $extension
-
-                );
-            }
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | EXECUTIVE DOCUMENTS
-        |--------------------------------------------------------------------------
-        */
-
-        foreach (
-            $application->documents
-            as $doc
-        ) {
-
-            if (
-                empty(
-                    $doc->file_path
-                )
-            ) {
-
-                continue;
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | CLOUDINARY FILE
-            |--------------------------------------------------------------------------
-            */
-
-            if (
-                str_starts_with(
-                    $doc->file_path,
-                    'http'
-                )
-            ) {
-
-                try {
-
-                    $content =
-                        @file_get_contents(
-                            $doc->file_path
-                        );
-
-                    if ($content !== false) {
-
-                        $path =
-                            parse_url(
-                                $doc->file_path,
-                                PHP_URL_PATH
-                            );
-
-                        $extension =
-                            pathinfo(
-                                $path,
-                                PATHINFO_EXTENSION
-                            );
-
-                        if (empty($extension)) {
-
-                            $extension = 'pdf';
-                        }
-
-                        $zip->addFromString(
-
-                            'Executive_Document_'
-                            .
-                            $doc->id
-                            .
-                            '.'
-                            .
-                            $extension,
-
-                            $content
-
-                        );
-                    }
-
-                } catch (\Throwable $e) {
-
-                    logger()->error(
-
-                        'Executive Cloudinary ZIP Error',
-
-                        [
-
-                            'file'  =>
-                                $doc->file_path,
-
-                            'error' =>
-                                $e->getMessage()
-
-                        ]
-
-                    );
-                }
-
-                continue;
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | LOCAL FILE
-            |--------------------------------------------------------------------------
-            */
-
-            $normalizedFile =
-                normalize_file_path(
-                    $doc->file_path
-                );
-
-            if (
-                file_exists_custom(
-                    $normalizedFile
-                )
-            ) {
-
-                $docPath =
-                    public_path(
-                        $normalizedFile
-                    );
-
-                $extension =
-                    pathinfo(
-                        $docPath,
-                        PATHINFO_EXTENSION
-                    );
-
-                $zip->addFile(
-
-                    $docPath,
-
-                    'Executive_Document_'
-                    .
-                    $doc->id
-                    .
-                    '.'
-                    .
-                    $extension
-
-                );
-            }
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | CLOSE ZIP
-        |--------------------------------------------------------------------------
-        */
-
-        $zip->close();
+        abort(
+            500,
+            'Unable to create ZIP file.'
+        );
     }
 
     /*
     |--------------------------------------------------------------------------
-    | DOWNLOAD RESPONSE
+    | APPLICATION DOCUMENTS
+    |--------------------------------------------------------------------------
+    */
+
+    $documents = [
+
+        'Photo' =>
+            $application->photo,
+
+        'Signature' =>
+            $application->signature,
+
+        'Aadhaar_Card' =>
+            $application->aadhaar_card,
+
+        'DOB_Proof' =>
+            $application->dob_proof_file,
+
+        'Supporting_Document' =>
+            $application->supporting_document,
+
+    ];
+
+    foreach ($documents as $label => $file) {
+
+        if (empty($file)) {
+            continue;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | CLOUDINARY FILE
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            str_starts_with(
+                $file,
+                'http'
+            )
+        ) {
+
+            try {
+
+                $response = Http::timeout(30)
+                    ->get($file);
+
+                if (
+                    $response->successful()
+                ) {
+
+                    $path =
+                        parse_url(
+                            $file,
+                            PHP_URL_PATH
+                        );
+
+                    $extension =
+                        pathinfo(
+                            $path,
+                            PATHINFO_EXTENSION
+                        );
+
+                    if (
+                        empty($extension)
+                    ) {
+                        $extension = 'pdf';
+                    }
+
+                    $zip->addFromString(
+
+                        $label
+                        .
+                        '.'
+                        .
+                        $extension,
+
+                        $response->body()
+
+                    );
+                }
+
+            } catch (\Throwable $e) {
+
+                logger()->error(
+
+                    'Cloudinary ZIP Error',
+
+                    [
+
+                        'file' =>
+                            $file,
+
+                        'error' =>
+                            $e->getMessage()
+
+                    ]
+
+                );
+            }
+
+            continue;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | LOCAL FILE
+        |--------------------------------------------------------------------------
+        */
+
+        $normalizedFile =
+            normalize_file_path(
+                $file
+            );
+
+        if (
+            file_exists_custom(
+                $normalizedFile
+            )
+        ) {
+
+            $filePath =
+                public_path(
+                    $normalizedFile
+                );
+
+            $extension =
+                pathinfo(
+                    $filePath,
+                    PATHINFO_EXTENSION
+                );
+
+            $zip->addFile(
+
+                $filePath,
+
+                $label
+                .
+                '.'
+                .
+                $extension
+
+            );
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | EXECUTIVE DOCUMENTS
+    |--------------------------------------------------------------------------
+    */
+
+    foreach (
+        $application->documents
+        as $doc
+    ) {
+
+        if (
+            empty(
+                $doc->file_path
+            )
+        ) {
+            continue;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | CLOUDINARY FILE
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            str_starts_with(
+                $doc->file_path,
+                'http'
+            )
+        ) {
+
+            try {
+
+                $response = Http::timeout(30)
+                    ->get(
+                        $doc->file_path
+                    );
+
+                if (
+                    $response->successful()
+                ) {
+
+                    $path =
+                        parse_url(
+                            $doc->file_path,
+                            PHP_URL_PATH
+                        );
+
+                    $extension =
+                        pathinfo(
+                            $path,
+                            PATHINFO_EXTENSION
+                        );
+
+                    if (
+                        empty($extension)
+                    ) {
+                        $extension = 'pdf';
+                    }
+
+                    $zip->addFromString(
+
+                        'Executive_Document_'
+                        .
+                        $doc->id
+                        .
+                        '.'
+                        .
+                        $extension,
+
+                        $response->body()
+
+                    );
+                }
+
+            } catch (\Throwable $e) {
+
+                logger()->error(
+
+                    'Executive Cloudinary ZIP Error',
+
+                    [
+
+                        'file' =>
+                            $doc->file_path,
+
+                        'error' =>
+                            $e->getMessage()
+
+                    ]
+
+                );
+            }
+
+            continue;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | LOCAL FILE
+        |--------------------------------------------------------------------------
+        */
+
+        $normalizedFile =
+            normalize_file_path(
+                $doc->file_path
+            );
+
+        if (
+            file_exists_custom(
+                $normalizedFile
+            )
+        ) {
+
+            $docPath =
+                public_path(
+                    $normalizedFile
+                );
+
+            $extension =
+                pathinfo(
+                    $docPath,
+                    PATHINFO_EXTENSION
+                );
+
+            $zip->addFile(
+
+                $docPath,
+
+                'Executive_Document_'
+                .
+                $doc->id
+                .
+                '.'
+                .
+                $extension
+
+            );
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | CLOSE ZIP
+    |--------------------------------------------------------------------------
+    */
+
+    $zip->close();
+
+    /*
+    |--------------------------------------------------------------------------
+    | VALIDATE ZIP
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+        !file_exists(
+            $zipPath
+        )
+    ) {
+
+        abort(
+            500,
+            'ZIP file was not generated.'
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | DOWNLOAD
     |--------------------------------------------------------------------------
     */
 
     return response()
         ->download(
             $zipPath,
-            $zipFileName
+            $zipFileName,
+            [
+                'Content-Type' =>
+                    'application/zip',
+            ]
         )
         ->deleteFileAfterSend(true);
 }

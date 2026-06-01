@@ -181,8 +181,7 @@ class PanCorrectionPreviewRequest extends FormRequest
 
                 'mimes:jpg,jpeg,png',
 
-                'max:2048'
-
+                'max:5120'   // 5 MB
             ],
 
             'signature' => [
@@ -201,8 +200,7 @@ class PanCorrectionPreviewRequest extends FormRequest
 
                 'mimes:jpg,jpeg,png',
 
-                'max:2048'
-
+                'max:5120'   // 5 MB
             ],
 
             'aadhaar_card' => [
@@ -219,8 +217,7 @@ class PanCorrectionPreviewRequest extends FormRequest
 
                 'mimes:jpg,jpeg,png,pdf',
 
-                'max:4096'
-
+                'max:5120'   // 5 MB
             ],
 
 
@@ -231,8 +228,7 @@ class PanCorrectionPreviewRequest extends FormRequest
 
                 'mimes:jpg,jpeg,png,pdf',
 
-                'max:4096'
-
+                'max:5120'   // 5 MB
             ],
 
             'supporting_document' => [
@@ -241,8 +237,7 @@ class PanCorrectionPreviewRequest extends FormRequest
 
                 'mimes:jpg,jpeg,png,pdf',
 
-                'max:4096'
-
+                'max:5120'   // 5 MB
             ],
 
         ];
