@@ -30,7 +30,7 @@
             <span class="badge bg-warning text-dark fs-6 px-4 py-3 rounded-pill">
 
                 Service Charge :
-                ₹107
+                ₹150
 
             </span>
 
@@ -797,7 +797,7 @@
 
                         </strong>
 
-                        ₹107
+                        ₹150
 
                     </div>
 

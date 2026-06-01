@@ -153,7 +153,7 @@ class PanApplicationDTO
         |--------------------------------------------------------------------------
         */
 
-        public readonly float $amount = 107.00
+        public readonly float $amount = 150.00
 
     ) {}
 
@@ -381,7 +381,7 @@ class PanApplicationDTO
             |--------------------------------------------------------------------------
             */
 
-            amount: 107.00
+            amount: 150.00
 
         );
     }

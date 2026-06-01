@@ -32,7 +32,7 @@
             <span class="badge bg-warning text-dark fs-6 px-4 py-3 rounded-pill shadow-sm">
 
                 PAN Correction Charge :
-                ₹107
+                ₹170
 
             </span>
 
@@ -467,7 +467,7 @@
 
                         </strong>
 
-                        ₹107
+                        ₹170
 
                     </div>
 

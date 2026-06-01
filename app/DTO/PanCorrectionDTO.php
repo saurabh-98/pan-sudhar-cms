@@ -155,7 +155,7 @@ class PanCorrectionDTO
         |--------------------------------------------------------------------------
         */
 
-        public readonly float $amount = 107.00
+        public readonly float $amount = 170.00
 
     ) {}
 
@@ -386,7 +386,7 @@ class PanCorrectionDTO
             |--------------------------------------------------------------------------
             */
 
-            amount: 107.00
+            amount: 170.00
 
         );
     }

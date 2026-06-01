@@ -27,7 +27,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class NewPanApplicationController extends Controller
 {
-    protected const PAN_CHARGE = 107;
+    protected const PAN_CHARGE = 150;
 
     public function __construct(
 
@@ -1358,7 +1358,7 @@ class NewPanApplicationController extends Controller
     {
         return view(
 
-            'retailer.pan.print',
+            'retailer.pan-correction.print',
 
             [
 

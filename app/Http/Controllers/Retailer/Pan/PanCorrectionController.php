@@ -26,7 +26,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class PanCorrectionController extends Controller
 {
-    protected const PAN_CHARGE = 107;
+    protected const PAN_CHARGE = 170;
 
     public function __construct(
 

@@ -318,7 +318,7 @@ class PanApplicationService
 
 
                 'amount' =>
-                    107,
+                    150,
 
 
                 'payment_status' =>
