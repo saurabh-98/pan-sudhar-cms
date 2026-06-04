@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
+use App\Models\Module;
+use App\Models\RetailerModuleAccess;
 
 class RetailerApprovalController extends Controller
 {
@@ -18,343 +20,353 @@ class RetailerApprovalController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function index(Request $request)
-    {
-        if ($request->ajax())
-        {
+  public function index(Request $request)
+{
+if ($request->ajax())
+{
 
-            $retailers = DB::table('retailers')
 
-                ->leftJoin(
-                    'states',
-                    'states.id',
-                    '=',
-                    'retailers.state_id'
-                )
+    $retailers = DB::table('retailers')
 
-                ->leftJoin(
-                    'districts',
-                    'districts.id',
-                    '=',
-                    'retailers.district_id'
-                )
+        ->leftJoin(
+            'states',
+            'states.id',
+            '=',
+            'retailers.state_id'
+        )
 
-                ->select(
+        ->leftJoin(
+            'districts',
+            'districts.id',
+            '=',
+            'retailers.district_id'
+        )
 
-                    'retailers.*',
+        ->select(
 
-                    'states.name as state_name',
+            'retailers.*',
 
-                    'districts.name as district_name'
+            'states.name as state_name',
 
-                )
+            'districts.name as district_name'
 
-                ->latest('retailers.id');
+        )
 
-            return DataTables::of($retailers)
+        ->latest('retailers.id');
 
-                ->addIndexColumn()
+    return DataTables::of($retailers)
 
-                ->addColumn('shop_name', function ($row) {
+        ->addIndexColumn()
 
-                    return '
+        ->addColumn('shop_name', function ($row) {
 
-                        <div class="retailer-box">
+            return '
 
-                            <div class="retailer-avatar">
+                <div class="retailer-box">
 
-                                '
+                    <div class="retailer-avatar">
 
-                                . strtoupper(
-                                    substr(
-                                        $row->shop_name ?? 'R',
-                                        0,
-                                        1
-                                    )
-                                )
+                        '
 
-                                . '
+                        . strtoupper(
+                            substr(
+                                $row->shop_name ?? 'R',
+                                0,
+                                1
+                            )
+                        )
 
-                            </div>
+                        . '
 
-                            <div>
+                    </div>
 
-                                <div class="retailer-name">
+                    <div>
 
-                                    '
-
-                                    . ($row->shop_name ?? 'N/A')
-
-                                    . '
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    ';
-                })
-
-                ->addColumn('owner_name', function ($row) {
-
-                    return '
-
-                        <div class="applicant-box">
+                        <div class="retailer-name">
 
                             '
 
-                            . ($row->name ?? 'N/A')
+                            . ($row->shop_name ?? 'N/A')
 
                             . '
 
                         </div>
 
-                    ';
-                })
+                    </div>
 
-                ->addColumn('mobile', function ($row) {
+                </div>
 
-                    return $row->mobile;
-                })
+            ';
+        })
 
-                ->addColumn('email', function ($row) {
+        ->addColumn('owner_name', function ($row) {
 
-                    return $row->email;
-                })
+            return '
 
-                ->addColumn('state', function ($row) {
+                <div class="applicant-box">
 
-                    return $row->state_name ?? 'N/A';
-                })
+                    '
 
-                ->addColumn('district', function ($row) {
+                    . ($row->name ?? 'N/A')
 
-                    return $row->district_name ?? 'N/A';
-                })
+                    . '
 
-                ->addColumn('status', function ($row) {
+                </div>
 
-                    if ($row->status === 'approved')
-                    {
+            ';
+        })
 
-                        return '
+        ->addColumn('mobile', function ($row) {
 
-                            <span class="badge bg-success">
+            return $row->mobile;
+        })
 
-                                Approved
+        ->addColumn('email', function ($row) {
 
-                            </span>
+            return $row->email;
+        })
 
-                        ';
-                    }
+        ->addColumn('state', function ($row) {
 
-                    if ($row->status === 'rejected')
-                    {
+            return $row->state_name ?? 'N/A';
+        })
 
-                        return '
+        ->addColumn('district', function ($row) {
 
-                            <span class="badge bg-danger">
+            return $row->district_name ?? 'N/A';
+        })
 
-                                Rejected
+        ->addColumn('status', function ($row) {
 
-                            </span>
+            if ($row->status === 'approved')
+            {
 
-                        ';
-                    }
+                return '
 
-                    return '
+                    <span class="badge bg-success">
 
-                        <span class="badge bg-warning text-dark">
+                        Approved
 
-                            Pending
+                    </span>
 
-                        </span>
+                ';
+            }
 
-                    ';
-                })
+            if ($row->status === 'rejected')
+            {
 
-                ->addColumn('dashboard_access', function ($row) {
+                return '
 
-                    if (
-                        $row->status === 'approved'
-                        &&
-                        $row->user_id
-                    ) {
+                    <span class="badge bg-danger">
 
-                        return '
+                        Rejected
 
-                            <a
-                                href="'
+                    </span>
 
-                                . route(
-                                    'admin.retailer-approvals.login-as',
-                                    $row->user_id
-                                )
+                ';
+            }
 
-                                . '"
+            return '
 
-                                class="btn btn-primary btn-sm">
+                <span class="badge bg-warning text-dark">
 
-                                <i class="fa fa-sign-in-alt"></i>
+                    Pending
 
-                                Dashboard
+                </span>
 
-                            </a>
+            ';
+        })
 
-                        ';
-                    }
+        ->addColumn('dashboard_access', function ($row) {
 
-                    return '
+            if (
+                $row->status === 'approved'
+                &&
+                $row->user_id
+            ) {
 
-                        <span class="badge bg-secondary">
+                return '
 
-                            Pending
+                    <a
+                        href="'
 
-                        </span>
-
-                    ';
-                })
-
-                ->addColumn('created_at', function ($row) {
-
-                    return date(
-
-                        'd M Y h:i A',
-
-                        strtotime(
-                            $row->created_at
+                        . route(
+                            'admin.retailer-approvals.login-as',
+                            $row->user_id
                         )
 
-                    );
-                })
+                        . '"
 
-                ->addColumn('action', function ($row) {
+                        class="btn btn-primary btn-sm">
 
-                    $buttons = '
+                        <i class="fa fa-sign-in-alt"></i>
 
-                        <div class="d-flex gap-2">
+                        Dashboard
 
-                    ';
+                    </a>
 
-                    if ($row->status === 'pending')
-                    {
+                ';
+            }
 
-                        $buttons .= '
+            return '
 
-                            <form
-                                method="POST"
-                                action="'
+                <span class="badge bg-secondary">
 
-                                . route(
-                                    'admin.retailer-approvals.approve',
-                                    $row->id
-                                )
+                    Pending
 
-                                . '">
+                </span>
 
-                                '
+            ';
+        })
 
-                                . csrf_field()
+      
 
-                                . '
+        ->addColumn('created_at', function ($row) {
 
-                                <button
-                                    type="submit"
-                                    class="btn btn-success btn-sm">
+            return date(
 
-                                    <i class="fa fa-check"></i>
+                'd M Y h:i A',
 
-                                    Approve
+                strtotime(
+                    $row->created_at
+                )
 
-                                </button>
+            );
+        })
 
-                            </form>
+        ->addColumn('action', function ($row) {
 
-                        ';
+            $buttons = '
 
-                        $buttons .= '
+                <div class="d-flex gap-2">
 
-                            <form
-                                method="POST"
-                                action="'
+            ';
 
-                                . route(
-                                    'admin.retailer-approvals.reject',
-                                    $row->id
-                                )
+            if ($row->status === 'pending')
+            {
 
-                                . '">
+                $buttons .= '
 
-                                '
+                    <button
+                        type="button"
+                        class="btn btn-success btn-sm approve-btn"
+                        data-id="'.$row->id.'">
 
-                                . csrf_field()
+                        <i class="fa fa-check"></i>
 
-                                . '
+                        Assign Modules & Approve
 
-                                <input
-                                    type="hidden"
-                                    name="reason"
-                                    value="Rejected By Admin">
+                    </button>
 
-                                <button
-                                    type="submit"
-                                    class="btn btn-danger btn-sm">
+                ';
 
-                                    <i class="fa fa-times"></i>
+                $buttons .= '
 
-                                    Reject
+                    <form
+                        method="POST"
+                        action="'
 
-                                </button>
+                        . route(
+                            'admin.retailer-approvals.reject',
+                            $row->id
+                        )
 
-                            </form>
+                        . '">
 
-                        ';
-                    }
-                    else
-                    {
+                        '
 
-                        $buttons .= '
+                        . csrf_field()
 
-                            <span class="badge bg-secondary">
+                        . '
 
-                                Processed
+                        <input
+                            type="hidden"
+                            name="reason"
+                            value="Rejected By Admin">
 
-                            </span>
+                        <button
+                            type="submit"
+                            class="btn btn-danger btn-sm">
 
-                        ';
-                    }
+                            <i class="fa fa-times"></i>
 
-                    $buttons .= '
+                            Reject
 
-                        </div>
+                        </button>
 
-                    ';
+                    </form>
 
-                    return $buttons;
-                })
+                ';
+            }
+            else
+            {
+                $buttons .= '
 
-                ->rawColumns([
+                    <a
+                        href="'
 
-                    'shop_name',
+                        . route(
+                            'admin.retailer-approvals.modules',
+                            $row->user_id
+                        )
 
-                    'owner_name',
+                        . '"
 
-                    'status',
+                        class="btn btn-warning btn-sm">
 
-                    'dashboard_access',
+                        <i class="fa fa-lock"></i>
 
-                    'action'
+                        Manage Modules
 
-                ])
+                    </a>
 
-                ->make(true);
-        }
+                ';
+            }
 
-        return view(
-            'admin.retailer-approvals.index'
-        );
-    }
+            $buttons .= '
+
+                </div>
+
+            ';
+
+            return $buttons;
+        })
+
+        ->rawColumns([
+
+            'shop_name',
+
+            'owner_name',
+
+            'status',
+
+            'dashboard_access',
+
+            'module_access',
+
+            'action'
+
+        ])
+
+        ->make(true);
+}
+
+$modules = Module::where(
+    'status',
+    1
+)
+->orderBy('name')
+->get();
+
+return view(
+    'admin.retailer-approvals.index',
+    compact(
+        'modules'
+    )
+);
+
+
+}
 
     /*
     |--------------------------------------------------------------------------
@@ -362,161 +374,175 @@ class RetailerApprovalController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function approve($id)
-    {
-        $credentials = [];
+        public function approve(
+Request $request,
+$id
+)
+{
+$request->validate([
 
-        DB::transaction(function () use ($id, &$credentials) {
+    'modules' => [
+        'required',
+        'array',
+        'min:1'
+    ],
 
-            $retailer = DB::table('retailers')
-                ->where('id', $id)
-                ->lockForUpdate()
-                ->first();
+    'modules.*' => [
+        'exists:modules,id'
+    ]
 
-            if (!$retailer) {
+]);
 
-                abort(404);
-            }
+$credentials = [];
 
-            if ($retailer->status === 'approved') {
+DB::transaction(function () use (
+    $id,
+    $request,
+    &$credentials
+) {
 
-                return;
-            }
+    $retailer = DB::table('retailers')
+        ->where('id', $id)
+        ->lockForUpdate()
+        ->first();
 
-            $existingUser = User::where(
-                'email',
-                $retailer->email
-            )
-            ->orWhere(
-                'mobile',
-                $retailer->mobile
-            )
-            ->first();
+    if (!$retailer) {
 
-            if ($existingUser) {
+        abort(404);
+    }
 
-                throw new \Exception(
-                    'Retailer account already exists.'
-                );
-            }
+    if ($retailer->status === 'approved') {
 
-            /*
-            |--------------------------------------------------------------------------
-            | LOGIN CREDENTIALS
-            |--------------------------------------------------------------------------
-            */
+        return;
+    }
 
-            $userId = $retailer->email;
+    $existingUser = User::where(
+        'email',
+        $retailer->email
+    )
+    ->orWhere(
+        'mobile',
+        $retailer->mobile
+    )
+    ->first();
 
-            $plainPassword = $retailer->mobile;
+    if ($existingUser) {
 
-            $user = User::create([
-
-                'name' => $retailer->name,
-
-                'email' => $userId,
-
-                'mobile' => $retailer->mobile,
-
-                'password' => Hash::make(
-                    $plainPassword
-                ),
-
-                'status' => 1
-
-            ]);
-
-            $user->assignRole(
-                'retailer'
-            );
-
-            DB::table('retailers')
-                ->where('id', $id)
-                ->update([
-
-                    'user_id'      => $user->id,
-
-                    'status'       => 'approved',
-
-                    'is_verified'  => 1,
-
-                    'approved_by'  => auth()->id(),
-
-                    'approved_at'  => now(),
-
-                    'updated_at'   => now()
-
-                ]);
-
-            /*
-            |--------------------------------------------------------------------------
-            | STORE CREDENTIALS FOR BLADE
-            |--------------------------------------------------------------------------
-            */
-
-            $credentials = [
-
-                'username' => $userId,
-
-                'password' => $plainPassword
-
-            ];
-        });
-
-        return back()
-
-            ->with(
-
-                'success',
-
-                'Retailer approved successfully.'
-
-            )
-
-            ->with(
-
-                'credentials',
-
-                $credentials
-
-            );
+        throw new \Exception(
+            'Retailer account already exists.'
+        );
     }
 
     /*
     |--------------------------------------------------------------------------
-    | REJECT RETAILER
+    | LOGIN CREDENTIALS
     |--------------------------------------------------------------------------
     */
 
-    public function reject(
-        Request $request,
-        $id
-    )
-    {
-        DB::table('retailers')
-            ->where('id', $id)
-            ->update([
+    $userId = $retailer->email;
 
-                'status' => 'rejected',
+    $plainPassword = $retailer->mobile;
 
-                'rejected_by' => auth()->id(),
+    $user = User::create([
 
-                'rejected_at' => now(),
+        'name' => $retailer->name,
 
-                'rejection_reason' => $request->reason,
+        'email' => $userId,
 
-                'updated_at' => now()
+        'mobile' => $retailer->mobile,
 
-            ]);
+        'password' => Hash::make(
+            $plainPassword
+        ),
 
-        return back()->with(
+        'status' => 1
 
-            'success',
+    ]);
 
-            'Retailer rejected successfully.'
+    /*
+    |--------------------------------------------------------------------------
+    | ASSIGN ROLE
+    |--------------------------------------------------------------------------
+    */
 
-        );
+    $user->assignRole(
+        'retailer'
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | ASSIGN SELECTED MODULE ACCESS
+    |--------------------------------------------------------------------------
+    */
+
+    foreach (
+        $request->modules
+        as $moduleId
+    ) {
+
+        RetailerModuleAccess::firstOrCreate([
+
+            'retailer_id' => $user->id,
+
+            'module_id'   => $moduleId,
+
+        ]);
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE RETAILER STATUS
+    |--------------------------------------------------------------------------
+    */
+
+    DB::table('retailers')
+        ->where('id', $id)
+        ->update([
+
+            'user_id'      => $user->id,
+
+            'status'       => 'approved',
+
+            'is_verified'  => 1,
+
+            'approved_by'  => auth()->id(),
+
+            'approved_at'  => now(),
+
+            'updated_at'   => now()
+
+        ]);
+
+    /*
+    |--------------------------------------------------------------------------
+    | STORE CREDENTIALS
+    |--------------------------------------------------------------------------
+    */
+
+    $credentials = [
+
+        'username' => $userId,
+
+        'password' => $plainPassword
+
+    ];
+});
+
+return back()
+
+    ->with(
+        'success',
+        'Retailer approved successfully.'
+    )
+
+    ->with(
+        'credentials',
+        $credentials
+    );
+
+
+}
+
 
     /*
     |--------------------------------------------------------------------------
@@ -570,4 +596,133 @@ class RetailerApprovalController extends Controller
 
         return redirect()->route('admin.dashboard');
     }
+
+    public function modules($userId)
+{
+$user = User::findOrFail(
+$userId
+);
+
+
+$modules = Module::where(
+    'status',
+    1
+)
+->orderBy(
+    'name'
+)
+->get();
+
+$assignedModules = RetailerModuleAccess::where(
+        'retailer_id',
+        $userId
+    )
+    ->pluck(
+        'module_id'
+    )
+    ->toArray();
+
+return view(
+    'admin.retailer-approvals.module',
+    compact(
+        'user',
+        'modules',
+        'assignedModules'
+    )
+);
+
+
+}
+
+ /*                                                                         |
+| -------------------------------------------------------------------------- |
+| UPDATE RETAILER MODULES                                                    |
+| -------------------------------------------------------------------------- |
+| */                                                                         
+
+public function updateModules(
+    Request $request,
+    $userId
+)
+{
+    $request->validate([
+
+        'modules' => [
+            'required',
+            'array',
+            'min:1'
+        ],
+
+        'modules.*' => [
+            'exists:modules,id'
+        ]
+
+    ]);
+
+    DB::transaction(function () use (
+        $request,
+        $userId
+    ) {
+
+        RetailerModuleAccess::where(
+            'retailer_id',
+            $userId
+        )->delete();
+
+        foreach (
+            $request->modules
+            as $moduleId
+        ) {
+
+            RetailerModuleAccess::create([
+
+                'retailer_id' => $userId,
+
+                'module_id'   => $moduleId
+
+            ]);
+        }
+
+    });
+
+    return response()->json([
+
+        'success' => true,
+
+        'message' => 'Retailer modules updated successfully.',
+
+        'redirect' => route(
+            'admin.retailer-approvals.index'
+        )
+
+    ]);
+}
+
+public function getModules($userId)
+{
+    $modules = RetailerModuleAccess::query()
+
+        ->join(
+            'modules',
+            'modules.id',
+            '=',
+            'retailer_module_access.module_id'
+        )
+
+        ->where(
+            'retailer_module_access.retailer_id',
+            $userId
+        )
+
+        ->select(
+            'modules.name'
+        )
+
+        ->pluck('name');
+
+    return response()->json(
+        $modules
+    );
+}
+
 }

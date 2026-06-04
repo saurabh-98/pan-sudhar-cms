@@ -205,9 +205,7 @@ class PanApplicationService
 
     public function storeFromSession(): PanApplication
     {
-
         return DB::transaction(function () {
-
 
             /*
             |--------------------------------------------------------------------------
@@ -215,35 +213,37 @@ class PanApplicationService
             |--------------------------------------------------------------------------
             */
 
-            $session =
-                get_pan_session();
-
-
+            $session = get_pan_session();
 
             if (!$session) {
 
-
                 abort(
-
                     404,
-
                     'Session Expired.'
-
                 );
             }
 
+            $data = $session['data'] ?? [];
 
+            $files = $session['files'] ?? [];
 
-            $data =
-                $session['data'] ?? [];
+            /*
+            |--------------------------------------------------------------------------
+            | GET DYNAMIC CHARGE
+            |--------------------------------------------------------------------------
+            */
 
+            $panCharge = $data['pan_charge'] ?? 0;
 
+            /*
+            |--------------------------------------------------------------------------
+            | REMOVE TEMP SESSION VALUE
+            |--------------------------------------------------------------------------
+            */
 
-            $files =
-                $session['files'] ?? [];
-
-
-
+            unset(
+                $data['pan_charge']
+            );
 
             /*
             |--------------------------------------------------------------------------
@@ -253,30 +253,19 @@ class PanApplicationService
 
             $storeData = [
 
-
                 'user_id' =>
                     auth()->id(),
-
-
 
                 'application_no' =>
 
                     'PAN'
-
                     . date('YmdHis')
-
-                    . rand(1000,9999),
-
-
+                    . rand(1000, 9999),
 
                 'pan_type' =>
                     'New PAN',
 
-
-
                 ...$data,
-
-
 
                 /*
                 |--------------------------------------------------------------------------
@@ -284,31 +273,20 @@ class PanApplicationService
                 |--------------------------------------------------------------------------
                 */
 
-
                 'photo' =>
                     $files['photo'] ?? null,
-
-
 
                 'signature' =>
                     $files['signature'] ?? null,
 
-
-
                 'aadhaar_card' =>
                     $files['aadhaar_card'] ?? null,
-
-
 
                 'dob_proof_file' =>
                     $files['dob_proof_file'] ?? null,
 
-
-
                 'supporting_document' =>
                     $files['supporting_document'] ?? null,
-
-
 
                 /*
                 |--------------------------------------------------------------------------
@@ -316,52 +294,39 @@ class PanApplicationService
                 |--------------------------------------------------------------------------
                 */
 
-
                 'amount' =>
-                    150,
-
+                    $panCharge,
 
                 'payment_status' =>
                     'Pending',
 
-
                 'status' =>
                     'Pending',
-
 
                 'wallet_deducted' =>
                     false,
 
-
                 'wallet_deducted_at' =>
                     null,
 
-
                 'ip_address' =>
                     request()->ip(),
-
 
                 'browser' =>
                     request()->userAgent(),
 
             ];
 
-
-
             /*
             |--------------------------------------------------------------------------
-            | CREATE
+            | CREATE APPLICATION
             |--------------------------------------------------------------------------
             */
 
             $application =
 
                 $this->repository
-
                     ->create($storeData);
-
-
-
 
             /*
             |--------------------------------------------------------------------------
@@ -371,15 +336,10 @@ class PanApplicationService
 
             clear_pan_session();
 
-
-
-
             return $application;
 
         });
-
     }
-
 
 
 

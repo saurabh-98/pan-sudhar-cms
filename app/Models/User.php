@@ -363,4 +363,14 @@ public function retailer()
     );
 }
 
+public function retailerModules()
+{
+    return $this->belongsToMany(
+        Module::class,
+        'retailer_module_access',
+        'retailer_id',
+        'module_id'
+    );
+}
+
 }

@@ -110,6 +110,10 @@ return Application::configure(
 
             \App\Http\Middleware\AdminMiddleware::class,
 
+         'session.timeout' =>
+
+            \App\Http\Middleware\SessionTimeout::class,
+
         /*
         |--------------------------------------------------------------------------
         | SPATIE

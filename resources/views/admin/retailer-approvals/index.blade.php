@@ -208,7 +208,7 @@
                             <th>District</th>
 
                             <th>Status</th>
-
+                            
                             <th>Applied On</th>
 
                             <th>Dashboard Access</th>
@@ -230,6 +230,159 @@
 </div>
 
 @endsection
+
+{{-- =====================================================
+| APPROVE RETAILER MODAL
+====================================================== --}}
+
+<div
+    class="modal fade"
+    id="approveRetailerModal"
+    tabindex="-1"
+    aria-hidden="true"
+>
+
+    <div class="modal-dialog modal-xl">
+
+        <form
+            method="POST"
+            id="approveRetailerForm"
+        >
+
+            @csrf
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+
+                        Assign Modules & Approve Retailer
+
+                    </h5>
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                    ></button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="alert alert-info">
+
+                        Select modules that should be accessible to this retailer.
+
+                    </div>
+
+                    <div class="row">
+
+                        @foreach($modules as $module)
+
+                            <div class="col-md-4 mb-3">
+
+                                <div class="form-check">
+
+                                    <input
+                                        class="form-check-input module-checkbox"
+                                        type="checkbox"
+                                        name="modules[]"
+                                        value="{{ $module->id }}"
+                                        id="module_{{ $module->id }}"
+                                    >
+
+                                    <label
+                                        class="form-check-label"
+                                        for="module_{{ $module->id }}"
+                                    >
+
+                                        {{ $module->name }}
+
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                        @endforeach
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                    >
+
+                        Cancel
+
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn btn-success"
+                    >
+
+                        <i class="fa fa-check"></i>
+
+                        Approve Retailer
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+<div
+    class="modal fade"
+    id="viewModulesModal"
+    tabindex="-1"
+>
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+
+                    Assigned Modules
+
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                ></button>
+
+            </div>
+
+            <div
+                class="modal-body"
+                id="assignedModulesContainer"
+            >
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 
 @section('scripts')
 
@@ -307,109 +460,210 @@ function copyField(id)
 
 $(function () {
 
-    $('#retailerApprovalTable').DataTable({
+    /*
+    |--------------------------------------------------------------------------
+    | RETAILER APPROVAL DATATABLE
+    |--------------------------------------------------------------------------
+    */
 
-        processing: true,
+    let retailerTable =
+        $('#retailerApprovalTable').DataTable({
 
-        serverSide: true,
+            processing: true,
 
-        responsive: false,
+            serverSide: true,
 
-        scrollX: true,
+            responsive: false,
 
-        scrollCollapse: true,
+            scrollX: true,
 
-        autoWidth: false,
+            scrollCollapse: true,
 
-        pageLength: 10,
+            autoWidth: false,
 
-        order: [[0, 'desc']],
+            pageLength: 10,
 
-        ajax: "{{ route('admin.retailer-approvals.index') }}",
+            order: [[0, 'desc']],
 
-        columns: [
+            ajax:
+                "{{ route('admin.retailer-approvals.index') }}",
 
-            {
-                data: 'DT_RowIndex',
-                name: 'DT_RowIndex',
-                orderable: false,
-                searchable: false
-            },
+            columns: [
 
-            {
-                data: 'shop_name',
-                name: 'shop_name'
-            },
+                {
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    orderable: false,
+                    searchable: false
+                },
 
-            {
-                data: 'owner_name',
-                name: 'owner_name'
-            },
+                {
+                    data: 'shop_name',
+                    name: 'shop_name'
+                },
 
-            {
-                data: 'mobile',
-                name: 'mobile'
-            },
+                {
+                    data: 'owner_name',
+                    name: 'owner_name'
+                },
 
-            {
-                data: 'email',
-                name: 'email'
-            },
+                {
+                    data: 'mobile',
+                    name: 'mobile'
+                },
 
-            {
-                data: 'state',
-                name: 'state'
-            },
+                {
+                    data: 'email',
+                    name: 'email'
+                },
 
-            {
-                data: 'district',
-                name: 'district'
-            },
+                {
+                    data: 'state',
+                    name: 'state'
+                },
 
-            {
-                data: 'status',
-                name: 'status',
-                orderable: false,
-                searchable: false
-            },
+                {
+                    data: 'district',
+                    name: 'district'
+                },
 
-            {
-                data: 'created_at',
-                name: 'created_at'
-            },
+                {
+                    data: 'status',
+                    name: 'status',
+                    orderable: false,
+                    searchable: false
+                },
 
-            {
-                data: 'dashboard_access',
-                name: 'dashboard_access',
-                orderable: false,
-                searchable: false
-            },
+                {
+                    data: 'created_at',
+                    name: 'created_at'
+                },
 
-            {
-                data: 'action',
-                name: 'action',
-                orderable: false,
-                searchable: false
+                {
+                    data: 'dashboard_access',
+                    name: 'dashboard_access',
+                    orderable: false,
+                    searchable: false
+                },
+
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                }
+
+            ],
+
+            language: {
+
+                search: "",
+
+                searchPlaceholder:
+                    "Search Retailer Request...",
+
+                lengthMenu:
+                    "_MENU_ Records Per Page"
+
             }
 
-        ],
+        });
 
-        language: {
+    /*
+    |--------------------------------------------------------------------------
+    | OPEN MODULE ASSIGNMENT MODAL
+    |--------------------------------------------------------------------------
+    */
 
-            search: "",
+    $(document).on(
+        'click',
+        '.approve-btn',
+        function () {
 
-            searchPlaceholder:
-                "Search Retailer Request...",
+            let retailerId =
+                $(this).data('id');
 
-            lengthMenu:
-                "_MENU_ Records Per Page"
+            $('.module-checkbox').prop(
+                'checked',
+                false
+            );
+
+            let approveUrl =
+                "{{ route('admin.retailer-approvals.approve', ['id' => '__ID__']) }}";
+
+            approveUrl =
+                approveUrl.replace(
+                    '__ID__',
+                    retailerId
+                );
+
+            $('#approveRetailerForm')
+                .attr(
+                    'action',
+                    approveUrl
+                );
+
+            let modal =
+                new bootstrap.Modal(
+                    document.getElementById(
+                        'approveRetailerModal'
+                    )
+                );
+
+            modal.show();
+        }
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | VALIDATE MODULE SELECTION
+    |--------------------------------------------------------------------------
+    */
+
+    $('#approveRetailerForm').on(
+        'submit',
+        function (e) {
+
+            let totalSelected =
+                $('.module-checkbox:checked')
+                .length;
+
+            if (
+                totalSelected === 0
+            ) {
+
+                e.preventDefault();
+
+                alert(
+                    'Please select at least one module before approving retailer.'
+                );
+
+                return false;
+            }
+        }
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | AUTO REFRESH TABLE AFTER MODAL CLOSE
+    |--------------------------------------------------------------------------
+    */
+
+    $('#approveRetailerModal').on(
+        'hidden.bs.modal',
+        function () {
+
+            retailerTable.ajax.reload(
+                null,
+                false
+            );
 
         }
-
-    });
+    );
 
 });
 
 </script>
+
 
 @endsection

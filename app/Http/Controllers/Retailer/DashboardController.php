@@ -4,428 +4,217 @@ namespace App\Http\Controllers\Retailer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Retailer;
-use App\Models\Customer;
 use App\Models\WalletTransaction;
 use App\Models\PanApplication;
-use Illuminate\Http\Request;
+use App\Models\PanCorrectionApplication;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Module;
 
 class DashboardController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | DASHBOARD
-    |--------------------------------------------------------------------------
-    */
-
     public function index()
     {
-        /*
-        |--------------------------------------------------------------------------
-        | AUTH USER
-        |--------------------------------------------------------------------------
-        */
-
         $user = Auth::user();
 
-        /*
-        |--------------------------------------------------------------------------
-        | RETAILER DETAILS
-        |--------------------------------------------------------------------------
-        */
-
         $retailer = Retailer::where(
-
             'email',
             $user->email
-
-        )->first();
-
-        /*
-        |--------------------------------------------------------------------------
-        | FALLBACK
-        |--------------------------------------------------------------------------
-        */
-
-        if (!$retailer) {
-
-            abort(404, 'Retailer not found.');
-        }
+        )->firstOrFail();
 
         /*
         |--------------------------------------------------------------------------
-        | DYNAMIC RETAILER STATS
+        | RETAILER MODULES
         |--------------------------------------------------------------------------
         */
 
-        // PAN Services Count
-        $panServices = PanApplication::where(
+        $retailerMenus = Module::query()
 
-            'user_id',
-            $user->id
+            ->whereNull('parent_id')
 
-        )->count();
+            ->where('status', 1)
 
-        // Aadhaar Services Count
-        $aadhaarServices = 0;
+            ->where(function ($query) use ($user) {
 
-        // Total Customers
-        $totalCustomers = 0;
+                $query
 
-        // Wallet Balance
+                    ->whereHas(
+                        'retailerAccess',
+                        function ($q) use ($user) {
+
+                            $q->where(
+                                'retailer_id',
+                                $user->id
+                            );
+                        }
+                    )
+
+                    ->orWhereHas(
+                        'children.retailerAccess',
+                        function ($q) use ($user) {
+
+                            $q->where(
+                                'retailer_id',
+                                $user->id
+                            );
+                        }
+                    );
+            })
+
+            ->with([
+
+                'children' => function ($query) use ($user) {
+
+                    $query
+
+                        ->where('status', 1)
+
+                        ->whereHas(
+                            'retailerAccess',
+                            function ($q) use ($user) {
+
+                                $q->where(
+                                    'retailer_id',
+                                    $user->id
+                                );
+                            }
+                        )
+
+                        ->orderBy('sort_order')
+                        ->orderBy('name');
+                }
+
+            ])
+
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+
+        /*
+        |--------------------------------------------------------------------------
+        | MODULE FLAGS
+        |--------------------------------------------------------------------------
+        */
+
+        $moduleNames = $retailerMenus
+            ->pluck('name')
+            ->map(
+                fn ($name) => strtolower($name)
+            );
+
+        $hasPanModule =
+            $moduleNames->contains(
+                fn ($name) => str_contains($name, 'pan')
+            );
+
+        $hasAadhaarModule =
+            $moduleNames->contains(
+                fn ($name) => str_contains($name, 'aadhaar')
+            );
+
+        $hasVerificationModule =
+            $moduleNames->contains(
+                fn ($name) => str_contains($name, 'verification')
+            );
+
+        $hasUtilityModule =
+            $moduleNames->contains(
+                fn ($name) => str_contains($name, 'utility')
+            );
+
+        /*
+        |--------------------------------------------------------------------------
+        | STATS
+        |--------------------------------------------------------------------------
+        */
+
+        $panServices = $hasPanModule
+            ? PanApplication::where(
+                'user_id',
+                $user->id
+            )->count()
+            : null;
+
+        $panCorrectionServices = $hasPanModule
+            ? PanCorrectionApplication::where(
+                'user_id',
+                $user->id
+            )->count()
+            : null;
+
+        $aadhaarServices = $hasAadhaarModule
+            ? 0
+            : null;
+
+        $totalVerifications = $hasVerificationModule
+            ? 0
+            : null;
+
+        $utilityServices = $hasUtilityModule
+            ? 0
+            : null;
+
         $walletBalance =
             $user->wallet_balance ?? 0;
 
-        // Total Verifications
-        $totalVerifications = 0;
-
-        // Utility Services
-        $utilityServices = 0;
-
-        // Total Transactions
-        $totalTransactions = WalletTransaction::where(
-
-            'user_id',
-            $user->id
-
-        )->count();
-
-        /*
-        |--------------------------------------------------------------------------
-        | SUCCESS RATE
-        |--------------------------------------------------------------------------
-        */
+        $totalTransactions =
+            WalletTransaction::where(
+                'user_id',
+                $user->id
+            )->count();
 
         $approvedApplications =
             PanApplication::where(
-
                 'user_id',
                 $user->id
-
             )
-
             ->where(
-
                 'status',
                 'approved'
-
             )
-
             ->count();
 
         $totalApplications =
             PanApplication::where(
-
                 'user_id',
                 $user->id
-
             )
-
             ->count();
 
         $successRate =
             $totalApplications > 0
-
-            ? round(
-                ($approvedApplications / $totalApplications) * 100
-            )
-
-            : 0;
-
-        /*
-        |--------------------------------------------------------------------------
-        | RECENT SERVICES
-        |--------------------------------------------------------------------------
-        */
-
-        $recentServices = [
-
-            [
-
-                'service' => 'New PAN Card',
-                'customer' => 'Rahul Kumar',
-                'status' => 'Completed',
-                'date' => now()->subDays(1)
-                               ->format('d M Y'),
-
-            ],
-
-            [
-
-                'service' => 'Aadhaar Update',
-                'customer' => 'Amit Singh',
-                'status' => 'Pending',
-                'date' => now()->subDays(2)
-                               ->format('d M Y'),
-
-            ],
-
-            [
-
-                'service' => 'PAN Correction',
-                'customer' => 'Pooja Sharma',
-                'status' => 'Approved',
-                'date' => now()->subDays(3)
-                               ->format('d M Y'),
-
-            ],
-
-            [
-
-                'service' => 'GST Verification',
-                'customer' => 'Ankit Verma',
-                'status' => 'Completed',
-                'date' => now()->subDays(4)
-                               ->format('d M Y'),
-
-            ],
-
-        ];
-
-        /*
-        |--------------------------------------------------------------------------
-        | QUICK SERVICES
-        |--------------------------------------------------------------------------
-        */
-
-        $quickServices = [
-
-            [
-
-                'title' => 'Apply New PAN',
-                'icon'  => 'fa-id-card',
-                'url'   => route('retailer.pan.apply'),
-
-            ],
-
-            [
-
-                'title' => 'PAN Correction',
-                'icon'  => 'fa-pen',
-                'url'   => route('retailer.pan-correction.history'),
-
-            ],
-
-            [
-
-                'title' => 'PAN Verification',
-                'icon'  => 'fa-check-circle',
-                'url'   => route('retailer.pan.verify'),
-
-            ],
-
-            [
-
-                'title' => 'Company PAN',
-                'icon'  => 'fa-building',
-                'url'   => route('retailer.pan.company'),
-
-            ],
-
-            [
-
-                'title' => 'PAN Training',
-                'icon'  => 'fa-headset',
-                'url'   => route('retailer.pan.training'),
-
-            ],
-
-            [
-
-                'title' => 'PAN Find',
-                'icon'  => 'fa-search',
-                'url'   => route('retailer.pan.find'),
-
-            ],
-
-            [
-
-                'title' => 'File ITR',
-                'icon'  => 'fa-file-invoice-dollar',
-                'url'   => route('retailer.itr.index'),
-
-            ],
-
-            [
-
-                'title' => 'ITR History',
-                'icon'  => 'fa-history',
-                'url'   => route('retailer.itr.history'),
-
-            ],
-
-            [
-
-                'title' => 'ITR Correction',
-                'icon'  => 'fa-edit',
-                'url'   => route('retailer.itr.index'),
-
-            ],
-
-            [
-
-                'title' => 'Form 16',
-                'icon'  => 'fa-file-alt',
-                'url'   => route('retailer.itr.index'),
-
-            ],
-
-            [
-
-                'title' => 'GST Return',
-                'icon'  => 'fa-receipt',
-                'url'   => route('retailer.itr.index'),
-
-            ],
-
-            [
-
-                'title' => 'Bank Verification',
-                'icon'  => 'fa-university',
-                'url'   => route('retailer.verification.bank'),
-
-            ],
-
-            [
-
-                'title' => 'Voter Verification',
-                'icon'  => 'fa-vote-yea',
-                'url'   => route('retailer.verification.voter'),
-
-            ],
-
-            [
-
-                'title' => 'RC Verification',
-                'icon'  => 'fa-car',
-                'url'   => route('retailer.verification.rc'),
-
-            ],
-
-            [
-
-                'title' => 'DL Verification',
-                'icon'  => 'fa-id-badge',
-                'url'   => route('retailer.verification.dl'),
-
-            ],
-
-            [
-
-                'title' => 'GST Verification',
-                'icon'  => 'fa-file-invoice',
-                'url'   => route('retailer.verification.gst'),
-
-            ],
-
-            [
-
-                'title' => 'Passport Verification',
-                'icon'  => 'fa-passport',
-                'url'   => route('retailer.verification.passport'),
-
-            ],
-
-            [
-
-                'title' => 'Aadhaar PVC',
-                'icon'  => 'fa-address-card',
-                'url'   => route('retailer.tools.aadhaar.pvc'),
-
-            ],
-
-            [
-
-                'title' => 'Hisab Kitab',
-                'icon'  => 'fa-book',
-                'url'   => route('retailer.tools.hisab.kitab'),
-
-            ],
-
-            [
-
-                'title' => 'File Converter',
-                'icon'  => 'fa-file',
-                'url'   => route('retailer.tools.file.converter'),
-
-            ],
-
-            [
-
-                'title' => 'Passport Photo',
-                'icon'  => 'fa-camera',
-                'url'   => route('retailer.tools.passport.photo'),
-
-            ],
-
-        ];
-
-        /*
-        |--------------------------------------------------------------------------
-        | NOTIFICATIONS
-        |--------------------------------------------------------------------------
-        */
-
-        $notifications = [
-
-            [
-
-                'title' => 'Wallet Recharge',
-                'message' => '₹500 added successfully.',
-
-            ],
-
-            [
-
-                'title' => 'PAN Approved',
-                'message' => 'Rahul Kumar PAN application approved.',
-
-            ],
-
-            [
-
-                'title' => 'New Update',
-                'message' => 'DOB document rules updated.',
-
-            ],
-
-        ];
-
-        $notificationCount =
-            count($notifications);
-
-        /*
-        |--------------------------------------------------------------------------
-        | RETURN VIEW
-        |--------------------------------------------------------------------------
-        */
+                ? round(
+                    ($approvedApplications / $totalApplications) * 100
+                )
+                : 0;
 
         return view(
-
             'retailer.dashboard',
+            [
 
-            compact(
+                'user' => $user,
+                'retailer' => $retailer,
 
-                'user',
-                'retailer',
+                'retailerMenus' => $retailerMenus,
 
-                'panServices',
-                'aadhaarServices',
-                'totalCustomers',
-                'walletBalance',
-                'totalVerifications',
-                'utilityServices',
-                'totalTransactions',
-                'successRate',
+                'hasPanModule' => $hasPanModule,
+                'hasAadhaarModule' => $hasAadhaarModule,
+                'hasVerificationModule' => $hasVerificationModule,
+                'hasUtilityModule' => $hasUtilityModule,
 
-                'recentServices',
-                'quickServices',
+                'panServices' => $panServices,
+                'panCorrectionService' => $panCorrectionServices,
+                'aadhaarServices' => $aadhaarServices,
+                'totalCustomers' => 0,
+                'walletBalance' => $walletBalance,
+                'totalVerifications' => $totalVerifications,
+                'utilityServices' => $utilityServices,
+                'totalTransactions' => $totalTransactions,
+                'successRate' => $successRate,
 
-                'notifications',
-                'notificationCount'
-
-            )
-
+                'notifications' => [],
+                'notificationCount' => 0,
+            ]
         );
     }
 }
+?>

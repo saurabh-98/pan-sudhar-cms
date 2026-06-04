@@ -17,6 +17,7 @@ use App\Models\PanCorrectionApplication;
 use App\Models\State;
 use App\Models\User;
 use App\Models\WalletTransaction;
+use App\Models\Charge;
 
 use App\Services\DistrictService;
 use App\Services\PanCorrectionService;
@@ -26,7 +27,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class PanCorrectionController extends Controller
 {
-    protected const PAN_CHARGE = 170;
+   
 
     public function __construct(
 
@@ -39,6 +40,24 @@ class PanCorrectionController extends Controller
     ) {}
 
     
+    private function getPanCorrectionCharge(): float
+    {
+        return (float) Charge::query()
+
+            ->where(
+                'code',
+                'pan_correction'
+            )
+
+            ->where(
+                'is_active',
+                1
+            )
+
+            ->value(
+                'value'
+            );
+    }
 
     public function index()
     {
@@ -436,11 +455,14 @@ class PanCorrectionController extends Controller
                         ->getAll(),
 
 
-                'walletBalance' =>
+               'walletBalance' =>
 
                     auth()->user()
                         ->wallet_balance,
 
+                'panCharge' =>
+
+                    $this->getPanCorrectionCharge(),
 
                 'data' =>
 
@@ -459,188 +481,162 @@ class PanCorrectionController extends Controller
   
 
     public function preview(
-        PanCorrectionPreviewRequest $request
-    ): JsonResponse {
+    PanCorrectionPreviewRequest $request
+): JsonResponse {
 
+    try {
 
-        try {
+        $user = auth()->user();
 
+        $panCharge = $this->getPanCorrectionCharge();
 
-            $user = auth()->user();
-
-
-
-            if ($user->wallet_balance < self::PAN_CHARGE) {
-
-
-                return response()->json([
-
-                    'status' => false,
-
-                    'message' =>
-                        'Insufficient wallet balance.'
-
-                ],422);
-
-            }
-
-
-            $dto = PanCorrectionDTO::fromRequest(
-
-                $request
-
-            );
-
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | CLOUDINARY UPLOAD + SESSION SAVE FROM SERVICE
-            |--------------------------------------------------------------------------
-            */
-
-
-            $preview =
-
-                $this->panCorrectionService
-
-                    ->preview($dto);
-
-
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | ADD STATE NAME
-            |--------------------------------------------------------------------------
-            */
-
-
-            $preview['data']['state_name'] =
-
-                State::where(
-
-                    'id',
-
-                    $request->state
-
-                )->value('name')
-
-                ??
-
-                'N/A';
-
-
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | ADD DISTRICT NAME
-            |--------------------------------------------------------------------------
-            */
-
-
-            $preview['data']['district_name'] =
-
-
-                District::where(
-
-                    'id',
-
-                    $request->district
-
-                )->value('name')
-
-                ??
-
-                'N/A';
-
-
-
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | UPDATE SESSION
-            |--------------------------------------------------------------------------
-            */
-
-
-            save_pan_correction_session(
-
-                $preview
-
-            );
-
-
-
-
+        if ($panCharge <= 0) {
 
             return response()->json([
 
+                'status' => false,
 
-                'status'=>true,
+                'message' => 'PAN correction charge is not configured.'
 
-
-                'message'=>
-                    'Preview generated successfully.',
-
-
-
-                'redirect_url'=>
-
-                    route(
-
-                        'retailer.pan-correction.preview-page'
-
-                    )
-
-            ]);
-
-
-
-        } catch(\Throwable $e){
-
-
-
-            Log::error(
-
-                'PAN PREVIEW ERROR',
-
-                [
-
-                    'message'=>$e->getMessage(),
-
-                    'line'=>$e->getLine(),
-
-                    'file'=>$e->getFile()
-
-                ]
-
-            );
-
-
-
-            return response()->json([
-
-                'status'=>false,
-
-                'message'=>$e->getMessage()
-
-            ],500);
+            ], 422);
 
         }
 
-    }
+        if ($user->wallet_balance < $panCharge) {
 
+            return response()->json([
+
+                'status' => false,
+
+                'message' =>
+                    'Insufficient wallet balance.'
+
+            ], 422);
+
+        }
+
+        $dto = PanCorrectionDTO::fromRequest(
+            $request
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | CLOUDINARY UPLOAD + SESSION SAVE FROM SERVICE
+        |--------------------------------------------------------------------------
+        */
+
+        $preview =
+
+            $this->panCorrectionService
+                ->preview($dto);
+
+        /*
+        |--------------------------------------------------------------------------
+        | ADD STATE NAME
+        |--------------------------------------------------------------------------
+        */
+
+        $preview['data']['state_name'] =
+
+            State::where(
+
+                'id',
+
+                $request->state
+
+            )->value('name')
+
+            ??
+
+            'N/A';
+
+        /*
+        |--------------------------------------------------------------------------
+        | ADD DISTRICT NAME
+        |--------------------------------------------------------------------------
+        */
+
+        $preview['data']['district_name'] =
+
+            District::where(
+
+                'id',
+
+                $request->district
+
+            )->value('name')
+
+            ??
+
+            'N/A';
+
+        /*
+        |--------------------------------------------------------------------------
+        | STORE CHARGE IN SESSION
+        |--------------------------------------------------------------------------
+        */
+
+        $preview['data']['pan_charge'] =
+            $panCharge;
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE SESSION
+        |--------------------------------------------------------------------------
+        */
+
+        save_pan_correction_session(
+            $preview
+        );
+
+        return response()->json([
+
+            'status' => true,
+
+            'message' =>
+                'Preview generated successfully.',
+
+            'redirect_url' =>
+
+                route(
+                    'retailer.pan-correction.preview-page'
+                )
+
+        ]);
+
+    } catch (\Throwable $e) {
+
+        Log::error(
+
+            'PAN PREVIEW ERROR',
+
+            [
+
+                'message' => $e->getMessage(),
+
+                'line' => $e->getLine(),
+
+                'file' => $e->getFile()
+
+            ]
+
+        );
+
+        return response()->json([
+
+            'status' => false,
+
+            'message' => $e->getMessage()
+
+        ], 500);
+
+    }
+}
    
 
     public function previewPage()
     {
-
         $preview = get_pan_correction_session();
-
-
 
         if (
 
@@ -655,7 +651,6 @@ class PanCorrectionController extends Controller
             !is_array($preview['data'])
 
         ) {
-
 
             return redirect()
 
@@ -675,33 +670,35 @@ class PanCorrectionController extends Controller
 
         }
 
-
-
-
-
         return view(
 
             'retailer.pan-correction.preview',
 
             [
 
-                'data'=>
+                'data' =>
 
                     $preview['data'],
 
-
-                'files'=>
+                'files' =>
 
                     $preview['files']
 
                     ??
 
-                    []
+                    [],
+
+                'panCharge' =>
+
+                    $preview['data']['pan_charge']
+
+                    ??
+
+                    $this->getPanCorrectionCharge()
 
             ]
 
         );
-
     }
 
     /*
@@ -716,127 +713,79 @@ class PanCorrectionController extends Controller
 
         try {
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | USERS LOCK
-            |--------------------------------------------------------------------------
-            */
-
             $user = User::query()
-
                 ->lockForUpdate()
-
                 ->find(auth()->id());
 
-
-
             $admin = User::query()
-
                 ->role('Admin')
-
                 ->lockForUpdate()
-
                 ->first();
-
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | ADMIN CHECK
-            |--------------------------------------------------------------------------
-            */
 
             if (!$admin) {
 
-
                 DB::rollBack();
 
-
                 return response()->json([
-
-                    'status' => false,
-
-                    'message' =>
-                        'Admin account not found.'
-
-                ],500);
-
+                    'status'  => false,
+                    'message' => 'Admin account not found.'
+                ], 500);
             }
-
-
-
 
             /*
             |--------------------------------------------------------------------------
-            | SESSION (VERCEL SAFE HELPER)
+            | DYNAMIC PAN CORRECTION CHARGE
+            |--------------------------------------------------------------------------
+            */
+
+            $panCharge = $this->getPanCorrectionCharge();
+
+            if ($panCharge <= 0) {
+
+                DB::rollBack();
+
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'PAN correction charge is not configured.'
+                ], 422);
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | SESSION CHECK
             |--------------------------------------------------------------------------
             */
 
             $session = get_pan_correction_session();
 
-
-
             if (!$session) {
-
 
                 DB::rollBack();
 
-
                 return response()->json([
-
-                    'status' => false,
-
-                    'message' =>
-                        'Preview session expired. Please apply again.'
-
-                ],422);
-
+                    'status'  => false,
+                    'message' => 'Preview session expired. Please apply again.'
+                ], 422);
             }
-
-
-
-
-
 
             /*
             |--------------------------------------------------------------------------
-            | CLOUDINARY FILE CHECK
+            | FILE CHECK
             |--------------------------------------------------------------------------
             */
 
-            foreach (
-
-                $session['files'] ?? []
-
-                as $file
-
-            ) {
-
+            foreach ($session['files'] ?? [] as $file) {
 
                 if (!$file) {
 
-
                     DB::rollBack();
 
-
                     return response()->json([
-
-                        'status' => false,
-
-                        'message' =>
-                            'Uploaded document missing. Please upload again.'
-
-                    ],422);
-
+                        'status'  => false,
+                        'message' => 'Uploaded document missing. Please upload again.'
+                    ], 422);
                 }
-
             }
-
-
-
-
-
 
             /*
             |--------------------------------------------------------------------------
@@ -844,34 +793,15 @@ class PanCorrectionController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            if (
-
-                $user->wallet_balance
-
-                < self::PAN_CHARGE
-
-            ) {
-
+            if ($user->wallet_balance < $panCharge) {
 
                 DB::rollBack();
 
-
                 return response()->json([
-
-                    'status' => false,
-
-                    'message' =>
-                        'Insufficient wallet balance.'
-
-                ],422);
-
+                    'status'  => false,
+                    'message' => 'Insufficient wallet balance.'
+                ], 422);
             }
-
-
-
-
-
-
 
             /*
             |--------------------------------------------------------------------------
@@ -879,37 +809,11 @@ class PanCorrectionController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            $application =
+            $application = $this->panCorrectionService
+                ->storeFromSession();
 
-                $this->panCorrectionService
-
-                    ->storeFromSession();
-
-
-
-
-
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | BALANCE BEFORE
-            |--------------------------------------------------------------------------
-            */
-
-            $retailerBefore =
-                $user->wallet_balance;
-
-
-
-            $adminBefore =
-                $admin->wallet_balance;
-
-
-
-
-
-
+            $retailerBefore = $user->wallet_balance;
+            $adminBefore    = $admin->wallet_balance;
 
             /*
             |--------------------------------------------------------------------------
@@ -918,35 +822,17 @@ class PanCorrectionController extends Controller
             */
 
             $user->decrement(
-
                 'wallet_balance',
-
-                self::PAN_CHARGE
-
+                $panCharge
             );
-
-
 
             $admin->increment(
-
                 'wallet_balance',
-
-                self::PAN_CHARGE
-
+                $panCharge
             );
 
-
-
             $user->refresh();
-
             $admin->refresh();
-
-
-
-
-
-
-
 
             /*
             |--------------------------------------------------------------------------
@@ -956,26 +842,17 @@ class PanCorrectionController extends Controller
 
             $application->update([
 
+                'amount'              => $panCharge,
 
-                'wallet_deducted' => true,
+                'wallet_deducted'     => true,
 
+                'wallet_deducted_at'  => now(),
 
-                'wallet_deducted_at' => now(),
+                'payment_status'      => 'Paid',
 
-
-                'payment_status' => 'Paid',
-
-
-                'status' => 'Processing'
+                'status'              => 'Processing'
 
             ]);
-
-
-
-
-
-
-
 
             /*
             |--------------------------------------------------------------------------
@@ -985,51 +862,27 @@ class PanCorrectionController extends Controller
 
             WalletTransaction::create([
 
+                'user_id'         => $user->id,
 
-                'user_id' =>
-                    $user->id,
+                'amount'          => $panCharge,
 
+                'before_balance'  => $retailerBefore,
 
-                'amount' =>
-                    self::PAN_CHARGE,
+                'after_balance'   => $user->wallet_balance,
 
+                'type'            => 'debit',
 
-                'before_balance' =>
-                    $retailerBefore,
+                'status'          => 'success',
 
-
-                'after_balance' =>
-                    $user->wallet_balance,
-
-
-                'type' =>
-                    'debit',
-
-
-                'status' =>
-                    'success',
-
-
-                'transaction_no' =>
-
+                'transaction_no'  =>
                     'TXN'
-
                     . now()->format('YmdHis')
+                    . rand(1000, 9999),
 
-                    . rand(1000,9999),
-
-
-                'remark' =>
-                    'PAN Correction  Application Charge'
+                'remark'          =>
+                    'PAN Correction Application Charge'
 
             ]);
-
-
-
-
-
-
-
 
             /*
             |--------------------------------------------------------------------------
@@ -1039,135 +892,61 @@ class PanCorrectionController extends Controller
 
             WalletTransaction::create([
 
+                'user_id'         => $admin->id,
 
-                'user_id' =>
-                    $admin->id,
+                'amount'          => $panCharge,
 
+                'before_balance'  => $adminBefore,
 
-                'amount' =>
-                    self::PAN_CHARGE,
+                'after_balance'   => $admin->wallet_balance,
 
+                'type'            => 'credit',
 
-                'before_balance' =>
-                    $adminBefore,
+                'status'          => 'success',
 
-
-                'after_balance' =>
-                    $admin->wallet_balance,
-
-
-                'type' =>
-                    'credit',
-
-
-                'status' =>
-                    'success',
-
-
-                'transaction_no' =>
-
+                'transaction_no'  =>
                     'ADM'
-
                     . now()->format('YmdHis')
+                    . rand(1000, 9999),
 
-                    . rand(1000,9999),
-
-
-                'remark' =>
+                'remark'          =>
                     'PAN Correction Application Received Amount'
 
             ]);
 
-
-
-
-
-
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | COMMIT
-            |--------------------------------------------------------------------------
-            */
-
             DB::commit();
-
-
-
-
-
-
 
             return response()->json([
 
+                'status'       => true,
 
-                'status' => true,
-
-
-                'message' =>
+                'message'      =>
                     'PAN Correction Application Submitted Successfully.',
 
-
-                'redirect_url' =>
-
-                    route(
-
-                        'retailer.pan-correction.receiving',
-
-                        $application->id
-
-                    )
+                'redirect_url' => route(
+                    'retailer.pan-correction.receiving',
+                    $application->id
+                )
 
             ]);
 
-
-
-
-
         } catch (\Throwable $e) {
-
 
             DB::rollBack();
 
-
-
             Log::error(
-
-                'PAN FINAL SUBMIT ERROR',
-
+                'PAN CORRECTION FINAL SUBMIT ERROR',
                 [
-
-                    'message' =>
-                        $e->getMessage(),
-
-
-                    'line' =>
-                        $e->getLine(),
-
-
-                    'file' =>
-                        $e->getFile()
-
+                    'message' => $e->getMessage(),
+                    'line'    => $e->getLine(),
+                    'file'    => $e->getFile()
                 ]
-
             );
 
-
-
-
             return response()->json([
-
-
-                'status' => false,
-
-
-                'message' =>
-                    $e->getMessage()
-
-
-            ],500);
-
+                'status'  => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
     

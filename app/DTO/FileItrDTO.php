@@ -2,7 +2,7 @@
 
 namespace App\DTO;
 
-use App\Http\Requests\StoreItrRequest;
+use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 
 class FileItrDTO
@@ -28,7 +28,7 @@ class FileItrDTO
     ) {}
 
     public static function fromRequest(
-        StoreItrRequest $request
+        Request $request
     ): self {
 
         return new self(
@@ -56,7 +56,8 @@ class FileItrDTO
             panCard:
                 $request->file('pan_card'),
 
-            charge: 99.00
+            charge:
+                99.00
 
         );
     }

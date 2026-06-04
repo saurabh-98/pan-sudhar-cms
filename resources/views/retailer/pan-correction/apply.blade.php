@@ -997,13 +997,13 @@
                         }
 
 
-                        $documents = [
+                      $documents = [
 
                             [
                                 'title' => 'Applicant Photo',
                                 'name'  => 'photo',
                                 'icon'  => 'fa-camera',
-                                'text'  => 'JPG / PNG',
+                                'text'  => 'JPG / PNG • Max 5 MB',
                                 'accept'=> '.jpg,.jpeg,.png'
                             ],
 
@@ -1011,7 +1011,7 @@
                                 'title' => 'Signature',
                                 'name'  => 'signature',
                                 'icon'  => 'fa-signature',
-                                'text'  => 'JPG / PNG',
+                                'text'  => 'JPG / PNG • Max 5 MB',
                                 'accept'=> '.jpg,.jpeg,.png'
                             ],
 
@@ -1019,7 +1019,7 @@
                                 'title' => 'Aadhaar Card',
                                 'name'  => 'aadhaar_card',
                                 'icon'  => 'fa-id-card',
-                                'text'  => 'Upload Front + Back in Single File',
+                                'text'  => 'JPG / PNG / PDF • Max 5 MB',
                                 'accept'=> '.jpg,.jpeg,.png,.pdf'
                             ],
 
@@ -1027,7 +1027,7 @@
                                 'title' => 'DOB Proof',
                                 'name'  => 'dob_proof_file',
                                 'icon'  => 'fa-calendar-days',
-                                'text'  => 'JPG / PDF',
+                                'text'  => 'JPG / PNG / PDF • Max 5 MB',
                                 'accept'=> '.jpg,.jpeg,.png,.pdf'
                             ],
 
@@ -1035,7 +1035,7 @@
                                 'title' => 'Supporting Document',
                                 'name'  => 'supporting_document',
                                 'icon'  => 'fa-file-circle-plus',
-                                'text'  => 'JPG / PDF',
+                                'text'  => 'JPG / PNG / PDF • Max 5 MB',
                                 'accept'=> '.jpg,.jpeg,.png,.pdf'
                             ]
 
@@ -1111,6 +1111,7 @@
                                                 name="{{ $doc['name'] }}"
                                                 class="document-input d-none"
                                                 accept="{{ $doc['accept'] }}"
+                                                data-max-size="5242880"
                                             >
 
                                             <div class="upload-preview">
@@ -1125,11 +1126,10 @@
                                                         >
 
                                                             <img
-                                                                src="{{ asset('assets/images/pdf-icon.png') }}"
+                                                                src="https://cdn-icons-png.flaticon.com/512/337/337946.png"
                                                                 class="preview-image"
                                                                 alt="PDF Document"
                                                             >
-
                                                         </a>
 
                                                     @else
@@ -1184,13 +1184,15 @@
                                         </label>
 
 
-                                        <div class="file-details {{ $exists ? '' : 'd-none' }}">
+                                       <div class="file-details {{ $exists ? '' : 'd-none' }}">
 
                                             <span class="file-name">
 
                                                 {{ $exists ? basename(parse_url(file_url($file), PHP_URL_PATH)) : '' }}
 
                                             </span>
+
+                                            <span class="file-size text-primary fw-bold small"></span>
 
                                             <button
                                                 type="button"
@@ -1200,6 +1202,8 @@
                                             </button>
 
                                         </div>
+
+                                        <div class="file-error text-danger small mt-2"></div>
 
                                     </div>
 
@@ -1543,13 +1547,8 @@ $(document).ready(function () {
 
     });
 
-    /*
-    |--------------------------------------------------------------------------
-    | FILE PREVIEW
-    |--------------------------------------------------------------------------
-    */
+   $('.document-input').change(function () {
 
-    $('.document-input').change(function () {
 
         let file = this.files[0];
 
@@ -1558,23 +1557,37 @@ $(document).ready(function () {
         }
 
         let wrapper =
-        $(this).closest('.upload-wrapper');
+            $(this).closest('.upload-wrapper');
 
         let previewImage =
-        wrapper.find('.preview-image');
+            wrapper.find('.preview-image');
 
         let fileDetails =
-        wrapper.find('.file-details');
+            wrapper.find('.file-details');
 
         let fileName =
-        wrapper.find('.file-name');
+            wrapper.find('.file-name');
+
+        let fileSize =
+            wrapper.find('.file-size');
 
         let defaultUpload =
-        wrapper.find('.default-upload');
+            wrapper.find('.default-upload');
+
+        let errorBox =
+            wrapper.find('.file-error');
 
         /*
         |--------------------------------------------------------------------------
-        | VALID TYPES
+        | CLEAR OLD ERROR
+        |--------------------------------------------------------------------------
+        */
+
+        errorBox.html('');
+
+        /*
+        |--------------------------------------------------------------------------
+        | VALID FILE TYPES
         |--------------------------------------------------------------------------
         */
 
@@ -1588,16 +1601,9 @@ $(document).ready(function () {
 
         if (!allowedTypes.includes(file.type)) {
 
-            Swal.fire({
-
-                icon: 'error',
-
-                title: 'Invalid File',
-
-                text:
-                'Only JPG, PNG and PDF allowed.'
-
-            });
+            errorBox.html(
+                'Only JPG, PNG and PDF files are allowed.'
+            );
 
             $(this).val('');
 
@@ -1606,22 +1612,15 @@ $(document).ready(function () {
 
         /*
         |--------------------------------------------------------------------------
-        | FILE SIZE
+        | FILE SIZE VALIDATION (5 MB)
         |--------------------------------------------------------------------------
         */
 
-        if (file.size > 4194304) {
+        if (file.size > 5242880) {
 
-            Swal.fire({
-
-                icon: 'error',
-
-                title: 'Large File',
-
-                text:
-                'Maximum file size is 4MB.'
-
-            });
+            errorBox.html(
+                'File size cannot exceed 5 MB.'
+            );
 
             $(this).val('');
 
@@ -1630,24 +1629,30 @@ $(document).ready(function () {
 
         /*
         |--------------------------------------------------------------------------
-        | FILE NAME
+        | FILE DETAILS
         |--------------------------------------------------------------------------
         */
 
         fileName.text(file.name);
 
+        fileSize.text(
+            '(' +
+            (file.size / 1024 / 1024).toFixed(2) +
+            ' MB)'
+        );
+
         fileDetails.removeClass('d-none');
 
         /*
         |--------------------------------------------------------------------------
-        | IMAGE PREVIEW
+        | PREVIEW
         |--------------------------------------------------------------------------
         */
 
         if (file.type !== 'application/pdf') {
 
             let reader =
-            new FileReader();
+                new FileReader();
 
             reader.onload =
             function (e) {
@@ -1663,7 +1668,6 @@ $(document).ready(function () {
 
                 defaultUpload
                 .addClass('d-none');
-
             };
 
             reader.readAsDataURL(file);
@@ -1673,21 +1677,18 @@ $(document).ready(function () {
             previewImage
 
             .attr(
-
                 'src',
-
                 'https://cdn-icons-png.flaticon.com/512/337/337946.png'
-
             )
 
             .removeClass('d-none');
 
             defaultUpload
             .addClass('d-none');
-
         }
+        
 
-    });
+        });
 
     /*
     |--------------------------------------------------------------------------

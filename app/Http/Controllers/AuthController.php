@@ -37,7 +37,6 @@ class AuthController extends Controller
     {
         
 
-
         return view('auth.login');
     }
 
@@ -143,9 +142,8 @@ class AuthController extends Controller
         }
 
         if (
-            $user->hasRole('Admin')
-            ||
-            $user->hasRole('Super Admin')
+            $user->hasRole('admin')
+            
         ) {
 
             return redirect()

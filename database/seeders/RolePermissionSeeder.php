@@ -248,6 +248,16 @@ class RolePermissionSeeder extends Seeder
             'settings.view',
             'settings.edit',
 
+            'modules.view',
+            'modules.create',
+            'modules.edit',
+            'modules.delete',
+            
+            'charges.view',
+            'charges.create',
+            'charges.edit',
+            'charges.delete'
+
             
         ];
 

@@ -328,6 +328,25 @@
         0 8px 18px rgba(220,38,38,0.28);
 }
 
+.session-timer-box{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 14px;
+    border-radius:12px;
+    background:#fff3cd;
+    color:#856404;
+    font-weight:600;
+    font-size:14px;
+    margin-right:15px;
+    border:1px solid #ffe69c;
+}
+
+.session-timer-box i{
+    font-size:15px;
+}
+
+
 /* =========================================================
 | USER BUTTON
 ========================================================= */

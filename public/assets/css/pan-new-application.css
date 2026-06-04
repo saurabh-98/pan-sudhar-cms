@@ -962,3 +962,11 @@ textarea.form-control {
         font-size: 28px;
     }
 }
+
+.file-error{
+    color:#dc3545;
+    font-size:13px;
+    font-weight:600;
+    min-height:20px;
+    margin-top:5px;
+}

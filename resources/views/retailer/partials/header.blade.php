@@ -82,6 +82,23 @@
 
         </div>
 
+         {{-- =====================================================
+            | SESSION TIMER
+            ====================================================== --}}
+            <div class="session-timer-box">
+
+                <i class="fa fa-clock"></i>
+
+                <span id="sessionCountdown">
+
+                    Loading...
+
+                </span>
+
+            </div>
+
+
+
 
         @if(session()->has('admin_id'))
 

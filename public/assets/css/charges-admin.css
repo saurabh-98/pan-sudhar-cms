@@ -1,0 +1,181 @@
+.chx-wrapper {
+    padding-bottom: 30px;
+}
+
+.chx-card {
+    border: 0;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 10px 35px rgba(0,0,0,.08);
+    transition: .3s ease;
+}
+
+.chx-card:hover {
+    transform: translateY(-2px);
+}
+
+.chx-card-header {
+    background: linear-gradient(
+        135deg,
+        #4f46e5,
+        #7c3aed
+    );
+    color: #fff;
+    border: none;
+    padding: 18px 25px;
+}
+
+.chx-card-header h5 {
+    margin: 0;
+    font-weight: 700;
+}
+
+.chx-form-card {
+    position: sticky;
+    top: 20px;
+}
+
+.chx-label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.chx-input {
+    border-radius: 12px;
+    border: 1px solid #d1d5db;
+    min-height: 48px;
+    transition: .25s;
+}
+
+.chx-input:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 4px rgba(79,70,229,.15);
+}
+
+textarea.chx-input {
+    min-height: 110px;
+}
+
+.chx-btn-primary {
+    border: none;
+    height: 52px;
+    border-radius: 14px;
+    color: #fff;
+    font-weight: 700;
+    background: linear-gradient(
+        135deg,
+        #4f46e5,
+        #7c3aed
+    );
+}
+
+.chx-btn-primary:hover {
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.chx-table thead th {
+    background: #f8fafc;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.chx-table tbody td {
+    vertical-align: middle;
+}
+
+.chx-table tbody tr:hover {
+    background: rgba(79,70,229,.04);
+}
+
+.editCharge {
+    margin-right: 5px;
+}
+
+.dataTables_filter input,
+.dataTables_length select {
+    border-radius: 10px !important;
+}
+
+.text-danger {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+@media(max-width:991px){
+
+    .chx-form-card{
+        position: static;
+        margin-bottom: 20px;
+    }
+
+}
+
+@media(max-width:768px){
+
+    .chx-card-header{
+        padding:15px;
+    }
+
+    .chx-card-header h5{
+        font-size:15px;
+    }
+
+    .chx-btn-primary{
+        height:48px;
+    }
+
+}
+
+.chx-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 110px;
+
+    height: 34px;
+
+    border-radius: 30px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+}
+
+.chx-active {
+
+    background: #10b981;
+
+    color: #fff;
+}
+
+.chx-inactive {
+
+    background: #ef4444;
+
+    color: #fff;
+}
+
+.editCharge,
+.deleteCharge {
+
+    width: 38px;
+
+    height: 38px;
+
+    border-radius: 10px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}

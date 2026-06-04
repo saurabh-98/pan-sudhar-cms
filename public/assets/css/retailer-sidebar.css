@@ -1080,3 +1080,25 @@
         font-size:20px;
     }
 }
+
+.stf-dropdown > .stf-link {
+    cursor: pointer;
+}
+
+.stf-submenu {
+    display: none;
+    list-style: none;
+    padding-left: 20px;
+}
+
+.stf-dropdown.open > .stf-submenu {
+    display: block;
+}
+
+.stf-arrow {
+    transition: 0.3s;
+}
+
+.stf-dropdown.open > .stf-link .stf-arrow {
+    transform: rotate(180deg);
+}

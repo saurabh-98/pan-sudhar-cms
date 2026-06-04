@@ -663,4 +663,20 @@ Route::prefix('pan-correction')
 
     )->name('logout');
 
+    Route::get(
+        '/idle-logout',
+        function () {
+
+            Auth::logout();
+
+            session()->invalidate();
+
+            session()->regenerateToken();
+
+            return redirect()
+                ->route('retailer.login');
+
+        }
+    )->name('logout.idle');
+
 });

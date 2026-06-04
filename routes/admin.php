@@ -37,6 +37,8 @@ use App\Http\Controllers\Admin\AdminPanCorrectionController;
 use App\Http\Controllers\Admin\AdminItrController as ItrFileController;
 use App\Http\Controllers\Admin\AdminWalletController ;
 use App\Http\Controllers\Admin\RetailerApprovalController;
+use App\Http\Controllers\Admin\ModuleController;
+use App\Http\Controllers\Admin\ChargeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,6 +56,7 @@ use App\Http\Controllers\Admin\RetailerApprovalController;
 Route::middleware([
 
     'auth',
+    'session.timeout'
 
 ])->group(function () {
 
@@ -1090,9 +1093,177 @@ Route::prefix('admin-wallet')
         */
 
         Route::get(
-            '/back-to-admin',
-            [RetailerApprovalController::class, 'backToAdmin']
-        )->name('back-to-admin');
+                    '/back-to-admin',
+                    [RetailerApprovalController::class, 'backToAdmin']
+                )->name('back-to-admin');
+
+                Route::get(
+            '/modules/{user}',
+            [RetailerApprovalController::class, 'modules']
+        )->name(
+            'modules'
+        );
+
+        Route::post(
+            '/modules/{user}',
+            [RetailerApprovalController::class, 'updateModules']
+        )->name(
+            'modules.update'
+
+        );
+
+        Route::get(
+                '/retailer-modules/{userId}',
+                [RetailerApprovalController::class, 'getModules']
+            )->name(
+                'get-modules'
+            );
+
+
         });
+
+
+        Route::prefix('modules')
+        ->name('modules.')
+        ->middleware('permission:modules.view')
+        ->group(function () {
+
+            Route::get(
+                '/',
+                [ModuleController::class, 'index']
+            )->name('index');
+
+            Route::get(
+                '/list',
+                [ModuleController::class, 'list']
+            )->name('list');
+
+            Route::get(
+                '/create',
+                [ModuleController::class, 'create']
+            )->name('create')
+            ->middleware('permission:modules.create');
+
+            Route::post(
+                '/store',
+                [ModuleController::class, 'store']
+            )->name('store')
+            ->middleware('permission:modules.create');
+
+            Route::get(
+                '/edit/{id}',
+                [ModuleController::class, 'edit']
+            )->name('edit')
+            ->middleware('permission:modules.edit');
+
+            Route::post(
+                '/update/{id}',
+                [ModuleController::class, 'update']
+            )->name('update')
+            ->middleware('permission:modules.edit');
+
+            Route::delete(
+                '/delete/{id}',
+                [ModuleController::class, 'destroy']
+            )->name('delete')
+            ->middleware('permission:modules.delete');
+
+        });
+
+
+   
+    Route::prefix('charges')
+        ->name('charges.')
+        ->middleware('permission:charges.view')
+        ->group(function () {
+
+            /*
+            |--------------------------------------------------------------------------
+            | INDEX
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/',
+                [ChargeController::class, 'index']
+            )->name('index');
+
+            /*
+            |--------------------------------------------------------------------------
+            | DATATABLE AJAX
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/list',
+                [ChargeController::class, 'list']
+            )->name('list');
+
+            /*
+            |--------------------------------------------------------------------------
+            | STORE
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/store',
+                [ChargeController::class, 'store']
+            )->name('store')
+            ->middleware('permission:charges.create');
+
+            /*
+            |--------------------------------------------------------------------------
+            | EDIT DATA AJAX
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/edit/{id}',
+                [ChargeController::class, 'edit']
+            )->name('edit')
+            ->middleware('permission:charges.edit');
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/update/{id}',
+                [ChargeController::class, 'update']
+            )->name('update')
+            ->middleware('permission:charges.edit');
+
+            /*
+            |--------------------------------------------------------------------------
+            | DELETE
+            |--------------------------------------------------------------------------
+            */
+
+            Route::delete(
+                '/delete/{id}',
+                [ChargeController::class, 'destroy']
+            )->name('delete')
+            ->middleware('permission:charges.delete');
+
+        });
+
+
+        Route::get(
+            '/idle-logout',
+            function () {
+
+                Auth::logout();
+
+                session()->invalidate();
+
+                session()->regenerateToken();
+
+                return redirect()
+                    ->route('login');
+
+            }
+        )->name('logout.idle');
 
 });

@@ -29,10 +29,10 @@
 
         <div>
 
-            <span class="badge bg-warning text-dark fs-6 px-4 py-3 rounded-pill shadow-sm">
+           <span class="badge bg-warning text-dark fs-6 px-4 py-3 rounded-pill shadow-sm">
 
                 PAN Correction Charge :
-                ₹170
+                ₹{{ number_format($panCharge, 2) }}
 
             </span>
 
@@ -459,17 +459,17 @@
 
                     </div>
 
-                    <div>
+                 <div>
 
-                        <strong>
+                    <strong>
 
-                            Service Charge :
+                        Service Charge :
 
-                        </strong>
+                    </strong>
 
-                        ₹170
+                    ₹{{ number_format($panCharge, 2) }}
 
-                    </div>
+                </div>
 
                 </div>
 

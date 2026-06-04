@@ -1,3 +1,4 @@
+
 <div
     class="stf-sidebar"
     id="retailerSidebar"
@@ -69,11 +70,6 @@
 
         </h5>
 
-        <p class="stf-profile-role">
-
-            Authorized Retailer
-
-        </p>
 
         {{-- WALLET --}}
         <div class="stf-wallet-card">
@@ -106,356 +102,45 @@
 
    <div class="stf-menu-wrapper">
 
-        <ul class="stf-menu">
+    <ul class="stf-menu">
 
-            {{-- =====================================================
-            | MAIN MENU
-            ====================================================== --}}
-            <li class="stf-menu-title">
+        @foreach($retailerMenus as $menu)
 
-                MAIN MENU
+            @include(
+                'retailer.partials.menu-item',
+                ['menu' => $menu]
+            )
 
-            </li>
+        @endforeach
 
-            {{-- DASHBOARD --}}
-            <li>
+        {{-- LOGOUT --}}
+        <li class="mt-4">
 
-                <a
-                    href="{{ route('retailer.dashboard') }}"
-                    class="stf-link
-                    {{ request()->routeIs('retailer.dashboard') ? 'stf-active' : '' }}"
+            <form
+                method="POST"
+                action="{{ route('retailer.logout') }}"
+            >
+                @csrf
+
+                <button
+                    type="submit"
+                    class="stf-link stf-logout-btn border-0 bg-transparent w-100"
                 >
-
                     <div class="stf-link-left">
 
-                        <i class="fa fa-home"></i>
+                        <i class="fa fa-sign-out-alt"></i>
 
-                        <span>
-
-                            Dashboard
-
-                        </span>
+                        <span>Logout</span>
 
                     </div>
 
-                </a>
+                </button>
 
-            </li>
+            </form>
 
-            {{-- =====================================================
-            | PAN SERVICES
-            ====================================================== --}}
-            <li class="stf-menu-title mt-4">
+        </li>
 
-                PAN SERVICES
+    </ul>
 
-            </li>
-
-            {{-- APPLY PAN --}}
-            <li>
-
-                <a
-                    href="{{ route('retailer.pan.apply') }}"
-                    class="stf-link
-                    {{ request()->routeIs('retailer.pan.apply') ? 'stf-active' : '' }}"
-                >
-
-                    <div class="stf-link-left">
-
-                        <i class="fa fa-id-card"></i>
-
-                        <span>
-
-                            Apply PAN
-
-                        </span>
-
-                    </div>
-
-                    <span class="stf-badge">
-
-                        New
-
-                    </span>
-
-                </a>
-
-            </li>
-
-            {{-- PAN HISTORY --}}
-            <li>
-
-                <a
-                    href="{{ route('retailer.pan.history') }}"
-                    class="stf-link
-                    {{ request()->routeIs('retailer.pan.history') ? 'stf-active' : '' }}"
-                >
-
-                    <div class="stf-link-left">
-
-                        <i class="fa fa-clock-rotate-left"></i>
-
-                        <span>
-
-                            PAN History
-
-                        </span>
-
-                    </div>
-
-                </a>
-
-            </li>
-
-            {{-- COMPANY PAN --}}
-            <li>
-
-                <a
-                    href="{{ route('retailer.pan.company') }}"
-                    class="stf-link
-                    {{ request()->routeIs('retailer.pan.company') ? 'stf-active' : '' }}"
-                >
-
-                    <div class="stf-link-left">
-
-                        <i class="fa fa-building"></i>
-
-                        <span>
-
-                            Company PAN
-
-                        </span>
-
-                    </div>
-
-                </a>
-
-            </li>
-
-            {{-- =====================================================
-            | PAN CORRECTION SERVICES
-            ====================================================== --}}
-            <li class="stf-menu-title mt-4">
-
-                PAN CORRECTION SERVICES
-
-            </li>
-
-            {{-- APPLY CORRECTION --}}
-            <li>
-
-                <a
-                    href="{{ route('retailer.pan-correction.apply') }}"
-                    class="stf-link
-                    {{ request()->routeIs('retailer.pan-correction.apply') ? 'stf-active' : '' }}"
-                >
-
-                    <div class="stf-link-left">
-
-                        <i class="fa fa-pen"></i>
-
-                        <span>
-
-                            Apply Correction
-
-                        </span>
-
-                    </div>
-
-                    <span class="stf-badge">
-
-                        New
-
-                    </span>
-
-                </a>
-
-            </li>
-
-            {{-- CORRECTION HISTORY --}}
-            <li>
-
-                <a
-                    href="{{ route('retailer.pan-correction.history') }}"
-                    class="stf-link
-                    {{ request()->routeIs('retailer.pan-correction.history') || request()->routeIs('retailer.pan-correction.show') ? 'stf-active' : '' }}"
-                >
-
-                    <div class="stf-link-left">
-
-                        <i class="fa fa-history"></i>
-
-                        <span>
-
-                            Correction History
-
-                        </span>
-
-                    </div>
-
-                </a>
-
-            </li>
-
-            {{-- =====================================================
-            | ITR SERVICES
-            ====================================================== --}}
-            <li class="stf-menu-title mt-4">
-
-                ITR SERVICES
-
-            </li>
-
-            {{-- FILE ITR --}}
-            <li>
-
-                <a
-                    href="{{ route('retailer.itr.index') }}"
-                    class="stf-link
-                    {{ request()->routeIs('retailer.itr.index') ? 'stf-active' : '' }}"
-                >
-
-                    <div class="stf-link-left">
-
-                        <i class="fa fa-file-invoice-dollar"></i>
-
-                        <span>
-
-                            File ITR
-
-                        </span>
-
-                    </div>
-
-                    <span class="stf-badge">
-
-                        New
-
-                    </span>
-
-                </a>
-
-            </li>
-
-            {{-- ITR HISTORY --}}
-            <li>
-
-                <a
-                    href="{{ route('retailer.itr.history') }}"
-                    class="stf-link
-                    {{ request()->routeIs('retailer.itr.history') ? 'stf-active' : '' }}"
-                >
-
-                    <div class="stf-link-left">
-
-                        <i class="fa fa-history"></i>
-
-                        <span>
-
-                            ITR History
-
-                        </span>
-
-                    </div>
-
-                </a>
-
-            </li>
-
-            {{-- =====================================================
-            | ACCOUNT
-            ====================================================== --}}
-            <li class="stf-menu-title mt-4">
-
-                ACCOUNT
-
-            </li>
-
-            {{-- WALLET --}}
-            <li>
-
-                <a
-                    href="{{ route('retailer.wallet.history') }}"
-                    class="stf-link
-                    {{ request()->routeIs('retailer.wallet.history') ? 'stf-active' : '' }}"
-                >
-
-                    <div class="stf-link-left">
-
-                        <i class="fa fa-wallet"></i>
-
-                        <span>
-
-                            Wallet History
-
-                        </span>
-
-                    </div>
-
-                </a>
-
-            </li>
-
-            {{-- PROFILE --}}
-            <li>
-
-                <a
-                    href="{{ route('retailer.profile') }}"
-                    class="stf-link
-                    {{ request()->routeIs('retailer.profile') ? 'stf-active' : '' }}"
-                >
-
-                    <div class="stf-link-left">
-
-                        <i class="fa fa-user"></i>
-
-                        <span>
-
-                            My Profile
-
-                        </span>
-
-                    </div>
-
-                </a>
-
-            </li>
-
-            {{-- LOGOUT --}}
-            <li class="mt-4">
-
-                <form
-                    method="POST"
-                    action="{{ route('retailer.logout') }}"
-                >
-
-                    @csrf
-
-                    <button
-                        type="submit"
-                        class="stf-link stf-logout-btn border-0 bg-transparent w-100"
-                    >
-
-                        <div class="stf-link-left">
-
-                            <i class="fa fa-sign-out-alt"></i>
-
-                            <span>
-
-                                Logout
-
-                            </span>
-
-                        </div>
-
-                    </button>
-
-                </form>
-
-            </li>
-
-        </ul>
-
-    </div>
-
+</div>
 </div>

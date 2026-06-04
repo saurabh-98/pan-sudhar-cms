@@ -18,6 +18,7 @@ use App\Models\PanApplication;
 use App\Models\State;
 use App\Models\User;
 use App\Models\WalletTransaction;
+use App\Models\Charge;
 
 use App\Services\DistrictService;
 use App\Services\PanApplicationService;
@@ -27,7 +28,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class NewPanApplicationController extends Controller
 {
-    protected const PAN_CHARGE = 150;
+    
 
     public function __construct(
 
@@ -39,12 +40,26 @@ class NewPanApplicationController extends Controller
 
     ) {}
 
-    /*
-    |--------------------------------------------------------------------------
-    | HISTORY
-    |--------------------------------------------------------------------------
-    */
+   
 
+    private function getPanCharge(): float
+{
+    return (float) Charge::query()
+
+        ->where(
+            'code',
+            'new_pan_apply'
+        )
+
+        ->where(
+            'is_active',
+            1
+        )
+
+        ->value(
+            'value'
+        );
+}
     public function index()
     {
         if (request()->ajax()) {
@@ -438,17 +453,18 @@ class NewPanApplicationController extends Controller
                     $this->stateService
                         ->getAll(),
 
-
                 'walletBalance' =>
 
                     auth()->user()
                         ->wallet_balance,
 
+                'panCharge' =>
+
+                    $this->getPanCharge(),
 
                 'data' =>
 
                     $preview['data'] ?? [],
-
 
                 'files' =>
 
@@ -465,36 +481,39 @@ class NewPanApplicationController extends Controller
         StorePanApplicationRequest $request
     ): JsonResponse {
 
-
         try {
-
 
             $user = auth()->user();
 
+            $panCharge = $this->getPanCharge();
 
-
-            if ($user->wallet_balance < self::PAN_CHARGE) {
-
+            if ($panCharge <= 0) {
 
                 return response()->json([
 
                     'status' => false,
 
-                    'message' =>
-                        'Insufficient wallet balance.'
+                    'message' => 'PAN charge is not configured.'
 
-                ],422);
+                ], 422);
 
             }
 
+            if ($user->wallet_balance < $panCharge) {
+
+                return response()->json([
+
+                    'status' => false,
+
+                    'message' => 'Insufficient wallet balance.'
+
+                ], 422);
+
+            }
 
             $dto = PanApplicationDTO::fromRequest(
-
                 $request
-
             );
-
-
 
             /*
             |--------------------------------------------------------------------------
@@ -502,15 +521,9 @@ class NewPanApplicationController extends Controller
             |--------------------------------------------------------------------------
             */
 
-
-            $preview =
-
-                $this->panService
-
-                    ->preview($dto);
-
-
-
+            $preview = $this->panService->preview(
+                $dto
+            );
 
             /*
             |--------------------------------------------------------------------------
@@ -518,23 +531,16 @@ class NewPanApplicationController extends Controller
             |--------------------------------------------------------------------------
             */
 
-
             $preview['data']['state_name'] =
 
                 State::where(
-
                     'id',
-
                     $request->state
-
                 )->value('name')
 
                 ??
 
                 'N/A';
-
-
-
 
             /*
             |--------------------------------------------------------------------------
@@ -542,25 +548,25 @@ class NewPanApplicationController extends Controller
             |--------------------------------------------------------------------------
             */
 
-
             $preview['data']['district_name'] =
 
-
                 District::where(
-
                     'id',
-
                     $request->district
-
                 )->value('name')
 
                 ??
 
                 'N/A';
 
+            /*
+            |--------------------------------------------------------------------------
+            | STORE CHARGE IN SESSION
+            |--------------------------------------------------------------------------
+            */
 
-
-
+            $preview['data']['pan_charge'] =
+                $panCharge;
 
             /*
             |--------------------------------------------------------------------------
@@ -568,43 +574,26 @@ class NewPanApplicationController extends Controller
             |--------------------------------------------------------------------------
             */
 
-
             save_pan_session(
-
                 $preview
-
             );
-
-
-
-
 
             return response()->json([
 
+                'status' => true,
 
-                'status'=>true,
-
-
-                'message'=>
+                'message' =>
                     'Preview generated successfully.',
 
-
-
-                'redirect_url'=>
+                'redirect_url' =>
 
                     route(
-
                         'retailer.pan.preview.page'
-
                     )
 
             ]);
 
-
-
-        } catch(\Throwable $e){
-
-
+        } catch (\Throwable $e) {
 
             Log::error(
 
@@ -612,38 +601,34 @@ class NewPanApplicationController extends Controller
 
                 [
 
-                    'message'=>$e->getMessage(),
+                    'message' => $e->getMessage(),
 
-                    'line'=>$e->getLine(),
+                    'line' => $e->getLine(),
 
-                    'file'=>$e->getFile()
+                    'file' => $e->getFile()
 
                 ]
 
             );
 
-
-
             return response()->json([
 
-                'status'=>false,
+                'status' => false,
 
-                'message'=>$e->getMessage()
+                'message' => $e->getMessage()
 
-            ],500);
+            ], 500);
 
         }
 
     }
-
    
 
     public function previewPage()
     {
-
         $preview = get_pan_session();
 
-
+       
 
         if (
 
@@ -659,52 +644,49 @@ class NewPanApplicationController extends Controller
 
         ) {
 
-
             return redirect()
 
                 ->route(
-
                     'retailer.pan.apply'
-
                 )
 
                 ->with(
-
                     'error',
-
                     'Preview session expired.'
-
                 );
 
         }
 
-
-
-
-
+        
         return view(
 
             'retailer.pan.preview',
 
             [
 
-                'data'=>
+                'data' =>
 
                     $preview['data'],
 
-
-                'files'=>
+                'files' =>
 
                     $preview['files']
 
                     ??
 
-                    []
+                    [],
+
+                'panCharge' =>
+
+                    $preview['data']['pan_charge']
+
+                    ??
+
+                    $this->getPanCharge()
 
             ]
 
         );
-
     }
 
     /*
@@ -719,6 +701,20 @@ class NewPanApplicationController extends Controller
 
         try {
 
+            $panCharge = $this->getPanCharge();
+
+            if ($panCharge <= 0) {
+
+                DB::rollBack();
+
+                return response()->json([
+
+                    'status' => false,
+
+                    'message' => 'PAN charge is not configured.'
+
+                ], 422);
+            }
 
             /*
             |--------------------------------------------------------------------------
@@ -732,8 +728,6 @@ class NewPanApplicationController extends Controller
 
                 ->find(auth()->id());
 
-
-
             $admin = User::query()
 
                 ->role('Admin')
@@ -741,8 +735,6 @@ class NewPanApplicationController extends Controller
                 ->lockForUpdate()
 
                 ->first();
-
-
 
             /*
             |--------------------------------------------------------------------------
@@ -752,94 +744,59 @@ class NewPanApplicationController extends Controller
 
             if (!$admin) {
 
-
                 DB::rollBack();
-
 
                 return response()->json([
 
                     'status' => false,
 
-                    'message' =>
-                        'Admin account not found.'
+                    'message' => 'Admin account not found.'
 
-                ],500);
-
+                ], 500);
             }
-
-
-
 
             /*
             |--------------------------------------------------------------------------
-            | SESSION (VERCEL SAFE HELPER)
+            | SESSION CHECK
             |--------------------------------------------------------------------------
             */
 
             $session = get_pan_session();
 
-
-
             if (!$session) {
 
-
                 DB::rollBack();
-
 
                 return response()->json([
 
                     'status' => false,
 
-                    'message' =>
-                        'Preview session expired. Please apply again.'
+                    'message' => 'Preview session expired. Please apply again.'
 
-                ],422);
-
+                ], 422);
             }
-
-
-
-
-
 
             /*
             |--------------------------------------------------------------------------
-            | CLOUDINARY FILE CHECK
+            | FILE CHECK
             |--------------------------------------------------------------------------
             */
 
-            foreach (
-
-                $session['files'] ?? []
-
-                as $file
-
-            ) {
-
+            foreach ($session['files'] ?? [] as $file) {
 
                 if (!$file) {
 
-
                     DB::rollBack();
-
 
                     return response()->json([
 
                         'status' => false,
 
-                        'message' =>
-                            'Uploaded document missing. Please upload again.'
+                        'message' => 'Uploaded document missing. Please upload again.'
 
-                    ],422);
-
+                    ], 422);
                 }
-
             }
-
-
-
-
-
 
             /*
             |--------------------------------------------------------------------------
@@ -847,34 +804,18 @@ class NewPanApplicationController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            if (
-
-                $user->wallet_balance
-
-                < self::PAN_CHARGE
-
-            ) {
-
+            if ($user->wallet_balance < $panCharge) {
 
                 DB::rollBack();
-
 
                 return response()->json([
 
                     'status' => false,
 
-                    'message' =>
-                        'Insufficient wallet balance.'
+                    'message' => 'Insufficient wallet balance.'
 
-                ],422);
-
+                ], 422);
             }
-
-
-
-
-
-
 
             /*
             |--------------------------------------------------------------------------
@@ -888,31 +829,15 @@ class NewPanApplicationController extends Controller
 
                     ->storeFromSession();
 
-
-
-
-
-
-
             /*
             |--------------------------------------------------------------------------
             | BALANCE BEFORE
             |--------------------------------------------------------------------------
             */
 
-            $retailerBefore =
-                $user->wallet_balance;
+            $retailerBefore = $user->wallet_balance;
 
-
-
-            $adminBefore =
-                $admin->wallet_balance;
-
-
-
-
-
-
+            $adminBefore = $admin->wallet_balance;
 
             /*
             |--------------------------------------------------------------------------
@@ -924,32 +849,21 @@ class NewPanApplicationController extends Controller
 
                 'wallet_balance',
 
-                self::PAN_CHARGE
+                $panCharge
 
             );
-
-
 
             $admin->increment(
 
                 'wallet_balance',
 
-                self::PAN_CHARGE
+                $panCharge
 
             );
-
-
 
             $user->refresh();
 
             $admin->refresh();
-
-
-
-
-
-
-
 
             /*
             |--------------------------------------------------------------------------
@@ -959,26 +873,17 @@ class NewPanApplicationController extends Controller
 
             $application->update([
 
+                'amount' => $panCharge,
 
                 'wallet_deducted' => true,
 
-
                 'wallet_deducted_at' => now(),
 
-
                 'payment_status' => 'Paid',
-
 
                 'status' => 'Processing'
 
             ]);
-
-
-
-
-
-
-
 
             /*
             |--------------------------------------------------------------------------
@@ -988,30 +893,17 @@ class NewPanApplicationController extends Controller
 
             WalletTransaction::create([
 
+                'user_id' => $user->id,
 
-                'user_id' =>
-                    $user->id,
+                'amount' => $panCharge,
 
+                'before_balance' => $retailerBefore,
 
-                'amount' =>
-                    self::PAN_CHARGE,
+                'after_balance' => $user->wallet_balance,
 
+                'type' => 'debit',
 
-                'before_balance' =>
-                    $retailerBefore,
-
-
-                'after_balance' =>
-                    $user->wallet_balance,
-
-
-                'type' =>
-                    'debit',
-
-
-                'status' =>
-                    'success',
-
+                'status' => 'success',
 
                 'transaction_no' =>
 
@@ -1019,20 +911,11 @@ class NewPanApplicationController extends Controller
 
                     . now()->format('YmdHis')
 
-                    . rand(1000,9999),
+                    . rand(1000, 9999),
 
-
-                'remark' =>
-                    'New PAN Application Charge'
+                'remark' => 'New PAN Application Charge'
 
             ]);
-
-
-
-
-
-
-
 
             /*
             |--------------------------------------------------------------------------
@@ -1042,30 +925,17 @@ class NewPanApplicationController extends Controller
 
             WalletTransaction::create([
 
+                'user_id' => $admin->id,
 
-                'user_id' =>
-                    $admin->id,
+                'amount' => $panCharge,
 
+                'before_balance' => $adminBefore,
 
-                'amount' =>
-                    self::PAN_CHARGE,
+                'after_balance' => $admin->wallet_balance,
 
+                'type' => 'credit',
 
-                'before_balance' =>
-                    $adminBefore,
-
-
-                'after_balance' =>
-                    $admin->wallet_balance,
-
-
-                'type' =>
-                    'credit',
-
-
-                'status' =>
-                    'success',
-
+                'status' => 'success',
 
                 'transaction_no' =>
 
@@ -1073,20 +943,11 @@ class NewPanApplicationController extends Controller
 
                     . now()->format('YmdHis')
 
-                    . rand(1000,9999),
+                    . rand(1000, 9999),
 
-
-                'remark' =>
-                    'PAN Application Received Amount'
+                'remark' => 'PAN Application Received Amount'
 
             ]);
-
-
-
-
-
-
-
 
             /*
             |--------------------------------------------------------------------------
@@ -1096,21 +957,13 @@ class NewPanApplicationController extends Controller
 
             DB::commit();
 
-
-
-
-
-
-
             return response()->json([
-
 
                 'status' => true,
 
-
                 'message' =>
-                    'PAN Application Submitted Successfully.',
 
+                    'PAN Application Submitted Successfully.',
 
                 'redirect_url' =>
 
@@ -1124,16 +977,9 @@ class NewPanApplicationController extends Controller
 
             ]);
 
-
-
-
-
         } catch (\Throwable $e) {
 
-
             DB::rollBack();
-
-
 
             Log::error(
 
@@ -1141,36 +987,23 @@ class NewPanApplicationController extends Controller
 
                 [
 
-                    'message' =>
-                        $e->getMessage(),
+                    'message' => $e->getMessage(),
 
+                    'line' => $e->getLine(),
 
-                    'line' =>
-                        $e->getLine(),
-
-
-                    'file' =>
-                        $e->getFile()
+                    'file' => $e->getFile()
 
                 ]
 
             );
 
-
-
-
             return response()->json([
-
 
                 'status' => false,
 
+                'message' => $e->getMessage()
 
-                'message' =>
-                    $e->getMessage()
-
-
-            ],500);
-
+            ], 500);
         }
     }
     

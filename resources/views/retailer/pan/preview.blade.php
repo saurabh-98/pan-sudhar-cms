@@ -30,7 +30,7 @@
             <span class="badge bg-warning text-dark fs-6 px-4 py-3 rounded-pill">
 
                 Service Charge :
-                ₹150
+                ₹{{ number_format($panCharge, 2) }}
 
             </span>
 
@@ -785,7 +785,7 @@
 
                         </strong>
 
-                        ₹{{ number_format(auth()->user()->wallet_balance,2) }}
+                        ₹{{ number_format(auth()->user()->wallet_balance, 2) }}
 
                     </div>
 
@@ -797,11 +797,57 @@
 
                         </strong>
 
-                        ₹150
+                        ₹{{ number_format($panCharge, 2) }}
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+
+                            Balance After Deduction :
+
+                        </strong>
+
+                        ₹{{ number_format(auth()->user()->wallet_balance - $panCharge, 2) }}
 
                     </div>
 
                 </div>
+
+                @if(auth()->user()->wallet_balance < $panCharge)
+
+                    <div class="alert alert-danger mt-3 mb-0">
+
+                        <i class="fa fa-exclamation-triangle me-2"></i>
+
+                        Insufficient wallet balance.
+
+                        Required:
+                        ₹{{ number_format($panCharge, 2) }}
+
+                        |
+
+                        Available:
+                        ₹{{ number_format(auth()->user()->wallet_balance, 2) }}
+
+                        |
+
+                        Please recharge your wallet before proceeding.
+
+                    </div>
+
+                @else
+
+                    <div class="alert alert-success mt-3 mb-0">
+
+                        <i class="fa fa-check-circle me-2"></i>
+
+                        Sufficient wallet balance available for PAN application.
+
+                    </div>
+
+                @endif
 
             </div>
 
@@ -829,7 +875,7 @@
 
                     @endforeach
 
-                    <button
+                  <button
                         type="submit"
                         class="btn btn-light btn-lg px-5">
 
@@ -839,14 +885,15 @@
 
                 </form>
 
-                <button
-                    type="button"
-                    class="btn btn-primary btn-lg px-5"
-                    id="final-submit-btn">
+                  <button
+                        type="button"
+                        class="btn btn-primary btn-lg px-5"
+                        id="final-submit-btn"
+                        {{ auth()->user()->wallet_balance < $panCharge ? 'disabled' : '' }}>
 
-                    Final Submit
+                        Final Submit
 
-                </button>
+                    </button>
 
             </div>
 

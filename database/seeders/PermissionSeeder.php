@@ -226,6 +226,16 @@ class PermissionSeeder extends Seeder
             'retailer-approval.approve',
             'retailer-approval.reject',
 
+            'modules.view',
+            'modules.create',
+            'modules.edit',
+            'modules.delete',
+
+            'charges.view',
+            'charges.create',
+            'charges.edit',
+            'charges.delete'
+
         ];
 
         /*

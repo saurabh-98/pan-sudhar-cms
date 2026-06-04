@@ -158,88 +158,101 @@ class StorePanApplicationRequest extends FormRequest
                 'required|in:Signature,Thumb Impression',
 
             /*
-            |--------------------------------------------------------------------------
-            | FILES
-            |--------------------------------------------------------------------------
-            */
+        |--------------------------------------------------------------------------
+        | FILES
+        |--------------------------------------------------------------------------
+        */
 
-            'photo' => [
+        'photo' => [
 
-                Rule::requiredIf(
+            Rule::requiredIf(
+                empty($this->existing_files['photo'])
+            ),
 
-                    empty(
-                        $this->existing_files['photo']
-                    )
+            'nullable',
+            'file',
+            'image',
+            'mimes:jpg,jpeg,png',
+            'max:5120',
+        ],
 
-                ),
+        'signature' => [
 
-                'nullable',
+            Rule::requiredIf(
+                empty($this->existing_files['signature'])
+            ),
 
-                'image',
+            'nullable',
+            'file',
+            'image',
+            'mimes:jpg,jpeg,png',
+            'max:5120',
+        ],
 
-                'mimes:jpg,jpeg,png',
+        'aadhaar_card' => [
 
-                'max:5120'   // 5 MB
+            Rule::requiredIf(
+                empty($this->existing_files['aadhaar_card'])
+            ),
 
-            ],
+            'nullable',
+            'file',
+            'mimes:jpg,jpeg,png,pdf',
+            'max:5120',
+        ],
 
-            'signature' => [
+        'dob_proof_file' => [
 
-                Rule::requiredIf(
+            'nullable',
+            'file',
+            'mimes:jpg,jpeg,png,pdf',
+            'max:5120',
+        ],
 
-                    empty(
-                        $this->existing_files['signature']
-                    )
+        'supporting_document' => [
 
-                ),
+            'nullable',
+            'file',
+            'mimes:jpg,jpeg,png,pdf',
+            'max:5120',
+        ],
 
-                'nullable',
+        ];
+    }
 
-                'image',
+    public function messages(): array
+    {
+        return [
 
-                'mimes:jpg,jpeg,png',
+            'photo.max' =>
+                'Applicant Photo must not exceed 5 MB.',
 
-                 'max:5120'   // 5 MB
-            ],
+            'signature.max' =>
+                'Signature must not exceed 5 MB.',
 
-            'aadhaar_card' => [
+            'aadhaar_card.max' =>
+                'Aadhaar Card must not exceed 5 MB.',
 
-                Rule::requiredIf(
+            'dob_proof_file.max' =>
+                'DOB Proof must not exceed 5 MB.',
 
-                    empty(
-                        $this->existing_files['aadhaar_card']
-                    )
+            'supporting_document.max' =>
+                'Supporting Document must not exceed 5 MB.',
 
-                ),
+            'photo.mimes' =>
+                'Photo must be JPG, JPEG or PNG.',
 
-                'nullable',
+            'signature.mimes' =>
+                'Signature must be JPG, JPEG or PNG.',
 
-                'mimes:jpg,jpeg,png,pdf',
+            'aadhaar_card.mimes' =>
+                'Aadhaar Card must be JPG, PNG or PDF.',
 
-                'max:5120'   // 5 MB
+            'dob_proof_file.mimes' =>
+                'DOB Proof must be JPG, PNG or PDF.',
 
-            ],
-
-
-            'dob_proof_file' => [
-
-
-                'nullable',
-
-                'mimes:jpg,jpeg,png,pdf',
-
-                'max:5120'   // 5 MB
-            ],
-
-            'supporting_document' => [
-
-                'nullable',
-
-                'mimes:jpg,jpeg,png,pdf',
-
-                'max:5120'   // 5 MB
-            ],
-
+            'supporting_document.mimes' =>
+                'Supporting Document must be JPG, PNG or PDF.',
         ];
     }
 }

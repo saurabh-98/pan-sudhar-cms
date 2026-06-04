@@ -913,309 +913,231 @@
             </div>
 
 
-                   {{-- STEP 8 DOCUMENTS --}}
+              {{-- STEP 8 DOCUMENTS --}}
 
-                    @php
+                @php
 
-                        function cloudFileExtension($file)
-                        {
-                            if (!$file) {
-                                return null;
-                            }
+                $documents = [
 
-                            /*
-                            |--------------------------------------------------------------------------
-                            | LOCAL FILE
-                            |--------------------------------------------------------------------------
-                            */
+                [
+                    'title' => 'Applicant Photo',
+                    'name' => 'photo',
+                    'icon' => 'fa-camera',
+                    'text' => 'JPG / PNG (Max 5 MB)',
+                    'accept' => '.jpg,.jpeg,.png',
+                    'max_size' => 5120
+                ],
 
-                            $ext = strtolower(
-                                pathinfo(
-                                    $file,
-                                    PATHINFO_EXTENSION
-                                )
-                            );
+                [
+                    'title' => 'Signature',
+                    'name' => 'signature',
+                    'icon' => 'fa-signature',
+                    'text' => 'JPG / PNG (Max 5 MB)',
+                    'accept' => '.jpg,.jpeg,.png',
+                    'max_size' => 5120
+                ],
 
-                            if (!empty($ext)) {
-                                return $ext;
-                            }
+                [
+                    'title' => 'Aadhaar Card',
+                    'name' => 'aadhaar_card',
+                    'icon' => 'fa-id-card',
+                    'text' => 'JPG / PNG / PDF (Max 5 MB)',
+                    'accept' => '.jpg,.jpeg,.png,.pdf',
+                    'max_size' => 5120
+                ],
 
-                            /*
-                            |--------------------------------------------------------------------------
-                            | CLOUDINARY URL
-                            |--------------------------------------------------------------------------
-                            */
+                [
+                    'title' => 'DOB Proof',
+                    'name' => 'dob_proof_file',
+                    'icon' => 'fa-calendar-days',
+                    'text' => 'JPG / PNG / PDF (Max 5 MB)',
+                    'accept' => '.jpg,.jpeg,.png,.pdf',
+                    'max_size' => 5120
+                ],
 
-                            $url = file_url($file);
-
-                            if (!$url) {
-                                return null;
-                            }
-
-                            /*
-                            |--------------------------------------------------------------------------
-                            | PDF UPLOADED AS RAW
-                            |--------------------------------------------------------------------------
-                            */
-
-                            if (
-                                str_contains(
-                                    strtolower($url),
-                                    '/raw/upload/'
-                                )
-                            ) {
-                                return 'pdf';
-                            }
-
-                            /*
-                            |--------------------------------------------------------------------------
-                            | IMAGE
-                            |--------------------------------------------------------------------------
-                            */
-
-                            return 'jpg';
-                        }
+                [
+                    'title' => 'Supporting Document',
+                    'name' => 'supporting_document',
+                    'icon' => 'fa-file-circle-plus',
+                    'text' => 'JPG / PNG / PDF (Max 5 MB)',
+                    'accept' => '.jpg,.jpeg,.png,.pdf',
+                    'max_size' => 5120
+                ]
 
 
-                        $documents = [
+                ];
 
-                            [
-                                'title' => 'Applicant Photo',
-                                'name'  => 'photo',
-                                'icon'  => 'fa-camera',
-                                'text'  => 'JPG / PNG',
-                                'accept'=> '.jpg,.jpeg,.png'
-                            ],
+                @endphp
 
-                            [
-                                'title' => 'Signature',
-                                'name'  => 'signature',
-                                'icon'  => 'fa-signature',
-                                'text'  => 'JPG / PNG',
-                                'accept'=> '.jpg,.jpeg,.png'
-                            ],
-
-                            [
-                                'title' => 'Aadhaar Card',
-                                'name'  => 'aadhaar_card',
-                                'icon'  => 'fa-id-card',
-                                'text'  => 'Upload Front + Back in Single File',
-                                'accept'=> '.jpg,.jpeg,.png,.pdf'
-                            ],
-
-                            [
-                                'title' => 'DOB Proof',
-                                'name'  => 'dob_proof_file',
-                                'icon'  => 'fa-calendar-days',
-                                'text'  => 'JPG / PDF',
-                                'accept'=> '.jpg,.jpeg,.png,.pdf'
-                            ],
-
-                            [
-                                'title' => 'Supporting Document',
-                                'name'  => 'supporting_document',
-                                'icon'  => 'fa-file-circle-plus',
-                                'text'  => 'JPG / PDF',
-                                'accept'=> '.jpg,.jpeg,.png,.pdf'
-                            ]
-
-                        ];
-
-                    @endphp
+                <div class="pan-step-card">
 
 
-                    <div class="pan-step-card">
+                    <div class="step-heading">
 
-                        <div class="step-heading">
+                        <div class="step-left">
 
-                            <div class="step-left">
+                            <div class="step-number">
+                                8
+                            </div>
 
-                                <div class="step-number">
-                                    8
-                                </div>
+                            <div>
 
-                                <div>
+                                <h4>
+                                    Upload Documents
+                                </h4>
 
-                                    <h4>
-                                        Upload Documents
-                                    </h4>
-
-                                    <p>
-                                        Upload all mandatory PAN application documents
-                                    </p>
-
-                                </div>
+                                <p>
+                                    Upload all mandatory PAN application documents
+                                </p>
 
                             </div>
 
                         </div>
 
+                    </div>
 
-                        <div class="row g-4">
+                    <div class="row g-4">
 
-                            @foreach($documents as $doc)
+                        @foreach($documents as $doc)
 
-                                @php
+                            @php
 
-                                    $file =
-                                        $files[$doc['name']]
-                                        ??
-                                        null;
+                                $file =
+                                    $files[$doc['name']]
+                                    ??
+                                    null;
 
-                                    $exists =
-                                        !empty($file)
-                                        &&
-                                        file_exists_custom($file);
+                                $exists =
+                                    !empty($file)
+                                    &&
+                                    file_exists_custom($file);
 
-                                    $ext =
-                                        $exists
-                                        ?
-                                        cloudFileExtension($file)
-                                        :
-                                        null;
+                            @endphp
 
-                                    $isPdf =
-                                        $ext === 'pdf';
+                            <div class="col-lg-3 col-md-6">
 
-                                @endphp
+                                <div class="upload-wrapper">
 
+                                    <label class="upload-box">
 
-                                <div class="col-lg-3 col-md-6">
+                                        <input
+                                            type="file"
+                                            name="{{ $doc['name'] }}"
+                                            class="document-input d-none"
+                                            accept="{{ $doc['accept'] }}"
+                                            data-max-size="{{ $doc['max_size'] * 1024 }}"
+                                        >
 
-                                    <div class="upload-wrapper">
+                                        <div class="upload-preview">
 
-                                        <label class="upload-box">
+                                            @if($exists)
 
-                                            <input
-                                                type="file"
-                                                name="{{ $doc['name'] }}"
-                                                class="document-input d-none"
-                                                accept="{{ $doc['accept'] }}"
-                                            >
+                                                @if(
+                                                    str_contains(
+                                                        strtolower(file_url($file)),
+                                                        '.pdf'
+                                                    )
+                                                )
 
-                                            <div class="upload-preview">
-
-                                                @if($exists)
-
-                                                    @if($isPdf)
-
-                                                        <a
-                                                            href="{{ file_url($file) }}"
-                                                            target="_blank"
-                                                        >
-
-                                                            <img
-                                                                src="{{ asset('assets/images/pdf-icon.png') }}"
-                                                                class="preview-image"
-                                                                alt="PDF Document"
-                                                            >
-
-                                                        </a>
-
-                                                    @else
+                                                    <a
+                                                        href="{{ file_url($file) }}"
+                                                        target="_blank"
+                                                    >
 
                                                         <img
-                                                            src="{{ file_url($file) }}"
+                                                             src="https://cdn-icons-png.flaticon.com/512/337/337946.png"
                                                             class="preview-image"
-                                                            alt="{{ $doc['title'] }}"
-                                                            loading="lazy"
-                                                            onerror="
-                                                                this.onerror=null;
-                                                                this.src='{{ asset('assets/images/no-image.png') }}';
-                                                            "
+                                                            alt="PDF"
                                                         >
 
-                                                    @endif
+                                                    </a>
 
                                                 @else
 
                                                     <img
-                                                        class="preview-image d-none"
+                                                        src="{{ file_url($file) }}"
+                                                        class="preview-image"
                                                         alt="{{ $doc['title'] }}"
                                                     >
 
                                                 @endif
 
+                                            @else
 
-                                                <div class="default-upload {{ $exists ? 'd-none' : '' }}">
+                                                <img
+                                                    class="preview-image d-none"
+                                                    alt="{{ $doc['title'] }}"
+                                                >
 
-                                                    <div class="upload-icon">
+                                            @endif
 
-                                                        <i class="fa {{ $doc['icon'] }}"></i>
+                                            <div class="default-upload {{ $exists ? 'd-none' : '' }}">
 
-                                                    </div>
-
-                                                    <h5>
-
-                                                        {{ $doc['title'] }}
-
-                                                    </h5>
-
-                                                    <p>
-
-                                                        {{ $doc['text'] }}
-
-                                                    </p>
-
+                                                <div class="upload-icon">
+                                                    <i class="fa {{ $doc['icon'] }}"></i>
                                                 </div>
+
+                                                <h5>
+                                                    {{ $doc['title'] }}
+                                                </h5>
+
+                                                <p>
+                                                    {{ $doc['text'] }}
+                                                </p>
 
                                             </div>
 
-                                        </label>
-
-
-                                        <div class="file-details {{ $exists ? '' : 'd-none' }}">
-
-                                            <span class="file-name">
-
-                                                {{ $exists ? basename(parse_url(file_url($file), PHP_URL_PATH)) : '' }}
-
-                                            </span>
-
-                                            <button
-                                                type="button"
-                                                class="remove-file-btn"
-                                            >
-                                                <i class="fa fa-times"></i>
-                                            </button>
-
                                         </div>
+
+                                    </label>
+
+                                    <div class="file-details {{ $exists ? '' : 'd-none' }}">
+
+                                        <span class="file-name">
+                                            {{ $exists ? basename(parse_url(file_url($file), PHP_URL_PATH)) : '' }}
+                                        </span>
+
+                                        <span class="file-size text-muted small"></span>
+
+                                        <button
+                                            type="button"
+                                            class="remove-file-btn"
+                                        >
+                                            <i class="fa fa-times"></i>
+                                        </button>
 
                                     </div>
 
+                                    <div class="file-error text-danger small mt-2"></div>
+
                                 </div>
 
-                            @endforeach
+                            </div>
 
+                        @endforeach
 
+                        @foreach($documents as $doc)
 
-                            {{-- EXISTING FILES --}}
+                            @if(
+                                !empty($files[$doc['name']])
+                                &&
+                                file_exists_custom($files[$doc['name']])
+                            )
 
-                            @foreach($documents as $doc)
+                                <input
+                                    type="hidden"
+                                    name="existing_files[{{ $doc['name'] }}]"
+                                    value="{{ $files[$doc['name']] }}"
+                                >
 
-                                @php
-                                    $field = $doc['name'];
-                                @endphp
+                            @endif
 
-                                @if(
-                                    !empty($files[$field])
-                                    &&
-                                    file_exists_custom($files[$field])
-                                )
-
-                                    <input
-                                        type="hidden"
-                                        name="existing_files[{{ $field }}]"
-                                        value="{{ $files[$field] }}"
-                                    >
-
-                                @endif
-
-                            @endforeach
-
-                        </div>
+                        @endforeach
 
                     </div>
+
+
+                </div>
 
                     {{-- PREVIEW BUTTON --}}
 
@@ -1502,13 +1424,8 @@ $(document).ready(function () {
 
     });
 
-    /*
-    |--------------------------------------------------------------------------
-    | FILE PREVIEW
-    |--------------------------------------------------------------------------
-    */
-
     $('.document-input').change(function () {
+
 
         let file = this.files[0];
 
@@ -1517,23 +1434,31 @@ $(document).ready(function () {
         }
 
         let wrapper =
-        $(this).closest('.upload-wrapper');
+            $(this).closest('.upload-wrapper');
 
         let previewImage =
-        wrapper.find('.preview-image');
+            wrapper.find('.preview-image');
 
         let fileDetails =
-        wrapper.find('.file-details');
+            wrapper.find('.file-details');
 
         let fileName =
-        wrapper.find('.file-name');
+            wrapper.find('.file-name');
+
+        let fileSize =
+            wrapper.find('.file-size');
 
         let defaultUpload =
-        wrapper.find('.default-upload');
+            wrapper.find('.default-upload');
+
+        let errorBox =
+            wrapper.find('.file-error');
+
+        errorBox.html('');
 
         /*
         |--------------------------------------------------------------------------
-        | VALID TYPES
+        | FILE TYPE VALIDATION
         |--------------------------------------------------------------------------
         */
 
@@ -1547,16 +1472,9 @@ $(document).ready(function () {
 
         if (!allowedTypes.includes(file.type)) {
 
-            Swal.fire({
-
-                icon: 'error',
-
-                title: 'Invalid File',
-
-                text:
-                'Only JPG, PNG and PDF allowed.'
-
-            });
+            errorBox.html(
+                'Only JPG, PNG and PDF files are allowed'
+            );
 
             $(this).val('');
 
@@ -1565,22 +1483,15 @@ $(document).ready(function () {
 
         /*
         |--------------------------------------------------------------------------
-        | FILE SIZE
+        | FILE SIZE VALIDATION
         |--------------------------------------------------------------------------
         */
 
-        if (file.size > 4194304) {
+        if (file.size > 5242880) {
 
-            Swal.fire({
-
-                icon: 'error',
-
-                title: 'Large File',
-
-                text:
-                'Maximum file size is 4MB.'
-
-            });
+            errorBox.html(
+                'File size must not exceed 5 MB'
+            );
 
             $(this).val('');
 
@@ -1589,24 +1500,43 @@ $(document).ready(function () {
 
         /*
         |--------------------------------------------------------------------------
-        | FILE NAME
+        | FILE DETAILS
         |--------------------------------------------------------------------------
         */
 
         fileName.text(file.name);
 
+        fileSize.text(
+            '(' +
+            (file.size / 1024 / 1024).toFixed(2) +
+            ' MB)'
+        );
+
         fileDetails.removeClass('d-none');
 
         /*
         |--------------------------------------------------------------------------
-        | IMAGE PREVIEW
+        | PREVIEW
         |--------------------------------------------------------------------------
         */
 
-        if (file.type !== 'application/pdf') {
+        if (file.type === 'application/pdf') {
+
+            previewImage
+
+            .attr(
+                'src',
+                'https://cdn-icons-png.flaticon.com/512/337/337946.png'
+            )
+
+            .removeClass('d-none');
+
+            defaultUpload.addClass('d-none');
+
+        } else {
 
             let reader =
-            new FileReader();
+                new FileReader();
 
             reader.onload =
             function (e) {
@@ -1622,31 +1552,14 @@ $(document).ready(function () {
 
                 defaultUpload
                 .addClass('d-none');
-
             };
 
             reader.readAsDataURL(file);
-
-        } else {
-
-            previewImage
-
-            .attr(
-
-                'src',
-
-                'https://cdn-icons-png.flaticon.com/512/337/337946.png'
-
-            )
-
-            .removeClass('d-none');
-
-            defaultUpload
-            .addClass('d-none');
-
         }
 
-    });
+
+        });
+
 
     /*
     |--------------------------------------------------------------------------
@@ -2000,4 +1913,5 @@ $(document).ready(function () {
 });
 
 </script>
+
 @endsection

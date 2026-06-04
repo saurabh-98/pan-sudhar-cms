@@ -412,306 +412,6 @@
 
 
 
-
-                        <!-- =========================================================
-                        | PREVIEW SECTION
-                        ========================================================= -->
-
-                        <div
-                            id="previewSection"
-                            style="display:none;"
-                        >
-
-                            <div class="preview-main-card">
-
-
-
-                                <!-- HEADER -->
-
-                                <div class="preview-header">
-
-                                    <div>
-
-                                        <h3>
-
-                                            Review Your Submission
-
-                                        </h3>
-
-                                        <p>
-
-                                            Verify all uploaded information before final payment.
-
-                                        </p>
-
-                                    </div>
-
-                                    <div class="preview-badge">
-
-                                        <i class="fas fa-shield-check"></i>
-
-                                        Secure Submission
-
-                                    </div>
-
-                                </div>
-
-
-
-
-                                <!-- =========================================================
-                                | USER DETAILS
-                                ========================================================= -->
-
-                                <div class="preview-user-box">
-
-                                    <div class="preview-user-item">
-
-                                        <span>
-                                            Full Name
-                                        </span>
-
-                                        <strong
-                                            id="preview_name"
-                                        ></strong>
-
-                                    </div>
-
-                                    <div class="preview-user-item">
-
-                                        <span>
-                                            Mobile Number
-                                        </span>
-
-                                        <strong
-                                            id="preview_mobile"
-                                        ></strong>
-
-                                    </div>
-
-                                    <div class="preview-user-item">
-
-                                        <span>
-                                            Email Address
-                                        </span>
-
-                                        <strong
-                                            id="preview_email"
-                                        ></strong>
-
-                                    </div>
-
-                                    <div class="preview-user-item">
-
-                                        <span>
-                                            Remarks
-                                        </span>
-
-                                        <strong
-                                            id="preview_remarks"
-                                        ></strong>
-
-                                    </div>
-
-                                </div>
-
-
-
-
-                                <!-- =========================================================
-                                | DOCUMENTS
-                                ========================================================= -->
-
-                                <div class="row mt-4">
-
-
-
-                                    <!-- AADHAAR FRONT -->
-
-                                    <div class="col-lg-4 mb-4">
-
-                                        <div class="preview-document-card">
-
-                                            <div class="preview-title">
-
-                                                Aadhaar Front
-
-                                            </div>
-
-                                            <div
-                                                id="preview_aadhaar_front"
-                                            ></div>
-
-                                        </div>
-
-                                    </div>
-
-
-
-
-                                    <!-- AADHAAR BACK -->
-
-                                    <div class="col-lg-4 mb-4">
-
-                                        <div class="preview-document-card">
-
-                                            <div class="preview-title">
-
-                                                Aadhaar Back
-
-                                            </div>
-
-                                            <div
-                                                id="preview_aadhaar_back"
-                                            ></div>
-
-                                        </div>
-
-                                    </div>
-
-
-
-
-                                    <!-- PAN -->
-
-                                    <div class="col-lg-4 mb-4">
-
-                                        <div class="preview-document-card">
-
-                                            <div class="preview-title">
-
-                                                PAN Card
-
-                                            </div>
-
-                                            <div
-                                                id="preview_pan_card"
-                                            ></div>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-
-
-
-                                <!-- =========================================================
-                                | PAYMENT SUMMARY
-                                ========================================================= -->
-
-                                <div class="payment-summary-box">
-
-                                    <!-- LEFT -->
-
-                                    <div class="payment-left">
-
-                                        <div class="payment-icon">
-
-                                            <i class="fas fa-credit-card"></i>
-
-                                        </div>
-
-                                        <div>
-
-                                            <h5>
-
-                                                ITR Filing Charges
-
-                                            </h5>
-
-                                            <p>
-
-                                                Charges will deduct automatically after successful submission.
-
-                                            </p>
-
-                                        </div>
-
-                                    </div>
-
-
-
-                                    <!-- RIGHT -->
-
-                                    <div class="payment-right">
-
-                                        <div class="payment-item">
-
-                                            <span>
-                                                Filing Charge
-                                            </span>
-
-                                            <strong>
-                                                ₹99
-                                            </strong>
-
-                                        </div>
-
-                                        <div class="payment-item total">
-
-                                            <span>
-                                                Total Payable
-                                            </span>
-
-                                            <strong>
-                                                ₹99
-                                            </strong>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-
-
-                                <!-- =========================================================
-                                | ACTION BUTTONS
-                                ========================================================= -->
-
-                                <div class="preview-actions">
-
-                                    <button
-                                        type="button"
-                                        class="back-btn"
-                                        id="backBtn"
-                                    >
-
-                                        <i class="fas fa-arrow-left"></i>
-
-                                        Back
-
-                                    </button>
-
-
-
-                                    <button
-                                        type="button"
-                                        class="submit-btn"
-                                        id="finalSubmitBtn"
-                                    >
-
-                                        <span class="btn-text">
-
-                                            Final Submit
-
-                                        </span>
-
-                                        <span
-                                            class="spinner-border spinner-border-sm d-none"
-                                            id="btnLoader"
-                                        ></span>
-
-                                    </button>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
                     </div>
 
                 </div>
@@ -1192,397 +892,108 @@ $(document).ready(function(){
         validateEmail
     );
 
-
-
-
-    /* =========================================================
-    | PREVIEW BUTTON
-    ========================================================= */
-
     $('#submitBtn').click(function(e){
 
-        e.preventDefault();
+    e.preventDefault();
 
-        let valid = true;
+    let valid = true;
 
+    if(!validateFile(document.getElementById('aadhaar_front'))){
+        valid = false;
+    }
 
+    if(!validateFile(document.getElementById('aadhaar_back'))){
+        valid = false;
+    }
 
-        if(!validateFile(
-            document.getElementById(
-                'aadhaar_front'
-            )
-        )){
-            valid = false;
-        }
+    if(!validateFile(document.getElementById('pan_card'))){
+        valid = false;
+    }
 
-        if(!validateFile(
-            document.getElementById(
-                'aadhaar_back'
-            )
-        )){
-            valid = false;
-        }
+    if(!validateName()){
+        valid = false;
+    }
 
-        if(!validateFile(
-            document.getElementById(
-                'pan_card'
-            )
-        )){
-            valid = false;
-        }
+    if(!validateMobile()){
+        valid = false;
+    }
 
-        if(!validateName()){
-            valid = false;
-        }
+    if(!validateEmail()){
+        valid = false;
+    }
 
-        if(!validateMobile()){
-            valid = false;
-        }
+    if(!valid){
 
-        if(!validateEmail()){
-            valid = false;
-        }
+        Swal.fire({
 
+            icon:'error',
 
+            title:'Validation Error',
 
-        // STOP IF INVALID
+            text:'Please fix all required fields.'
 
-        if(!valid){
+        });
+
+        return false;
+    }
+
+    let formData =
+        new FormData(
+            $('#itrUploadForm')[0]
+        );
+
+    let button = $(this);
+
+    button.prop('disabled', true);
+
+    $.ajax({
+
+        url:
+        "{{ route('retailer.itr.preview') }}",
+
+        type:'POST',
+
+        data:formData,
+
+        processData:false,
+
+        contentType:false,
+
+        success:function(response){
+
+            if(response.status){
+
+                window.location.href =
+                    response.redirect_url;
+            }
+
+        },
+
+        error:function(xhr){
+
+            button.prop(
+                'disabled',
+                false
+            );
 
             Swal.fire({
 
                 icon:'error',
 
-                title:'Validation Error',
+                title:'Error',
 
-                text:'Please fix all required fields.'
+                text:
+                xhr.responseJSON?.message
+                ??
+                'Something went wrong.'
 
             });
 
-            return false;
-
         }
-
-
-
-        // STEP CHANGE
-
-        $('#stepUpload')
-        .removeClass('active');
-
-        $('#stepPreview')
-        .addClass('active');
-
-
-
-        $('#formSection').hide();
-
-        $('#previewSection').fadeIn();
-
-
-
-
-        // USER DETAILS
-
-        $('#preview_name').text(
-
-            $('input[name="name"]').val()
-
-        );
-
-
-        $('#preview_mobile').text(
-            $('input[name="mobile"]').val()
-        );
-        
-        $('#preview_email').text(
-
-            $('input[name="email"]').val()
-
-        );
-
-
-
-        $('#preview_remarks').text(
-
-            $('textarea[name="remarks"]').val()
-            || 'N/A'
-
-        );
-
-
-
-
-        // DOCUMENT PREVIEW
-
-        generatePreview(
-            '#aadhaar_front',
-            '#preview_aadhaar_front'
-        );
-
-
-
-        generatePreview(
-            '#aadhaar_back',
-            '#preview_aadhaar_back'
-        );
-
-
-
-        generatePreview(
-            '#pan_card',
-            '#preview_pan_card'
-        );
 
     });
 
-
-
-
-    /* =========================================================
-    | GENERATE PREVIEW
-    ========================================================= */
-
-    function generatePreview(inputId, target){
-
-        const file =
-        $(inputId)[0].files[0];
-
-        if(!file) return;
-
-        const type = file.type;
-
-
-
-        // IMAGE
-
-        if(type.startsWith('image/')){
-
-            const reader =
-            new FileReader();
-
-            reader.onload =
-            function(e){
-
-                $(target).html(`
-
-                    <img
-                        src="${e.target.result}"
-                        class="preview-image"
-                    >
-
-                `);
-
-            }
-
-            reader.readAsDataURL(file);
-
-        }
-
-
-
-        // PDF
-
-        else{
-
-            $(target).html(`
-
-                <div class="pdf-preview-card">
-
-                    <i class="fas fa-file-pdf"></i>
-
-                    <span>
-                        ${file.name}
-                    </span>
-
-                </div>
-
-            `);
-
-        }
-
-    }
-
-
-
-
-    /* =========================================================
-    | BACK BUTTON
-    ========================================================= */
-
-    $('#backBtn').click(function(){
-
-        $('#previewSection').hide();
-
-        $('#formSection').fadeIn();
-
-        $('#stepPreview')
-        .removeClass('active');
-
-        $('#stepUpload')
-        .addClass('active');
-
-    });
-
-
-
-
-    /* =========================================================
-    | FINAL SUBMIT
-    ========================================================= */
-
-    $('#finalSubmitBtn').click(function(){
-
-        Swal.fire({
-
-            title:'Confirm Final Submission?',
-
-            html:
-            `
-                <div>
-
-                    <p>
-                        ₹99 will deduct from wallet.
-                    </p>
-
-                    <strong>
-                        Continue submission?
-                    </strong>
-
-                </div>
-            `,
-
-            icon:'warning',
-
-            showCancelButton:true,
-
-            confirmButtonText:'Yes Submit',
-
-            confirmButtonColor:'#2563eb',
-
-            cancelButtonColor:'#ef4444'
-
-        }).then((result)=>{
-
-            if(result.isConfirmed){
-
-                let formData =
-                new FormData(
-                    $('#itrUploadForm')[0]
-                );
-
-                $('#finalSubmitBtn')
-                .prop('disabled', true);
-
-                $('#btnLoader')
-                .removeClass('d-none');
-
-
-
-                $.ajax({
-
-                    url:
-                    "{{ route('retailer.itr.store') }}",
-
-                    type:"POST",
-
-                    data:formData,
-
-                    processData:false,
-
-                    contentType:false,
-
-
-
-                    success:function(response){
-
-                        $('#finalSubmitBtn')
-                        .prop('disabled', false);
-
-                        $('#btnLoader')
-                        .addClass('d-none');
-
-
-
-                        Swal.fire({
-
-                            icon:'success',
-
-                            title:'Success',
-
-                            html:
-                            `
-                                <div>
-
-                                    <p>
-                                        ${response.message}
-                                    </p>
-
-                                    <strong>
-                                        ₹99 deducted successfully
-                                    </strong>
-
-                                </div>
-                            `,
-
-                            confirmButtonColor:'#2563eb'
-
-                        });
-
-
-
-                        // RESET
-
-                        $('#itrUploadForm')[0]
-                        .reset();
-
-                        $('.preview-box').html('');
-
-                        $('#previewSection').hide();
-
-                        $('#formSection').show();
-
-                        $('#stepPreview')
-                        .removeClass('active');
-
-                        $('#stepUpload')
-                        .addClass('active');
-
-                    },
-
-
-
-                    error:function(xhr){
-
-                        $('#finalSubmitBtn')
-                        .prop('disabled', false);
-
-                        $('#btnLoader')
-                        .addClass('d-none');
-
-
-
-                        Swal.fire({
-
-                            icon:'error',
-
-                            title:'Submission Failed',
-
-                            text:
-                            xhr.responseJSON.message ??
-                            'Something went wrong.'
-
-                        });
-
-                    }
-
-                });
-
-            }
-
-        });
-
-    });
+});
 
 });
 

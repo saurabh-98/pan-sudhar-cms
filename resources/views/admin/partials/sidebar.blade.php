@@ -429,318 +429,60 @@
 
 
 
-        {{-- =====================================================
-        | HR & PAYROLL
-        ====================================================== --}}
-        @if(
-            auth()->user()->can('departments.view') ||
-            auth()->user()->can('designations.view') ||
-            auth()->user()->can('employees.view') ||
-            auth()->user()->can('employee-attendance.view') ||
-            auth()->user()->can('payroll.view') ||
-            auth()->user()->can('payslip.view')
-        )
-
-        <li class="sbx-section">
-
-            HR & Payroll
-
-        </li>
-
-        <li class="sbx-group">
-
-            <ul class="sbx-submenu">
-
-                @can('departments.view')
-
-                <li>
-
-                    <a href="{{ route('admin.departments.index') }}"
-                       class="sbx-link
-                       {{ request()->routeIs('admin.departments.*')
-                            ? 'sbx-active' : '' }}">
-
-                        <i class="fa fa-building"></i>
-
-                        <span>
-
-                            Departments
-
-                        </span>
-
-                    </a>
-
-                </li>
-
-                @endcan
-
-                @can('designations.view')
-
-                <li>
-
-                    <a href="{{ route('admin.designations.index') }}"
-                       class="sbx-link
-                       {{ request()->routeIs('admin.designations.*')
-                            ? 'sbx-active' : '' }}">
-
-                        <i class="fa fa-user-tag"></i>
-
-                        <span>
-
-                            Designations
-
-                        </span>
-
-                    </a>
-
-                </li>
-
-                @endcan
-
-                @can('employees.view')
-
-                <li>
-
-                    <a href="{{ route('admin.employees.index') }}"
-                       class="sbx-link
-                       {{ request()->routeIs('admin.employees.*')
-                            ? 'sbx-active' : '' }}">
-
-                        <i class="fa fa-users"></i>
-
-                        <span>
-
-                            Employees
-
-                        </span>
-
-                    </a>
-
-                </li>
-
-                @endcan
-
-                @can('employee-attendance.view')
-
-                <li>
-
-                    <a href="{{ route('admin.employee-attendance.index') }}"
-                       class="sbx-link
-                       {{ request()->routeIs('admin.employee-attendance.*')
-                            ? 'sbx-active' : '' }}">
-
-                        <i class="fa fa-calendar-check"></i>
-
-                        <span>
-
-                            Employee Attendance
-
-                        </span>
-
-                    </a>
-
-                </li>
-
-                @endcan
-
-                @can('payroll.view')
-
-                <li>
-
-                    <a href="{{ route('admin.payroll.index') }}"
-                       class="sbx-link
-                       {{ request()->routeIs('admin.payroll.*')
-                            ? 'sbx-active' : '' }}">
-
-                        <i class="fa fa-money-check"></i>
-
-                        <span>
-
-                            Salary Management
-
-                        </span>
-
-                    </a>
-
-                </li>
-
-                @endcan
-
-                @can('payslip.view')
-
-                <li>
-
-                    <a href="{{ route('admin.payslip.index') }}"
-                       class="sbx-link
-                       {{ request()->routeIs('admin.payslip.*')
-                            ? 'sbx-active' : '' }}">
-
-                        <i class="fa fa-file-invoice"></i>
-
-                        <span>
-
-                            Payslips
-
-                        </span>
-
-                    </a>
-
-                </li>
-
-                @endcan
-
-            </ul>
-
-        </li>
-
-        @endif
-
-
-
-        {{-- =====================================================
-        | COMMUNICATION
-        ====================================================== --}}
-        @if(
-            auth()->user()->can('notice.view') ||
-            auth()->user()->can('messages.view')
-        )
-
-        <li class="sbx-section">
-
-            Communication
-
-        </li>
-
-        <li class="sbx-group">
-
-            <ul class="sbx-submenu">
-
-                @can('notice.view')
-
-                <li>
-
-                    <a href="{{ route('admin.notice.index') }}"
-                       class="sbx-link
-                       {{ request()->routeIs('admin.notice.*')
-                            ? 'sbx-active' : '' }}">
-
-                        <i class="fa fa-bullhorn"></i>
-
-                        <span>
-
-                            Notice Board
-
-                        </span>
-
-                    </a>
-
-                </li>
-
-                @endcan
-
-                @can('messages.view')
-
-                <li>
-
-                    <a href="{{ route('admin.messages.index') }}"
-                       class="sbx-link
-                       {{ request()->routeIs('admin.messages.*')
-                            ? 'sbx-active' : '' }}">
-
-                        <i class="fa fa-envelope"></i>
-
-                        <span>
-
-                            Messages
-
-                        </span>
-
-                    </a>
-
-                </li>
-
-                @endcan
-
-            </ul>
-
-        </li>
-
-        @endif
-
-
-
-
-        {{-- =====================================================
-        | USER MANAGEMENT
-        ====================================================== --}}
-        @if(
-            auth()->user()->can('users.view') ||
-            auth()->user()->can('roles.view')
-        )
-
-        <li class="sbx-section">
-
-            User Management
-
-        </li>
-
-        <li class="sbx-group">
-
-            <ul class="sbx-submenu">
-
-                @can('users.view')
-
-                <li>
-
-                    <a href="{{ route('admin.users.index') }}"
-                       class="sbx-link
-                       {{ request()->routeIs('admin.users.*')
-                            ? 'sbx-active' : '' }}">
-
-                        <i class="fa fa-user-shield"></i>
-
-                        <span>
-
-                            Manage User
-
-                        </span>
-
-                    </a>
-
-                </li>
-
-                @endcan
-
-                @can('roles.view')
-
-                <li>
-
-                    <a href="{{ route('admin.roles.index') }}"
-                       class="sbx-link
-                       {{ request()->routeIs('admin.roles.*')
-                            ? 'sbx-active' : '' }}">
-
-                        <i class="fa fa-user-lock"></i>
-
-                        <span>
-
-                            Roles & Permissions
-
-                        </span>
-
-                    </a>
-
-                </li>
-
-                @endcan
-
-            </ul>
-
-        </li>
-
-        @endif
-
-
+       
+
+
+
+
+      @if(
+                auth()->user()->can('users.view') ||
+                auth()->user()->can('roles.view') ||
+                auth()->user()->can('modules.view')
+            )
+
+            <li class="sbx-section">
+                User Management
+            </li>
+
+            <li class="sbx-group">
+
+                <ul class="sbx-submenu">
+
+                    @can('users.view')
+                    <li>
+                        <a href="{{ route('admin.users.index') }}"
+                        class="sbx-link {{ request()->routeIs('admin.users.*') ? 'sbx-active' : '' }}">
+                            <i class="fa fa-user-shield"></i>
+                            <span>Manage User</span>
+                        </a>
+                    </li>
+                    @endcan
+
+                    @can('roles.view')
+                    <li>
+                        <a href="{{ route('admin.roles.index') }}"
+                        class="sbx-link {{ request()->routeIs('admin.roles.*') ? 'sbx-active' : '' }}">
+                            <i class="fa fa-user-lock"></i>
+                            <span>Roles & Permissions</span>
+                        </a>
+                    </li>
+                    @endcan
+
+                    @can('modules.view')
+                    <li>
+                        <a href="{{ route('admin.modules.index') }}"
+                        class="sbx-link {{ request()->routeIs('admin.modules.*') ? 'sbx-active' : '' }}">
+                            <i class="fa fa-layer-group"></i>
+                            <span>Module Management</span>
+                        </a>
+                    </li>
+                    @endcan
+
+                </ul>
+
+            </li>
+
+            @endif
 
         {{-- =====================================================
         | CMS MANAGEMENT
@@ -860,8 +602,9 @@
         {{-- =====================================================
         | PAYMENT SETTINGS
         ====================================================== --}}
-        @if(
+       @if(
             auth()->user()->can('upi.view') ||
+            auth()->user()->can('charges.view') ||
             auth()->user()->can('footer.view')
         )
 
@@ -889,6 +632,30 @@
                         <span>
 
                             UPI Settings
+
+                        </span>
+
+                    </a>
+
+                </li>
+
+                @endcan
+
+
+                @can('charges.view')
+
+                <li>
+
+                    <a href="{{ route('admin.charges.index') }}"
+                    class="sbx-link
+                    {{ request()->routeIs('admin.charges.*')
+                            ? 'sbx-active' : '' }}">
+
+                        <i class="fa fa-money-bill-wave"></i>
+
+                        <span>
+
+                            Charges Management
 
                         </span>
 

@@ -22,12 +22,12 @@
     <link rel="stylesheet" href="{{ asset('assets/css/footer-admin.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/dashboard-admin.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/gallery-admin.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/admin-approval.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/sidebar-admin.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/header-admin.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/admin-new-pan.css') }}">
-     <link rel="stylesheet" href="{{ asset('assets/css/admin-new-pan-show.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/admin-new-pan-show.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/charges-admin.css') }}">
 
 </head>
 
@@ -360,6 +360,186 @@
             });
 
     });
+</script>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    let sessionMinutes =
+        {{ config('session.lifetime') }};
+
+    let remainingSeconds =
+        sessionMinutes * 60;
+
+    let logoutTriggered = false;
+
+    const countdownEl =
+        document.getElementById(
+            'sessionCountdown'
+        );
+
+    function formatTime(seconds)
+    {
+        let mins =
+            Math.floor(seconds / 60);
+
+        let secs =
+            seconds % 60;
+
+        return String(mins).padStart(2,'0')
+            + ':'
+            + String(secs).padStart(2,'0');
+    }
+
+    function forceLogout()
+    {
+        if(logoutTriggered){
+            return;
+        }
+
+        logoutTriggered = true;
+
+        Swal.fire({
+
+            icon: 'warning',
+
+            title: 'Session Expired',
+
+            text: 'You have been logged out due to inactivity.',
+
+            allowOutsideClick: false,
+
+            allowEscapeKey: false,
+
+            confirmButtonText: 'OK'
+
+        }).then(function(){
+
+            window.location.replace(
+                "{{ route('admin.logout.idle') }}"
+            );
+
+        });
+    }
+
+    function updateCountdown()
+    {
+        if(logoutTriggered){
+            return;
+        }
+
+        if(countdownEl){
+
+            countdownEl.innerHTML =
+                formatTime(
+                    remainingSeconds
+                );
+        }
+
+        if(remainingSeconds === 60){
+
+            Swal.fire({
+
+                toast:true,
+
+                position:'top-end',
+
+                icon:'warning',
+
+                title:'Session will expire in 1 minute',
+
+                timer:5000,
+
+                showConfirmButton:false
+
+            });
+        }
+
+        if(remainingSeconds <= 0){
+
+            forceLogout();
+
+            return;
+        }
+
+        remainingSeconds--;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | RESET TIMER ON ACTIVITY
+    |--------------------------------------------------------------------------
+    */
+
+    function resetSessionTimer()
+    {
+        remainingSeconds =
+            sessionMinutes * 60;
+    }
+
+    [
+        'mousemove',
+        'mousedown',
+        'click',
+        'scroll',
+        'keypress',
+        'touchstart'
+    ].forEach(function(event){
+
+        document.addEventListener(
+            event,
+            resetSessionTimer,
+            true
+        );
+
+    });
+
+    updateCountdown();
+
+    setInterval(
+        updateCountdown,
+        1000
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | DETECT LARAVEL SESSION EXPIRY
+    |--------------------------------------------------------------------------
+    */
+
+    setInterval(function(){
+
+        fetch(
+            "{{ route('admin.dashboard') }}",
+            {
+                method: 'GET',
+                credentials: 'same-origin'
+            }
+        )
+        .then(function(response){
+
+            if (
+                response.redirected ||
+                response.status === 401 ||
+                response.status === 419
+            ) {
+
+                forceLogout();
+
+            }
+
+        })
+        .catch(function(){
+
+            forceLogout();
+
+        });
+
+    }, 30000);
+
+});
+
 </script>
 </body>
 </html>

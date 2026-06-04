@@ -2,18 +2,36 @@
 
 @section('content')
 
+@php
+
+    $heroButtons = collect();
+
+    foreach ($retailerMenus ?? [] as $menu) {
+
+        foreach ($menu->children as $child) {
+
+            if (
+                !empty($child->route_name)
+                &&
+                Route::has($child->route_name)
+            ) {
+
+                $heroButtons->push($child);
+            }
+        }
+    }
+
+    $heroButtons = $heroButtons->take(2);
+
+@endphp
+
 <div class="container-fluid rtd-custom-dashboard">
-
-
 
     {{-- =====================================================
        HERO SECTION
     ====================================================== --}}
     <div class="rtd-hero">
 
-
-
-        {{-- WELCOME CARD --}}
         <div class="rtd-welcome-card">
 
             <h2 class="rtd-welcome-title">
@@ -32,33 +50,37 @@
 
             <div class="rtd-action-group">
 
-                <a href="{{ route('retailer.pan.apply') }}"
-                   class="rtd-action-btn
-                          rtd-action-btn-primary">
+                @forelse($heroButtons as $service)
 
-                    <i class="fa fa-plus-circle"></i>
+                    <a
+                        href="{{ route($service->route_name) }}"
+                        class="rtd-action-btn rtd-action-btn-primary"
+                    >
 
-                    Apply New PAN
+                        <i class="{{ $service->icon ?: 'fa fa-link' }}"></i>
 
-                </a>
+                        {{ $service->name }}
 
-                <a href="{{ route('retailer.pan.verify') }}"
-                   class="rtd-action-btn
-                          rtd-action-btn-secondary">
+                    </a>
 
-                    <i class="fa fa-search"></i>
+                @empty
 
-                    PAN Verification
+                    <a
+                        href="{{ route('retailer.dashboard') }}"
+                        class="rtd-action-btn rtd-action-btn-primary"
+                    >
 
-                </a>
+                        <i class="fa fa-home"></i>
+
+                        Dashboard
+
+                    </a>
+
+                @endforelse
 
             </div>
 
         </div>
-
-        {{-- =====================================================
-           WALLET CARD
-        ====================================================== --}}
 
         <div class="rtd-wallet-card">
 
@@ -100,443 +122,258 @@
 
             </div>
 
-            <a href="{{ route('retailer.wallet.history') }}"
-               class="btn-primary">
+            @if(Route::has('retailer.wallet.history'))
 
-                <i class="fa fa-money-check-alt"></i>
+                <a
+                    href="{{ route('retailer.wallet.history') }}"
+                    class="btn-primary"
+                >
 
-                Wallet History
+                    <i class="fa fa-money-check-alt"></i>
 
-            </a>
+                    Wallet History
+
+                </a>
+
+            @endif
 
         </div>
 
     </div>
 
     {{-- =====================================================
-       STATS
+       STATS (PERMISSION BASED)
     ====================================================== --}}
     <div class="rtd-stats-grid">
 
-        <div class="rtd-stat-card">
+        @if($hasPanModule)
 
-            <div class="rtd-stat-icon">
+            <div class="rtd-stat-card">
 
-                🪪
+                <div class="rtd-stat-icon">
 
-            </div>
+                    🪪
 
-            <div class="rtd-stat-value">
+                </div>
 
-                {{ $panServices ?? 0 }}
+                <div class="rtd-stat-value">
 
-            </div>
+                    {{ $panServices ?? 0 }}
 
-            <div class="rtd-stat-text">
+                </div>
 
-                PAN Applications
+                <div class="rtd-stat-text">
 
-            </div>
+                    PAN Applications
 
-        </div>
-
-        <div class="rtd-stat-card">
-
-            <div class="rtd-stat-icon">
-
-                🔐
+                </div>
 
             </div>
 
-            <div class="rtd-stat-value">
+        @endif
 
-                {{ $aadhaarServices ?? 0 }}
+        @if($hasAadhaarModule)
 
-            </div>
+            <div class="rtd-stat-card">
 
-            <div class="rtd-stat-text">
+                <div class="rtd-stat-icon">
 
-                Aadhaar Services
+                    🔐
 
-            </div>
+                </div>
 
-        </div>
+                <div class="rtd-stat-value">
 
-        <div class="rtd-stat-card">
+                    {{ $aadhaarServices ?? 0 }}
 
-            <div class="rtd-stat-icon">
+                </div>
 
-                👥
+                <div class="rtd-stat-text">
 
-            </div>
+                    Aadhaar Services
 
-            <div class="rtd-stat-value">
-
-                {{ $totalCustomers ?? 0 }}
+                </div>
 
             </div>
 
-            <div class="rtd-stat-text">
+        @endif
 
-                Retailer Customers
+         @if($hasPanModule)
 
-            </div>
+            <div class="rtd-stat-card">
 
-        </div>
+                <div class="rtd-stat-icon">
 
-        <div class="rtd-stat-card">
+                    🪪
 
-            <div class="rtd-stat-icon">
+                </div>
 
-                📈
+                <div class="rtd-stat-value">
 
-            </div>
+                    {{ $panCorrectioServices ?? 0 }}
 
-            <div class="rtd-stat-value">
+                </div>
 
-                {{ $successRate ?? 0 }}%
+                <div class="rtd-stat-text">
 
-            </div>
+                    PAN Correction Applications
 
-            <div class="rtd-stat-text">
-
-                Success Rate
+                </div>
 
             </div>
 
-        </div>
+        @endif
+
+
 
     </div>
-
+       
+       
     {{-- =====================================================
-       EXTRA STATS
+       EXTRA STATS (PERMISSION BASED)
     ====================================================== --}}
     <div class="rtd-stats-grid">
 
-        <div class="rtd-stat-card">
+        @if($hasVerificationModule)
 
-            <div class="rtd-stat-icon">
+            <div class="rtd-stat-card">
 
-                🔍
+                <div class="rtd-stat-icon">
 
-            </div>
+                    🔍
 
-            <div class="rtd-stat-value">
+                </div>
 
-                {{ $totalVerifications ?? 0 }}
+                <div class="rtd-stat-value">
 
-            </div>
+                    {{ $totalVerifications ?? 0 }}
 
-            <div class="rtd-stat-text">
+                </div>
 
-                Verification Services
+                <div class="rtd-stat-text">
 
-            </div>
+                    Verification Services
 
-        </div>
-
-        <div class="rtd-stat-card">
-
-            <div class="rtd-stat-icon">
-
-                ⚙️
+                </div>
 
             </div>
 
-            <div class="rtd-stat-value">
+        @endif
 
-                {{ $utilityServices ?? 0 }}
+        @if($hasUtilityModule)
+
+            <div class="rtd-stat-card">
+
+                <div class="rtd-stat-icon">
+
+                    ⚙️
+
+                </div>
+
+                <div class="rtd-stat-value">
+
+                    {{ $utilityServices ?? 0 }}
+
+                </div>
+
+                <div class="rtd-stat-text">
+
+                    Utility Services
+
+                </div>
 
             </div>
 
-            <div class="rtd-stat-text">
-
-                Utility Services
-
-            </div>
-
-        </div>
+        @endif
 
     </div>
 
     {{-- =====================================================
-       PAN SERVICES
+       SERVICES (SIDEBAR PERMISSION BASED)
     ====================================================== --}}
-    <div class="rtd-section">
 
-        <div class="rtd-section-head">
+    @forelse($retailerMenus ?? [] as $parent)
 
-            <h4 class="rtd-section-title">
+        @if($parent->children->count())
 
-                🪪 PAN Services
+            <div class="rtd-section">
 
-            </h4>
+                <div class="rtd-section-head">
 
-            <span class="rtd-section-count">
+                    <h4 class="rtd-section-title">
 
-                {{ $panServices ?? 0 }} Services Used
+                        @if(!empty($parent->icon))
 
-            </span>
+                            <i class="{{ $parent->icon }}"></i>
+
+                        @endif
+
+                        {{ $parent->name }}
+
+                    </h4>
+
+                    <span class="rtd-section-count">
+
+                        {{ $parent->children->count() }}
+
+                        Services
+
+                    </span>
+
+                </div>
+
+                <div class="rtd-services">
+
+                    @foreach($parent->children as $child)
+
+                        @if(
+                            !empty($child->route_name)
+                            &&
+                            Route::has($child->route_name)
+                        )
+
+                            <a
+                                href="{{ route($child->route_name) }}"
+                                class="rtd-service-card"
+                            >
+
+                                <div class="rtd-service-icon">
+
+                                    <i class="{{ $child->icon ?: 'fa fa-circle' }}"></i>
+
+                                </div>
+
+                                <div class="rtd-service-title">
+
+                                    {{ $child->name }}
+
+                                </div>
+
+                            </a>
+
+                        @endif
+
+                    @endforeach
+
+                </div>
+
+            </div>
+
+        @endif
+
+    @empty
+
+        <div class="rtd-section">
+
+            <div class="alert alert-info">
+
+                No services have been assigned to your account.
+
+            </div>
 
         </div>
 
-        <div class="rtd-services">
-
-            <a href="{{ route('retailer.pan.apply') }}"
-               class="rtd-service-card">
-
-                <div class="rtd-service-icon">
-
-                    <i class="fa fa-id-card"></i>
-
-                </div>
-
-                <div class="rtd-service-title">
-
-                    Apply New PAN
-
-                </div>
-
-            </a>
-
-            <a href="{{ route('retailer.pan-correction.history') }}"
-               class="rtd-service-card">
-
-                <div class="rtd-service-icon">
-
-                    <i class="fa fa-pen"></i>
-
-                </div>
-
-                <div class="rtd-service-title">
-
-                    PAN Correction
-
-                </div>
-
-            </a>
-
-            <a href="{{ route('retailer.pan.company') }}"
-               class="rtd-service-card">
-
-                <div class="rtd-service-icon">
-
-                    <i class="fa fa-building"></i>
-
-                </div>
-
-                <div class="rtd-service-title">
-
-                    Company PAN
-
-                </div>
-
-            </a>
-
-            <a href="{{ route('retailer.pan.training') }}"
-               class="rtd-service-card">
-
-                <div class="rtd-service-icon">
-
-                    <i class="fa fa-headset"></i>
-
-                </div>
-
-                <div class="rtd-service-title">
-
-                    PAN Training
-
-                </div>
-
-            </a>
-
-        </div>
-
-    </div>
-
-    {{-- =====================================================
-       VERIFICATION SERVICES
-    ====================================================== --}}
-    <div class="rtd-section">
-
-        <div class="rtd-section-head">
-
-            <h4 class="rtd-section-title">
-
-                🔍 Verification Services
-
-            </h4>
-
-            <span class="rtd-section-count">
-
-                {{ $totalVerifications ?? 0 }} Verifications
-
-            </span>
-
-        </div>
-
-        <div class="rtd-services">
-
-            <a href="{{ route('retailer.pan.find') }}"
-               class="rtd-service-card">
-
-                <div class="rtd-service-icon">
-                    <i class="fa fa-search"></i>
-                </div>
-
-                <div class="rtd-service-title">
-                    PAN Find
-                </div>
-
-            </a>
-
-            <a href="{{ route('retailer.pan.verify') }}"
-               class="rtd-service-card">
-
-                <div class="rtd-service-icon">
-                    <i class="fa fa-check-circle"></i>
-                </div>
-
-                <div class="rtd-service-title">
-                    PAN Verification
-                </div>
-
-            </a>
-
-            <a href="{{ route('retailer.verification.bank') }}"
-               class="rtd-service-card">
-
-                <div class="rtd-service-icon">
-                    <i class="fa fa-university"></i>
-                </div>
-
-                <div class="rtd-service-title">
-                    Bank Verify
-                </div>
-
-            </a>
-
-            <a href="{{ route('retailer.verification.voter') }}"
-               class="rtd-service-card">
-
-                <div class="rtd-service-icon">
-                    <i class="fa fa-vote-yea"></i>
-                </div>
-
-                <div class="rtd-service-title">
-                    Voter ID Verify
-                </div>
-
-            </a>
-
-            <a href="{{ route('retailer.verification.rc') }}"
-               class="rtd-service-card">
-
-                <div class="rtd-service-icon">
-                    <i class="fa fa-car"></i>
-                </div>
-
-                <div class="rtd-service-title">
-                    RC Verify
-                </div>
-
-            </a>
-
-            <a href="{{ route('retailer.verification.dl') }}"
-               class="rtd-service-card">
-
-                <div class="rtd-service-icon">
-                    <i class="fa fa-id-badge"></i>
-                </div>
-
-                <div class="rtd-service-title">
-                    DL Verify
-                </div>
-
-            </a>
-
-        </div>
-
-    </div>
-
-    {{-- =====================================================
-       UTILITY TOOLS
-    ====================================================== --}}
-    <div class="rtd-section">
-
-        <div class="rtd-section-head">
-
-            <h4 class="rtd-section-title">
-
-                ⚙️ Utility Tools
-
-            </h4>
-
-            <span class="rtd-section-count">
-
-                {{ $utilityServices ?? 0 }} Utilities Used
-
-            </span>
-
-        </div>
-
-        <div class="rtd-services">
-
-            <a href="{{ route('retailer.tools.aadhaar.pvc') }}"
-               class="rtd-service-card">
-
-                <div class="rtd-service-icon">
-                    <i class="fa fa-address-card"></i>
-                </div>
-
-                <div class="rtd-service-title">
-                    Aadhaar PVC Print
-                </div>
-
-            </a>
-
-            <a href="{{ route('retailer.tools.hisab.kitab') }}"
-               class="rtd-service-card">
-
-                <div class="rtd-service-icon">
-                    <i class="fa fa-book"></i>
-                </div>
-
-                <div class="rtd-service-title">
-                    Hisab Kitab
-                </div>
-
-            </a>
-
-            <a href="{{ route('retailer.tools.passport.photo') }}"
-               class="rtd-service-card">
-
-                <div class="rtd-service-icon">
-                    <i class="fa fa-camera"></i>
-                </div>
-
-                <div class="rtd-service-title">
-                    Passport Photo Maker
-                </div>
-
-            </a>
-
-            <a href="{{ route('retailer.tools.file.converter') }}"
-               class="rtd-service-card">
-
-                <div class="rtd-service-icon">
-                    <i class="fa fa-file"></i>
-                </div>
-
-                <div class="rtd-service-title">
-                    File Converter
-                </div>
-
-            </a>
-
-        </div>
-
-    </div>
+    @endforelse
 
 </div>
 
