@@ -1804,6 +1804,31 @@ $(document).ready(function () {
 
             if (result.isConfirmed) {
 
+                console.log('============== FILES ==============');
+
+                let totalSize = 0;
+
+                $('.document-input').each(function () {
+
+                    if (this.files.length > 0) {
+
+                        let file = this.files[0];
+
+                        totalSize += file.size;
+
+                        console.log(
+                            this.name,
+                            file.name,
+                            (file.size / 1024 / 1024).toFixed(2) + ' MB'
+                        );
+                    }
+                });
+
+                console.log(
+                    'TOTAL SIZE:',
+                    (totalSize / 1024 / 1024).toFixed(2) + ' MB'
+                );
+
                 let formData =
                 new FormData(
 

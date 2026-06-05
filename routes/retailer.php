@@ -63,7 +63,6 @@ use App\Http\Controllers\Retailer\Tools\PassportPhotoController;
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('guest')->group(function () {
 
     Route::controller(RegisterController::class)
     ->group(function () {
@@ -95,7 +94,7 @@ Route::middleware('guest')->group(function () {
 
     });
 
-});
+
 
 
 

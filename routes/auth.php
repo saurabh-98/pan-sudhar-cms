@@ -10,7 +10,6 @@ use App\Http\Controllers\AuthController;
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('guest')->group(function () {
 
     Route::get(
         '/login',
@@ -37,7 +36,7 @@ Route::middleware('guest')->group(function () {
         [AuthController::class, 'showForgotPassword']
     )->name('password.request');
 
-});
+
 
 Route::post(
     '/logout',
