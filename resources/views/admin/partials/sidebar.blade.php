@@ -75,21 +75,18 @@
     {{-- =========================================================
     | TITLE
     ========================================================== --}}
-    <div class="sbx-title">
+        <div class="sbx-title">
 
         Pan Sudhar Portal
 
+        <button id="closeSidebar"
+                class="sbx-close-btn">
+
+            <i class="fa fa-times"></i>
+
+        </button>
+
     </div>
-
-    {{-- =========================================================
-    | CLOSE BUTTON
-    ========================================================== --}}
-    <button id="closeSidebar"
-            class="sbx-close-btn">
-
-        <i class="fa fa-times"></i>
-
-    </button>
 
     {{-- =========================================================
     | SIDEBAR MENU

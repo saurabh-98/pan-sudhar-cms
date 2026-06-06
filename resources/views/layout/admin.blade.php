@@ -19,6 +19,7 @@
 
     <!-- CUSTOM CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/admin.css') }}">
+     <link rel="stylesheet" href="{{ asset('assets/css/admin-layout.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/footer-admin.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/dashboard-admin.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/gallery-admin.css') }}">
@@ -28,6 +29,8 @@
     <link rel="stylesheet" href="{{ asset('assets/css/admin-new-pan.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/admin-new-pan-show.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/charges-admin.css') }}">
+
+
 
 </head>
 
@@ -540,6 +543,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
+</script>
+<script>
+
+    const closeBtn =
+    document.getElementById("closeSidebar");
+
+if (closeBtn) {
+
+    closeBtn.addEventListener("click", function () {
+
+        sidebar.classList.remove("sbx-show");
+
+        document.body.classList.remove("sidebar-open");
+
+    });
+
+}
 </script>
 </body>
 </html>

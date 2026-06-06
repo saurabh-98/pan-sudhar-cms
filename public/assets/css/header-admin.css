@@ -5,37 +5,30 @@
 .hdrx-header{
 
     position:sticky;
-
     top:0;
 
     z-index:999;
 
     display:flex;
-
     justify-content:space-between;
-
     align-items:center;
 
-    gap:20px;
+    gap:12px;
 
-    padding:18px 30px;
+    padding:10px 20px;
 
-    margin-bottom:30px;
+    margin-bottom:0;
 
-    background:
-        rgba(255,255,255,0.72);
+    background:rgba(255,255,255,.72);
 
     backdrop-filter:blur(18px);
 
-    border:
-        1px solid rgba(255,255,255,0.35);
+    border:1px solid rgba(255,255,255,.35);
 
-    border-radius:28px;
+    border-radius:0;
 
-    box-shadow:
-        0 15px 45px rgba(0,0,0,0.08);
+    box-shadow:0 10px 25px rgba(0,0,0,.06);
 }
-
 /* =========================================================
 | LEFT
 ========================================================= */
@@ -587,5 +580,271 @@
     .hdrx-user-content{
 
         display:none;
+    }
+}
+
+/* =========================================================
+| ULTRA COMPACT DESKTOP HEADER
+========================================================= */
+
+@media (min-width:1200px){
+
+    .hdrx-header{
+
+        padding:10px 18px;
+
+        margin-bottom:16px;
+
+        border-radius:18px;
+
+        gap:12px;
+    }
+
+    .hdrx-left{
+
+        gap:10px;
+    }
+
+    .hdrx-right{
+
+        gap:10px;
+    }
+
+    /* Menu Button */
+
+    .hdrx-menu-btn{
+
+        width:42px;
+
+        height:42px;
+
+        border-radius:12px;
+
+        font-size:15px;
+    }
+
+    /* Title */
+
+    .hdrx-title{
+
+        font-size:20px;
+
+        line-height:1.2;
+
+        margin-bottom:0;
+    }
+
+    .hdrx-subtitle{
+
+        font-size:11px;
+    }
+
+    /* Wallet */
+
+    .admin-wallet-box{
+
+        padding:7px 14px;
+
+        border-radius:16px;
+
+        gap:8px;
+    }
+
+    .wallet-icon{
+
+        width:40px;
+
+        height:40px;
+
+        border-radius:12px;
+
+        font-size:16px;
+    }
+
+    .wallet-content span{
+
+        font-size:9px;
+
+        margin-bottom:1px;
+
+        letter-spacing:.8px;
+    }
+
+    .wallet-content h5{
+
+        font-size:16px;
+    }
+
+    /* Session */
+
+    .session-timer-box{
+
+        padding:6px 10px;
+
+        border-radius:10px;
+
+        font-size:11px;
+
+        gap:6px;
+
+        margin-right:0;
+    }
+
+    .session-timer-box i{
+
+        font-size:11px;
+    }
+
+    /* Notification */
+
+    .hdrx-notif-btn{
+
+        width:42px;
+
+        height:42px;
+
+        border-radius:12px;
+    }
+
+    .hdrx-notif-icon{
+
+        font-size:16px;
+    }
+
+    .hdrx-badge{
+
+        min-width:16px;
+
+        height:16px;
+
+        font-size:8px;
+
+        top:-2px;
+
+        right:-2px;
+    }
+
+    /* User */
+
+    .hdrx-user-btn{
+
+        padding:5px 10px;
+
+        border-radius:16px;
+
+        gap:8px;
+    }
+
+    .hdrx-avatar{
+
+        width:40px;
+
+        height:40px;
+
+        border-radius:12px;
+    }
+
+    .hdrx-online-dot{
+
+        width:8px;
+
+        height:8px;
+
+        border-width:1px;
+    }
+
+    .hdrx-username{
+
+        font-size:12px;
+    }
+
+    .hdrx-role{
+
+        font-size:10px;
+    }
+
+    .hdrx-angle{
+
+        font-size:12px;
+    }
+
+    /* Dropdown */
+
+    .hdrx-dropdown{
+
+        min-width:220px;
+
+        padding:8px;
+
+        border-radius:16px;
+    }
+
+    .hdrx-dropdown .dropdown-item{
+
+        padding:9px 10px;
+
+        font-size:12px;
+
+        border-radius:10px;
+    }
+
+    /* Empty Box */
+
+    .hdrx-empty-box{
+
+        padding:20px 10px;
+    }
+
+    .hdrx-empty-box i{
+
+        font-size:30px;
+    }
+
+    .hdrx-empty-box p{
+
+        font-size:12px;
+    }
+}
+
+/* =========================================================
+   HEADER LAYOUT FIX
+========================================================= */
+
+.hdrx-header{
+
+    width:100%;
+
+    margin:0 0 16px 0;
+
+    border-radius:18px;
+
+    box-sizing:border-box;
+}
+
+/* Remove unwanted left spacing */
+.main-area .hdrx-header{
+
+    margin-left:0 !important;
+}
+
+/* Content wrapper alignment */
+
+.content-wrapper{
+
+    padding:16px;
+}
+
+/* Mobile */
+
+@media(max-width:768px){
+
+    .content-wrapper{
+
+        padding:12px;
+    }
+
+    .hdrx-header{
+
+        margin-bottom:12px;
     }
 }

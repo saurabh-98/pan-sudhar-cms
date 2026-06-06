@@ -1,0 +1,222 @@
+/* =========================================================
+   ADMIN MASTER LAYOUT
+========================================================= */
+
+:root{
+
+    --sidebar-width:220px;
+    --sidebar-collapse-width:70px;
+
+    --layout-bg:#eef3f9;
+}
+
+/* =========================================================
+   RESET
+========================================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+
+    height:100%;
+}
+
+body{
+
+    min-height:100vh;
+
+    overflow-x:hidden;
+
+    background:var(--layout-bg);
+}
+
+/* =========================================================
+   WRAPPER
+========================================================= */
+
+.admin-wrapper{
+
+    display:flex;
+
+    min-height:100vh;
+}
+
+/* =========================================================
+   MAIN AREA
+========================================================= */
+
+.main-area{
+
+    margin-left:var(--sidebar-width);
+
+    width:calc(100% - var(--sidebar-width));
+
+    min-height:100vh;
+
+    display:flex;
+
+    flex-direction:column;
+
+    transition:all .35s ease;
+}
+
+/* =========================================================
+   SIDEBAR COLLAPSE
+========================================================= */
+
+body.sbx-body-collapse .main-area{
+
+    margin-left:var(--sidebar-collapse-width);
+
+    width:calc(100% - var(--sidebar-collapse-width));
+}
+
+/* =========================================================
+   CONTENT WRAPPER
+========================================================= */
+
+.content-wrapper{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    min-height:100vh;
+
+    padding:0;
+}
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.content-inner{
+
+    flex:1;
+
+    padding:18px;
+}
+
+/* =========================================================
+   OPTIONAL PAGE HEADER
+========================================================= */
+
+.content-wrapper > .px-3.pt-3{
+
+    padding:16px !important;
+}
+
+/* =========================================================
+   HEADER FIX
+========================================================= */
+
+.hdrx-header{
+
+    width:100%;
+
+    margin:0 !important;
+
+    border-radius:0 !important;
+
+    position:sticky;
+
+    top:0;
+
+    left:0;
+
+    z-index:999;
+}
+
+/* =========================================================
+   REMOVE LEFT GAP
+========================================================= */
+
+.main-area > .hdrx-header{
+
+    margin-left:0 !important;
+}
+
+.content-wrapper{
+
+    margin-left:0 !important;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.admin-footer{
+
+    margin-top:auto;
+}
+
+/* =========================================================
+   DESKTOP
+========================================================= */
+
+@media(min-width:1200px){
+
+    .main-area{
+
+        margin-left:220px;
+
+        width:calc(100% - 220px);
+    }
+
+    .content-inner{
+
+        padding:16px;
+    }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media(max-width:991px){
+
+    .main-area{
+
+        margin-left:0;
+
+        width:100%;
+    }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:768px){
+
+    .main-area{
+
+        margin-left:0;
+
+        width:100%;
+    }
+
+    .content-inner{
+
+        padding:12px;
+    }
+}
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media(max-width:576px){
+
+    .content-inner{
+
+        padding:10px;
+    }
+}

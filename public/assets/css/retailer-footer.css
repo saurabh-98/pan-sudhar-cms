@@ -531,3 +531,107 @@
     }
 
 }
+
+/* =========================================================
+   DESKTOP COMPACT FOOTER (80% ZOOM LOOK)
+========================================================= */
+
+@media (min-width:1200px){
+
+    .retailer-footer{
+
+        margin-top:28px;
+
+        padding:22px 26px;
+
+        border-radius:24px;
+    }
+
+    .retailer-footer-content{
+
+        gap:18px;
+    }
+
+    .retailer-footer-title{
+
+        font-size:16px;
+
+        margin-bottom:6px;
+    }
+
+    .retailer-footer-text{
+
+        font-size:13px;
+
+        line-height:1.7;
+
+        max-width:560px;
+    }
+
+    .retailer-footer-right{
+
+        gap:10px;
+    }
+
+    .retailer-footer-link{
+
+        padding:10px 14px;
+
+        border-radius:12px;
+
+        font-size:13px;
+    }
+
+    .retailer-footer-copy{
+
+        margin-top:18px;
+
+        padding-top:16px;
+
+        font-size:12px;
+    }
+
+    .footer-social{
+
+        width:40px;
+
+        height:40px;
+
+        border-radius:12px;
+
+        font-size:14px;
+    }
+
+    .retailer-footer-badge{
+
+        padding:8px 14px;
+
+        font-size:12px;
+
+        margin-top:10px;
+    }
+
+    /* Decorative effects smaller */
+
+    .retailer-footer::before{
+
+        width:200px;
+
+        height:200px;
+
+        top:-110px;
+
+        right:-80px;
+    }
+
+    .retailer-footer::after{
+
+        width:180px;
+
+        height:180px;
+
+        bottom:-90px;
+
+        left:-80px;
+    }
+}

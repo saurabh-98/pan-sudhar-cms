@@ -680,3 +680,219 @@
     }
 
 }
+
+/* =========================================================
+| ULTRA COMPACT DESKTOP SIDEBAR
+========================================================= */
+
+@media (min-width:1200px){
+
+    /* Sidebar Width */
+
+    .sbx-sidebar{
+
+        width:220px;
+    }
+
+    /* Logo */
+
+    .sbx-title{
+
+        padding:16px 12px;
+
+        font-size:16px;
+
+        letter-spacing:.5px;
+    }
+
+    /* Section Header */
+
+    .sbx-section{
+
+        padding:10px 14px;
+
+        margin-top:6px;
+
+        font-size:9px;
+
+        letter-spacing:1.5px;
+    }
+
+    .sbx-section::before{
+
+        left:14px;
+
+        width:24px;
+    }
+
+    .sbx-section::after{
+
+        right:12px;
+
+        font-size:14px;
+
+        top:9px;
+    }
+
+    /* Menu Links */
+
+    .sbx-link{
+
+        padding:10px 14px;
+
+        gap:10px;
+
+        font-size:13px;
+    }
+
+    .sbx-link i{
+
+        width:16px;
+
+        min-width:16px;
+
+        font-size:13px;
+    }
+
+    /* Hover */
+
+    .sbx-link:hover{
+
+        transform:translateX(5px);
+    }
+
+    /* Active Indicator */
+
+    .sbx-link.sbx-active::after{
+
+        width:6px;
+
+        height:6px;
+
+        right:10px;
+    }
+
+    /* Level 2 */
+
+    .sbx-submenu .sbx-link{
+
+        padding-left:24px;
+
+        font-size:12px;
+    }
+
+    /* Level 3 */
+
+    .sbx-submenu .sbx-submenu .sbx-link{
+
+        padding-left:36px;
+
+        font-size:11px;
+    }
+
+    /* Badge */
+
+    .sbx-count-badge{
+
+        min-width:18px;
+
+        height:18px;
+
+        font-size:9px;
+
+        padding:0 6px;
+    }
+
+    /* Collapse Mode */
+
+    .sbx-sidebar.sbx-collapse{
+
+        width:70px;
+    }
+
+    .sbx-sidebar.sbx-collapse .sbx-link{
+
+        padding:10px 0;
+    }
+
+    .sbx-sidebar.sbx-collapse .sbx-link i{
+
+        font-size:16px;
+    }
+}
+
+.sbx-title{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:20;
+
+    padding:24px 60px 24px 20px;
+
+    text-align:center;
+}
+
+.sbx-close-btn{
+
+    display:none;
+
+    position:absolute;
+
+    top:50%;
+
+    right:12px;
+
+    transform:translateY(-50%);
+
+    width:36px;
+
+    height:36px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:rgba(255,255,255,.12);
+
+    color:#fff;
+
+    cursor:pointer;
+
+    z-index:99999;
+}
+
+.sbx-close-btn i{
+
+    font-size:16px;
+}
+
+.sbx-close-btn:hover{
+
+    background:#ef4444;
+}
+
+@media(max-width:768px){
+
+    .sbx-close-btn{
+
+        display:flex;
+
+        align-items:center;
+
+        justify-content:center;
+    }
+
+    .sbx-sidebar{
+
+        width:260px;
+
+        left:-260px;
+    }
+
+    .sbx-sidebar.sbx-show{
+
+        left:0;
+    }
+}

@@ -27,15 +27,42 @@
     --bg:#f8fafc;
 }
 
+:root{
+
+    --ui-scale: .8;
+
+    --primary:#2563eb;
+    --primary-dark:#1d4ed8;
+    --secondary:#0f172a;
+    --success:#10b981;
+    --warning:#f59e0b;
+    --danger:#ef4444;
+    --text:#1e293b;
+    --muted:#64748b;
+    --white:#ffffff;
+    --border:#e2e8f0;
+    --bg:#f8fafc;
+}
+
+/* =========================================================
+| DASHBOARD PAGE
+========================================================= */
+
 /* =========================================================
 | DASHBOARD PAGE
 ========================================================= */
 
 .rtd-custom-dashboard{
 
-    padding:28px;
+    padding:22px;
 
     min-height:100vh;
+
+    max-width:1800px;
+
+    margin:0 auto;
+
+    font-size:calc(16px * var(--ui-scale));
 
     background:
         linear-gradient(
@@ -45,7 +72,6 @@
             #eef2ff 100%
         );
 }
-
 /* =========================================================
 | HERO SECTION
 ========================================================= */
@@ -841,5 +867,105 @@
         height:70px;
 
         font-size:28px;
+    }
+}
+
+/* =========================================================
+| DESKTOP COMPACT SCALE (80% LOOK)
+========================================================= */
+
+@media (min-width: 1200px){
+
+    .rtd-hero{
+        gap:20px;
+        margin-bottom:22px;
+    }
+
+    .rtd-welcome-card{
+        padding:30px;
+        border-radius:26px;
+    }
+
+    .rtd-wallet-card{
+        padding:26px;
+        border-radius:26px;
+    }
+
+    .rtd-stat-card{
+        padding:22px;
+        border-radius:22px;
+    }
+
+    .rtd-service-card{
+        padding:24px 20px;
+        border-radius:22px;
+    }
+
+    .rtd-welcome-title{
+        font-size:30px;
+    }
+
+    .rtd-welcome-text{
+        font-size:14px;
+        margin-bottom:22px;
+    }
+
+    .rtd-wallet-balance{
+        font-size:30px;
+    }
+
+    .rtd-wallet-icon{
+        width:60px;
+        height:60px;
+        font-size:24px;
+    }
+
+    .rtd-stat-icon{
+        width:60px;
+        height:60px;
+        font-size:28px;
+        margin-bottom:16px;
+    }
+
+    .rtd-service-icon{
+        width:64px;
+        height:64px;
+        font-size:26px;
+        margin-bottom:18px;
+    }
+
+    .rtd-stat-value{
+        font-size:28px;
+    }
+
+    .rtd-stat-text{
+        font-size:13px;
+    }
+
+    .rtd-service-title{
+        font-size:14px;
+    }
+
+    .rtd-section-title{
+        font-size:20px;
+        margin-bottom:18px;
+    }
+
+    .rtd-stats-grid{
+        gap:18px;
+    }
+
+    .rtd-services{
+        gap:18px;
+    }
+
+    .rtd-action-btn{
+        padding:12px 20px;
+        font-size:13px;
+    }
+
+    .rtd-wallet-card .btn-primary{
+        padding:12px 20px;
+        font-size:13px;
     }
 }

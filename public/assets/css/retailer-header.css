@@ -719,3 +719,126 @@
         min-width:250px;
     }
 }
+
+/* =========================================================
+| DESKTOP COMPACT HEADER (80% ZOOM LOOK)
+========================================================= */
+
+@media (min-width:1200px){
+
+    .stfh-header{
+        padding:14px 22px;
+        gap:16px;
+    }
+
+    .stfh-left{
+        gap:14px;
+    }
+
+    .stfh-left .btn{
+        width:42px;
+        height:42px;
+        border-radius:14px;
+        font-size:16px;
+    }
+
+    .stfh-title{
+        font-size:20px;
+    }
+
+    .stfh-left small{
+        font-size:12px;
+    }
+
+    .stfh-right{
+        gap:14px;
+    }
+
+    /* Wallet */
+
+    .stfh-wallet{
+        min-width:200px;
+        padding:12px 16px;
+        gap:12px;
+        border-radius:18px;
+    }
+
+    .stfh-wallet-icon{
+        width:48px;
+        height:48px;
+        border-radius:16px;
+        font-size:20px;
+    }
+
+    .stfh-wallet-label{
+        font-size:11px;
+    }
+
+    .stfh-wallet-balance{
+        font-size:20px;
+    }
+
+    /* Session Timer */
+
+    .session-timer-box{
+        padding:8px 12px;
+        font-size:13px;
+        gap:6px;
+    }
+
+    .session-timer-box i{
+        font-size:13px;
+    }
+
+    /* Notification */
+
+    .stfh-notif button{
+        width:48px;
+        height:48px;
+        border-radius:16px;
+    }
+
+    .stfh-notif-icon{
+        font-size:18px;
+    }
+
+    .stfh-badge{
+        min-width:18px;
+        height:18px;
+        font-size:10px;
+        top:5px;
+        right:5px;
+    }
+
+    /* User Profile */
+
+    .stfh-user-btn{
+        padding:8px 14px 8px 8px;
+        gap:10px;
+        border-radius:18px;
+    }
+
+    .stfh-avatar{
+        width:46px;
+        height:46px;
+        border-radius:14px;
+    }
+
+    .stfh-username{
+        font-size:13px;
+    }
+
+    /* Dropdown */
+
+    .stfh-dropdown{
+        min-width:280px;
+        border-radius:22px !important;
+        padding:12px;
+    }
+
+    .stfh-dropdown .dropdown-item{
+        padding:12px 14px;
+        font-size:13px;
+        border-radius:14px;
+    }
+}
