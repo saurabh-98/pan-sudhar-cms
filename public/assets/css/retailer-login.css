@@ -1,226 +1,262 @@
 /* =========================================================
-| RETAILER LOGIN PAGE CSS
+   RETAILER LOGIN PRO 2026
 ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 :root{
-    --primary:#4f46e5;
+
+    --primary:#2563eb;
+    --primary-light:#3b82f6;
     --secondary:#06b6d4;
-    --dark:#0f172a;
-    --light:#ffffff;
+
+    --success:#10b981;
+    --danger:#ef4444;
+
+    --text:#0f172a;
+    --muted:#64748b;
+
+    --white:#ffffff;
+    --border:#e2e8f0;
+
+    --shadow:
+    0 20px 60px rgba(15,23,42,.12);
+
+    --shadow-hover:
+    0 25px 70px rgba(37,99,235,.16);
+
+    --radius:24px;
 }
 
 /* =========================================================
-| BODY
+   RESET
+========================================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+    min-height:100%;
+    overflow-x:hidden;
+}
+
+/* =========================================================
+   BODY
 ========================================================= */
 
 body{
-    margin:0;
-    overflow-x:hidden;
-    min-height:100vh;
 
     font-family:'Inter',sans-serif;
 
     background:
-    radial-gradient(circle at top left,#312e81 0%,transparent 30%),
-    radial-gradient(circle at bottom right,#0891b2 0%,transparent 30%),
-    linear-gradient(135deg,#020617,#111827,#1e293b);
-}
 
-/* =========================================================
-| WRAPPER
-========================================================= */
+    radial-gradient(
+        circle at top left,
+        rgba(37,99,235,.15),
+        transparent 25%
+    ),
 
-.parent-login-wrapper{
-    min-height:100vh;
+    radial-gradient(
+        circle at bottom right,
+        rgba(6,182,212,.12),
+        transparent 25%
+    ),
 
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    padding:40px 20px;
+    linear-gradient(
+        135deg,
+        #eff6ff,
+        #f8fafc,
+        #eef2ff
+    );
 
     position:relative;
-
-    overflow:hidden;
 }
 
 /* =========================================================
-| BACKGROUND SHAPES
+   FLOATING BACKGROUND
 ========================================================= */
 
-.bg-shape{
-    position:absolute;
+body::before{
+
+    content:"";
+
+    position:fixed;
+
+    width:320px;
+    height:320px;
+
     border-radius:50%;
-    filter:blur(90px);
-    z-index:1;
-}
-
-.shape-1{
-    width:350px;
-    height:350px;
-
-    background:#4f46e5;
 
     top:-120px;
-    left:-100px;
+    left:-120px;
+
+    background:
+    radial-gradient(
+        rgba(37,99,235,.15),
+        transparent
+    );
+
+    filter:blur(40px);
+
+    z-index:-1;
 }
 
-.shape-2{
+body::after{
+
+    content:"";
+
+    position:fixed;
+
     width:280px;
     height:280px;
 
-    background:#06b6d4;
+    border-radius:50%;
 
-    right:-100px;
     bottom:-100px;
+    right:-100px;
+
+    background:
+    radial-gradient(
+        rgba(6,182,212,.12),
+        transparent
+    );
+
+    filter:blur(40px);
+
+    z-index:-1;
 }
 
 /* =========================================================
-| LOGIN CARD
+   LOGIN WRAPPER
 ========================================================= */
 
-.parent-login-card{
+.parent-login-wrapper{
+
+    min-height:100vh;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:20px;
+}
+
+/* =========================================================
+   LOGIN CARD
+========================================================= */
+
+.login-card-modern{
+
     width:100%;
-    max-width:1200px;
 
-    background:rgba(255,255,255,.08);
+    max-width:520px;
 
-    backdrop-filter:blur(22px);
+    background:
+    rgba(255,255,255,.92);
 
-    border-radius:35px;
+    backdrop-filter:
+    blur(18px);
+
+    border-radius:28px;
+
+    padding:28px;
+
+    border:
+    1px solid rgba(255,255,255,.85);
+
+    box-shadow:
+    var(--shadow);
+
+    position:relative;
 
     overflow:hidden;
 
-    position:relative;
+    transition:.35s ease;
+}
 
-    z-index:10;
+.login-card-modern:hover{
+
+    transform:
+    translateY(-4px);
 
     box-shadow:
-    0 25px 60px rgba(0,0,0,.45);
+    var(--shadow-hover);
 }
 
 /* =========================================================
-| LEFT PANEL
+   CARD EFFECTS
 ========================================================= */
 
-.parent-left-panel{
-    height:100%;
+.login-card-modern::before{
 
-    padding:70px 55px;
+    content:"";
 
-    background:
-    linear-gradient(rgba(2,6,23,.82),rgba(15,23,42,.92)),
-    url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200');
+    position:absolute;
 
-    background-size:cover;
-    background-position:center;
+    width:180px;
+    height:180px;
 
-    color:#fff;
-
-    position:relative;
-}
-
-.left-content{
-    position:relative;
-    z-index:5;
-}
-
-.parent-left-panel h1{
-    font-size:52px;
-    font-weight:900;
-
-    margin-bottom:20px;
-}
-
-.parent-left-panel p{
-    font-size:16px;
-    line-height:1.8;
-
-    color:rgba(255,255,255,.85);
-
-    margin-bottom:40px;
-}
-
-/* =========================================================
-| FEATURE BOX
-========================================================= */
-
-.feature-item{
-    display:flex;
-    align-items:center;
-    gap:18px;
-
-    padding:20px;
-
-    margin-bottom:20px;
-
-    border-radius:22px;
-
-    background:rgba(255,255,255,.08);
-
-    transition:.3s;
-}
-
-.feature-item:hover{
-    transform:translateX(8px);
-}
-
-.feature-icon{
-    width:65px;
-    height:65px;
-
-    border-radius:18px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:28px;
-
-    background:
-    linear-gradient(
-        135deg,
-        var(--primary),
-        var(--secondary)
-    );
-}
-
-/* =========================================================
-| RIGHT PANEL
-========================================================= */
-
-.parent-right-panel{
-    background:#fff;
-
-    padding:70px 60px;
-
-    height:100%;
-
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-}
-
-/* =========================================================
-| LOGIN HEADER
-========================================================= */
-
-.login-header{
-    text-align:center;
-    margin-bottom:40px;
-}
-
-.login-icon{
-    width:110px;
-    height:110px;
+    top:-90px;
+    right:-90px;
 
     border-radius:50%;
 
-    margin:auto auto 20px;
+    background:
+    radial-gradient(
+        rgba(37,99,235,.08),
+        transparent
+    );
+}
+
+.login-card-modern::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:150px;
+    height:150px;
+
+    bottom:-70px;
+    left:-70px;
+
+    border-radius:50%;
+
+    background:
+    radial-gradient(
+        rgba(6,182,212,.08),
+        transparent
+    );
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.login-header{
+
+    text-align:center;
+
+    margin-bottom:22px;
+}
+
+.login-logo{
+
+    width:72px;
+    height:72px;
+
+    margin:0 auto 14px;
+
+    border-radius:20px;
 
     display:flex;
+
     align-items:center;
     justify-content:center;
 
@@ -233,173 +269,214 @@ body{
 
     color:#fff;
 
-    font-size:45px;
+    font-size:30px;
+
+    box-shadow:
+    0 12px 25px rgba(37,99,235,.25);
 }
 
-.login-header h2{
-    font-size:40px;
+.login-header h1{
+
+    font-size:28px;
+
     font-weight:900;
 
-    color:#0f172a;
+    color:var(--text);
 
-    margin-bottom:10px;
+    margin-bottom:4px;
 }
 
 .login-header p{
-    color:#64748b;
+
+    color:var(--muted);
+
+    font-size:13px;
 }
 
 /* =========================================================
-| FORM GROUP
+   FORM GROUP
 ========================================================= */
 
 .form-group-modern{
-    margin-bottom:24px;
+
+    margin-bottom:14px;
 }
 
 .form-group-modern label{
+
     display:block;
 
-    margin-bottom:10px;
+    margin-bottom:6px;
 
-    font-size:14px;
+    color:var(--text);
+
+    font-size:13px;
+
     font-weight:700;
-
-    color:#0f172a;
 }
 
 /* =========================================================
-| INPUT BOX
+   INPUT
 ========================================================= */
 
 .input-box{
+
     position:relative;
-    width:100%;
 }
 
-/* =========================================================
-| INPUT ICON
-========================================================= */
-
 .input-box i{
+
     position:absolute;
 
-    left:18px;
+    left:16px;
     top:50%;
 
     transform:translateY(-50%);
 
-    color:#64748b;
+    color:#94a3b8;
 
-    font-size:15px;
-
-    z-index:5;
-
-    pointer-events:none;
+    transition:.3s;
 }
 
-/* =========================================================
-| INPUT FIELD
-========================================================= */
-
-.input-box input,
-.input-box select{
+.input-box input{
 
     width:100%;
 
-    height:62px;
+    height:48px;
 
-    border-radius:18px;
+    border-radius:14px;
 
     border:2px solid #e2e8f0;
 
     background:#f8fafc;
 
-    padding-left:55px !important;
-    padding-right:18px;
+    padding-left:46px;
+    padding-right:46px;
 
-    font-size:15px;
-    font-weight:500;
+    font-size:14px;
 
-    color:#0f172a;
-
-    transition:.3s ease;
-
-    appearance:none;
+    transition:.3s;
 }
 
-/* =========================================================
-| INPUT PLACEHOLDER
-========================================================= */
-
-.input-box input::placeholder{
-    color:#94a3b8;
-}
-
-/* =========================================================
-| INPUT FOCUS
-========================================================= */
-
-.input-box input:focus,
-.input-box select:focus{
+.input-box input:focus{
 
     outline:none;
 
-    border-color:var(--primary);
-
     background:#fff;
 
-    box-shadow:
-    0 0 0 5px rgba(79,70,229,.10);
+    border-color:var(--primary);
 
+    box-shadow:
+    0 0 0 4px rgba(37,99,235,.08);
 }
 
-/* =========================================================
-| ICON ACTIVE
-========================================================= */
-
 .input-box:focus-within i{
+
     color:var(--primary);
 }
 
 /* =========================================================
-| INVALID
+   PASSWORD TOGGLE
 ========================================================= */
 
-.is-invalid{
-    border-color:#dc3545 !important;
-    background:#fff5f5 !important;
+.toggle-password{
+
+    position:absolute;
+
+    right:16px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    cursor:pointer;
+
+    color:#94a3b8;
+}
+
+.toggle-password:hover{
+
+    color:var(--primary);
 }
 
 /* =========================================================
-| ERROR
+   EXTRA OPTIONS
 ========================================================= */
 
-.validation-error,
+.extra-options{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin:10px 0 14px;
+}
+
+.extra-options a{
+
+    text-decoration:none;
+
+    color:var(--primary);
+
+    font-size:13px;
+
+    font-weight:700;
+}
+
+.form-check-label{
+
+    font-size:13px;
+
+    color:#475569;
+}
+
+/* =========================================================
+   CAPTCHA
+========================================================= */
+
+.g-recaptcha{
+
+    transform:scale(.90);
+
+    transform-origin:left top;
+}
+
+/* =========================================================
+   ERROR
+========================================================= */
+
 .text-danger{
 
     display:block;
 
-    margin-top:7px;
+    margin-top:4px;
 
-    color:#dc3545;
-
-    font-size:13px;
-    font-weight:600;
+    font-size:12px;
 }
 
 /* =========================================================
-| BUTTON
+   BUTTON
 ========================================================= */
 
 .btn-login-parent{
+
     width:100%;
 
-    height:62px;
+    height:50px;
 
     border:none;
 
-    border-radius:18px;
+    border-radius:14px;
+
+    color:#fff;
+
+    font-size:14px;
+
+    font-weight:800;
+
+    letter-spacing:.3px;
 
     background:
     linear-gradient(
@@ -408,90 +485,90 @@ body{
         var(--secondary)
     );
 
-    color:#fff;
-
-    font-size:16px;
-    font-weight:800;
-
-    transition:.3s;
+    transition:.3s ease;
 }
 
 .btn-login-parent:hover{
-    transform:translateY(-3px);
+
+    transform:
+    translateY(-2px);
+
+    box-shadow:
+    0 15px 35px rgba(37,99,235,.25);
 }
 
 /* =========================================================
-| FOOTER
+   FOOTER
 ========================================================= */
 
 .login-footer{
+
+    margin-top:16px;
+
+    padding-top:16px;
+
     text-align:center;
 
-    margin-top:35px;
+    border-top:
+    1px solid #eef2f7;
 
-    color:#64748b;
+    font-size:12px;
+
+    color:var(--muted);
 }
 
 /* =========================================================
-| RESPONSIVE
+   MOBILE
 ========================================================= */
 
-@media(max-width:991px){
-
-    .parent-left-panel{
-        display:none;
-    }
-
-    .parent-right-panel{
-        padding:45px 25px;
-    }
-
-    .parent-login-card{
-        max-width:550px;
-    }
-
-}
-
-@media(max-width:767px){
+@media(max-width:576px){
 
     .parent-login-wrapper{
-        padding:20px 12px;
+
+        padding:12px;
     }
 
-    .parent-right-panel{
-        padding:35px 20px;
+    .login-card-modern{
+
+        padding:22px 18px;
+
+        border-radius:22px;
     }
 
-    .login-header h2{
-        font-size:30px;
+    .login-logo{
+
+        width:60px;
+        height:60px;
+
+        font-size:24px;
     }
 
-    .login-icon{
-        width:85px;
-        height:85px;
-        font-size:35px;
+    .login-header h1{
+
+        font-size:24px;
     }
 
-    .input-box input,
-    .input-box select{
+    .input-box input{
 
-        height:56px;
-
-        border-radius:15px;
-
-        font-size:14px;
-
-        padding-left:50px !important;
-    }
-
-    .input-box i{
-        left:16px;
-        font-size:14px;
+        height:46px;
     }
 
     .btn-login-parent{
-        height:56px;
-        border-radius:15px;
+
+        height:48px;
     }
 
+    .extra-options{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:8px;
+    }
+
+    .g-recaptcha{
+
+        transform:scale(.80);
+    }
 }

@@ -1,0 +1,720 @@
+/* ==========================================================
+   EXECUTIVE LOGIN PORTAL
+========================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root{
+
+    --exl-primary:#2563eb;
+    --exl-primary-dark:#1d4ed8;
+
+    --exl-secondary:#4f46e5;
+
+    --exl-success:#10b981;
+
+    --exl-dark:#0f172a;
+
+    --exl-text:#334155;
+
+    --exl-muted:#64748b;
+
+    --exl-border:#e2e8f0;
+
+    --exl-white:#ffffff;
+
+    --exl-bg:#f8fafc;
+
+    --exl-radius:28px;
+
+    --exl-shadow:
+    0 25px 70px rgba(15,23,42,.15);
+
+    --exl-transition:
+    all .35s cubic-bezier(.4,0,.2,1);
+
+}
+
+/* ==========================================================
+   BODY
+========================================================== */
+
+body{
+
+    margin:0;
+
+    min-height:100vh;
+
+    overflow-x:hidden;
+
+    font-family:'Inter',sans-serif;
+
+    background:
+    radial-gradient(
+        circle at top left,
+        rgba(37,99,235,.18),
+        transparent 30%
+    ),
+    radial-gradient(
+        circle at bottom right,
+        rgba(79,70,229,.18),
+        transparent 35%
+    ),
+    linear-gradient(
+        135deg,
+        #eef4ff,
+        #f8fbff,
+        #eef2ff
+    );
+
+}
+
+/* ==========================================================
+   WRAPPER
+========================================================== */
+
+.exl-wrapper{
+
+    min-height:100vh;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:35px 20px;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+/* ==========================================================
+   FLOATING SHAPES
+========================================================== */
+
+.exl-shape{
+
+    position:absolute;
+
+    border-radius:50%;
+
+    filter:blur(90px);
+
+    pointer-events:none;
+
+}
+
+.exl-shape-1{
+
+    width:350px;
+    height:350px;
+
+    top:-120px;
+    left:-120px;
+
+    background:
+    rgba(37,99,235,.25);
+
+}
+
+.exl-shape-2{
+
+    width:320px;
+    height:320px;
+
+    right:-120px;
+    bottom:-120px;
+
+    background:
+    rgba(79,70,229,.22);
+
+}
+
+/* ==========================================================
+   MAIN CARD
+========================================================== */
+
+.exl-card{
+
+    width:100%;
+
+    max-width:1180px;
+
+    border-radius:32px;
+
+    overflow:hidden;
+
+    background:
+    rgba(255,255,255,.82);
+
+    backdrop-filter:blur(20px);
+
+    box-shadow:
+    var(--exl-shadow);
+
+    border:
+    1px solid rgba(255,255,255,.6);
+
+    position:relative;
+
+    z-index:5;
+
+}
+
+/* ==========================================================
+   LEFT PANEL
+========================================================== */
+
+.exl-left{
+
+    height:100%;
+
+    min-height:720px;
+
+    position:relative;
+
+    padding:50px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #0f172a,
+        #1e293b
+    );
+
+    color:#fff;
+
+    overflow:hidden;
+
+}
+
+.exl-overlay{
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+    radial-gradient(
+        circle at top right,
+        rgba(37,99,235,.30),
+        transparent 35%
+    );
+
+}
+
+.exl-left-content{
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+/* ==========================================================
+   LOGO
+========================================================== */
+
+.exl-logo{
+
+    width:80px;
+
+    margin-bottom:30px;
+
+}
+
+/* ==========================================================
+   TITLE
+========================================================== */
+
+.exl-left-title{
+
+    font-size:42px;
+
+    font-weight:900;
+
+    margin-bottom:18px;
+
+    line-height:1.15;
+
+}
+
+.exl-left-desc{
+
+    color:rgba(255,255,255,.82);
+
+    line-height:1.8;
+
+    font-size:15px;
+
+    margin-bottom:35px;
+
+}
+
+/* ==========================================================
+   FEATURES
+========================================================== */
+
+.exl-feature-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+
+}
+
+.exl-feature{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+    padding:16px;
+
+    border-radius:18px;
+
+    background:
+    rgba(255,255,255,.08);
+
+    backdrop-filter:blur(10px);
+
+    transition:var(--exl-transition);
+
+}
+
+.exl-feature:hover{
+
+    transform:translateX(8px);
+
+    background:
+    rgba(255,255,255,.12);
+
+}
+
+.exl-feature-icon{
+
+    width:52px;
+    height:52px;
+
+    border-radius:14px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    background:
+    linear-gradient(
+        135deg,
+        var(--exl-primary),
+        var(--exl-secondary)
+    );
+
+    color:#fff;
+
+    font-size:18px;
+
+}
+
+.exl-feature h5{
+
+    margin:0;
+
+    font-size:15px;
+
+    font-weight:700;
+
+}
+
+.exl-feature span{
+
+    font-size:13px;
+
+    color:#cbd5e1;
+
+}
+
+/* ==========================================================
+   RIGHT PANEL
+========================================================== */
+
+.exl-right{
+
+    padding:55px;
+
+    background:#fff;
+
+    height:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+}
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+.exl-header{
+
+    text-align:center;
+
+    margin-bottom:35px;
+
+}
+
+.exl-login-icon{
+
+    width:95px;
+    height:95px;
+
+    margin:auto;
+
+    border-radius:24px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    background:
+    linear-gradient(
+        135deg,
+        var(--exl-primary),
+        var(--exl-secondary)
+    );
+
+    color:#fff;
+
+    font-size:34px;
+
+    margin-bottom:20px;
+
+    box-shadow:
+    0 20px 40px rgba(37,99,235,.25);
+
+}
+
+.exl-title{
+
+    font-size:34px;
+
+    font-weight:900;
+
+    color:var(--exl-dark);
+
+    margin-bottom:8px;
+
+}
+
+.exl-subtitle{
+
+    color:var(--exl-muted);
+
+    font-size:14px;
+
+}
+
+/* ==========================================================
+   FORM
+========================================================== */
+
+.exl-form{
+
+    width:100%;
+
+}
+
+.exl-group{
+
+    margin-bottom:22px;
+
+}
+
+.exl-label{
+
+    display:block;
+
+    margin-bottom:10px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    color:var(--exl-dark);
+
+}
+
+/* ==========================================================
+   INPUT
+========================================================== */
+
+.exl-input-wrap{
+
+    position:relative;
+
+}
+
+.exl-input-icon{
+
+    position:absolute;
+
+    left:18px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    color:#64748b;
+
+}
+
+.exl-input{
+
+    width:100%;
+
+    height:58px;
+
+    border-radius:16px;
+
+    border:2px solid #e2e8f0;
+
+    background:#f8fafc;
+
+    padding-left:52px;
+
+    padding-right:52px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    transition:var(--exl-transition);
+
+}
+
+.exl-input:focus{
+
+    outline:none;
+
+    border-color:var(--exl-primary);
+
+    background:#fff;
+
+    box-shadow:
+    0 0 0 4px rgba(37,99,235,.10);
+
+}
+
+.exl-password-toggle{
+
+    position:absolute;
+
+    right:18px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    cursor:pointer;
+
+    color:#64748b;
+
+}
+
+/* ==========================================================
+   OPTIONS
+========================================================== */
+
+.exl-options{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    margin-bottom:24px;
+
+    font-size:14px;
+
+}
+
+.exl-forgot{
+
+    color:var(--exl-primary);
+
+    text-decoration:none;
+
+    font-weight:700;
+
+}
+
+/* ==========================================================
+   CAPTCHA
+========================================================== */
+
+.exl-captcha{
+
+    margin-bottom:24px;
+
+}
+
+/* ==========================================================
+   BUTTON
+========================================================== */
+
+.exl-btn{
+
+    width:100%;
+
+    height:60px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:
+    linear-gradient(
+        135deg,
+        var(--exl-primary),
+        var(--exl-secondary)
+    );
+
+    color:#fff;
+
+    font-size:15px;
+
+    font-weight:800;
+
+    cursor:pointer;
+
+    transition:var(--exl-transition);
+
+}
+
+.exl-btn:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+    0 20px 40px rgba(37,99,235,.25);
+
+}
+
+/* ==========================================================
+   ERROR
+========================================================== */
+
+.exl-error{
+
+    display:block;
+
+    margin-top:6px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    color:#ef4444;
+
+}
+
+/* ==========================================================
+   FOOTER
+========================================================== */
+
+.exl-footer{
+
+    text-align:center;
+
+    margin-top:30px;
+
+    color:#94a3b8;
+
+    font-size:13px;
+
+}
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media(max-width:991px){
+
+    .exl-left{
+
+        display:none;
+
+    }
+
+    .exl-card{
+
+        max-width:560px;
+
+    }
+
+    .exl-right{
+
+        padding:40px 28px;
+
+    }
+
+}
+
+@media(max-width:576px){
+
+    .exl-wrapper{
+
+        padding:15px;
+
+    }
+
+    .exl-right{
+
+        padding:28px 20px;
+
+    }
+
+    .exl-title{
+
+        font-size:28px;
+
+    }
+
+    .exl-login-icon{
+
+        width:75px;
+        height:75px;
+
+        font-size:28px;
+    }
+
+    .exl-input{
+
+        height:54px;
+    }
+
+    .exl-btn{
+
+        height:56px;
+    }
+
+    .exl-options{
+
+        flex-direction:column;
+
+        gap:10px;
+
+        align-items:flex-start;
+    }
+
+}

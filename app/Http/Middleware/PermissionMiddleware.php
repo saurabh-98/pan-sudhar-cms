@@ -39,7 +39,7 @@ class PermissionMiddleware
         */
 
         if (
-            $user->hasRole('Admin')
+            $user->hasRole('admin')
         ) {
 
             return $next($request);

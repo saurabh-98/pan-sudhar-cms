@@ -1,101 +1,74 @@
-/* =========================================================
-| RETAILER SIDEBAR
-| PRODUCTION LEVEL PREMIUM UI
-| VERSION : FINAL
-========================================================= */
+/* ==========================================================
+   RETAILER ERP SIDEBAR PRO 2026
+========================================================== */
 
 :root{
 
-    --primary:#2563eb;
-    --primary-dark:#1d4ed8;
+    --sb-bg:#06131f;
+    --sb-bg-2:#0c2138;
+    --sb-bg-3:#102a43;
 
-    --secondary:#020617;
+    --sb-primary:#2563eb;
+    --sb-primary-light:#3b82f6;
 
-    --sidebar:#081120;
+    --sb-success:#10b981;
+    --sb-success-light:#34d399;
 
-    --sidebar-light:#0f172a;
+    --sb-white:#ffffff;
+    --sb-text:#e2e8f0;
+    --sb-muted:#94a3b8;
 
-    --success:#10b981;
+    --sb-border:rgba(255,255,255,.06);
 
-    --danger:#ef4444;
+    --sb-shadow:
+    0 20px 60px rgba(0,0,0,.35);
 
-    --warning:#f59e0b;
-
-    --white:#ffffff;
-
-    --text:#e2e8f0;
-
-    --muted:#94a3b8;
-
-    --border:rgba(255,255,255,.08);
-
-    --shadow:
-        0 25px 60px rgba(0,0,0,.45);
-
-    --transition:.35s cubic-bezier(.4,0,.2,1);
+    --transition:.3s ease;
 }
 
-/* =========================================================
-| SIDEBAR
-========================================================= */
+/* ==========================================================
+   SIDEBAR
+========================================================== */
 
 .stf-sidebar{
 
     position:fixed;
 
     top:0;
-
     left:0;
 
-    width:320px;
+    width:255px;
 
     height:100vh;
 
-    z-index:1050;
-
     overflow-y:auto;
-
     overflow-x:hidden;
 
-    display:flex;
-
-    flex-direction:column;
+    z-index:999;
 
     background:
-        linear-gradient(
-            180deg,
-            #020617 0%,
-            #081120 25%,
-            #0b1324 60%,
-            #111827 100%
-        );
+    linear-gradient(
+        180deg,
+        var(--sb-bg) 0%,
+        var(--sb-bg-2) 55%,
+        var(--sb-bg-3) 100%
+    );
 
-    box-shadow:var(--shadow);
+    border-right:
+    1px solid rgba(255,255,255,.05);
 
-    transition:var(--transition);
-
-    scroll-behavior:smooth;
+    box-shadow:var(--sb-shadow);
 
     scrollbar-width:thin;
-
-    scrollbar-color:
-        rgba(37,99,235,.7)
-        transparent;
 }
 
-/* =========================================================
-| SIDEBAR SCROLLBAR
-========================================================= */
+/* ==========================================================
+   SCROLLBAR
+========================================================== */
 
 .stf-sidebar::-webkit-scrollbar{
 
-    width:8px;
-}
-
-.stf-sidebar::-webkit-scrollbar-track{
-
-    background:
-        rgba(255,255,255,.02);
+    width:5px;
 }
 
 .stf-sidebar::-webkit-scrollbar-thumb{
@@ -103,16 +76,16 @@
     border-radius:30px;
 
     background:
-        linear-gradient(
-            180deg,
-            rgba(37,99,235,.8),
-            rgba(29,78,216,.8)
-        );
+    linear-gradient(
+        180deg,
+        #2563eb,
+        #10b981
+    );
 }
 
-/* =========================================================
-| BACKGROUND EFFECTS
-========================================================= */
+/* ==========================================================
+   BACKGROUND EFFECTS
+========================================================== */
 
 .stf-sidebar::before{
 
@@ -120,21 +93,19 @@
 
     position:absolute;
 
-    top:-180px;
+    width:250px;
+    height:250px;
 
-    right:-180px;
-
-    width:380px;
-
-    height:380px;
+    top:-120px;
+    right:-120px;
 
     border-radius:50%;
 
     background:
-        radial-gradient(
-            rgba(37,99,235,.22),
-            transparent 70%
-        );
+    radial-gradient(
+        rgba(37,99,235,.15),
+        transparent 70%
+    );
 
     pointer-events:none;
 }
@@ -145,54 +116,42 @@
 
     position:absolute;
 
-    bottom:-200px;
+    width:200px;
+    height:200px;
 
-    left:-200px;
-
-    width:400px;
-
-    height:400px;
+    bottom:-100px;
+    left:-100px;
 
     border-radius:50%;
 
     background:
-        radial-gradient(
-            rgba(59,130,246,.08),
-            transparent 70%
-        );
+    radial-gradient(
+        rgba(16,185,129,.10),
+        transparent 70%
+    );
 
     pointer-events:none;
 }
 
-/* =========================================================
-| TOP
-========================================================= */
+/* ==========================================================
+   HEADER
+========================================================== */
 
 .stf-top{
-
-    position:relative;
-
-    z-index:5;
 
     display:flex;
 
     align-items:center;
 
-    justify-content:space-between;
-
-    gap:16px;
-
-    padding:26px 24px;
+    padding:10px 12px;
 
     border-bottom:
-        1px solid rgba(255,255,255,.06);
-
-    backdrop-filter:blur(16px);
+    1px solid rgba(255,255,255,.04);
 }
 
-/* =========================================================
-| BRAND
-========================================================= */
+/* ==========================================================
+   BRAND
+========================================================== */
 
 .stf-brand{
 
@@ -200,185 +159,82 @@
 
     align-items:center;
 
-    gap:18px;
+    gap:10px;
 }
 
 .stf-brand-icon{
 
-    position:relative;
+    width:42px;
+    height:42px;
 
-    width:64px;
-
-    height:64px;
-
-    border-radius:24px;
+    border-radius:12px;
 
     display:flex;
 
     align-items:center;
-
     justify-content:center;
-
-    font-size:28px;
 
     color:#fff;
 
+    font-size:16px;
+
     background:
-        linear-gradient(
-            135deg,
-            #3b82f6,
-            #2563eb
-        );
+    linear-gradient(
+        135deg,
+        #10b981,
+        #2563eb
+    );
 
     box-shadow:
-        0 18px 45px rgba(37,99,235,.35);
-
-    overflow:hidden;
-}
-
-.stf-brand-icon::before{
-
-    content:"";
-
-    position:absolute;
-
-    inset:0;
-
-    background:
-        linear-gradient(
-            120deg,
-            transparent,
-            rgba(255,255,255,.18),
-            transparent
-        );
-
-    transform:translateX(-100%);
-
-    animation:brandShine 4s infinite;
-}
-
-@keyframes brandShine{
-
-    100%{
-
-        transform:translateX(100%);
-    }
+    0 8px 20px rgba(37,99,235,.25);
 }
 
 .stf-title{
 
     margin:0;
 
-    font-size:24px;
+    font-size:15px;
 
-    font-weight:900;
-
-    line-height:1.1;
+    font-weight:800;
 
     color:#fff;
-
-    letter-spacing:-.6px;
 }
 
 .stf-subtitle{
 
-    font-size:12px;
+    font-size:10px;
 
-    font-weight:600;
-
-    color:#94a3b8;
+    color:var(--sb-muted);
 }
 
-/* =========================================================
-| CLOSE BUTTON
-========================================================= */
-
-.stf-close{
-
-    width:44px;
-
-    height:44px;
-
-    border:none;
-
-    border-radius:16px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    background:
-        rgba(255,255,255,.06);
-
-    color:#fff;
-
-    transition:var(--transition);
-}
-
-.stf-close:hover{
-
-    background:
-        rgba(239,68,68,.15);
-
-    color:#ef4444;
-
-    transform:
-        rotate(90deg)
-        scale(1.05);
-}
-
-/* =========================================================
-| PROFILE CARD
-========================================================= */
+/* ==========================================================
+   PROFILE
+========================================================== */
 
 .stf-profile{
 
     position:relative;
 
-    z-index:5;
-
-    margin:22px;
-
-    padding:34px 24px 26px;
-
-    border-radius:36px;
-
     overflow:hidden;
+
+    margin:8px;
+
+    padding:12px;
+
+    border-radius:16px;
 
     text-align:center;
 
     background:
-        linear-gradient(
-            145deg,
-            rgba(15,23,42,.96),
-            rgba(30,41,59,.82)
-        );
+    linear-gradient(
+        145deg,
+        rgba(15,23,42,.95),
+        rgba(30,41,59,.88)
+    );
 
     border:
-        1px solid rgba(255,255,255,.08);
-
-    backdrop-filter:blur(20px);
-
-    box-shadow:
-        0 20px 50px rgba(0,0,0,.28),
-        inset 0 1px 0 rgba(255,255,255,.06);
-
-    min-height:340px;
-
-    display:flex;
-
-    flex-direction:column;
-
-    justify-content:flex-start;
-
-    align-items:center;
+    1px solid rgba(255,255,255,.05);
 }
-
-/* =========================================================
-| PROFILE GLOW
-========================================================= */
 
 .stf-profile::before{
 
@@ -386,202 +242,116 @@
 
     position:absolute;
 
-    top:-120px;
+    width:100px;
+    height:100px;
 
-    right:-120px;
-
-    width:260px;
-
-    height:260px;
+    right:-40px;
+    top:-40px;
 
     border-radius:50%;
 
     background:
-        radial-gradient(
-            rgba(37,99,235,.20),
-            transparent 70%
-        );
-
-    z-index:-1;
+    radial-gradient(
+        rgba(16,185,129,.15),
+        transparent 70%
+    );
 }
 
-.stf-profile::after{
-
-    content:"";
-
-    position:absolute;
-
-    bottom:-120px;
-
-    left:-120px;
-
-    width:240px;
-
-    height:240px;
-
-    border-radius:50%;
-
-    background:
-        radial-gradient(
-            rgba(59,130,246,.08),
-            transparent 70%
-        );
-
-    z-index:-1;
-}
-
-/* =========================================================
-| AVATAR WRAP
-========================================================= */
+/* ==========================================================
+   AVATAR
+========================================================== */
 
 .stf-profile-image-wrap{
 
     position:relative;
 
-    width:110px;
+    width:52px;
+    height:52px;
 
-    height:110px;
-
-    margin-bottom:24px;
+    margin:0 auto 8px;
 }
-
-/* =========================================================
-| AVATAR
-========================================================= */
 
 .stf-avatar{
 
-    width:110px;
+    width:52px;
+    height:52px;
 
-    height:110px;
-
-    border-radius:34px;
+    border-radius:14px;
 
     display:flex;
 
     align-items:center;
-
     justify-content:center;
-
-    font-size:38px;
-
-    font-weight:900;
 
     color:#fff;
 
+    font-size:18px;
+
+    font-weight:800;
+
     background:
-        linear-gradient(
-            135deg,
-            #3b82f6,
-            #2563eb
-        );
+    linear-gradient(
+        135deg,
+        #10b981,
+        #2563eb
+    );
 
-    border:
-        4px solid rgba(255,255,255,.10);
-
-    box-shadow:
-        0 25px 50px rgba(37,99,235,.35);
-
-    transition:var(--transition);
+    transition:.3s ease;
 }
 
 .stf-profile:hover .stf-avatar{
 
     transform:
-        translateY(-6px)
-        scale(1.05);
+    scale(1.08)
+    rotate(-5deg);
 }
-
-/* =========================================================
-| STATUS DOT
-========================================================= */
 
 .stf-status-dot{
 
     position:absolute;
 
-    right:4px;
+    right:0;
+    bottom:0;
 
-    bottom:4px;
-
-    width:22px;
-
-    height:22px;
+    width:12px;
+    height:12px;
 
     border-radius:50%;
 
     background:#10b981;
 
-    border:4px solid #0f172a;
-
-    box-shadow:
-        0 0 0 5px rgba(16,185,129,.15);
-
-    animation:statusPulse 2s infinite;
+    border:2px solid #0f172a;
 }
 
-@keyframes statusPulse{
-
-    0%{
-
-        box-shadow:
-            0 0 0 0 rgba(16,185,129,.45);
-    }
-
-    70%{
-
-        box-shadow:
-            0 0 0 12px rgba(16,185,129,0);
-    }
-
-    100%{
-
-        box-shadow:
-            0 0 0 0 rgba(16,185,129,0);
-    }
-}
-
-/* =========================================================
-| PROFILE NAME
-========================================================= */
+/* ==========================================================
+   PROFILE TEXT
+========================================================== */
 
 .stf-profile-name{
 
-    margin-bottom:8px;
-
-    font-size:22px;
-
-    font-weight:900;
-
-    line-height:1.2;
-
     color:#fff;
-}
 
-/* =========================================================
-| ROLE
-========================================================= */
+    font-size:14px;
+
+    font-weight:800;
+
+    margin-bottom:2px;
+}
 
 .stf-profile-role{
 
-    margin-bottom:26px;
-
-    font-size:13px;
-
-    font-weight:600;
-
     color:#94a3b8;
+
+    font-size:10px;
+
+    margin-bottom:8px;
 }
 
-/* =========================================================
-| WALLET CARD
-========================================================= */
+/* ==========================================================
+   WALLET
+========================================================== */
 
 .stf-wallet-card{
-
-    width:100%;
-
-    margin-top:auto;
 
     display:flex;
 
@@ -589,148 +359,88 @@
 
     justify-content:space-between;
 
-    gap:18px;
+    padding:8px 10px;
 
-    padding:18px 20px;
-
-    border-radius:28px;
+    border-radius:12px;
 
     background:
-        linear-gradient(
-            135deg,
-            rgba(37,99,235,.22),
-            rgba(37,99,235,.10)
-        );
+    linear-gradient(
+        135deg,
+        #10b981,
+        #14b8a6
+    );
 
-    border:
-        1px solid rgba(59,130,246,.16);
-
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.05);
-
-    transition:var(--transition);
-}
-
-.stf-wallet-card:hover{
-
-    transform:translateY(-5px);
+    color:#fff;
 
     box-shadow:
-        0 18px 45px rgba(37,99,235,.18);
+    0 10px 25px rgba(16,185,129,.20);
 }
 
 .stf-wallet-card small{
 
     display:block;
 
-    margin-bottom:8px;
-
-    font-size:11px;
-
-    font-weight:800;
-
-    text-transform:uppercase;
+    font-size:8px;
 
     letter-spacing:1px;
 
-    color:#cbd5e1;
+    text-transform:uppercase;
 }
 
 .stf-wallet-card h4{
 
-    margin:0;
+    margin:2px 0 0;
 
-    font-size:24px;
+    font-size:14px;
 
     font-weight:900;
-
-    color:#fff;
-
-    line-height:1;
 }
 
 .stf-wallet-icon{
 
-    width:64px;
+    width:30px;
+    height:30px;
 
-    height:64px;
-
-    border-radius:24px;
-
-    flex-shrink:0;
+    border-radius:8px;
 
     display:flex;
 
     align-items:center;
-
     justify-content:center;
 
-    font-size:24px;
-
-    color:#fff;
-
     background:
-        rgba(255,255,255,.10);
+    rgba(255,255,255,.18);
 
-    backdrop-filter:blur(10px);
+    font-size:12px;
 }
 
-/* =========================================================
-| MENU WRAPPER
-========================================================= */
+/* ==========================================================
+   MENU
+========================================================== */
 
 .stf-menu-wrapper{
 
-    position:relative;
-
-    z-index:5;
-
-    padding:0 18px 40px;
+    padding:0 8px 12px;
 }
-
-/* =========================================================
-| MENU
-========================================================= */
-
-.stf-menu{
-
-    list-style:none;
-
-    padding:0;
-
-    margin:0;
-}
-
-/* =========================================================
-| MENU TITLE
-========================================================= */
 
 .stf-menu-title{
 
-    padding-left:14px;
+    margin:10px 0 6px 10px;
 
-    margin-bottom:14px;
+    font-size:9px;
 
-    font-size:11px;
+    font-weight:800;
 
-    font-weight:900;
-
-    letter-spacing:1.8px;
+    letter-spacing:1.5px;
 
     text-transform:uppercase;
 
     color:#64748b;
 }
 
-/* =========================================================
-| MENU LINK
-========================================================= */
-
 .stf-link{
 
     position:relative;
-
-    overflow:hidden;
 
     display:flex;
 
@@ -738,123 +448,34 @@
 
     justify-content:space-between;
 
-    gap:14px;
+    min-height:42px;
 
-    padding:18px 18px;
+    padding:6px 10px;
 
-    margin-bottom:12px;
+    margin-bottom:4px;
 
-    border-radius:24px;
-
-    text-decoration:none;
+    border-radius:12px;
 
     color:#cbd5e1;
 
+    text-decoration:none;
+
     transition:var(--transition);
-
-    backdrop-filter:blur(10px);
 }
-
-/* =========================================================
-| LINK SHINE
-========================================================= */
-
-.stf-link::before{
-
-    content:"";
-
-    position:absolute;
-
-    top:0;
-
-    left:-120%;
-
-    width:120%;
-
-    height:100%;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(255,255,255,.08),
-            transparent
-        );
-
-    transition:1s;
-}
-
-.stf-link:hover::before{
-
-    left:120%;
-}
-
-/* =========================================================
-| LINK HOVER
-========================================================= */
 
 .stf-link:hover{
 
-    transform:
-        translateX(6px)
-        scale(1.01);
+    transform:translateX(4px);
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(37,99,235,.18),
+        rgba(37,99,235,.05)
+    );
 
     color:#fff;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(37,99,235,.22),
-            rgba(37,99,235,.08)
-        );
-
-    box-shadow:
-        0 14px 35px rgba(37,99,235,.12);
 }
-
-/* =========================================================
-| ACTIVE
-========================================================= */
-
-.stf-active{
-
-    color:#fff !important;
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #1d4ed8
-        );
-
-    box-shadow:
-        0 20px 40px rgba(37,99,235,.28);
-}
-
-.stf-active::after{
-
-    content:"";
-
-    position:absolute;
-
-    top:50%;
-
-    right:16px;
-
-    width:12px;
-
-    height:12px;
-
-    border-radius:50%;
-
-    background:#fff;
-
-    transform:translateY(-50%);
-}
-
-/* =========================================================
-| LEFT SIDE
-========================================================= */
 
 .stf-link-left{
 
@@ -862,98 +483,140 @@
 
     align-items:center;
 
-    gap:16px;
+    gap:8px;
 }
-
-/* =========================================================
-| ICON
-========================================================= */
 
 .stf-link-left i{
 
-    width:24px;
+    width:28px;
+    height:28px;
 
-    text-align:center;
+    border-radius:8px;
 
-    font-size:18px;
+    display:flex;
 
-    transition:var(--transition);
+    align-items:center;
+    justify-content:center;
+
+    background:
+    rgba(255,255,255,.05);
+
+    font-size:12px;
+
+    transition:.3s;
 }
 
-.stf-link:hover .stf-link-left i{
+.stf-link:hover i{
+
+    background:
+    linear-gradient(
+        135deg,
+        #2563eb,
+        #3b82f6
+    );
 
     transform:
-        scale(1.12)
-        rotate(-5deg);
-}
+    scale(1.08)
+    rotate(-5deg);
 
-/* =========================================================
-| TEXT
-========================================================= */
+    color:#fff;
+}
 
 .stf-link-left span{
 
-    font-size:14px;
+    font-size:12px;
 
-    font-weight:800;
-
-    letter-spacing:.1px;
+    font-weight:600;
 }
 
-/* =========================================================
-| BADGE
-========================================================= */
+/* ==========================================================
+   ACTIVE
+========================================================== */
+
+.stf-active{
+
+    background:
+    linear-gradient(
+        135deg,
+        #2563eb,
+        #3b82f6
+    ) !important;
+
+    color:#fff !important;
+
+    box-shadow:
+    0 8px 20px rgba(37,99,235,.20);
+}
+
+.stf-active::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+    top:6px;
+    bottom:6px;
+
+    width:3px;
+
+    border-radius:20px;
+
+    background:#fff;
+}
+
+/* ==========================================================
+   SUBMENU
+========================================================== */
+
+.stf-submenu{
+
+    display:none;
+
+    list-style:none;
+
+    padding-left:8px;
+}
+
+.stf-dropdown.open > .stf-submenu{
+
+    display:block;
+}
+
+.stf-submenu .stf-link{
+
+    min-height:36px;
+
+    padding:4px 10px;
+}
+
+/* ==========================================================
+   BADGE
+========================================================== */
 
 .stf-badge{
 
-    padding:6px 11px;
+    padding:3px 7px;
 
-    border-radius:40px;
+    border-radius:30px;
 
-    font-size:10px;
+    font-size:8px;
 
-    font-weight:900;
-
-    letter-spacing:.7px;
-
-    text-transform:uppercase;
+    font-weight:800;
 
     color:#fff;
 
     background:
-        linear-gradient(
-            135deg,
-            #ef4444,
-            #dc2626
-        );
-
-    animation:badgePulse 2s infinite;
+    linear-gradient(
+        135deg,
+        #ef4444,
+        #dc2626
+    );
 }
 
-@keyframes badgePulse{
-
-    0%{
-
-        box-shadow:
-            0 0 0 0 rgba(239,68,68,.45);
-    }
-
-    70%{
-
-        box-shadow:
-            0 0 0 10px rgba(239,68,68,0);
-    }
-
-    100%{
-
-        box-shadow:
-            0 0 0 0 rgba(239,68,68,0);
-    }
-}
-
-/* =========================================================
-| LOGOUT
-========================================================= */
+/* ==========================================================
+   LOGOUT
+========================================================== */
 
 .stf-logout-btn{
 
@@ -963,18 +626,16 @@
 .stf-logout-btn:hover{
 
     background:
-        linear-gradient(
-            135deg,
-            rgba(239,68,68,.22),
-            rgba(239,68,68,.08)
-        ) !important;
-
-    color:#fff !important;
+    linear-gradient(
+        135deg,
+        rgba(239,68,68,.20),
+        rgba(239,68,68,.08)
+    ) !important;
 }
 
-/* =========================================================
-| MOBILE
-========================================================= */
+/* ==========================================================
+   MOBILE
+========================================================== */
 
 @media(max-width:991px){
 
@@ -982,7 +643,7 @@
 
         left:-100%;
 
-        width:320px;
+        width:280px;
     }
 
     .stf-sidebar.show{
@@ -990,300 +651,11 @@
         left:0;
     }
 }
-
-/* =========================================================
-| TABLET
-========================================================= */
-
-@media(max-width:768px){
-
-    .stf-sidebar{
-
-        width:300px;
-    }
-
-    .stf-profile{
-
-        margin:18px;
-
-        min-height:320px;
-    }
-
-    .stf-wallet-card h4{
-
-        font-size:20px;
-    }
-}
-
-/* =========================================================
-| MOBILE FULL
-========================================================= */
 
 @media(max-width:576px){
 
     .stf-sidebar{
 
         width:100%;
-    }
-
-    .stf-top{
-
-        padding:20px 18px;
-    }
-
-    .stf-profile{
-
-        margin:16px;
-
-        padding:28px 18px 22px;
-
-        min-height:300px;
-    }
-
-    .stf-avatar{
-
-        width:92px;
-
-        height:92px;
-
-        font-size:30px;
-    }
-
-    .stf-profile-image-wrap{
-
-        width:92px;
-
-        height:92px;
-    }
-
-    .stf-profile-name{
-
-        font-size:18px;
-    }
-
-    .stf-wallet-card{
-
-        padding:16px;
-    }
-
-    .stf-wallet-card h4{
-
-        font-size:18px;
-    }
-
-    .stf-wallet-icon{
-
-        width:56px;
-
-        height:56px;
-
-        font-size:20px;
-    }
-}
-
-.stf-dropdown > .stf-link {
-    cursor: pointer;
-}
-
-.stf-submenu {
-    display: none;
-    list-style: none;
-    padding-left: 20px;
-}
-
-.stf-dropdown.open > .stf-submenu {
-    display: block;
-}
-
-.stf-arrow {
-    transition: 0.3s;
-}
-
-.stf-dropdown.open > .stf-link .stf-arrow {
-    transform: rotate(180deg);
-}
-
-
-/* =========================================================
-   RESPONSIVE PREMIUM SIDEBAR OVERRIDES
-   ADD THIS AT THE VERY END OF YOUR CSS
-========================================================= */
-
-/* Sidebar */
-.stf-sidebar{
-    width:clamp(260px,16vw,320px);
-}
-
-/* Header */
-.stf-top{
-    padding:clamp(18px,1.4vw,26px)
-            clamp(16px,1.3vw,24px);
-}
-
-/* Brand */
-.stf-brand{
-    gap:clamp(12px,1vw,18px);
-}
-
-.stf-brand-icon{
-    width:clamp(52px,3.5vw,64px);
-    height:clamp(52px,3.5vw,64px);
-    font-size:clamp(22px,1.5vw,28px);
-    border-radius:20px;
-}
-
-.stf-title{
-    font-size:clamp(20px,1.4vw,24px);
-}
-
-.stf-subtitle{
-    font-size:clamp(11px,.8vw,12px);
-}
-
-/* Profile */
-.stf-profile{
-    margin:clamp(14px,1vw,22px);
-    padding:
-        clamp(24px,2vw,34px)
-        clamp(16px,1.5vw,24px)
-        clamp(20px,1.5vw,26px);
-    min-height:300px;
-    border-radius:32px;
-}
-
-.stf-profile-image-wrap{
-    width:clamp(90px,6vw,110px);
-    height:clamp(90px,6vw,110px);
-}
-
-.stf-avatar{
-    width:100%;
-    height:100%;
-    font-size:clamp(30px,2vw,38px);
-    border-radius:30px;
-}
-
-.stf-profile-name{
-    font-size:clamp(18px,1.4vw,22px);
-}
-
-.stf-profile-role{
-    font-size:clamp(12px,.9vw,13px);
-}
-
-/* Wallet */
-.stf-wallet-card{
-    padding:16px;
-    gap:14px;
-    border-radius:24px;
-}
-
-.stf-wallet-card h4{
-    font-size:clamp(18px,1.5vw,24px);
-}
-
-.stf-wallet-icon{
-    width:clamp(52px,3.5vw,64px);
-    height:clamp(52px,3.5vw,64px);
-    font-size:clamp(18px,1.5vw,24px);
-    border-radius:20px;
-}
-
-/* Menu */
-.stf-menu-wrapper{
-    padding:0 14px 32px;
-}
-
-.stf-link{
-    padding:clamp(14px,.9vw,18px);
-    margin-bottom:10px;
-    border-radius:20px;
-}
-
-.stf-link-left{
-    gap:12px;
-}
-
-.stf-link-left i{
-    font-size:clamp(16px,1vw,18px);
-}
-
-.stf-link-left span{
-    font-size:clamp(13px,.95vw,14px);
-}
-
-.stf-badge{
-    padding:5px 10px;
-    font-size:9px;
-}
-
-/* Desktop Large */
-@media (min-width:1600px){
-
-    .stf-sidebar{
-        width:300px;
-    }
-}
-
-/* Laptop */
-@media (max-width:1200px){
-
-    .stf-sidebar{
-        width:290px;
-    }
-}
-
-/* Tablet */
-@media (max-width:991px){
-
-    .stf-sidebar{
-        left:-100%;
-        width:300px;
-    }
-
-    .stf-sidebar.show{
-        left:0;
-    }
-}
-
-@media (max-width:768px){
-
-    .stf-sidebar{
-        width:280px;
-    }
-
-    .stf-profile{
-        min-height:280px;
-    }
-}
-
-/* Mobile */
-@media (max-width:576px){
-
-    .stf-sidebar{
-        width:100%;
-        max-width:100%;
-    }
-
-    .stf-top{
-        padding:18px;
-    }
-
-    .stf-profile{
-        margin:16px;
-        padding:24px 16px;
-    }
-
-    .stf-profile-image-wrap{
-        width:92px;
-        height:92px;
-    }
-
-    .stf-avatar{
-        font-size:30px;
-    }
-
-    .stf-wallet-card{
-        padding:14px;
     }
 }

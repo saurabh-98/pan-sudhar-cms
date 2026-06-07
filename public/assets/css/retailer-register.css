@@ -1,0 +1,628 @@
+/* =========================================================
+   RETAILER REGISTER PRO 2026
+========================================================= */
+
+:root{
+
+    --primary:#2563eb;
+    --primary-light:#3b82f6;
+
+    --secondary:#06b6d4;
+
+    --success:#10b981;
+
+    --danger:#ef4444;
+
+    --dark:#0f172a;
+
+    --text:#334155;
+
+    --muted:#64748b;
+
+    --border:#dbe4f0;
+
+    --card:#ffffff;
+
+    --input:#f8fbff;
+
+    --radius:22px;
+
+    --shadow:
+    0 25px 70px rgba(15,23,42,.12);
+}
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.retailer-register-page{
+
+    min-height:100vh;
+
+    padding:30px 20px;
+
+    position:relative;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:
+
+    radial-gradient(
+        circle at top left,
+        rgba(37,99,235,.12),
+        transparent 30%
+    ),
+
+    radial-gradient(
+        circle at bottom right,
+        rgba(6,182,212,.10),
+        transparent 30%
+    ),
+
+    linear-gradient(
+        135deg,
+        #eef4ff,
+        #f8fbff,
+        #edf7ff
+    );
+}
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.retailer-register-page .parent-login-card{
+
+    width:100%;
+
+    max-width:1150px;
+
+    border:none;
+
+    border-radius:32px;
+
+    overflow:hidden;
+
+    background:
+    rgba(255,255,255,.95);
+
+    backdrop-filter:blur(18px);
+
+    box-shadow:var(--shadow);
+}
+
+/* =========================================================
+   LEFT PANEL
+========================================================= */
+
+.retailer-register-page .parent-left-panel{
+
+    height:100%;
+
+    padding:45px 35px;
+
+    position:relative;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #0f172a,
+        #1e293b,
+        #2563eb
+    );
+
+    color:#fff;
+}
+
+.retailer-register-page .parent-left-panel::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+
+    radial-gradient(
+        circle at top right,
+        rgba(255,255,255,.12),
+        transparent 35%
+    );
+}
+
+.left-content{
+
+    position:relative;
+
+    z-index:2;
+}
+
+.left-content h1{
+
+    font-size:42px;
+
+    font-weight:900;
+
+    margin-bottom:14px;
+}
+
+.left-content p{
+
+    font-size:15px;
+
+    line-height:1.8;
+
+    opacity:.92;
+
+    margin-bottom:28px;
+}
+
+/* =========================================================
+   FEATURES
+========================================================= */
+
+.feature-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:14px;
+}
+
+.feature-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:16px;
+
+    border-radius:18px;
+
+    background:
+    rgba(255,255,255,.08);
+
+    backdrop-filter:blur(10px);
+
+    transition:.3s ease;
+}
+
+.feature-item:hover{
+
+    transform:
+    translateX(6px);
+
+    background:
+    rgba(255,255,255,.12);
+}
+
+.feature-icon{
+
+    width:54px;
+
+    height:54px;
+
+    border-radius:16px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:24px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #3b82f6,
+        #06b6d4
+    );
+}
+
+.feature-item h5{
+
+    margin:0;
+
+    font-size:16px;
+
+    font-weight:800;
+}
+
+.feature-item span{
+
+    font-size:13px;
+
+    opacity:.85;
+}
+
+/* =========================================================
+   RIGHT PANEL
+========================================================= */
+
+.retailer-register-page .parent-right-panel{
+
+    padding:35px 40px;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.login-header{
+
+    text-align:center;
+
+    margin-bottom:25px;
+}
+
+.login-icon{
+
+    width:78px;
+
+    height:78px;
+
+    margin:auto auto 14px;
+
+    border-radius:22px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:34px;
+
+    background:
+    linear-gradient(
+        135deg,
+        var(--primary),
+        var(--secondary)
+    );
+
+    color:#fff;
+
+    box-shadow:
+    0 15px 40px rgba(37,99,235,.25);
+}
+
+.login-header h2{
+
+    font-size:34px;
+
+    font-weight:900;
+
+    color:var(--dark);
+
+    margin-bottom:6px;
+}
+
+.login-header p{
+
+    color:var(--muted);
+
+    font-size:14px;
+}
+
+/* =========================================================
+   FORM GROUP
+========================================================= */
+
+.form-group-modern{
+
+    margin-bottom:0;
+}
+
+.form-group-modern label{
+
+    display:block;
+
+    margin-bottom:7px;
+
+    font-size:13px;
+
+    font-weight:800;
+
+    color:#1e293b;
+}
+
+/* =========================================================
+   INPUT WRAPPER
+========================================================= */
+
+.input-box{
+
+    position:relative;
+}
+
+.input-box i{
+
+    position:absolute;
+
+    left:16px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    color:#94a3b8;
+
+    font-size:15px;
+
+    z-index:3;
+}
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+.input-box input,
+.input-box select{
+
+    width:100%;
+
+    height:52px;
+
+    border-radius:15px;
+
+    border:2px solid var(--border);
+
+    background:var(--input);
+
+    padding-left:48px;
+
+    padding-right:16px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:#0f172a;
+
+    transition:.3s ease;
+}
+
+.input-box input:focus,
+.input-box select:focus{
+
+    outline:none;
+
+    background:#fff;
+
+    border-color:var(--primary);
+
+    box-shadow:
+    0 0 0 5px rgba(37,99,235,.08);
+}
+
+.input-box:focus-within i{
+
+    color:var(--primary);
+}
+
+/* =========================================================
+   VALIDATION
+========================================================= */
+
+.validation-error,
+.text-danger{
+
+    font-size:12px;
+
+    font-weight:600;
+
+    margin-top:5px;
+}
+
+.is-invalid{
+
+    border-color:#ef4444 !important;
+
+    background:#fff5f5 !important;
+}
+
+/* =========================================================
+   CAPTCHA
+========================================================= */
+
+.g-recaptcha{
+
+    margin-top:8px;
+}
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.btn-login-parent{
+
+    width:100%;
+
+    height:58px;
+
+    border:none;
+
+    border-radius:16px;
+
+    margin-top:8px;
+
+    font-size:15px;
+
+    font-weight:800;
+
+    color:#fff;
+
+    background:
+    linear-gradient(
+        135deg,
+        var(--primary),
+        var(--secondary)
+    );
+
+    transition:.3s ease;
+}
+
+.btn-login-parent:hover{
+
+    transform:
+    translateY(-2px);
+
+    box-shadow:
+    0 20px 40px rgba(37,99,235,.25);
+}
+
+/* =========================================================
+   LOGIN LINK
+========================================================= */
+
+.text-center a{
+
+    color:var(--primary);
+
+    font-weight:700;
+
+    text-decoration:none;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.login-footer{
+
+    text-align:center;
+
+    margin-top:20px;
+
+    padding-top:18px;
+
+    border-top:
+    1px solid #edf2f7;
+
+    color:var(--muted);
+
+    font-size:13px;
+}
+
+/* =========================================================
+   DESKTOP COMPACT
+========================================================= */
+
+@media(min-width:1400px){
+
+    .retailer-register-page{
+
+        padding:20px;
+    }
+
+    .parent-right-panel{
+
+        padding:30px 35px;
+    }
+
+    .feature-item{
+
+        padding:14px;
+    }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media(max-width:991px){
+
+    .retailer-register-page .parent-left-panel{
+
+        display:none;
+    }
+
+    .retailer-register-page .col-lg-5{
+
+        display:none;
+    }
+
+    .retailer-register-page .col-lg-7{
+
+        width:100%;
+
+        max-width:100%;
+
+        flex:0 0 100%;
+    }
+
+    .retailer-register-page .parent-login-card{
+
+        max-width:760px;
+    }
+
+    .parent-right-panel{
+
+        padding:28px;
+    }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:576px){
+
+    .retailer-register-page{
+
+        padding:12px;
+    }
+
+    .retailer-register-page .parent-login-card{
+
+        border-radius:20px;
+    }
+
+    .parent-right-panel{
+
+        padding:20px 16px;
+    }
+
+    .login-header h2{
+
+        font-size:26px;
+    }
+
+    .login-icon{
+
+        width:65px;
+        height:65px;
+
+        font-size:28px;
+    }
+
+    .input-box input,
+    .input-box select{
+
+        height:50px;
+
+        font-size:14px;
+    }
+
+    .btn-login-parent{
+
+        height:54px;
+    }
+
+    .g-recaptcha{
+
+        transform:scale(.82);
+
+        transform-origin:left top;
+    }
+}

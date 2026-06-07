@@ -2,170 +2,105 @@
 
 @section('content')
 
-{{-- =========================================================
-| TOASTR CSS
-========================================================= --}}
-<link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-
-{{-- =========================================================
-| FONT AWESOME
-========================================================= --}}
 <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-<div class="parent-login-wrapper">
+<div class="exl-wrapper">
 
-    {{-- BACKGROUND EFFECTS --}}
-    <div class="bg-shape shape-1"></div>
-    <div class="bg-shape shape-2"></div>
+```
+<div class="exl-shape exl-shape-1"></div>
+<div class="exl-shape exl-shape-2"></div>
 
-    <div class="container-fluid">
+<div class="container-fluid">
 
-        <div class="parent-login-card">
+    <div class="exl-card">
 
-            <div class="row g-0 h-100">
+        <div class="row g-0 align-items-stretch">
 
-                {{-- =========================================================
-                | LEFT PANEL
-                ========================================================= --}}
-                <div class="col-lg-5">
+            <!-- LEFT PANEL -->
 
-                    <div class="parent-left-panel">
+            <div class="col-lg-5">
 
-                        <div class="overlay-layer"></div>
+                <div class="exl-left">
 
-                        <div class="left-content">
+                    <div class="exl-overlay"></div>
 
-                            {{-- LOGO --}}
-                            <div class="school-logo">
+                    <div class="exl-left-content">
 
-                                <img src="{{ asset('logo.png') }}"
-                                     alt="Logo">
+                        <div class="exl-logo-wrap">
+
+                            <img
+                                src="{{ asset('logo.png') }}"
+                                alt="Logo"
+                                class="exl-logo">
+
+                        </div>
+
+                        <h1 class="exl-left-title">
+
+                            Executive Portal
+
+                        </h1>
+
+                        <p class="exl-left-desc">
+
+                            Manage assigned PAN correction applications,
+                            verify documents, upload receipts and
+                            complete approval workflow securely.
+
+                        </p>
+
+                        <div class="exl-feature-list">
+
+                            <div class="exl-feature">
+
+                                <div class="exl-feature-icon">
+
+                                    <i class="fa fa-clipboard-list"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <h5>Assigned Applications</h5>
+
+                                    <span>View assigned cases</span>
+
+                                </div>
 
                             </div>
 
-                            {{-- TITLE --}}
-                            <h1>
+                            <div class="exl-feature">
 
-                                Executive Portal
+                                <div class="exl-feature-icon">
 
-                            </h1>
-
-                            <p>
-
-                                Manage assigned PAN Correction applications,
-                                verify customer documents, upload processing
-                                receipts, track application progress and
-                                complete approval workflow from one secure
-                                executive dashboard.
-
-                            </p>
-
-                            {{-- FEATURES --}}
-                            <div class="feature-list">
-
-                                <div class="feature-item">
-
-                                    <div class="feature-icon">
-
-                                        📋
-
-                                    </div>
-
-                                    <div>
-
-                                        <h5>
-
-                                            Assigned Applications
-
-                                        </h5>
-
-                                        <span>
-
-                                            View and process assigned applications
-
-                                        </span>
-
-                                    </div>
+                                    <i class="fa fa-file-circle-check"></i>
 
                                 </div>
 
-                                <div class="feature-item">
+                                <div>
 
-                                    <div class="feature-icon">
+                                    <h5>Document Verification</h5>
 
-                                        📄
-
-                                    </div>
-
-                                    <div>
-
-                                        <h5>
-
-                                            Document Verification
-
-                                        </h5>
-
-                                        <span>
-
-                                            Review and verify customer documents
-
-                                        </span>
-
-                                    </div>
+                                    <span>Verify uploaded documents</span>
 
                                 </div>
 
-                                <div class="feature-item">
+                            </div>
 
-                                    <div class="feature-icon">
+                            <div class="exl-feature">
 
-                                        ⬆️
+                                <div class="exl-feature-icon">
 
-                                    </div>
-
-                                    <div>
-
-                                        <h5>
-
-                                            Receipt Upload
-
-                                        </h5>
-
-                                        <span>
-
-                                            Upload approval and processing receipts
-
-                                        </span>
-
-                                    </div>
+                                    <i class="fa fa-cloud-arrow-up"></i>
 
                                 </div>
 
-                                <div class="feature-item">
+                                <div>
 
-                                    <div class="feature-icon">
+                                    <h5>Receipt Upload</h5>
 
-                                        ⚡
-
-                                    </div>
-
-                                    <div>
-
-                                        <h5>
-
-                                            Fast Processing
-
-                                        </h5>
-
-                                        <span>
-
-                                            Complete applications efficiently
-
-                                        </span>
-
-                                    </div>
+                                    <span>Upload processing receipts</span>
 
                                 </div>
 
@@ -177,173 +112,159 @@
 
                 </div>
 
-                {{-- =========================================================
-                | RIGHT PANEL
-                ========================================================= --}}
-                <div class="col-lg-7">
+            </div>
 
-                    <div class="parent-right-panel">
+            <!-- RIGHT PANEL -->
 
-                        {{-- LOGIN HEADER --}}
-                        <div class="login-header">
+            <div class="col-lg-7">
 
-                            <div class="login-icon">
+                <div class="exl-right">
 
-                                👨‍💼
+                    <div class="exl-header">
 
-                            </div>
+                        <div class="exl-login-icon">
 
-                            <h2>
-
-                                Executive Login
-
-                            </h2>
-
-                            <p>
-
-                                Access your executive dashboard securely
-
-                            </p>
+                            <i class="fa fa-user-tie"></i>
 
                         </div>
 
-                        {{-- =========================================================
-                        | LOGIN FORM
-                        ========================================================= --}}
-                        <form id="executiveLoginForm">
+                        <h2 class="exl-title">
 
-                            @csrf
+                            Executive Login
 
-                            {{-- EMAIL --}}
-                            <div class="form-group-modern">
+                        </h2>
 
-                                <label>
+                        <p class="exl-subtitle">
 
-                                    Executive Email Address
+                            Access your dashboard securely
 
-                                </label>
+                        </p>
 
-                                <div class="input-box">
+                    </div>
 
-                                    <i class="fa-solid fa-user"></i>
+                    <form
+                        id="executiveLoginForm"
+                        class="exl-form">
 
-                                    <input
-                                        type="email"
-                                        name="email"
-                                        id="email"
-                                        placeholder="Enter Executive Email Address"
-                                        autocomplete="username"
-                                        required
-                                    >
+                        @csrf
 
-                                </div>
+                        <div class="exl-group">
 
-                                <span class="text-danger error-email"></span>
+                            <label class="exl-label">
 
-                            </div>
+                                Executive Email Address
 
-                            {{-- PASSWORD --}}
-                            <div class="form-group-modern">
+                            </label>
 
-                                <label>
+                            <div class="exl-input-wrap">
 
-                                    Password
+                                <i class="fa fa-envelope exl-input-icon"></i>
 
-                                </label>
-
-                                <div class="input-box">
-
-                                    <i class="fa-solid fa-lock"></i>
-
-                                    <input
-                                        type="password"
-                                        name="password"
-                                        id="password"
-                                        placeholder="Enter Password"
-                                        autocomplete="current-password"
-                                        required
-                                    >
-
-                                    <span class="toggle-password">
-
-                                        <i class="fa-solid fa-eye"></i>
-
-                                    </span>
-
-                                </div>
-
-                                <span class="text-danger error-password"></span>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    class="exl-input"
+                                    placeholder="Enter Email Address">
 
                             </div>
 
-                            {{-- EXTRA --}}
-                            <div class="extra-options">
-
-                                <div class="form-check">
-
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        name="remember"
-                                        id="remember">
-
-                                    <label
-                                        class="form-check-label"
-                                        for="remember">
-
-                                        Remember Me
-
-                                    </label>
-
-                                </div>
-
-                                <a href="">
-
-                                    Forgot Password?
-
-                                </a>
-
-                            </div>
-
-                            {{-- GOOGLE CAPTCHA --}}
-                            <div class="form-group-modern mb-4">
-
-                                <label>
-
-                                    Verify You Are Human
-
-                                    <span class="text-danger">*</span>
-
-                                </label>
-
-                                <div class="g-recaptcha"
-                                     data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}">
-                                </div>
-
-                                <span class="text-danger error-captcha"></span>
-
-                            </div>
-
-                            {{-- BUTTON --}}
-                            <button
-                                type="submit"
-                                class="btn-login-parent"
-                                id="loginBtn">
-
-                                <i class="fa-solid fa-right-to-bracket me-2"></i>
-
-                                Login To Executive Panel
-
-                            </button>
-
-                        </form>
-
-                        {{-- FOOTER --}}
-                        <div class="login-footer">
-
-                            © {{ date('Y') }} PAN Sudhar Executive Portal
+                            <span class="exl-error error-email"></span>
 
                         </div>
+
+                        <div class="exl-group">
+
+                            <label class="exl-label">
+
+                                Password
+
+                            </label>
+
+                            <div class="exl-input-wrap">
+
+                                <i class="fa fa-lock exl-input-icon"></i>
+
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    class="exl-input"
+                                    placeholder="Enter Password">
+
+                                <span class="exl-password-toggle">
+
+                                    <i class="fa fa-eye"></i>
+
+                                </span>
+
+                            </div>
+
+                            <span class="exl-error error-password"></span>
+
+                        </div>
+
+                        <div class="exl-options">
+
+                            <div class="form-check">
+
+                                <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="remember">
+
+                                <label
+                                    class="form-check-label"
+                                    for="remember">
+
+                                    Remember Me
+
+                                </label>
+
+                            </div>
+
+                            <a href="#" class="exl-forgot">
+
+                                Forgot Password?
+
+                            </a>
+
+                        </div>
+
+                        <div class="exl-captcha">
+
+                            <label class="exl-label">
+
+                                Verify You Are Human
+
+                            </label>
+
+                            <div
+                                class="g-recaptcha"
+                                data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}">
+                            </div>
+
+                            <span class="exl-error error-captcha"></span>
+
+                        </div>
+
+                        <button
+                            type="submit"
+                            id="loginBtn"
+                            class="exl-btn">
+
+                            <i class="fa fa-right-to-bracket me-2"></i>
+
+                            Login To Executive Panel
+
+                        </button>
+
+                    </form>
+
+                    <div class="exl-footer">
+
+                        © {{ date('Y') }}
+                        PAN Sudhar Executive Portal
 
                     </div>
 
@@ -356,6 +277,9 @@
     </div>
 
 </div>
+
+</div>
+
 @endsection
 
 

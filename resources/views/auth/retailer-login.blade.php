@@ -2,353 +2,154 @@
 
 @section('content')
 
-{{-- =========================================================
-| TOASTR CSS
-========================================================= --}}
 <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
-{{-- =========================================================
-| FONT AWESOME
-========================================================= --}}
 <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <div class="parent-login-wrapper">
 
-    {{-- BACKGROUND EFFECTS --}}
     <div class="bg-shape shape-1"></div>
     <div class="bg-shape shape-2"></div>
 
-    <div class="container-fluid">
+    <div class="login-card-modern">
 
-        <div class="parent-login-card">
+        {{-- LOGIN HEADER --}}
+        <div class="login-header">
 
-            <div class="row g-0 h-100">
+            <div class="login-logo">
+                🏪
+            </div>
 
-                {{-- =========================================================
-                | LEFT PANEL
-                ========================================================= --}}
-                <div class="col-lg-5">
+            <h1>Retailer Portal</h1>
 
-                    <div class="parent-left-panel">
+            <p>
+                Access your retailer dashboard securely
+            </p>
 
-                        <div class="overlay-layer"></div>
+        </div>
 
-                        <div class="left-content">
+        {{-- LOGIN FORM --}}
+        <form id="retailerLoginForm">
 
-                            {{-- LOGO --}}
-                            <div class="school-logo">
+            @csrf
 
-                                <img src="{{ asset('logo.png') }}"
-                                     alt="Logo">
+            <div class="form-group-modern">
 
-                            </div>
+                <label>
+                    Retailer Email / Mobile Number
+                </label>
 
-                            {{-- TITLE --}}
-                            <h1>
+                <div class="input-box">
 
-                                Retailer Portal
+                    <i class="fa-solid fa-user"></i>
 
-                            </h1>
-
-                            <p>
-
-                                Manage PAN Card, Aadhaar services,
-                                customer applications, corrections,
-                                document uploads, and service tracking
-                                from one secure digital dashboard.
-
-                            </p>
-
-                            {{-- FEATURES --}}
-                            <div class="feature-list">
-
-                                <div class="feature-item">
-
-                                    <div class="feature-icon">
-
-                                        🪪
-
-                                    </div>
-
-                                    <div>
-
-                                        <h5>
-
-                                            PAN Card Services
-
-                                        </h5>
-
-                                        <span>
-
-                                            New PAN & correction services
-
-                                        </span>
-
-                                    </div>
-
-                                </div>
-
-                                <div class="feature-item">
-
-                                    <div class="feature-icon">
-
-                                        🔐
-
-                                    </div>
-
-                                    <div>
-
-                                        <h5>
-
-                                            Aadhaar Assistance
-
-                                        </h5>
-
-                                        <span>
-
-                                            Aadhaar update & verification
-
-                                        </span>
-
-                                    </div>
-
-                                </div>
-
-                                <div class="feature-item">
-
-                                    <div class="feature-icon">
-
-                                        📂
-
-                                    </div>
-
-                                    <div>
-
-                                        <h5>
-
-                                            Application Tracking
-
-                                        </h5>
-
-                                        <span>
-
-                                            Track customer applications
-
-                                        </span>
-
-                                    </div>
-
-                                </div>
-
-                                <div class="feature-item">
-
-                                    <div class="feature-icon">
-
-                                        ⚡
-
-                                    </div>
-
-                                    <div>
-
-                                        <h5>
-
-                                            Fast Processing
-
-                                        </h5>
-
-                                        <span>
-
-                                            Quick and secure services
-
-                                        </span>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
+                    <input
+                        type="text"
+                        id="email"
+                        name="email"
+                        autocomplete="username"
+                        placeholder="Enter Email or Mobile Number"
+                        required
+                    >
 
                 </div>
 
-                {{-- =========================================================
-                | RIGHT PANEL
-                ========================================================= --}}
-                <div class="col-lg-7">
-
-                    <div class="parent-right-panel">
-
-                        {{-- LOGIN HEADER --}}
-                        <div class="login-header">
-
-                            <div class="login-icon">
-
-                                🏪
-
-                            </div>
-
-                            <h2>
-
-                                Retailer Login
-
-                            </h2>
-
-                            <p>
-
-                                Access your retailer dashboard securely
-
-                            </p>
-
-                        </div>
-
-                        {{-- =========================================================
-                        | LOGIN FORM
-                        ========================================================= --}}
-                        <form id="retailerLoginForm">
-
-                            @csrf
-
-                            {{-- EMAIL --}}
-                            <div class="form-group-modern">
-
-                                <label>
-
-                                    Retailer Email / Mobile Number
-
-                                </label>
-
-                                <div class="input-box">
-
-                                    <i class="fa-solid fa-user"></i>
-
-                                    <input
-                                        type="text"
-                                        name="email"
-                                        id="email"
-                                        placeholder="Enter Retailer Email or Mobile"
-                                        autocomplete="username"
-                                        required
-                                    >
-
-                                </div>
-
-                                <span class="text-danger error-email"></span>
-
-                            </div>
-
-                            {{-- PASSWORD --}}
-                            <div class="form-group-modern">
-
-                                <label>
-
-                                    Password
-
-                                </label>
-
-                                <div class="input-box">
-
-                                    <i class="fa-solid fa-lock"></i>
-
-                                    <input
-                                        type="password"
-                                        name="password"
-                                        id="password"
-                                        placeholder="Enter Password"
-                                        autocomplete="current-password"
-                                        required
-                                    >
-
-                                    <span class="toggle-password">
-
-                                        <i class="fa-solid fa-eye"></i>
-
-                                    </span>
-
-                                </div>
-
-                                <span class="text-danger error-password"></span>
-
-                            </div>
-
-                            {{-- EXTRA --}}
-                            <div class="extra-options">
-
-                                <div class="form-check">
-
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        name="remember"
-                                        id="remember">
-
-                                    <label
-                                        class="form-check-label"
-                                        for="remember">
-
-                                        Remember Me
-
-                                    </label>
-
-                                </div>
-
-                                <a href="">
-
-                                    Forgot Password?
-
-                                </a>
-
-                            </div>
-
-                            {{-- GOOGLE CAPTCHA --}}
-                            <div class="form-group-modern mb-4">
-
-                                <label>
-
-                                    Verify You Are Human
-
-                                    <span class="text-danger">*</span>
-
-                                </label>
-
-                                <div class="g-recaptcha"
-                                     data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}">
-                                </div>
-
-                                <span class="text-danger error-captcha"></span>
-
-                            </div>
-
-                            {{-- BUTTON --}}
-                            <button
-                                type="submit"
-                                class="btn-login-parent"
-                                id="loginBtn">
-
-                                <i class="fa-solid fa-right-to-bracket me-2"></i>
-
-                                Login To Dashboard
-
-                            </button>
-
-                        </form>
-
-                        {{-- FOOTER --}}
-                        <div class="login-footer">
-
-                            © {{ date('Y') }} PAN & Aadhaar Suvidha Portal
-
-                        </div>
-
-                    </div>
-
-                </div>
+                <span class="text-danger error-email"></span>
 
             </div>
+
+            <div class="form-group-modern">
+
+                <label>
+                    Password
+                </label>
+
+                <div class="input-box">
+
+                    <i class="fa-solid fa-lock"></i>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        autocomplete="current-password"
+                        placeholder="Enter Password"
+                        required
+                    >
+
+                    <span class="toggle-password">
+
+                        <i class="fa-solid fa-eye"></i>
+
+                    </span>
+
+                </div>
+
+                <span class="text-danger error-password"></span>
+
+            </div>
+
+            <div class="remember-row">
+
+                <div class="form-check">
+
+                    <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="remember"
+                        name="remember"
+                    >
+
+                    <label
+                        class="form-check-label"
+                        for="remember"
+                    >
+                        Remember Me
+                    </label>
+
+                </div>
+
+
+            </div>
+
+            <div class="form-group-modern">
+
+                <label>
+
+                    Verify You Are Human
+
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                <div class="g-recaptcha"
+                     data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}">
+                </div>
+
+                <span class="text-danger error-captcha"></span>
+
+            </div>
+
+            <button
+                type="submit"
+                class="btn-login-parent"
+                id="loginBtn"
+            >
+
+                <i class="fa-solid fa-right-to-bracket me-2"></i>
+
+                Login To Dashboard
+
+            </button>
+
+        </form>
+
+        <div class="login-footer">
+
+            © {{ date('Y') }}
+            PAN & Aadhaar Suvidha Portal
 
         </div>
 
@@ -357,7 +158,6 @@
 </div>
 
 @endsection
-
 
 @section('scripts')
 

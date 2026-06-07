@@ -29,194 +29,194 @@ class LoginController extends Controller
     */
 
     public function login(Request $request)
-{
-    /*
-    |--------------------------------------------------------------------------
-    | VALIDATION
-    |--------------------------------------------------------------------------
-    */
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDATION
+        |--------------------------------------------------------------------------
+        */
 
-    $validator = Validator::make(
+        $validator = Validator::make(
 
-        $request->all(),
+            $request->all(),
 
-        [
+            [
 
-            'email' => [
+                'email' => [
 
-                'required',
-                'string'
+                    'required',
+                    'string'
+                ],
+
+                'password' => [
+
+                    'required',
+                    'string'
+                ],
+
+                'g-recaptcha-response' => [
+
+                    'required'
+                ]
             ],
 
-            'password' => [
+            [
 
-                'required',
-                'string'
-            ],
+                'email.required' =>
 
-            'g-recaptcha-response' => [
+                    'Email or mobile number is required.',
 
-                'required'
+                'password.required' =>
+
+                    'Password is required.',
+
+                'g-recaptcha-response.required' =>
+
+                    'Captcha verification is required.'
             ]
-        ],
-
-        [
-
-            'email.required' =>
-
-                'Email or mobile number is required.',
-
-            'password.required' =>
-
-                'Password is required.',
-
-            'g-recaptcha-response.required' =>
-
-                'Captcha verification is required.'
-        ]
-    );
-
-    /*
-    |--------------------------------------------------------------------------
-    | VALIDATION FAILED
-    |--------------------------------------------------------------------------
-    */
-
-    if ($validator->fails()) {
-
-        return response()->json([
-
-            'success' => false,
-
-            'errors' =>
-
-                $validator->errors()
-
-        ], 422);
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | LOGIN FIELD
-    |--------------------------------------------------------------------------
-    */
-
-    $loginField = filter_var(
-
-        $request->email,
-        FILTER_VALIDATE_EMAIL
-
-    ) ? 'email' : 'mobile';
-
-    /*
-    |--------------------------------------------------------------------------
-    | CREDENTIALS
-    |--------------------------------------------------------------------------
-    */
-
-    $credentials = [
-
-        $loginField => trim($request->email),
-
-        'password' => trim($request->password),
-
-        'status' => 1
-
-    ];
-
-    /*
-    |--------------------------------------------------------------------------
-    | ATTEMPT LOGIN
-    |--------------------------------------------------------------------------
-    */
-
-    if (
-
-        Auth::attempt(
-
-            $credentials,
-
-            $request->remember
-        )
-
-    ) {
+        );
 
         /*
         |--------------------------------------------------------------------------
-        | USER
+        | VALIDATION FAILED
         |--------------------------------------------------------------------------
         */
 
-        $user = Auth::user();
-
-        /*
-        |--------------------------------------------------------------------------
-        | CHECK RETAILER ROLE
-        |--------------------------------------------------------------------------
-        */
-
-        if (!$user->hasRole('retailer')) {
-
-            Auth::logout();
+        if ($validator->fails()) {
 
             return response()->json([
 
                 'success' => false,
 
-                'message' =>
+                'errors' =>
 
-                    'Unauthorized access.'
+                    $validator->errors()
 
-            ], 403);
+            ], 422);
         }
 
         /*
         |--------------------------------------------------------------------------
-        | REGENERATE SESSION
+        | LOGIN FIELD
         |--------------------------------------------------------------------------
         */
 
-        $request->session()
-                ->regenerate();
+        $loginField = filter_var(
+
+            $request->email,
+            FILTER_VALIDATE_EMAIL
+
+        ) ? 'email' : 'mobile';
 
         /*
         |--------------------------------------------------------------------------
-        | SUCCESS
+        | CREDENTIALS
+        |--------------------------------------------------------------------------
+        */
+
+        $credentials = [
+
+            $loginField => trim($request->email),
+
+            'password' => trim($request->password),
+
+            'status' => 1
+
+        ];
+
+        /*
+        |--------------------------------------------------------------------------
+        | ATTEMPT LOGIN
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+
+            Auth::attempt(
+
+                $credentials,
+
+                $request->remember
+            )
+
+        ) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | USER
+            |--------------------------------------------------------------------------
+            */
+
+            $user = Auth::user();
+
+            /*
+            |--------------------------------------------------------------------------
+            | CHECK RETAILER ROLE
+            |--------------------------------------------------------------------------
+            */
+
+            if (!$user->hasRole('retailer')) {
+
+                Auth::logout();
+
+                return response()->json([
+
+                    'success' => false,
+
+                    'message' =>
+
+                        'Unauthorized access.'
+
+                ], 403);
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | REGENERATE SESSION
+            |--------------------------------------------------------------------------
+            */
+
+            $request->session()
+                    ->regenerate();
+
+            /*
+            |--------------------------------------------------------------------------
+            | SUCCESS
+            |--------------------------------------------------------------------------
+            */
+
+            return response()->json([
+
+                'success' => true,
+
+                'message' =>
+
+                    'Retailer login successful.',
+
+                'redirect' =>
+
+                    route('retailer.dashboard')
+
+            ]);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | INVALID LOGIN
         |--------------------------------------------------------------------------
         */
 
         return response()->json([
 
-            'success' => true,
+            'success' => false,
 
             'message' =>
 
-                'Retailer login successful.',
+                'Invalid login credentials.'
 
-            'redirect' =>
-
-                route('retailer.dashboard')
-
-        ]);
+        ], 401);
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | INVALID LOGIN
-    |--------------------------------------------------------------------------
-    */
-
-    return response()->json([
-
-        'success' => false,
-
-        'message' =>
-
-            'Invalid login credentials.'
-
-    ], 401);
-}
-    
 
     /*
     |--------------------------------------------------------------------------

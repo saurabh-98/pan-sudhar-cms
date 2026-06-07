@@ -1,6 +1,30 @@
-/* =========================================================
-   RETAILER FOOTER LUXURY PREMIUM
-========================================================= */
+/* ==========================================================
+   RETAILER ERP FOOTER PRO 2026
+========================================================== */
+
+:root{
+
+    --ft-primary:#2563eb;
+    --ft-success:#10b981;
+
+    --ft-dark:#0f172a;
+    --ft-text:#475569;
+    --ft-muted:#64748b;
+
+    --ft-border:#e2e8f0;
+
+    --ft-white:#ffffff;
+
+    --ft-shadow:
+    0 10px 30px rgba(15,23,42,.05);
+
+    --ft-hover:
+    0 20px 40px rgba(37,99,235,.08);
+}
+
+/* ==========================================================
+   FOOTER
+========================================================== */
 
 .retailer-footer{
 
@@ -8,49 +32,41 @@
 
     overflow:hidden;
 
-    margin-top:35px;
+    margin-top:20px;
 
-    padding:28px 32px;
+    padding:18px 22px;
 
-    border-radius:30px;
+    border-radius:20px;
 
     background:
-    linear-gradient(145deg,
-    rgba(255,255,255,0.92),
-    rgba(248,250,255,0.82));
+    rgba(255,255,255,.88);
 
-    backdrop-filter:blur(20px);
+    backdrop-filter:
+    blur(16px);
 
-    -webkit-backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:
+    blur(16px);
 
     border:
-    1px solid rgba(255,255,255,0.65);
+    1px solid rgba(255,255,255,.70);
 
     box-shadow:
-    0 20px 50px rgba(15,23,42,0.08);
+    var(--ft-shadow);
 
-    transition:
-    all .45s cubic-bezier(.4,0,.2,1);
-
+    transition:.35s ease;
 }
-
-/* =========================================================
-   FOOTER HOVER
-========================================================= */
 
 .retailer-footer:hover{
 
-    transform:
-    translateY(-6px);
+    transform:translateY(-3px);
 
     box-shadow:
-    0 35px 70px rgba(124,58,237,0.14);
-
+    var(--ft-hover);
 }
 
-/* =========================================================
-   FOOTER GLOW
-========================================================= */
+/* ==========================================================
+   GLOW
+========================================================== */
 
 .retailer-footer::before{
 
@@ -58,23 +74,19 @@
 
     position:absolute;
 
-    width:260px;
+    width:180px;
+    height:180px;
 
-    height:260px;
+    right:-70px;
+    top:-70px;
 
     border-radius:50%;
 
     background:
-    radial-gradient(circle,
-    rgba(124,58,237,0.12),
-    transparent);
-
-    top:-140px;
-
-    right:-100px;
-
-    animation:footerGlow1 10s infinite alternate ease-in-out;
-
+    radial-gradient(
+        rgba(37,99,235,.10),
+        transparent 70%
+    );
 }
 
 .retailer-footer::after{
@@ -83,64 +95,24 @@
 
     position:absolute;
 
-    width:220px;
+    width:140px;
+    height:140px;
 
-    height:220px;
+    left:-60px;
+    bottom:-60px;
 
     border-radius:50%;
 
     background:
-    radial-gradient(circle,
-    rgba(59,130,246,0.10),
-    transparent);
-
-    bottom:-120px;
-
-    left:-100px;
-
-    animation:footerGlow2 12s infinite alternate ease-in-out;
-
+    radial-gradient(
+        rgba(16,185,129,.08),
+        transparent 70%
+    );
 }
 
-@keyframes footerGlow1{
-
-    from{
-
-        transform:
-        translateY(0px);
-
-    }
-
-    to{
-
-        transform:
-        translateY(35px);
-
-    }
-
-}
-
-@keyframes footerGlow2{
-
-    from{
-
-        transform:
-        translateX(0px);
-
-    }
-
-    to{
-
-        transform:
-        translateX(35px);
-
-    }
-
-}
-
-/* =========================================================
+/* ==========================================================
    CONTENT
-========================================================= */
+========================================================== */
 
 .retailer-footer-content{
 
@@ -154,257 +126,45 @@
 
     justify-content:space-between;
 
-    gap:24px;
+    gap:20px;
 
     flex-wrap:wrap;
-
 }
 
-/* =========================================================
+/* ==========================================================
    LEFT
-========================================================= */
+========================================================== */
 
 .retailer-footer-left{
 
     flex:1;
-
 }
 
 .retailer-footer-title{
 
-    font-size:18px;
+    font-size:15px;
 
-    font-weight:900;
+    font-weight:800;
 
     color:#0f172a;
 
-    margin-bottom:8px;
-
-    letter-spacing:-0.3px;
-
+    margin-bottom:4px;
 }
 
 .retailer-footer-text{
 
-    font-size:14px;
-
-    line-height:1.8;
-
-    color:#64748b;
-
-    max-width:650px;
-
-}
-
-/* =========================================================
-   RIGHT
-========================================================= */
-
-.retailer-footer-right{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:14px;
-
-    flex-wrap:wrap;
-
-}
-
-/* =========================================================
-   LINKS
-========================================================= */
-
-.retailer-footer-link{
-
-    position:relative;
-
-    overflow:hidden;
-
-    text-decoration:none;
-
-    font-size:14px;
-
-    font-weight:800;
-
-    color:#475569;
-
-    padding:12px 18px;
-
-    border-radius:16px;
-
-    background:
-    rgba(255,255,255,0.58);
-
-    border:
-    1px solid rgba(255,255,255,0.55);
-
-    transition:
-    all .35s cubic-bezier(.4,0,.2,1);
-
-}
-
-/* =========================================================
-   LINK SHINE
-========================================================= */
-
-.retailer-footer-link::before{
-
-    content:"";
-
-    position:absolute;
-
-    top:0;
-
-    left:-100%;
-
-    width:100%;
-
-    height:100%;
-
-    background:
-    linear-gradient(90deg,
-    transparent,
-    rgba(255,255,255,0.4),
-    transparent);
-
-    transition:all .7s ease;
-
-}
-
-.retailer-footer-link:hover::before{
-
-    left:100%;
-
-}
-
-/* =========================================================
-   LINK HOVER
-========================================================= */
-
-.retailer-footer-link:hover{
-
-    color:#7c3aed;
-
-    background:
-    linear-gradient(135deg,
-    rgba(124,58,237,0.10),
-    rgba(59,130,246,0.05));
-
-    transform:
-    translateY(-4px);
-
-    box-shadow:
-    0 15px 30px rgba(124,58,237,0.12);
-
-}
-
-/* =========================================================
-   STRONG
-========================================================= */
-
-.retailer-footer strong{
-
-    color:#0f172a;
-
-    font-weight:900;
-
-}
-
-/* =========================================================
-   COPYRIGHT
-========================================================= */
-
-.retailer-footer-copy{
-
-    position:relative;
-
-    z-index:2;
-
-    margin-top:22px;
-
-    padding-top:20px;
-
-    border-top:
-    1px solid rgba(226,232,240,0.8);
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    gap:16px;
-
-    flex-wrap:wrap;
-
     font-size:13px;
 
+    line-height:1.6;
+
     color:#64748b;
 
+    max-width:600px;
 }
 
-/* =========================================================
-   SOCIAL ICONS
-========================================================= */
-
-.footer-social{
-
-    width:46px;
-
-    height:46px;
-
-    border-radius:16px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    text-decoration:none;
-
-    color:#7c3aed;
-
-    background:
-    linear-gradient(145deg,
-    rgba(124,58,237,0.10),
-    rgba(59,130,246,0.05));
-
-    border:
-    1px solid rgba(124,58,237,0.08);
-
-    transition:
-    all .35s cubic-bezier(.4,0,.2,1);
-
-}
-
-/* =========================================================
-   SOCIAL HOVER
-========================================================= */
-
-.footer-social:hover{
-
-    color:#fff;
-
-    background:
-    linear-gradient(135deg,
-    #8b5cf6,
-    #7c3aed);
-
-    transform:
-    translateY(-5px)
-    rotate(6deg);
-
-    box-shadow:
-    0 18px 35px rgba(124,58,237,0.25);
-
-}
-
-/* =========================================================
+/* ==========================================================
    BADGE
-========================================================= */
+========================================================== */
 
 .retailer-footer-badge{
 
@@ -412,72 +172,168 @@
 
     align-items:center;
 
-    gap:8px;
+    gap:6px;
 
-    padding:10px 16px;
+    margin-top:10px;
 
-    border-radius:40px;
+    padding:7px 12px;
+
+    border-radius:999px;
 
     background:
-    linear-gradient(135deg,
-    rgba(124,58,237,0.12),
-    rgba(59,130,246,0.08));
+    linear-gradient(
+        135deg,
+        rgba(37,99,235,.10),
+        rgba(37,99,235,.04)
+    );
 
-    color:#7c3aed;
+    color:#2563eb;
 
-    font-size:13px;
+    font-size:11px;
 
-    font-weight:800;
+    font-weight:700;
+}
+
+/* ==========================================================
+   RIGHT LINKS
+========================================================== */
+
+.retailer-footer-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    flex-wrap:wrap;
+}
+
+.retailer-footer-link{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    padding:8px 12px;
+
+    border-radius:12px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    color:#475569;
+
+    background:
+    rgba(255,255,255,.70);
+
+    border:
+    1px solid #e2e8f0;
+
+    transition:.3s ease;
+}
+
+.retailer-footer-link:hover{
+
+    color:#2563eb;
+
+    border-color:#bfdbfe;
+
+    background:#eff6ff;
+
+    transform:translateY(-2px);
+}
+
+/* ==========================================================
+   SOCIAL
+========================================================== */
+
+.footer-social{
+
+    width:36px;
+    height:36px;
+
+    border-radius:10px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:#2563eb;
+
+    background:
+    rgba(37,99,235,.08);
+
+    transition:.3s ease;
+}
+
+.footer-social:hover{
+
+    color:#fff;
+
+    background:
+    linear-gradient(
+        135deg,
+        #2563eb,
+        #3b82f6
+    );
+
+    transform:
+    translateY(-3px)
+    scale(1.05);
+}
+
+/* ==========================================================
+   COPYRIGHT
+========================================================== */
+
+.retailer-footer-copy{
+
+    position:relative;
+
+    z-index:2;
 
     margin-top:14px;
 
+    padding-top:14px;
+
+    border-top:
+    1px solid #e2e8f0;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+    font-size:12px;
+
+    color:#64748b;
 }
 
-/* =========================================================
-   FOOTER ANIMATION
-========================================================= */
+.retailer-footer strong{
 
-@keyframes footerFade{
-
-    from{
-
-        opacity:0;
-
-        transform:
-        translateY(25px);
-
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:
-        translateY(0);
-
-    }
-
+    color:#0f172a;
 }
 
-.retailer-footer{
-
-    animation:
-    footerFade .8s ease;
-
-}
-
-/* =========================================================
+/* ==========================================================
    RESPONSIVE
-========================================================= */
+========================================================== */
 
 @media(max-width:768px){
 
     .retailer-footer{
 
-        padding:24px;
-
-        border-radius:26px;
-
+        padding:16px;
     }
 
     .retailer-footer-content{
@@ -485,7 +341,6 @@
         flex-direction:column;
 
         align-items:flex-start;
-
     }
 
     .retailer-footer-copy{
@@ -493,33 +348,27 @@
         flex-direction:column;
 
         align-items:flex-start;
-
     }
-
 }
 
 @media(max-width:576px){
 
     .retailer-footer{
 
-        padding:20px;
+        padding:14px;
 
-        border-radius:22px;
-
-    }
-
-    .retailer-footer-link{
-
-        width:100%;
-
-        text-align:center;
-
+        border-radius:16px;
     }
 
     .retailer-footer-right{
 
         width:100%;
+    }
 
+    .retailer-footer-link{
+
+        flex:1;
+        justify-content:center;
     }
 
     .retailer-footer-copy{
@@ -527,111 +376,5 @@
         text-align:center;
 
         align-items:center;
-
-    }
-
-}
-
-/* =========================================================
-   DESKTOP COMPACT FOOTER (80% ZOOM LOOK)
-========================================================= */
-
-@media (min-width:1200px){
-
-    .retailer-footer{
-
-        margin-top:28px;
-
-        padding:22px 26px;
-
-        border-radius:24px;
-    }
-
-    .retailer-footer-content{
-
-        gap:18px;
-    }
-
-    .retailer-footer-title{
-
-        font-size:16px;
-
-        margin-bottom:6px;
-    }
-
-    .retailer-footer-text{
-
-        font-size:13px;
-
-        line-height:1.7;
-
-        max-width:560px;
-    }
-
-    .retailer-footer-right{
-
-        gap:10px;
-    }
-
-    .retailer-footer-link{
-
-        padding:10px 14px;
-
-        border-radius:12px;
-
-        font-size:13px;
-    }
-
-    .retailer-footer-copy{
-
-        margin-top:18px;
-
-        padding-top:16px;
-
-        font-size:12px;
-    }
-
-    .footer-social{
-
-        width:40px;
-
-        height:40px;
-
-        border-radius:12px;
-
-        font-size:14px;
-    }
-
-    .retailer-footer-badge{
-
-        padding:8px 14px;
-
-        font-size:12px;
-
-        margin-top:10px;
-    }
-
-    /* Decorative effects smaller */
-
-    .retailer-footer::before{
-
-        width:200px;
-
-        height:200px;
-
-        top:-110px;
-
-        right:-80px;
-    }
-
-    .retailer-footer::after{
-
-        width:180px;
-
-        height:180px;
-
-        bottom:-90px;
-
-        left:-80px;
     }
 }

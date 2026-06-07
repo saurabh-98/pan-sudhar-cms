@@ -23,6 +23,8 @@
     <link rel="stylesheet" href="{{ asset('assets/css/home-support-section.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/gallery-view.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/retailer-login.css') }}">
+     <link rel="stylesheet" href="{{ asset('assets/css/executive-login.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/retailer-register.css') }}">
 
 
 

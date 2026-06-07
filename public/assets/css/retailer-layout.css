@@ -1,6 +1,6 @@
-/* =========================================================
-   GLOBAL LAYOUT FINAL PROFESSIONAL
-========================================================= */
+/* ==========================================================
+   RETAILER ERP LAYOUT 2026
+========================================================== */
 
 *{
     margin:0;
@@ -10,83 +10,91 @@
 
 :root{
 
-    --sidebar-width:300px;
+    --sidebar-width:255px;
 
     --primary:#2563eb;
-    --primary-dark:#1d4ed8;
+    --primary-light:#60a5fa;
 
-    --secondary:#0f172a;
+    --success:#10b981;
+    --purple:#8b5cf6;
 
-    --light:#f8fafc;
-
-    --border:#e2e8f0;
-
-    --text:#334155;
+    --dark:#0f172a;
 
     --white:#ffffff;
 
+    --text:#1e293b;
+    --muted:#64748b;
+
+    --border:#e2e8f0;
+
+    --radius:20px;
+
     --shadow-sm:
-    0 4px 20px rgba(15,23,42,0.04);
+    0 6px 20px rgba(15,23,42,.04);
 
     --shadow-md:
-    0 15px 40px rgba(15,23,42,0.08);
+    0 14px 40px rgba(15,23,42,.08);
 
     --shadow-lg:
-    0 25px 60px rgba(37,99,235,0.12);
+    0 25px 60px rgba(37,99,235,.10);
 
     --transition:
-    all .35s cubic-bezier(.4,0,.2,1);
-
+    .35s cubic-bezier(.4,0,.2,1);
 }
 
-/* =========================================================
-   HTML & BODY
-========================================================= */
+/* ==========================================================
+   HTML
+========================================================== */
 
 html,
 body{
 
     width:100%;
-
     min-height:100%;
-
-    overflow-x:hidden;
 
     scroll-behavior:smooth;
 
+    overflow-x:hidden;
 }
 
-/* =========================================================
+/* ==========================================================
    BODY
-========================================================= */
+========================================================== */
 
 body{
-
-    position:relative;
 
     font-family:'Inter',sans-serif;
 
     color:var(--text);
 
     background:
-    radial-gradient(circle at top left,
-    rgba(37,99,235,0.12),
-    transparent 28%),
 
-    radial-gradient(circle at bottom right,
-    rgba(96,165,250,0.10),
-    transparent 30%),
+    radial-gradient(
+        circle at top right,
+        rgba(37,99,235,.08),
+        transparent 25%
+    ),
 
-    linear-gradient(135deg,
-    #eef4ff 0%,
-    #f8fbff 45%,
-    #eff6ff 100%);
+    radial-gradient(
+        circle at bottom left,
+        rgba(16,185,129,.08),
+        transparent 20%
+    ),
 
+    linear-gradient(
+        180deg,
+        #f8fafc,
+        #eef2ff
+    );
+
+    overflow-x:hidden;
+
+    position:relative;
 }
 
-/* =========================================================
-   BODY FLOAT EFFECT
-========================================================= */
+/* ==========================================================
+   FLOATING EFFECTS
+========================================================== */
 
 body::before{
 
@@ -95,24 +103,22 @@ body::before{
     position:fixed;
 
     width:500px;
-
     height:500px;
+
+    top:-220px;
+    right:-150px;
 
     border-radius:50%;
 
     background:
-    radial-gradient(circle,
-    rgba(37,99,235,0.08),
-    transparent);
+    radial-gradient(
+        rgba(37,99,235,.10),
+        transparent 70%
+    );
 
-    top:-200px;
-
-    right:-120px;
+    filter:blur(40px);
 
     z-index:-2;
-
-    animation:layoutFloat1 18s infinite alternate ease-in-out;
-
 }
 
 body::after{
@@ -121,74 +127,43 @@ body::after{
 
     position:fixed;
 
-    width:380px;
+    width:420px;
+    height:420px;
 
-    height:380px;
+    left:-180px;
+    bottom:-180px;
 
     border-radius:50%;
 
     background:
-    radial-gradient(circle,
-    rgba(96,165,250,0.06),
-    transparent);
+    radial-gradient(
+        rgba(16,185,129,.08),
+        transparent 70%
+    );
 
-    bottom:-150px;
-
-    left:-100px;
+    filter:blur(40px);
 
     z-index:-2;
-
-    animation:layoutFloat2 16s infinite alternate ease-in-out;
-
 }
 
-@keyframes layoutFloat1{
-
-    from{
-        transform:translateY(0px);
-    }
-
-    to{
-        transform:translateY(40px);
-    }
-
-}
-
-@keyframes layoutFloat2{
-
-    from{
-        transform:translateX(0px);
-    }
-
-    to{
-        transform:translateX(35px);
-    }
-
-}
-
-/* =========================================================
-   MAIN LAYOUT
-========================================================= */
+/* ==========================================================
+   MAIN WRAPPER
+========================================================== */
 
 .retailer-layout{
-
-    width:100%;
 
     min-height:100vh;
 
     display:flex;
 
     position:relative;
-
 }
 
-/* =========================================================
+/* ==========================================================
    MAIN CONTENT
-========================================================= */
+========================================================== */
 
 .main-content{
-
-    position:relative;
 
     margin-left:var(--sidebar-width);
 
@@ -202,94 +177,97 @@ body::after{
 
     transition:var(--transition);
 
-    overflow:hidden;
-
+    position:relative;
 }
 
-/* =========================================================
+/* ==========================================================
    PAGE CONTENT
-========================================================= */
+========================================================== */
 
 .page-content{
 
     flex:1;
 
-    width:100%;
+    padding:16px;
 
-    padding:30px;
+    position:relative;
+}
+
+/* ==========================================================
+   CONTENT SURFACE
+========================================================== */
+
+.page-content > *{
 
     position:relative;
 
     z-index:2;
-
 }
 
-/* =========================================================
-   DASHBOARD WRAPPER
-========================================================= */
-
-.dashboard-wrapper{
-
-    width:100%;
-
-    position:relative;
-
-}
-
-/* =========================================================
+/* ==========================================================
    CONTAINER FIX
-========================================================= */
+========================================================== */
 
 .container,
 .container-fluid{
 
-    width:100% !important;
-
     max-width:100% !important;
+
+    width:100% !important;
 
     padding-left:0 !important;
 
     padding-right:0 !important;
-
 }
 
-/* =========================================================
+/* ==========================================================
    ROW FIX
-========================================================= */
+========================================================== */
 
 .row{
 
     margin-left:0 !important;
-
     margin-right:0 !important;
-
 }
 
-/* =========================================================
-   CARD FIX
-========================================================= */
+/* ==========================================================
+   CARD SYSTEM
+========================================================== */
 
 .card{
 
     border:none;
 
+    border-radius:20px;
+
+    background:#fff;
+
     box-shadow:var(--shadow-sm);
 
+    transition:var(--transition);
 }
 
-/* =========================================================
-   LINK
-========================================================= */
+.card:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:var(--shadow-md);
+}
+
+/* ==========================================================
+   LINKS
+========================================================== */
 
 a{
 
     text-decoration:none;
 
+    transition:var(--transition);
 }
 
-/* =========================================================
-   IMAGE
-========================================================= */
+/* ==========================================================
+   IMAGES
+========================================================== */
 
 img{
 
@@ -297,83 +275,88 @@ img{
 
     height:auto;
 
+    display:block;
 }
 
-/* =========================================================
-   BUTTON
-========================================================= */
+/* ==========================================================
+   BUTTONS
+========================================================== */
 
 button{
 
     outline:none;
-
     border:none;
-
 }
 
-/* =========================================================
-   DROPDOWN FIX
-========================================================= */
-
-.dropdown-menu{
-
-    z-index:99999 !important;
-
-}
-
-/* =========================================================
-   TABLE FIX
-========================================================= */
+/* ==========================================================
+   TABLE
+========================================================== */
 
 .table-responsive{
 
     width:100%;
 
     overflow-x:auto;
-
 }
 
-/* =========================================================
+/* ==========================================================
+   DROPDOWN
+========================================================== */
+
+.dropdown-menu{
+
+    border:none !important;
+
+    border-radius:18px !important;
+
+    overflow:hidden;
+
+    box-shadow:
+    0 20px 50px rgba(15,23,42,.12);
+
+    z-index:99999 !important;
+}
+
+/* ==========================================================
    SCROLLBAR
-========================================================= */
+========================================================== */
 
 ::-webkit-scrollbar{
 
-    width:10px;
-
-    height:10px;
-
+    width:8px;
+    height:8px;
 }
 
 ::-webkit-scrollbar-track{
 
-    background:#dbeafe;
-
+    background:#edf2f7;
 }
 
 ::-webkit-scrollbar-thumb{
 
+    border-radius:20px;
+
     background:
-    linear-gradient(180deg,
-    #2563eb,
-    #1d4ed8);
-
-    border-radius:30px;
-
+    linear-gradient(
+        180deg,
+        #2563eb,
+        #60a5fa
+    );
 }
 
 ::-webkit-scrollbar-thumb:hover{
 
     background:
-    linear-gradient(180deg,
-    #1d4ed8,
-    #1e40af);
-
+    linear-gradient(
+        180deg,
+        #1d4ed8,
+        #2563eb
+    );
 }
 
-/* =========================================================
-   OVERLAY
-========================================================= */
+/* ==========================================================
+   MOBILE OVERLAY
+========================================================== */
 
 .sidebar-overlay{
 
@@ -382,18 +365,18 @@ button{
     inset:0;
 
     background:
-    rgba(15,23,42,0.55);
+    rgba(15,23,42,.55);
 
-    backdrop-filter:blur(4px);
-
-    z-index:1040;
+    backdrop-filter:
+    blur(6px);
 
     opacity:0;
 
     visibility:hidden;
 
-    transition:var(--transition);
+    transition:.3s ease;
 
+    z-index:998;
 }
 
 .sidebar-overlay.active{
@@ -401,12 +384,23 @@ button{
     opacity:1;
 
     visibility:visible;
-
 }
 
-/* =========================================================
+/* ==========================================================
+   DESKTOP LARGE
+========================================================== */
+
+@media(min-width:1600px){
+
+    .page-content{
+
+        padding:20px;
+    }
+}
+
+/* ==========================================================
    TABLET
-========================================================= */
+========================================================== */
 
 @media(max-width:1199px){
 
@@ -415,41 +409,34 @@ button{
         margin-left:0;
 
         width:100%;
-
     }
 
     .page-content{
 
-        padding:20px;
-
+        padding:14px;
     }
-
 }
 
-/* =========================================================
+/* ==========================================================
    MOBILE
-========================================================= */
+========================================================== */
 
 @media(max-width:768px){
 
     .page-content{
 
-        padding:18px;
-
+        padding:12px;
     }
-
 }
 
-/* =========================================================
+/* ==========================================================
    SMALL MOBILE
-========================================================= */
+========================================================== */
 
 @media(max-width:576px){
 
     .page-content{
 
-        padding:14px;
-
+        padding:10px;
     }
-
 }

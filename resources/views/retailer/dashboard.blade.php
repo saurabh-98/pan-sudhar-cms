@@ -122,17 +122,14 @@
 
             </div>
 
-            @if(Route::has('retailer.wallet.history'))
+             @if(Route::has('retailer.wallet.history'))
 
                 <a
                     href="{{ route('retailer.wallet.history') }}"
-                    class="btn-primary"
+                    class="rtd-wallet-btn"
                 >
-
-                    <i class="fa fa-money-check-alt"></i>
-
-                    Wallet History
-
+                    <i class="fa fa-wallet"></i>
+                    <span>Wallet History</span>
                 </a>
 
             @endif
