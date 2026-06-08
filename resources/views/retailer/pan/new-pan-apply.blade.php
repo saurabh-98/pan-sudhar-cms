@@ -717,9 +717,11 @@
                         </label>
 
                         <input
-                            type="date"
+                            type="text"
                             name="dob"
+                            id="dob"
                             class="form-control"
+                            placeholder="DD/MM/YYYY"
                             value="{{ old('dob', request('dob')) }}"
                             required
                         >
@@ -732,14 +734,15 @@
                             Re-enter DOB
                         </label>
 
-                        <input
-                            type="date"
+                       <input
+                            type="text"
                             name="confirm_dob"
+                            id="confirm_dob"
                             class="form-control"
+                            placeholder="DD/MM/YYYY"
                             value="{{ old('confirm_dob', request('confirm_dob')) }}"
                             required
                         >
-
                     </div>
 
                     <div class="col-md-4">
@@ -1312,16 +1315,16 @@ $(document).ready(function () {
 
         let fieldName = $(this).attr('name');
 
-        let allowNumericFields = [
-
+        let skipFields = [
             'mobile_no',
             'aadhaar_no',
             'pincode',
-            'house_no'
-
+            'house_no',
+            'dob',
+            'confirm_dob'
         ];
 
-        if (!allowNumericFields.includes(fieldName)) {
+        if (!skipFields.includes(fieldName)) {
 
             this.value = this.value.replace(
                 /[^a-zA-Z\s]/g,
@@ -1331,7 +1334,6 @@ $(document).ready(function () {
         }
 
     });
-
     /*
     |--------------------------------------------------------------------------
     | MOBILE VALIDATION
@@ -1420,24 +1422,19 @@ $(document).ready(function () {
     |--------------------------------------------------------------------------
     */
 
-    $('input[name="confirm_dob"]').change(function () {
+    $('#dob, #confirm_dob').on('change', function () {
 
-        let dob =
-        $('input[name="dob"]').val();
+    let dob = $('#dob').val().trim();
+    let confirmDob = $('#confirm_dob').val().trim();
 
-        let confirmDob =
-        $(this).val();
-
-        if (dob !== confirmDob) {
-
-            $(this).addClass('is-invalid');
-
-        } else {
-
-            $(this).removeClass('is-invalid');
-
+    if (
+        confirmDob !== '' &&
+        dob !== confirmDob
+    ) {
+        $('#confirm_dob').addClass('is-invalid');
+    } else {
+        $('#confirm_dob').removeClass('is-invalid');
         }
-
     });
 
     $('.document-input').change(function () {
@@ -1946,4 +1943,26 @@ $(document).ready(function () {
 
 </script>
 
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    flatpickr("#dob", {
+        dateFormat: "d/m/Y",
+        allowInput: true,
+        maxDate: "today"
+    });
+
+    flatpickr("#confirm_dob", {
+        dateFormat: "d/m/Y",
+        allowInput: true,
+        maxDate: "today"
+    });
+
+});
+</script>
 @endsection

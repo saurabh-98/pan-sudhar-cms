@@ -23,6 +23,12 @@ class FileItrDTO
 
         public readonly ?UploadedFile $panCard,
 
+        public readonly ?string $existingAadhaarFront,
+
+        public readonly ?string $existingAadhaarBack,
+
+        public readonly ?string $existingPanCard,
+
         public readonly float $charge = 99.00
 
     ) {}
@@ -55,6 +61,21 @@ class FileItrDTO
 
             panCard:
                 $request->file('pan_card'),
+
+            existingAadhaarFront:
+                $request->input(
+                    'existing_files.aadhaar_front'
+                ),
+
+            existingAadhaarBack:
+                $request->input(
+                    'existing_files.aadhaar_back'
+                ),
+
+            existingPanCard:
+                $request->input(
+                    'existing_files.pan_card'
+                ),
 
             charge:
                 99.00

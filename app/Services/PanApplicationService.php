@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
-
+use Carbon\Carbon;
 use App\DTO\PanApplicationDTO;
 use App\Models\PanApplication;
 use App\Repositories\PanApplicationRepository;
@@ -207,12 +207,6 @@ class PanApplicationService
     {
         return DB::transaction(function () {
 
-            /*
-            |--------------------------------------------------------------------------
-            | GET SESSION
-            |--------------------------------------------------------------------------
-            */
-
             $session = get_pan_session();
 
             if (!$session) {
@@ -227,29 +221,33 @@ class PanApplicationService
 
             $files = $session['files'] ?? [];
 
-            /*
-            |--------------------------------------------------------------------------
-            | GET DYNAMIC CHARGE
-            |--------------------------------------------------------------------------
-            */
+            if (!empty($data['dob'])) {
+
+                try {
+
+                    $data['dob'] = Carbon::createFromFormat(
+                        'd/m/Y',
+                        $data['dob']
+                    )->format('Y-m-d');
+
+                } catch (\Exception $e) {
+
+                    abort(
+                        422,
+                        'Invalid DOB format.'
+                    );
+                }
+            }
+
+            unset(
+                $data['confirm_dob']
+            );
 
             $panCharge = $data['pan_charge'] ?? 0;
-
-            /*
-            |--------------------------------------------------------------------------
-            | REMOVE TEMP SESSION VALUE
-            |--------------------------------------------------------------------------
-            */
 
             unset(
                 $data['pan_charge']
             );
-
-            /*
-            |--------------------------------------------------------------------------
-            | STORE DATA
-            |--------------------------------------------------------------------------
-            */
 
             $storeData = [
 
@@ -257,7 +255,6 @@ class PanApplicationService
                     auth()->id(),
 
                 'application_no' =>
-
                     'PAN'
                     . date('YmdHis')
                     . rand(1000, 9999),
@@ -266,12 +263,6 @@ class PanApplicationService
                     'New PAN',
 
                 ...$data,
-
-                /*
-                |--------------------------------------------------------------------------
-                | FILES
-                |--------------------------------------------------------------------------
-                */
 
                 'photo' =>
                     $files['photo'] ?? null,
@@ -287,12 +278,6 @@ class PanApplicationService
 
                 'supporting_document' =>
                     $files['supporting_document'] ?? null,
-
-                /*
-                |--------------------------------------------------------------------------
-                | PAYMENT
-                |--------------------------------------------------------------------------
-                */
 
                 'amount' =>
                     $panCharge,
@@ -314,25 +299,11 @@ class PanApplicationService
 
                 'browser' =>
                     request()->userAgent(),
-
             ];
 
-            /*
-            |--------------------------------------------------------------------------
-            | CREATE APPLICATION
-            |--------------------------------------------------------------------------
-            */
-
             $application =
-
                 $this->repository
                     ->create($storeData);
-
-            /*
-            |--------------------------------------------------------------------------
-            | CLEAR SESSION
-            |--------------------------------------------------------------------------
-            */
 
             clear_pan_session();
 
@@ -340,7 +311,6 @@ class PanApplicationService
 
         });
     }
-
 
 
 

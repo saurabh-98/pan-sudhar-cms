@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
-
+use Carbon\Carbon;
 use App\DTO\PanCorrectionDTO;
 use App\Models\PanCorrectionApplication;
 use App\Repositories\PanCorrectionRepository;
@@ -241,6 +241,27 @@ class PanCorrectionService
 
             $files =
                 $session['files'] ?? [];
+
+            
+             if (!empty($data['dob'])) {
+
+                try {
+
+                    $data['dob'] = Carbon::createFromFormat(
+                        'd/m/Y',
+                        $data['dob']
+                    )->format('Y-m-d');
+
+                } catch (\Exception $e) {
+
+                    abort(
+                        422,
+                        'Invalid DOB format.'
+                    );
+                }
+            }
+
+           
 
 
 

@@ -86,313 +86,282 @@
                         
 
 
-                        <!-- =========================================================
-                        | FORM SECTION
-                        ========================================================= -->
+                       @php
+
+                        $documents = [
+
+
+                        [
+                            'title' => 'Aadhaar Front',
+                            'name'  => 'aadhaar_front',
+                            'icon'  => 'fa-id-card',
+                            'text'  => 'JPG / PNG / PDF (Max 5 MB)',
+                            'accept'=> '.jpg,.jpeg,.png,.pdf',
+                            'max_size' => 5120
+                        ],
+
+                        [
+                            'title' => 'Aadhaar Back',
+                            'name'  => 'aadhaar_back',
+                            'icon'  => 'fa-address-card',
+                            'text'  => 'JPG / PNG / PDF (Max 5 MB)',
+                            'accept'=> '.jpg,.jpeg,.png,.pdf',
+                            'max_size' => 5120
+                        ],
+
+                        [
+                            'title' => 'PAN Card',
+                            'name'  => 'pan_card',
+                            'icon'  => 'fa-credit-card',
+                            'text'  => 'JPG / PNG / PDF (Max 5 MB)',
+                            'accept'=> '.jpg,.jpeg,.png,.pdf',
+                            'max_size' => 5120
+                        ]
+                        
+
+                        ];
+
+                        @endphp
 
                         <div id="formSection">
 
-                            <form
-                                id="itrUploadForm"
-                                enctype="multipart/form-data"
-                            >
-
-                                @csrf
-
-                                <div class="row">
+                        <form
+                            id="itrUploadForm"
+                            enctype="multipart/form-data"
+                        >
 
 
+                        @csrf
 
-                                    <!-- =========================================================
-                                    | AADHAAR FRONT
-                                    ========================================================= -->
+                        <div class="row g-4">
 
-                                    <div class="col-lg-6 mb-4">
+                            @foreach($documents as $doc)
 
-                                        <label class="itr-label">
+                                @php
 
-                                            Aadhaar Front
+                                    $file =
+                                        $files[$doc['name']]
+                                        ??
+                                        null;
 
-                                            <span>*</span>
+                                    $exists =
+                                        !empty($file)
+                                        &&
+                                        file_exists_custom($file);
 
-                                        </label>
+                                @endphp
 
-                                        <div class="upload-box">
+                                <div class="col-lg-4">
 
-                                            <input
-                                                type="file"
-                                                name="aadhaar_front"
-                                                id="aadhaar_front"
-                                                class="upload-input"
-                                                accept="image/*,.pdf"
-                                            >
+                                    <div class="upload-wrapper">
 
-                                            <label
-                                                for="aadhaar_front"
-                                                class="upload-label"
-                                            >
-
-                                                <i class="fas fa-id-card"></i>
-
-                                                <h6>
-
-                                                    Upload Aadhaar Front
-
-                                                </h6>
-
-                                                <p>
-
-                                                    JPG, PNG, JPEG, PDF Supported
-
-                                                </p>
-
-                                            </label>
-
-                                        </div>
-
-                                        <div
-                                            class="preview-box"
-                                            id="aadhaar_front_preview"
-                                        ></div>
-
-                                    </div>
-
-
-
-
-                                    <!-- =========================================================
-                                    | AADHAAR BACK
-                                    ========================================================= -->
-
-                                    <div class="col-lg-6 mb-4">
-
-                                        <label class="itr-label">
-
-                                            Aadhaar Back
-
-                                            <span>*</span>
-
-                                        </label>
-
-                                        <div class="upload-box">
+                                        <label class="upload-box">
 
                                             <input
                                                 type="file"
-                                                name="aadhaar_back"
-                                                id="aadhaar_back"
-                                                class="upload-input"
-                                                accept="image/*,.pdf"
+                                                name="{{ $doc['name'] }}"
+                                                class="document-input d-none"
+                                                accept="{{ $doc['accept'] }}"
+                                                data-max-size="{{ $doc['max_size'] * 1024 }}"
                                             >
 
-                                            <label
-                                                for="aadhaar_back"
-                                                class="upload-label"
+                                            <div class="upload-preview">
+
+                                                @if($exists)
+
+                                                    @if(
+                                                        str_contains(
+                                                            strtolower(file_url($file)),
+                                                            '.pdf'
+                                                        )
+                                                    )
+
+                                                        <a
+                                                            href="{{ file_url($file) }}"
+                                                            target="_blank"
+                                                        >
+
+                                                            <img
+                                                                src="https://cdn-icons-png.flaticon.com/512/337/337946.png"
+                                                                class="preview-image"
+                                                                alt="PDF"
+                                                            >
+
+                                                        </a>
+
+                                                    @else
+
+                                                        <img
+                                                            src="{{ file_url($file) }}"
+                                                            class="preview-image"
+                                                            alt="{{ $doc['title'] }}"
+                                                        >
+
+                                                    @endif
+
+                                                @else
+
+                                                    <img
+                                                        class="preview-image d-none"
+                                                        alt="{{ $doc['title'] }}"
+                                                    >
+
+                                                @endif
+
+                                                <div class="default-upload {{ $exists ? 'd-none' : '' }}">
+
+                                                    <div class="upload-icon">
+
+                                                        <i class="fa {{ $doc['icon'] }}"></i>
+
+                                                    </div>
+
+                                                    <h5>
+                                                        {{ $doc['title'] }}
+                                                    </h5>
+
+                                                    <p>
+                                                        {{ $doc['text'] }}
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+                                        </label>
+
+                                        <div class="file-details {{ $exists ? '' : 'd-none' }}">
+
+                                            <span class="file-name">
+
+                                                {{ $exists ? basename(parse_url(file_url($file), PHP_URL_PATH)) : '' }}
+
+                                            </span>
+
+                                            <span class="file-size text-muted small"></span>
+
+                                            <button
+                                                type="button"
+                                                class="remove-file-btn"
                                             >
-
-                                                <i class="fas fa-address-card"></i>
-
-                                                <h6>
-
-                                                    Upload Aadhaar Back
-
-                                                </h6>
-
-                                                <p>
-
-                                                    JPG, PNG, JPEG, PDF Supported
-
-                                                </p>
-
-                                            </label>
+                                                <i class="fa fa-times"></i>
+                                            </button>
 
                                         </div>
 
-                                        <div
-                                            class="preview-box"
-                                            id="aadhaar_back_preview"
-                                        ></div>
-
-                                    </div>
-
-
-
-
-                                    <!-- =========================================================
-                                    | PAN CARD
-                                    ========================================================= -->
-
-                                    <div class="col-lg-12 mb-4">
-
-                                        <label class="itr-label">
-
-                                            PAN Card
-
-                                            <span>*</span>
-
-                                        </label>
-
-                                        <div class="upload-box">
-
-                                            <input
-                                                type="file"
-                                                name="pan_card"
-                                                id="pan_card"
-                                                class="upload-input"
-                                                accept="image/*,.pdf"
-                                            >
-
-                                            <label
-                                                for="pan_card"
-                                                class="upload-label"
-                                            >
-
-                                                <i class="fas fa-credit-card"></i>
-
-                                                <h6>
-
-                                                    Upload PAN Card
-
-                                                </h6>
-
-                                                <p>
-
-                                                    JPG, PNG, JPEG, PDF Supported
-
-                                                </p>
-
-                                            </label>
-
-                                        </div>
-
-                                        <div
-                                            class="preview-box"
-                                            id="pan_card_preview"
-                                        ></div>
-
-                                    </div>
-
-
-
-
-                                    <!-- =========================================================
-                                    | NAME
-                                    ========================================================= -->
-
-                                    <div class="col-lg-4 mb-4">
-
-                                        <label class="itr-label">
-
-                                            Name As Per Aadhaar
-
-                                            <span>*</span>
-
-                                        </label>
-
-                                        <input
-                                            type="text"
-                                            name="name"
-                                            class="itr-input"
-                                            placeholder="Enter Full Name"
-                                        >
-
-                                    </div>
-
-                                    <!-- =========================================================
-                                    | MOBILE
-                                    ========================================================= -->
-
-                                    <div class="col-lg-4 mb-4">
-
-                                        <label class="itr-label">
-
-                                            Mobile Number As Per Aadhaar
-
-                                            <span>*</span>
-
-                                        </label>
-
-                                        <input
-                                            type="text"
-                                            name="mobile"
-                                            class="itr-input"
-                                            maxlength="10"
-                                            placeholder="Enter 10 Digit Mobile Number"
-                                        >
-
-                                    </div>
-
-                                    <!-- =========================================================
-                                    | EMAIL
-                                    ========================================================= -->
-
-                                    <div class="col-lg-4 mb-4">
-
-                                        <label class="itr-label">
-
-                                            Email ID
-
-                                            <span>*</span>
-
-                                        </label>
-
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            class="itr-input"
-                                            placeholder="Enter Email Address"
-                                        >
-
-                                    </div>
-
-
-
-                                    <!-- =========================================================
-                                    | REMARKS
-                                    ========================================================= -->
-
-                                    <div class="col-lg-12 mb-4">
-
-                                        <label class="itr-label">
-
-                                            Remarks
-
-                                        </label>
-
-                                        <textarea
-                                            name="remarks"
-                                            class="itr-textarea"
-                                            rows="5"
-                                            placeholder="Write remarks here..."
-                                        ></textarea>
-
-                                    </div>
-
-
-
-
-                                    <!-- =========================================================
-                                    | PREVIEW BUTTON
-                                    ========================================================= -->
-
-                                    <div class="col-lg-12">
-
-                                        <button
-                                            type="button"
-                                            class="submit-btn"
-                                            id="submitBtn"
-                                        >
-
-                                            <i class="fas fa-eye"></i>
-
-                                            Continue To Preview
-
-                                        </button>
+                                        <div class="file-error text-danger small mt-2"></div>
 
                                     </div>
 
                                 </div>
 
-                            </form>
+                            @endforeach
+
+                            @foreach($documents as $doc)
+
+                                @if(
+                                    !empty($files[$doc['name']])
+                                    &&
+                                    file_exists_custom($files[$doc['name']])
+                                )
+
+                                    <input
+                                        type="hidden"
+                                        name="existing_files[{{ $doc['name'] }}]"
+                                        value="{{ $files[$doc['name']] }}"
+                                    >
+
+                                @endif
+
+                            @endforeach
+
+                            <div class="col-lg-4">
+
+                                <label class="itr-label">
+                                    Name As Per Aadhaar
+                                    <span>*</span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="name"
+                                    class="itr-input"
+                                    placeholder="Enter Full Name"
+                                    value="{{ old('name', $data['name'] ?? '') }}"
+                                >
+
+                            </div>
+
+                            <div class="col-lg-4">
+
+                                <label class="itr-label">
+                                    Mobile Number As Per Aadhaar
+                                    <span>*</span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="mobile"
+                                    class="itr-input"
+                                    maxlength="10"
+                                    placeholder="Enter Mobile Number"
+                                    value="{{ old('mobile', $data['mobile'] ?? '') }}"
+                                >
+
+                            </div>
+
+                            <div class="col-lg-4">
+
+                                <label class="itr-label">
+                                    Email ID
+                                    <span>*</span>
+                                </label>
+
+                                <input
+                                    type="email"
+                                    name="email"
+                                    class="itr-input"
+                                    placeholder="Enter Email Address"
+                                    value="{{ old('email', $data['email'] ?? '') }}"
+                                >
+
+                            </div>
+
+                            <div class="col-lg-12">
+
+                                <label class="itr-label">
+                                    Remarks
+                                </label>
+
+                                <textarea
+                                    name="remarks"
+                                    class="itr-textarea"
+                                    rows="4"
+                                    placeholder="Write remarks here..."
+                                >{{ old('remarks', $data['remarks'] ?? '') }}</textarea>
+
+                            </div>
+
+                            <div class="col-lg-12">
+
+                                <button
+                                    type="button"
+                                    class="submit-btn"
+                                    id="submitBtn"
+                                >
+
+                                    <i class="fas fa-eye"></i>
+
+                                    Continue To Preview
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        </form>
 
                         </div>
 
@@ -424,9 +393,7 @@
 
 <script>
 
-$(document).ready(function(){
-
-
+$(function(){
 
     /* =========================================================
     | REMOVE ERROR
@@ -437,105 +404,54 @@ $(document).ready(function(){
         $(input).removeClass('input-error');
 
         $(input)
-        .closest('.mb-4')
+        .closest('.col-lg-4, .col-lg-12, .upload-wrapper')
         .find('.error-message')
         .remove();
-
     }
-
-
 
     /* =========================================================
     | SHOW ERROR
     ========================================================= */
 
-    function showError(input, message){
+    function showError(input,message){
 
         removeError(input);
 
         $(input).addClass('input-error');
 
         $(input)
-        .closest('.mb-4')
+        .closest('.col-lg-4, .col-lg-12, .upload-wrapper')
         .append(`
-
             <div class="error-message">
-
                 <i class="fas fa-circle-exclamation"></i>
-
                 ${message}
-
             </div>
-
         `);
-
     }
-
-
-
 
     /* =========================================================
-    | FILE VALIDATION
+    | FILE EXISTS
+    | FOR RETURN FROM PREVIEW PAGE
     ========================================================= */
 
-    function validateFile(input){
+    function hasFile(name){
 
-        const file = input.files[0];
+        let input =
+        $('input[name="'+name+'"]');
 
-        if(!file){
-
-            showError(
-                input,
-                'This field is required.'
-            );
-
-            return false;
-
+        if(
+            input.length &&
+            input[0].files &&
+            input[0].files.length > 0
+        ){
+            return true;
         }
 
-        const allowedTypes = [
+        let existingFile =
+        $('input[name="existing_files['+name+']"]');
 
-            'image/jpeg',
-            'image/jpg',
-            'image/png',
-            'application/pdf'
-
-        ];
-
-        if(!allowedTypes.includes(file.type)){
-
-            showError(
-                input,
-                'Only JPG, PNG and PDF allowed.'
-            );
-
-            input.value = '';
-
-            return false;
-
-        }
-
-        if(file.size > 5 * 1024 * 1024){
-
-            showError(
-                input,
-                'Maximum file size is 5MB.'
-            );
-
-            input.value = '';
-
-            return false;
-
-        }
-
-        removeError(input);
-
-        return true;
-
+        return existingFile.length > 0;
     }
-
-
-
 
     /* =========================================================
     | NAME VALIDATION
@@ -549,7 +465,7 @@ $(document).ready(function(){
         let value =
         input.val().trim();
 
-        if(value == ''){
+        if(value === ''){
 
             showError(
                 input,
@@ -557,7 +473,6 @@ $(document).ready(function(){
             );
 
             return false;
-
         }
 
         if(value.length < 3){
@@ -568,15 +483,16 @@ $(document).ready(function(){
             );
 
             return false;
-
         }
 
         removeError(input);
 
         return true;
-
     }
 
+    /* =========================================================
+    | MOBILE VALIDATION
+    ========================================================= */
 
     function validateMobile(){
 
@@ -629,7 +545,7 @@ $(document).ready(function(){
         let regex =
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        if(value == ''){
+        if(value === ''){
 
             showError(
                 input,
@@ -637,7 +553,6 @@ $(document).ready(function(){
             );
 
             return false;
-
         }
 
         if(!regex.test(value)){
@@ -648,342 +563,356 @@ $(document).ready(function(){
             );
 
             return false;
-
         }
 
         removeError(input);
 
         return true;
-
     }
 
-
-
-
     /* =========================================================
-    | FILE PREVIEW
+    | DOCUMENT UPLOAD PREVIEW
     ========================================================= */
 
-    function previewFile(input, previewBox){
+    $('.document-input').on(
+        'change',
+        function(){
 
-        const file = input.files[0];
+            let file =
+            this.files[0];
 
-        if(file){
+            if(!file){
+                return;
+            }
 
-            const fileType = file.type;
+            let wrapper =
+            $(this).closest(
+                '.upload-wrapper'
+            );
 
+            let previewImage =
+            wrapper.find(
+                '.preview-image'
+            );
 
+            let defaultUpload =
+            wrapper.find(
+                '.default-upload'
+            );
 
-            // IMAGE
+            let fileDetails =
+            wrapper.find(
+                '.file-details'
+            );
 
-            if(fileType.startsWith('image/')){
+            let fileName =
+            wrapper.find(
+                '.file-name'
+            );
 
-                const reader =
+            let fileSize =
+            wrapper.find(
+                '.file-size'
+            );
+
+            let errorBox =
+            wrapper.find(
+                '.file-error'
+            );
+
+            errorBox.html('');
+
+            let allowedTypes = [
+
+                'image/jpeg',
+                'image/jpg',
+                'image/png',
+                'application/pdf'
+
+            ];
+
+            if(
+                !allowedTypes.includes(
+                    file.type
+                )
+            ){
+
+                errorBox.html(
+                    'Only JPG, PNG and PDF allowed.'
+                );
+
+                $(this).val('');
+
+                return;
+            }
+
+            if(
+                file.size >
+                (5 * 1024 * 1024)
+            ){
+
+                errorBox.html(
+                    'Maximum file size is 5 MB.'
+                );
+
+                $(this).val('');
+
+                return;
+            }
+
+            fileName.text(
+                file.name
+            );
+
+            fileSize.text(
+                '(' +
+                (
+                    file.size /
+                    1024 /
+                    1024
+                ).toFixed(2)
+                +
+                ' MB)'
+            );
+
+            fileDetails.removeClass(
+                'd-none'
+            );
+
+            if(
+                file.type ===
+                'application/pdf'
+            ){
+
+                previewImage
+                .attr(
+                    'src',
+                    'https://cdn-icons-png.flaticon.com/512/337/337946.png'
+                )
+                .removeClass(
+                    'd-none'
+                );
+
+                defaultUpload
+                .addClass(
+                    'd-none'
+                );
+
+            }else{
+
+                let reader =
                 new FileReader();
 
                 reader.onload =
                 function(e){
 
-                    $(previewBox).html(`
+                    previewImage
+                    .attr(
+                        'src',
+                        e.target.result
+                    )
+                    .removeClass(
+                        'd-none'
+                    );
 
-                        <div class="file-preview-card">
+                    defaultUpload
+                    .addClass(
+                        'd-none'
+                    );
+                };
 
-                            <button
-                                type="button"
-                                class="remove-file-btn"
-                            >
-
-                                <i class="fas fa-times"></i>
-
-                            </button>
-
-                            <img
-                                src="${e.target.result}"
-                                alt="Preview"
-                            >
-
-                            <div class="file-name">
-
-                                ${file.name}
-
-                            </div>
-
-                        </div>
-
-                    `);
-
-                }
-
-                reader.readAsDataURL(file);
-
+                reader.readAsDataURL(
+                    file
+                );
             }
-
-
-
-            // PDF
-
-            else{
-
-                $(previewBox).html(`
-
-                    <div class="pdf-preview-wrapper">
-
-                        <button
-                            type="button"
-                            class="remove-file-btn"
-                        >
-
-                            <i class="fas fa-times"></i>
-
-                        </button>
-
-                        <div class="pdf-preview">
-
-                            <i class="fas fa-file-pdf"></i>
-
-                            <div class="pdf-info">
-
-                                <h6>
-                                    ${file.name}
-                                </h6>
-
-                                <p>
-                                    PDF File Selected
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                `);
-
-            }
-
-
-
-            // REMOVE FILE
-
-            $(previewBox)
-            .find('.remove-file-btn')
-            .on('click', function(){
-
-                $(input).val('');
-
-                $(previewBox).html('');
-
-                Swal.fire({
-
-                    toast:true,
-
-                    position:'top-end',
-
-                    icon:'success',
-
-                    title:'File removed successfully',
-
-                    showConfirmButton:false,
-
-                    timer:1800
-
-                });
-
-            });
-
         }
-
-    }
-
-
-
+    );
 
     /* =========================================================
-    | FILE EVENTS
+    | REMOVE FILE
     ========================================================= */
 
-    $('#aadhaar_front').on('change', function(){
+    $(document).on(
+        'click',
+        '.remove-file-btn',
+        function(){
 
-        if(validateFile(this)){
-
-            previewFile(
-                this,
-                '#aadhaar_front_preview'
+            let wrapper =
+            $(this).closest(
+                '.upload-wrapper'
             );
 
+            wrapper
+            .find('.document-input')
+            .val('');
+
+            wrapper
+            .find('.preview-image')
+            .attr('src','')
+            .addClass('d-none');
+
+            wrapper
+            .find('.default-upload')
+            .removeClass('d-none');
+
+            wrapper
+            .find('.file-details')
+            .addClass('d-none');
+
+            Swal.fire({
+
+                toast:true,
+                position:'top-end',
+                icon:'success',
+                title:'File removed successfully',
+                timer:1800,
+                showConfirmButton:false
+
+            });
         }
-
-    });
-
-
-
-    $('#aadhaar_back').on('change', function(){
-
-        if(validateFile(this)){
-
-            previewFile(
-                this,
-                '#aadhaar_back_preview'
-            );
-
-        }
-
-    });
-
-
-
-    $('#pan_card').on('change', function(){
-
-        if(validateFile(this)){
-
-            previewFile(
-                this,
-                '#pan_card_preview'
-            );
-
-        }
-
-    });
-
-
-
+    );
 
     /* =========================================================
     | LIVE VALIDATION
     ========================================================= */
 
-    $('input[name="name"]').on(
+    $('input[name="name"]')
+    .on(
         'keyup blur',
         validateName
     );
 
-    $('input[name="mobile"]').on(
+    $('input[name="mobile"]')
+    .on(
         'keyup blur',
         validateMobile
     );
 
-    $('input[name="mobile"]').on(
+    $('input[name="email"]')
+    .on(
+        'keyup blur',
+        validateEmail
+    );
+
+    $('input[name="mobile"]')
+    .on(
         'input',
         function(){
 
             this.value =
             this.value
-            .replace(/\D/g, '')
+            .replace(/\D/g,'')
             .slice(0,10);
-
         }
     );
 
-    $('input[name="email"]').on(
-        'keyup blur',
-        validateEmail
-    );
+    /* =========================================================
+    | SUBMIT
+    ========================================================= */
 
     $('#submitBtn').click(function(e){
 
-    e.preventDefault();
+        e.preventDefault();
 
-    let valid = true;
+        let valid = true;
 
-    if(!validateFile(document.getElementById('aadhaar_front'))){
-        valid = false;
-    }
+        if(!hasFile('aadhaar_front')){
+            valid = false;
+        }
 
-    if(!validateFile(document.getElementById('aadhaar_back'))){
-        valid = false;
-    }
+        if(!hasFile('aadhaar_back')){
+            valid = false;
+        }
 
-    if(!validateFile(document.getElementById('pan_card'))){
-        valid = false;
-    }
+        if(!hasFile('pan_card')){
+            valid = false;
+        }
 
-    if(!validateName()){
-        valid = false;
-    }
+        if(!validateName()){
+            valid = false;
+        }
 
-    if(!validateMobile()){
-        valid = false;
-    }
+        if(!validateMobile()){
+            valid = false;
+        }
 
-    if(!validateEmail()){
-        valid = false;
-    }
+        if(!validateEmail()){
+            valid = false;
+        }
 
-    if(!valid){
-
-        Swal.fire({
-
-            icon:'error',
-
-            title:'Validation Error',
-
-            text:'Please fix all required fields.'
-
-        });
-
-        return false;
-    }
-
-    let formData =
-        new FormData(
-            $('#itrUploadForm')[0]
-        );
-
-    let button = $(this);
-
-    button.prop('disabled', true);
-
-    $.ajax({
-
-        url:
-        "{{ route('retailer.itr.preview') }}",
-
-        type:'POST',
-
-        data:formData,
-
-        processData:false,
-
-        contentType:false,
-
-        success:function(response){
-
-            if(response.status){
-
-                window.location.href =
-                    response.redirect_url;
-            }
-
-        },
-
-        error:function(xhr){
-
-            button.prop(
-                'disabled',
-                false
-            );
+        if(!valid){
 
             Swal.fire({
 
                 icon:'error',
 
-                title:'Error',
+                title:'Validation Error',
 
-                text:
-                xhr.responseJSON?.message
-                ??
-                'Something went wrong.'
+                text:'Please complete all required fields.'
 
             });
 
+            return;
         }
 
+        let button = $(this);
+
+        let formData =
+        new FormData(
+            $('#itrUploadForm')[0]
+        );
+
+        button.prop(
+            'disabled',
+            true
+        );
+
+        $.ajax({
+
+            url:
+            "{{ route('retailer.itr.preview') }}",
+
+            type:'POST',
+
+            data:formData,
+
+            processData:false,
+
+            contentType:false,
+
+            success:function(response){
+
+                if(response.status){
+
+                    window.location.href =
+                    response.redirect_url;
+                }
+            },
+
+            error:function(xhr){
+
+                button.prop(
+                    'disabled',
+                    false
+                );
+
+                Swal.fire({
+
+                    icon:'error',
+
+                    title:'Error',
+
+                    text:
+                    xhr.responseJSON?.message
+                    ??
+                    'Something went wrong.'
+
+                });
+            }
+        });
     });
 
 });
 
-});
-
 </script>
-
 @endsection

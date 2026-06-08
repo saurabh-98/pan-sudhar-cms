@@ -46,8 +46,25 @@ class FileItrController extends Controller
 
     public function index()
     {
+        $session = get_itr_session();
+
+        $data = [];
+        $files = [];
+
+        if ($session) {
+
+            $data = $session['data'] ?? [];
+
+            $files = $session['files'] ?? [];
+        }
+
         return view(
-            'retailer.itr.file'
+            'retailer.itr.file',
+            [
+                'data'      => $data,
+                'files'     => $files,
+                'itrCharge' => $this->getItrCharge()
+            ]
         );
     }
 
@@ -58,79 +75,135 @@ class FileItrController extends Controller
     */
 
     public function preview(
-        FileItrPreviewRequest $request
-    ): JsonResponse {
+    FileItrPreviewRequest $request
+): JsonResponse {
 
-        try {
+    try {
 
-            $user = auth()->user();
+        $user = auth()->user();
 
-            $itrCharge = $this->getItrCharge();
+        $itrCharge = $this->getItrCharge();
 
-            if ($itrCharge <= 0) {
-
-                return response()->json([
-
-                    'status' => false,
-
-                    'message' => 'ITR charge is not configured.'
-
-                ], 422);
-            }
-
-            if ($user->wallet_balance < $itrCharge) {
-
-                return response()->json([
-
-                    'status' => false,
-
-                    'message' => 'Insufficient wallet balance.'
-
-                ], 422);
-            }
-
-            $dto = FileItrDTO::fromRequest(
-                $request
-            );
-
-            $this->itrFileService
-                ->preview($dto);
-
-            /*
-            |--------------------------------------------------------------------------
-            | SAVE CHARGE IN SESSION
-            |--------------------------------------------------------------------------
-            */
-
-            $preview = get_itr_session();
-
-            $preview['charge'] = $itrCharge;
-
-            save_itr_session($preview);
+        if ($itrCharge <= 0) {
 
             return response()->json([
 
-                'status' => true,
+                'status'  => false,
 
-                'message' => 'Preview generated successfully.',
+                'message' => 'ITR charge is not configured.'
 
-                'redirect_url' => route(
-                    'retailer.itr.preview-page'
-                )
+            ], 422);
+        }
 
-            ]);
-
-        } catch (\Throwable $e) {
+        if ($user->wallet_balance < $itrCharge) {
 
             return response()->json([
 
-                'status' => false,
+                'status'  => false,
 
-                'message' => $e->getMessage()
+                'message' => 'Insufficient wallet balance.'
+
+            ], 422);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | CREATE DTO & SAVE PREVIEW
+        |--------------------------------------------------------------------------
+        */
+
+        $dto = FileItrDTO::fromRequest(
+            $request
+        );
+
+        $this->itrFileService
+            ->preview($dto);
+
+        /*
+        |--------------------------------------------------------------------------
+        | GET SAVED SESSION
+        |--------------------------------------------------------------------------
+        */
+
+        $preview = get_itr_session();
+
+        if (!$preview) {
+
+            return response()->json([
+
+                'status'  => false,
+
+                'message' => 'Unable to create preview session.'
 
             ], 500);
         }
+
+        /*
+        |--------------------------------------------------------------------------
+        | SAVE CHARGE
+        |--------------------------------------------------------------------------
+        */
+
+        $preview['charge'] = $itrCharge;
+
+        /*
+        |--------------------------------------------------------------------------
+        | MARK SESSION AS RETURNABLE
+        |--------------------------------------------------------------------------
+        */
+
+        $preview['returnable'] = true;
+
+        /*
+        |--------------------------------------------------------------------------
+        | SAVE LAST FORM VALUES
+        |--------------------------------------------------------------------------
+        */
+
+        $preview['data'] = array_merge(
+
+            $preview['data'] ?? [],
+
+            [
+
+                'name'    => $request->name,
+                'mobile'  => $request->mobile,
+                'email'   => $request->email,
+                'remarks' => $request->remarks,
+
+            ]
+
+        );
+
+        save_itr_session(
+            $preview
+        );
+
+        return response()->json([
+
+            'status' => true,
+
+            'message' => 'Preview generated successfully.',
+
+            'redirect_url' => route(
+                'retailer.itr.preview-page'
+            )
+
+        ]);
+
+    } catch (\Throwable $e) {
+
+        return response()->json([
+
+            'status' => false,
+
+            'message' => config('app.debug')
+                ? $e->getMessage()
+                : 'Something went wrong.'
+
+        ], 500);
     }
+}
     /*
     |--------------------------------------------------------------------------
     | PREVIEW PAGE

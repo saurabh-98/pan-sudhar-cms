@@ -60,25 +60,25 @@
 
                 </div>
 
-         <div class="col-md-6">
+                <div class="col-md-6">
 
-    <div class="ack-box">
+                    <div class="ack-box">
 
-        <label>
-            Applicant Name
-        </label>
+                        <label>
+                            Applicant Name
+                        </label>
 
-        <h5>
-            {{ trim(
-                ($application->first_name ?? '') . ' ' .
-                ($application->middle_name ?? '') . ' ' .
-                ($application->last_name ?? '')
-            ) }}
-        </h5>
+                        <h5>
+                            {{ trim(
+                                ($application->first_name ?? '') . ' ' .
+                                ($application->middle_name ?? '') . ' ' .
+                                ($application->last_name ?? '')
+                            ) }}
+                        </h5>
 
-    </div>
+                    </div>
 
-</div>
+                </div>
 
                 <div class="col-md-6">
 

@@ -1,178 +1,66 @@
 /* =========================================================
-| ADVANCED ITR UPLOAD PAGE CSS
-| FILE: public/assets/retailer/css/itr-upload.css
+   ITR UPLOAD PAGE - CLEAN MODERN UI
 ========================================================= */
 
 :root{
-
     --primary:#2563eb;
     --primary-dark:#1d4ed8;
-    --secondary:#0f172a;
-    --success:#16a34a;
+    --success:#10b981;
     --danger:#dc2626;
-    --warning:#f59e0b;
 
-    --bg:#f1f5f9;
-    --card:#ffffff;
-    --border:#dbe2ea;
     --text:#0f172a;
     --muted:#64748b;
 
+    --card:#ffffff;
+    --border:#e2e8f0;
+    --bg:#f8fafc;
+
+    --radius:20px;
+
     --shadow:
-        0 10px 30px rgba(15,23,42,0.08);
+        0 10px 25px rgba(15,23,42,.06);
 
     --shadow-hover:
-        0 20px 40px rgba(37,99,235,0.18);
+        0 20px 40px rgba(37,99,235,.12);
 
-    --radius:24px;
-
-    --transition:all .35s ease;
-
+    --transition:.30s ease;
 }
 
 
-
 /* =========================================================
-| BODY
+   PAGE
 ========================================================= */
 
-body{
+.itr-page-wrapper{
+    padding:20px 0;
+}
+
+.itr-card{
+    background:#fff;
+    border-radius:28px;
+    overflow:hidden;
+    border:1px solid #e5e7eb;
+    box-shadow:var(--shadow);
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.itr-header{
 
     background:
         linear-gradient(
             135deg,
-            #eef2ff 0%,
-            #f8fafc 50%,
-            #f1f5f9 100%
+            #0f172a 0%,
+            #1e3a8a 50%,
+            #2563eb 100%
         );
 
-    min-height:100vh;
-
-    font-family:
-        Inter,
-        sans-serif;
-
-}
-
-
-
-/* =========================================================
-| PAGE WRAPPER
-========================================================= */
-
-.itr-page-wrapper{
-
+    padding:24px 30px;
     position:relative;
-
-    padding:50px 0;
-
     overflow:hidden;
-
-}
-
-
-
-/* BACKGROUND EFFECTS */
-
-.itr-page-wrapper::before{
-
-    content:'';
-
-    position:absolute;
-
-    width:500px;
-    height:500px;
-
-    background:
-        radial-gradient(
-            rgba(37,99,235,0.18),
-            transparent
-        );
-
-    top:-200px;
-    right:-150px;
-
-    border-radius:50%;
-
-    z-index:0;
-
-}
-
-.itr-page-wrapper::after{
-
-    content:'';
-
-    position:absolute;
-
-    width:400px;
-    height:400px;
-
-    background:
-        radial-gradient(
-            rgba(14,165,233,0.12),
-            transparent
-        );
-
-    bottom:-150px;
-    left:-100px;
-
-    border-radius:50%;
-
-}
-
-
-
-/* =========================================================
-| CARD
-========================================================= */
-
-.itr-card{
-
-    position:relative;
-
-    z-index:2;
-
-    background:rgba(255,255,255,0.92);
-
-    backdrop-filter:blur(12px);
-
-    border-radius:32px;
-
-    overflow:hidden;
-
-    border:1px solid rgba(255,255,255,0.4);
-
-    box-shadow:var(--shadow);
-
-    transition:var(--transition);
-
-}
-
-.itr-card:hover{
-
-    transform:translateY(-4px);
-
-    box-shadow:var(--shadow-hover);
-
-}
-
-
-
-.itr-header{
-
-    position:relative;
-
-    overflow:hidden;
-
-    padding:38px 42px;
-
-    background:
-    linear-gradient(
-        135deg,
-        #081028 0%,
-        #162456 45%,
-        #2563eb 100%
-    );
 }
 
 .itr-header::before{
@@ -181,419 +69,318 @@ body{
 
     position:absolute;
 
-    width:320px;
-    height:320px;
-
-    right:-80px;
-    top:-120px;
-
-    border-radius:50%;
-
-    background:
-    rgba(255,255,255,.08);
-}
-
-.itr-header::after{
-
-    content:"";
-
-    position:absolute;
+    right:-60px;
+    top:-60px;
 
     width:180px;
     height:180px;
 
-    left:-60px;
-    bottom:-80px;
-
     border-radius:50%;
 
     background:
-    rgba(255,255,255,.05);
+        rgba(255,255,255,.08);
 }
 
 .itr-header-content{
-
-    position:relative;
-
-    z-index:5;
-
     display:flex;
-
     align-items:center;
-
     justify-content:space-between;
-
-    gap:30px;
+    gap:20px;
 }
 
 .itr-header-left{
-
     display:flex;
-
     align-items:center;
-
-    gap:22px;
+    gap:18px;
 }
 
 .itr-header-icon{
 
-    width:88px;
-    height:88px;
+    width:72px;
+    height:72px;
 
-    border-radius:24px;
+    border-radius:18px;
 
     background:
-    rgba(255,255,255,.12);
-
-    border:1px solid rgba(255,255,255,.15);
+        rgba(255,255,255,.12);
 
     display:flex;
-
     align-items:center;
-
     justify-content:center;
-
-    backdrop-filter:blur(10px);
 }
 
 .itr-header-icon i{
-
-    font-size:38px;
-
     color:#fff;
+    font-size:30px;
 }
 
 .itr-header h2{
-
-    margin:0;
-
-    font-size:42px;
-
-    font-weight:900;
-
     color:#fff;
-
+    margin:0;
+    font-size:30px;
+    font-weight:800;
     line-height:1.2;
 }
 
 .itr-header p{
-
-    margin-top:8px;
-
-    margin-bottom:0;
-
-    color:rgba(255,255,255,.80);
-
-    font-size:15px;
+    margin:4px 0 0;
+    color:rgba(255,255,255,.85);
+    font-size:14px;
 }
+
+
+/* =========================================================
+   SERVICE CHARGE
+========================================================= */
 
 .itr-charge-card{
 
-    min-width:220px;
-
-    padding:18px 24px;
-
-    border-radius:24px;
+    min-width:190px;
 
     background:
-    rgba(255,255,255,.12);
-
-    backdrop-filter:blur(14px);
+        rgba(255,255,255,.12);
 
     border:1px solid rgba(255,255,255,.15);
+
+    border-radius:20px;
+
+    padding:16px 20px;
 
     text-align:center;
 }
 
 .charge-label{
-
     display:block;
-
-    font-size:13px;
-
-    color:rgba(255,255,255,.75);
-
+    font-size:12px;
+    color:#dbeafe;
     text-transform:uppercase;
-
     letter-spacing:1px;
-
-    margin-bottom:6px;
 }
 
 .charge-price{
-
-    font-size:34px;
-
-    font-weight:900;
-
+    display:block;
+    margin-top:4px;
     color:#fff;
+    font-size:32px;
+    font-weight:800;
 }
 
 
 /* =========================================================
-| BODY
+   BODY
 ========================================================= */
 
 .itr-body{
-
-    padding:40px;
-
+    padding:28px;
 }
 
 
-
 /* =========================================================
-| LABEL
+   LABELS
 ========================================================= */
 
 .itr-label{
 
-    display:flex;
+    display:block;
 
-    align-items:center;
+    margin-bottom:10px;
 
-    gap:6px;
-
-    margin-bottom:12px;
-
-    font-size:15px;
-
+    font-size:14px;
     font-weight:700;
 
-    color:var(--text);
-
+    color:#1e293b;
 }
 
 .itr-label span{
-
-    color:var(--danger);
-
+    color:red;
 }
 
 
+/* =========================================================
+   INPUTS
+========================================================= */
+
+.itr-input,
+.itr-textarea{
+
+    width:100%;
+
+    border:1px solid #dbe2ea;
+
+    border-radius:14px;
+
+    padding:13px 15px;
+
+    font-size:14px;
+
+    transition:.25s;
+}
+
+.itr-input:focus,
+.itr-textarea:focus{
+
+    outline:none;
+
+    border-color:#2563eb;
+
+    box-shadow:
+        0 0 0 4px rgba(37,99,235,.10);
+}
+
+.itr-textarea{
+    resize:none;
+}
+
 
 /* =========================================================
-| UPLOAD BOX
+   DOCUMENT UPLOAD
 ========================================================= */
 
 .upload-box{
-
     position:relative;
-
 }
 
 .upload-input{
 
     position:absolute;
 
-    width:100%;
-    height:100%;
+    inset:0;
 
     opacity:0;
 
     cursor:pointer;
 
-    z-index:5;
-
+    z-index:10;
 }
-
-
-
-/* =========================================================
-| UPLOAD LABEL
-========================================================= */
 
 .upload-label{
 
-    position:relative;
+    min-height:180px;
 
-    overflow:hidden;
+    border:2px dashed #bfd0ff;
 
-    border:
-        2px dashed #cbd5e1;
-
-    border-radius:28px;
-
-    padding:38px 25px;
-
-    text-align:center;
+    border-radius:20px;
 
     background:
         linear-gradient(
             180deg,
-            #ffffff,
-            #f8fafc
+            #fafcff,
+            #f4f8ff
         );
 
-    transition:var(--transition);
+    display:flex;
 
-}
+    flex-direction:column;
 
-.upload-label::before{
+    align-items:center;
 
-    content:'';
+    justify-content:center;
 
-    position:absolute;
+    text-align:center;
 
-    inset:0;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(37,99,235,0.05),
-            rgba(14,165,233,0.03)
-        );
-
-    opacity:0;
-
-    transition:var(--transition);
-
+    transition:.3s;
 }
 
 .upload-label:hover{
 
-    border-color:var(--primary);
+    border-color:#2563eb;
 
-    transform:
-        translateY(-4px)
-        scale(1.01);
+    transform:translateY(-3px);
 
     box-shadow:
-        0 15px 30px rgba(37,99,235,0.12);
-
-}
-
-.upload-label:hover::before{
-
-    opacity:1;
-
+        0 12px 25px rgba(37,99,235,.10);
 }
 
 .upload-label i{
 
-    position:relative;
+    width:64px;
+    height:64px;
 
-    z-index:2;
+    border-radius:16px;
 
-    font-size:52px;
+    background:
+        linear-gradient(
+            135deg,
+            #4361ee,
+            #6366f1
+        );
 
-    color:var(--primary);
+    color:#fff;
 
-    margin-bottom:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
-    transition:var(--transition);
+    font-size:24px;
 
-}
-
-.upload-label:hover i{
-
-    transform:scale(1.1);
-
+    margin-bottom:12px;
 }
 
 .upload-label h6{
 
-    position:relative;
+    margin:0 0 6px;
 
-    z-index:2;
+    font-size:16px;
 
-    margin-bottom:10px;
+    font-weight:700;
 
-    font-size:19px;
-
-    font-weight:800;
-
-    color:var(--text);
-
+    color:#0f172a;
 }
 
 .upload-label p{
 
-    position:relative;
-
-    z-index:2;
-
     margin:0;
 
-    color:var(--muted);
+    font-size:12px;
 
-    font-size:14px;
-
+    color:#64748b;
 }
 
 
-
 /* =========================================================
-| PREVIEW BOX
+   PREVIEW
 ========================================================= */
 
 .preview-box{
-
-    margin-top:18px;
-
+    margin-top:12px;
 }
-
-
-
-/* =========================================================
-| IMAGE PREVIEW
-========================================================= */
 
 .file-preview-card{
 
     position:relative;
 
-    border-radius:22px;
+    border-radius:16px;
 
     overflow:hidden;
 
     border:1px solid #e2e8f0;
 
     background:#fff;
-
-    box-shadow:
-        0 10px 25px rgba(15,23,42,0.05);
-
-    animation:fadeIn .4s ease;
-
 }
 
 .file-preview-card img{
 
     width:100%;
 
-    max-height:250px;
+    height:160px;
 
     object-fit:cover;
-
-    transition:var(--transition);
-
-}
-
-.file-preview-card:hover img{
-
-    transform:scale(1.03);
-
 }
 
 .file-name{
 
-    padding:14px 16px;
+    padding:10px 12px;
 
-    font-size:14px;
+    font-size:13px;
 
-    font-weight:700;
+    font-weight:600;
 
     color:#334155;
-
-    word-break:break-word;
-
 }
 
 
-
 /* =========================================================
-| PDF PREVIEW
+   PDF PREVIEW
 ========================================================= */
 
 .pdf-preview{
@@ -602,566 +389,84 @@ body{
 
     align-items:center;
 
-    gap:18px;
+    gap:12px;
 
-    padding:22px;
+    padding:16px;
 
-    border-radius:22px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #fff5f5,
-            #fef2f2
-        );
+    border-radius:16px;
 
     border:1px solid #fecaca;
 
-    animation:fadeIn .4s ease;
-
+    background:#fff5f5;
 }
 
 .pdf-preview i{
 
-    font-size:56px;
+    font-size:42px;
 
     color:#dc2626;
-
 }
 
 .pdf-info h6{
 
     margin:0;
 
-    font-size:15px;
+    font-size:13px;
 
-    font-weight:800;
-
-    color:#111827;
-
-    word-break:break-word;
-
+    font-weight:700;
 }
 
 .pdf-info p{
 
-    margin-top:5px;
+    margin:4px 0 0;
+
+    font-size:12px;
 
     color:#64748b;
-
-    font-size:13px;
-
 }
-
 
 
 /* =========================================================
-| INPUTS
+   REMOVE BUTTON
 ========================================================= */
-
-.itr-input,
-.itr-textarea{
-
-    width:100%;
-
-    border:
-        1.5px solid var(--border);
-
-    border-radius:20px;
-
-    background:#fff;
-
-    padding:16px 18px;
-
-    font-size:15px;
-
-    transition:var(--transition);
-
-}
-
-.itr-input:hover,
-.itr-textarea:hover{
-
-    border-color:#93c5fd;
-
-}
-
-.itr-input:focus,
-.itr-textarea:focus{
-
-    outline:none;
-
-    border-color:var(--primary);
-
-    box-shadow:
-        0 0 0 5px rgba(37,99,235,0.10);
-
-    transform:translateY(-1px);
-
-}
-
-
-
-/* =========================================================
-| BUTTON
-========================================================= */
-
-.submit-btn{
-
-    position:relative;
-
-    overflow:hidden;
-
-    width:100%;
-
-    border:none;
-
-    border-radius:22px;
-
-    background:
-        linear-gradient(
-            135deg,
-            var(--primary),
-            var(--primary-dark)
-        );
-
-    color:#fff;
-
-    padding:18px;
-
-    font-size:17px;
-
-    font-weight:800;
-
-    letter-spacing:0.4px;
-
-    transition:var(--transition);
-
-    box-shadow:
-        0 12px 25px rgba(37,99,235,0.25);
-
-}
-
-.submit-btn::before{
-
-    content:'';
-
-    position:absolute;
-
-    top:0;
-    left:-100%;
-
-    width:100%;
-    height:100%;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(255,255,255,0.3),
-            transparent
-        );
-
-    transition:0.7s;
-
-}
-
-.submit-btn:hover{
-
-    transform:
-        translateY(-3px)
-        scale(1.01);
-
-    box-shadow:
-        0 18px 40px rgba(37,99,235,0.35);
-
-}
-
-.submit-btn:hover::before{
-
-    left:100%;
-
-}
-
-.submit-btn:disabled{
-
-    opacity:0.7;
-
-    cursor:not-allowed;
-
-}
-
-
-
-/* =========================================================
-| ANIMATION
-========================================================= */
-
-@keyframes fadeIn{
-
-    from{
-
-        opacity:0;
-
-        transform:translateY(10px);
-
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:translateY(0);
-
-    }
-
-}
-
-
-
-/* =========================================================
-| SWEET ALERT
-========================================================= */
-
-.swal2-popup{
-
-    border-radius:26px !important;
-
-    padding:24px !important;
-
-}
-
-
-
-/* =========================================================
-| RESPONSIVE
-========================================================= */
-
-@media(max-width:992px){
-
-    .itr-body{
-
-        padding:28px;
-
-    }
-
-}
-
-@media(max-width:768px){
-
-    .itr-page-wrapper{
-
-        padding:20px 0;
-
-    }
-
-    .itr-header{
-
-        padding:28px;
-
-    }
-
-    .itr-body{
-
-        padding:22px;
-
-    }
-
-    .itr-header-left{
-
-        flex-direction:column;
-
-        text-align:center;
-
-    }
-
-    .itr-header-icon{
-
-        width:75px;
-        height:75px;
-
-    }
-
-    .itr-header h2{
-
-        font-size:26px;
-
-    }
-
-    .upload-label{
-
-        padding:28px 18px;
-
-    }
-
-    .upload-label i{
-
-        font-size:42px;
-
-    }
-
-}
-
-@media(max-width:576px){
-
-    .itr-card{
-
-        border-radius:22px;
-
-    }
-
-    .itr-header{
-
-        padding:22px;
-
-    }
-
-    .itr-body{
-
-        padding:18px;
-
-    }
-
-    .submit-btn{
-
-        padding:16px;
-
-        font-size:15px;
-
-    }
-
-}
-
-/* =========================================================
-| ERROR VALIDATION CSS
-========================================================= */
-
-.input-error{
-
-    border-color:#dc2626 !important;
-
-    box-shadow:
-        0 0 0 4px rgba(220,38,38,0.12) !important;
-
-}
-
-.error-message{
-
-    margin-top:10px;
-
-    padding:12px 14px;
-
-    border-radius:14px;
-
-    background:#fef2f2;
-
-    color:#dc2626;
-
-    font-size:13px;
-
-    font-weight:600;
-
-    display:flex;
-
-    align-items:center;
-
-    gap:8px;
-
-    animation:fadeIn .3s ease;
-
-}
-
-.error-message i{
-
-    font-size:14px;
-
-}
-
-/* =========================================================
-| REMOVE FILE BUTTON
-========================================================= */
-
-.file-preview-card,
-.pdf-preview-wrapper{
-
-    position:relative;
-
-    animation:fadeIn .4s ease;
-
-}
 
 .remove-file-btn{
 
     position:absolute;
 
-    top:12px;
-    right:12px;
+    right:10px;
+    top:10px;
 
-    width:38px;
-    height:38px;
+    width:32px;
+    height:32px;
 
     border:none;
 
     border-radius:50%;
 
-    background:
-        linear-gradient(
-            135deg,
-            #ef4444,
-            #dc2626
-        );
+    background:#ef4444;
 
     color:#fff;
 
     display:flex;
-
     align-items:center;
-
     justify-content:center;
-
-    cursor:pointer;
-
-    z-index:20;
-
-    transition:all .3s ease;
-
-    box-shadow:
-        0 10px 20px rgba(220,38,38,0.25);
-
 }
-
-.remove-file-btn:hover{
-
-    transform:
-        scale(1.1)
-        rotate(90deg);
-
-    box-shadow:
-        0 14px 30px rgba(220,38,38,0.35);
-
-}
-
-.remove-file-btn i{
-
-    font-size:14px;
-
-}
-
 
 
 /* =========================================================
-| REMOVE ANIMATION
+   BUTTON
 ========================================================= */
 
-.preview-box:empty{
-
-    margin-top:0;
-
-}
-
-/* =========================================================
-| FINAL LAYOUT FIX
-========================================================= */
-
-.container-fluid{
+.submit-btn{
 
     width:100%;
 
-    padding-left:25px;
+    height:54px;
 
-    padding-right:25px;
+    border:none;
 
-}
-
-
-
-/* =========================================================
-| ROW FIX
-========================================================= */
-
-.row{
-
-    --bs-gutter-x:24px;
-
-}
-
-
-
-/* =========================================================
-| STEP WRAPPER
-========================================================= */
-
-.itr-step-wrapper{
-
-    width:100%;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:flex-start;
-
-    gap:18px;
-
-    margin-bottom:35px;
-
-    flex-wrap:wrap;
-
-}
-
-
-
-/* =========================================================
-| STEP
-========================================================= */
-
-.itr-step{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:14px;
-
-}
-
-
-
-/* =========================================================
-| STEP NUMBER
-========================================================= */
-
-.step-number{
-
-    width:58px;
-    height:58px;
-
-    border-radius:50%;
-
-    background:#dbeafe;
-
-    color:#2563eb;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    font-size:22px;
-
-    font-weight:700;
-
-    box-shadow:
-        0 10px 25px rgba(37,99,235,0.12);
-
-}
-
-
-
-/* ACTIVE */
-
-.itr-step.active .step-number{
+    border-radius:16px;
 
     background:
         linear-gradient(
@@ -1172,1591 +477,78 @@ body{
 
     color:#fff;
 
-}
-
-
-
-/* =========================================================
-| STEP TEXT
-========================================================= */
-
-.step-text{
-
-    font-size:16px;
+    font-size:15px;
 
     font-weight:700;
 
-    color:#0f172a;
-
-}
-
-
-
-/* =========================================================
-| STEP LINE
-========================================================= */
-
-.step-line{
-
-    width:70px;
-
-    height:3px;
-
-    border-radius:20px;
-
-    background:
-        linear-gradient(
-            90deg,
-            #2563eb,
-            #93c5fd
-        );
-
-}
-
-
-
-/* =========================================================
-| WALLET BOX
-========================================================= */
-
-.wallet-balance-box{
-
-    width:100%;
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    gap:25px;
-
-    padding:30px;
-
-    border-radius:26px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #eff6ff,
-            #dbeafe
-        );
-
-    border:1px solid #bfdbfe;
-
-}
-
-
-
-/* =========================================================
-| WALLET LEFT
-========================================================= */
-
-.wallet-left{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:18px;
-
-}
-
-
-
-/* =========================================================
-| WALLET ICON
-========================================================= */
-
-.wallet-icon{
-
-    width:65px;
-    height:65px;
-
-    border-radius:18px;
-
-    background:#fff;
-
     display:flex;
 
     align-items:center;
 
     justify-content:center;
-
-    color:#2563eb;
-
-    font-size:26px;
-
-}
-
-
-
-/* =========================================================
-| WALLET TEXT
-========================================================= */
-
-.wallet-left h5{
-
-    margin:0;
-
-    font-size:20px;
-
-    font-weight:800;
-
-    color:#0f172a;
-
-}
-
-.wallet-left p{
-
-    margin-top:6px;
-
-    font-size:14px;
-
-    color:#64748b;
-
-}
-
-
-
-/* =========================================================
-| WALLET BALANCE
-========================================================= */
-
-.wallet-balance{
-
-    font-size:34px;
-
-    font-weight:900;
-
-    color:#2563eb;
-
-}
-
-
-
-/* =========================================================
-| PAYMENT BOX
-========================================================= */
-
-.payment-summary-box{
-
-    width:100%;
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    gap:25px;
-
-    padding:30px;
-
-    border-radius:26px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #fff7ed,
-            #ffedd5
-        );
-
-    border:1px solid #fed7aa;
-
-}
-
-
-
-/* =========================================================
-| PAYMENT LEFT
-========================================================= */
-
-.payment-left{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:18px;
-
-}
-
-
-
-/* =========================================================
-| PAYMENT ICON
-========================================================= */
-
-.payment-icon{
-
-    width:65px;
-    height:65px;
-
-    border-radius:18px;
-
-    background:#fff;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    color:#ea580c;
-
-    font-size:28px;
-
-}
-
-
-
-/* =========================================================
-| PAYMENT TEXT
-========================================================= */
-
-.payment-left h5{
-
-    margin:0;
-
-    font-size:20px;
-
-    font-weight:800;
-
-    color:#0f172a;
-
-}
-
-.payment-left p{
-
-    margin-top:6px;
-
-    color:#78716c;
-
-    font-size:14px;
-
-}
-
-
-
-/* =========================================================
-| PAYMENT RIGHT
-========================================================= */
-
-.payment-right{
-
-    min-width:250px;
-
-}
-
-
-
-/* =========================================================
-| PAYMENT ITEM
-========================================================= */
-
-.payment-item{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    margin-bottom:12px;
-
-    font-size:15px;
-
-    color:#0f172a;
-
-}
-
-
-
-/* TOTAL */
-
-.payment-item.total{
-
-    margin-top:12px;
-
-    padding-top:14px;
-
-    border-top:1px dashed #fdba74;
-
-    font-size:19px;
-
-    font-weight:800;
-
-}
-
-
-
-/* =========================================================
-| UPLOAD LABEL FIX
-========================================================= */
-
-.upload-label{
-
-    width:100%;
-
-    min-height:220px;
-
-    display:flex;
-
-    flex-direction:column;
-
-    align-items:center;
-
-    justify-content:center;
-
-}
-
-
-
-/* =========================================================
-| PREVIEW BOX
-========================================================= */
-
-.preview-box{
-
-    width:100%;
-
-}
-
-
-
-/* =========================================================
-| IMAGE PREVIEW
-========================================================= */
-
-.file-preview-card img{
-
-    width:100%;
-
-    height:240px;
-
-    object-fit:cover;
-
-}
-
-
-
-/* =========================================================
-| PDF PREVIEW
-========================================================= */
-
-.pdf-preview{
-
-    width:100%;
-
-}
-
-
-
-/* =========================================================
-| BUTTON FIX
-========================================================= */
-
-.submit-btn{
-
-    min-height:60px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    gap:12px;
-
-}
-
-
-
-/* =========================================================
-| MOBILE
-========================================================= */
-
-@media(max-width:991px){
-
-    .wallet-balance-box,
-    .payment-summary-box{
-
-        flex-direction:column;
-
-        align-items:flex-start;
-
-    }
-
-}
-
-
-
-@media(max-width:768px){
-
-    .itr-header{
-
-        padding:24px;
-
-    }
-
-    .itr-header-left{
-
-        flex-direction:column;
-
-        align-items:flex-start;
-
-    }
-
-    .itr-body{
-
-        padding:24px;
-
-    }
-
-    .wallet-balance{
-
-        font-size:28px;
-
-    }
-
-    .upload-label{
-
-        min-height:180px;
-
-    }
-
-    .step-line{
-
-        display:none;
-
-    }
-
-}
-
-
-
-@media(max-width:576px){
-
-    .container-fluid{
-
-        padding-left:12px;
-
-        padding-right:12px;
-
-    }
-
-    .itr-body{
-
-        padding:18px;
-
-    }
-
-    .upload-label{
-
-        min-height:160px;
-
-        padding:18px;
-
-    }
-
-    .upload-label i{
-
-        font-size:42px;
-
-    }
-
-    .wallet-balance{
-
-        font-size:24px;
-
-    }
-
-    .submit-btn{
-
-        font-size:15px;
-
-    }
-
-}
-
-/* =========================================================
-| PAYMENT SUMMARY COMPLETE FIX
-========================================================= */
-
-.payment-summary-box{
-
-    width:100%;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    gap:30px;
-
-    padding:30px;
-
-    border-radius:28px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #fff7ed,
-            #ffedd5
-        );
-
-    border:1px solid #fed7aa;
-
-    box-shadow:
-        0 10px 30px rgba(251,146,60,0.10);
-
-}
-
-
-
-/* =========================================================
-| PAYMENT LEFT
-========================================================= */
-
-.payment-left{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:18px;
-
-    flex:1;
-
-}
-
-
-
-/* =========================================================
-| PAYMENT ICON
-========================================================= */
-
-.payment-icon{
-
-    width:68px;
-    height:68px;
-
-    min-width:68px;
-
-    border-radius:22px;
-
-    background:#fff;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    color:#ea580c;
-
-    font-size:28px;
-
-    box-shadow:
-        0 10px 25px rgba(234,88,12,0.12);
-
-}
-
-
-
-/* =========================================================
-| PAYMENT TEXT
-========================================================= */
-
-.payment-left h5{
-
-    margin:0;
-
-    font-size:22px;
-
-    font-weight:800;
-
-    color:#111827;
-
-}
-
-.payment-left p{
-
-    margin-top:6px;
-
-    margin-bottom:0;
-
-    color:#78716c;
-
-    font-size:14px;
-
-    line-height:1.6;
-
-}
-
-
-
-/* =========================================================
-| PAYMENT RIGHT
-========================================================= */
-
-.payment-right{
-
-    min-width:260px;
-
-    background:#fff;
-
-    border-radius:22px;
-
-    padding:20px;
-
-    border:1px solid #fed7aa;
-
-}
-
-
-
-/* =========================================================
-| PAYMENT ITEM
-========================================================= */
-
-.payment-item{
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    margin-bottom:14px;
-
-    font-size:15px;
-
-    color:#374151;
-
-}
-
-
-
-/* LAST ITEM */
-
-.payment-item:last-child{
-
-    margin-bottom:0;
-
-}
-
-
-
-/* =========================================================
-| PAYMENT TOTAL
-========================================================= */
-
-.payment-item.total{
-
-    padding-top:16px;
-
-    margin-top:16px;
-
-    border-top:1px dashed #fdba74;
-
-    font-size:20px;
-
-    font-weight:900;
-
-    color:#111827;
-
-}
-
-
-
-/* =========================================================
-| PRICE
-========================================================= */
-
-.payment-item strong{
-
-    font-weight:800;
-
-    color:#ea580c;
-
-}
-
-
-
-/* =========================================================
-| MOBILE FIX
-========================================================= */
-
-@media(max-width:768px){
-
-    .payment-summary-box{
-
-        flex-direction:column;
-
-        align-items:flex-start;
-
-    }
-
-    .payment-right{
-
-        width:100%;
-
-        min-width:100%;
-
-    }
-
-}
-
-/* =========================================================
-| PREVIEW SECTION
-========================================================= */
-
-.preview-main-card{
-
-    position:relative;
-
-    overflow:hidden;
-
-    padding:35px;
-
-    border-radius:32px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,255,255,0.98),
-            rgba(248,250,252,0.95)
-        );
-
-    border:1px solid rgba(255,255,255,0.6);
-
-    box-shadow:
-        0 25px 60px rgba(15,23,42,0.08);
-
-    animation:fadePreview .5s ease;
-
-}
-
-
-
-/* BACKGROUND EFFECT */
-
-.preview-main-card::before{
-
-    content:'';
-
-    position:absolute;
-
-    top:-120px;
-    right:-120px;
-
-    width:260px;
-    height:260px;
-
-    background:
-        radial-gradient(
-            rgba(37,99,235,0.12),
-            transparent
-        );
-
-    border-radius:50%;
-
-}
-
-
-
-/* =========================================================
-| PREVIEW HEADER
-========================================================= */
-
-.preview-header{
-
-    position:relative;
-
-    z-index:2;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    gap:25px;
-
-    margin-bottom:35px;
-
-    padding-bottom:24px;
-
-    border-bottom:1px solid #e2e8f0;
-
-}
-
-.preview-header h3{
-
-    margin:0;
-
-    font-size:34px;
-
-    font-weight:900;
-
-    color:#0f172a;
-
-    letter-spacing:-0.5px;
-
-}
-
-.preview-header p{
-
-    margin-top:8px;
-
-    color:#64748b;
-
-    font-size:15px;
-
-}
-
-
-
-/* =========================================================
-| BADGE
-========================================================= */
-
-.preview-badge{
-
-    display:flex;
-
-    align-items:center;
 
     gap:10px;
 
-    padding:14px 20px;
-
-    border-radius:18px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #dcfce7,
-            #bbf7d0
-        );
-
-    color:#15803d;
-
-    font-size:14px;
-
-    font-weight:800;
-
-    box-shadow:
-        0 10px 25px rgba(34,197,94,0.12);
-
-}
-
-.preview-badge i{
-
-    font-size:18px;
-
-}
-
-
-
-/* =========================================================
-| USER BOX
-========================================================= */
-
-.preview-user-box{
-
-    display:grid;
-
-    grid-template-columns:
-        repeat(auto-fit,minmax(250px,1fr));
-
-    gap:20px;
-
-    margin-bottom:35px;
-
-}
-
-
-
-/* =========================================================
-| USER ITEM
-========================================================= */
-
-.preview-user-item{
-
-    position:relative;
-
-    overflow:hidden;
-
-    padding:24px;
-
-    border-radius:24px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #ffffff,
-            #f8fafc
-        );
-
-    border:1px solid #e2e8f0;
-
-    transition:all .35s ease;
-
-}
-
-.preview-user-item::before{
-
-    content:'';
-
-    position:absolute;
-
-    inset:0;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(37,99,235,0.04),
-            transparent
-        );
-
-    opacity:0;
-
     transition:.3s;
-
 }
 
-.preview-user-item:hover{
+.submit-btn:hover{
 
-    transform:
-        translateY(-5px);
+    transform:translateY(-2px);
 
     box-shadow:
-        0 20px 40px rgba(37,99,235,0.10);
-
-    border-color:#bfdbfe;
-
+        0 15px 30px rgba(37,99,235,.25);
 }
-
-.preview-user-item:hover::before{
-
-    opacity:1;
-
-}
-
-.preview-user-item span{
-
-    display:block;
-
-    margin-bottom:10px;
-
-    font-size:13px;
-
-    font-weight:700;
-
-    color:#64748b;
-
-    text-transform:uppercase;
-
-    letter-spacing:1px;
-
-}
-
-.preview-user-item strong{
-
-    position:relative;
-
-    z-index:2;
-
-    font-size:18px;
-
-    font-weight:800;
-
-    color:#0f172a;
-
-    word-break:break-word;
-
-}
-
 
 
 /* =========================================================
-| DOCUMENT CARD
+   VALIDATION
 ========================================================= */
 
-.preview-document-card{
+.input-error{
 
-    position:relative;
-
-    overflow:hidden;
-
-    height:100%;
-
-    border-radius:28px;
-
-    background:#fff;
-
-    border:1px solid #e2e8f0;
-
-    transition:all .35s ease;
+    border-color:#dc2626 !important;
 
     box-shadow:
-        0 10px 25px rgba(15,23,42,0.05);
-
+        0 0 0 4px rgba(220,38,38,.10);
 }
 
-.preview-document-card:hover{
-
-    transform:
-        translateY(-8px)
-        scale(1.02);
-
-    box-shadow:
-        0 25px 50px rgba(37,99,235,0.16);
-
-    border-color:#93c5fd;
-
-}
-
-
-
-/* =========================================================
-| PREVIEW TITLE
-========================================================= */
-
-.preview-title{
-
-    padding:18px 22px;
-
-    font-size:16px;
-
-    font-weight:800;
-
-    color:#0f172a;
-
-    border-bottom:1px solid #e2e8f0;
-
-    background:
-        linear-gradient(
-            180deg,
-            #ffffff,
-            #f8fafc
-        );
-
-}
-
-
-
-/* =========================================================
-| PREVIEW IMAGE
-========================================================= */
-
-.preview-image{
-
-    width:100%;
-
-    height:280px;
-
-    object-fit:cover;
-
-    transition:all .5s ease;
-
-}
-
-.preview-document-card:hover .preview-image{
-
-    transform:scale(1.08);
-
-}
-
-
-
-/* =========================================================
-| PDF PREVIEW CARD
-========================================================= */
-
-.pdf-preview-card{
-
-    display:flex;
-
-    flex-direction:column;
-
-    align-items:center;
-
-    justify-content:center;
-
-    gap:14px;
-
-    height:280px;
-
-    padding:25px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #fff5f5,
-            #fef2f2
-        );
-
-}
-
-.pdf-preview-card i{
-
-    font-size:72px;
-
-    color:#dc2626;
-
-}
-
-.pdf-preview-card span{
-
-    font-size:15px;
-
-    font-weight:700;
-
-    color:#991b1b;
-
-    word-break:break-word;
-
-    text-align:center;
-
-}
-
-
-
-/* =========================================================
-| PAYMENT SUMMARY
-========================================================= */
-
-.payment-summary-box{
-
-    position:relative;
-
-    overflow:hidden;
-
-    margin-top:40px;
-
-    padding:32px;
-
-    border-radius:30px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #fff7ed,
-            #ffedd5
-        );
-
-    border:1px solid #fdba74;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    gap:30px;
-
-    box-shadow:
-        0 15px 35px rgba(251,146,60,0.10);
-
-}
-
-
-
-/* LIGHT EFFECT */
-
-.payment-summary-box::before{
-
-    content:'';
-
-    position:absolute;
-
-    top:-60px;
-    right:-60px;
-
-    width:180px;
-    height:180px;
-
-    background:
-        radial-gradient(
-            rgba(255,255,255,0.35),
-            transparent
-        );
-
-    border-radius:50%;
-
-}
-
-
-
-/* =========================================================
-| PAYMENT LEFT
-========================================================= */
-
-.payment-left{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:20px;
-
-    position:relative;
-
-    z-index:2;
-
-}
-
-
-
-/* =========================================================
-| PAYMENT ICON
-========================================================= */
-
-.payment-icon{
-
-    width:74px;
-    height:74px;
-
-    border-radius:24px;
-
-    background:#fff;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    color:#ea580c;
-
-    font-size:32px;
-
-    box-shadow:
-        0 15px 35px rgba(234,88,12,0.15);
-
-}
-
-
-
-/* =========================================================
-| PAYMENT TEXT
-========================================================= */
-
-.payment-left h5{
-
-    margin:0;
-
-    font-size:26px;
-
-    font-weight:900;
-
-    color:#111827;
-
-}
-
-.payment-left p{
+.error-message{
 
     margin-top:8px;
 
-    margin-bottom:0;
+    color:#dc2626;
 
-    color:#7c2d12;
+    font-size:13px;
 
-    font-size:14px;
-
+    font-weight:600;
 }
-
 
 
 /* =========================================================
-| PAYMENT RIGHT
+   RESPONSIVE
 ========================================================= */
-
-.payment-right{
-
-    min-width:280px;
-
-    background:rgba(255,255,255,0.75);
-
-    backdrop-filter:blur(10px);
-
-    padding:24px;
-
-    border-radius:24px;
-
-    border:1px solid rgba(255,255,255,0.5);
-
-    position:relative;
-
-    z-index:2;
-
-}
-
-
-
-/* =========================================================
-| PAYMENT ITEM
-========================================================= */
-
-.payment-item{
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    margin-bottom:16px;
-
-    font-size:15px;
-
-    color:#374151;
-
-}
-
-
-
-/* TOTAL */
-
-.payment-item.total{
-
-    margin-top:18px;
-
-    padding-top:18px;
-
-    border-top:1px dashed #fdba74;
-
-    font-size:22px;
-
-    font-weight:900;
-
-    color:#111827;
-
-}
-
-
-
-/* =========================================================
-| PRICE
-========================================================= */
-
-.payment-item strong{
-
-    color:#ea580c;
-
-    font-weight:900;
-
-}
-
-
-
-/* =========================================================
-| ACTIONS
-========================================================= */
-
-.preview-actions{
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    gap:20px;
-
-    margin-top:35px;
-
-}
-
-
-
-/* =========================================================
-| BACK BUTTON
-========================================================= */
-
-.back-btn{
-
-    border:none;
-
-    min-width:170px;
-
-    height:58px;
-
-    border-radius:18px;
-
-    background:#fff;
-
-    border:1px solid #dbe2ea;
-
-    color:#0f172a;
-
-    font-size:15px;
-
-    font-weight:800;
-
-    transition:.3s;
-
-}
-
-.back-btn:hover{
-
-    transform:translateY(-3px);
-
-    box-shadow:
-        0 15px 35px rgba(15,23,42,0.08);
-
-}
-
-
-
-/* =========================================================
-| FINAL SUBMIT BUTTON
-========================================================= */
-
-.preview-actions .submit-btn{
-
-    flex:1;
-
-}
-
-
-
-/* =========================================================
-| ANIMATION
-========================================================= */
-
-@keyframes fadePreview{
-
-    from{
-
-        opacity:0;
-
-        transform:
-            translateY(20px)
-            scale(.98);
-
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:
-            translateY(0)
-            scale(1);
-
-    }
-
-}
-
-
-
-/* =========================================================
-| RESPONSIVE
-========================================================= */
-
-@media(max-width:991px){
-
-    .payment-summary-box{
-
-        flex-direction:column;
-
-        align-items:flex-start;
-
-    }
-
-    .payment-right{
-
-        width:100%;
-
-        min-width:100%;
-
-    }
-
-}
-
-
 
 @media(max-width:768px){
 
-    .preview-main-card{
-
-        padding:24px;
-
-    }
-
-    .preview-header{
-
+    .itr-header-content{
         flex-direction:column;
-
         align-items:flex-start;
-
     }
 
-    .preview-header h3{
-
-        font-size:28px;
-
-    }
-
-    .preview-image{
-
-        height:220px;
-
-    }
-
-    .preview-actions{
-
-        flex-direction:column;
-
-    }
-
-    .back-btn,
-    .preview-actions .submit-btn{
-
-        width:100%;
-
-    }
-
-}
-
-
-
-@media(max-width:576px){
-
-    .preview-main-card{
-
-        padding:18px;
-
-    }
-
-    .preview-header h3{
-
+    .itr-header h2{
         font-size:24px;
-
     }
 
-    .payment-left{
-
-        flex-direction:column;
-
-        align-items:flex-start;
-
+    .itr-body{
+        padding:20px;
     }
 
-    .payment-left h5{
-
-        font-size:22px;
-
+    .upload-label{
+        min-height:160px;
     }
 
-    .payment-item.total{
-
-        font-size:18px;
-
+    .charge-price{
+        font-size:26px;
     }
-
 }

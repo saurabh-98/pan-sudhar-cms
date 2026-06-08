@@ -34,6 +34,36 @@
 
         ->count();
 
+
+
+        $panCorrectionCount = \App\Models\PanCorrectionApplication::query()
+
+        ->when(
+
+            auth()->user()->hasRole('Executive'),
+
+            function($query){
+
+                $query->where(
+
+                    'assigned_to',
+
+                    auth()->id()
+
+                );
+
+            },
+
+            function($query){
+
+                $query->whereNull('assigned_to');
+
+            }
+
+        )
+
+        ->count();
+
     /*
     |--------------------------------------------------------------------------
     | ITR COUNT
@@ -214,142 +244,142 @@
             @endif
 
 
-{{-- =====================================================
-| NEW PAN MODULE
-====================================================== --}}
-@if(
-    auth()->user()->can('pan.view')
-)
+        {{-- =====================================================
+        | NEW PAN MODULE
+        ====================================================== --}}
+        @if(
+            auth()->user()->can('pan.view')
+        )
 
-<li class="sbx-section">
+        <li class="sbx-section">
 
-    PAN Services
-
-</li>
-
-<li class="sbx-group">
-
-    <ul class="sbx-submenu">
-
-        {{-- NEW PAN APPLICATIONS --}}
-        <li>
-
-            <a href="{{ route('admin.pan.index') }}"
-               class="sbx-link
-               {{ request()->routeIs('admin.pan.*')
-                    ? 'sbx-active' : '' }}">
-
-                <i class="fa fa-id-card"></i>
-
-                <span>
-
-                    New PAN Applications
-
-                </span>
-
-                @if($panCount > 0)
-
-                    <span class="sbx-count-badge">
-
-                        {{ $panCount }}
-
-                    </span>
-
-                @endif
-
-            </a>
+            PAN Services
 
         </li>
 
-        {{-- PAN CORRECTION APPLICATIONS --}}
-        <li>
+        <li class="sbx-group">
 
-            <a href="{{ route('admin.pan-correction.index') }}"
-               class="sbx-link
-               {{ request()->routeIs('admin.pan-correction.*')
-                    ? 'sbx-active' : '' }}">
+            <ul class="sbx-submenu">
 
-                <i class="fa fa-id-card"></i>
+                {{-- NEW PAN APPLICATIONS --}}
+                <li>
 
-                <span>
+                    <a href="{{ route('admin.pan.index') }}"
+                    class="sbx-link
+                    {{ request()->routeIs('admin.pan.*')
+                            ? 'sbx-active' : '' }}">
 
-                     PAN Correction Applications
+                        <i class="fa fa-id-card"></i>
 
-                </span>
+                        <span>
 
-                @if($panCount > 0)
+                            New PAN Applications
 
-                    <span class="sbx-count-badge">
+                        </span>
 
-                        {{ $panCount }}
+                        @if($panCount > 0)
 
-                    </span>
+                            <span class="sbx-count-badge">
 
-                @endif
+                                {{ $panCount }}
 
-            </a>
+                            </span>
 
-        </li>
+                        @endif
 
-    </ul>
+                    </a>
 
-</li>
+                </li>
 
-@endif
+                {{-- PAN CORRECTION APPLICATIONS --}}
+                <li>
 
+                    <a href="{{ route('admin.pan-correction.index') }}"
+                    class="sbx-link
+                    {{ request()->routeIs('admin.pan-correction.*')
+                            ? 'sbx-active' : '' }}">
 
-{{-- =====================================================
-| ITR MODULE
-====================================================== --}}
-@if(
-    auth()->user()->can('itr.view')
-)
+                        <i class="fa fa-id-card"></i>
 
-<li class="sbx-section">
+                        <span>
 
-    ITR Services
+                            PAN Correction Applications
 
-</li>
+                        </span>
 
-<li class="sbx-group">
+                        @if($panCorrectionCount > 0)
 
-    <ul class="sbx-submenu">
+                            <span class="sbx-count-badge">
 
-        {{-- ITR APPLICATIONS --}}
-        <li>
+                                {{ $panCorrectionCount }}
 
-            <a href="{{ route('admin.itr.index') }}"
-               class="sbx-link
-               {{ request()->routeIs('admin.itr.*')
-                    ? 'sbx-active' : '' }}">
+                            </span>
 
-                <i class="fa fa-file-invoice-dollar"></i>
+                        @endif
 
-                <span>
+                    </a>
 
-                    ITR Applications
+                </li>
 
-                </span>
-
-                @if($itrCount > 0)
-
-                    <span class="sbx-count-badge">
-
-                        {{ $itrCount }}
-
-                    </span>
-
-                @endif
-
-            </a>
+            </ul>
 
         </li>
 
-    </ul>
+        @endif
 
-</li>
 
-@endif
+        {{-- =====================================================
+        | ITR MODULE
+        ====================================================== --}}
+        @if(
+            auth()->user()->can('itr.view')
+        )
+
+        <li class="sbx-section">
+
+            ITR Services
+
+        </li>
+
+        <li class="sbx-group">
+
+            <ul class="sbx-submenu">
+
+                {{-- ITR APPLICATIONS --}}
+                <li>
+
+                    <a href="{{ route('admin.itr.index') }}"
+                    class="sbx-link
+                    {{ request()->routeIs('admin.itr.*')
+                            ? 'sbx-active' : '' }}">
+
+                        <i class="fa fa-file-invoice-dollar"></i>
+
+                        <span>
+
+                            ITR Applications
+
+                        </span>
+
+                        @if($itrCount > 0)
+
+                            <span class="sbx-count-badge">
+
+                                {{ $itrCount }}
+
+                            </span>
+
+                        @endif
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </li>
+
+        @endif
 
 
         {{-- =====================================================

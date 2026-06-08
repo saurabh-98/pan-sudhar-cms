@@ -65,7 +65,6 @@
                             <th>#</th>
                             <th>Name</th>
                             <th>Email</th>
-                            <th>Charge</th>
                             <th>Status</th>
                             <th>Remarks</th>
                             <th>Admin Remarks</th>
@@ -229,7 +228,6 @@
 
                                 <td>${itr.email ?? 'N/A'}</td>
 
-                                <td>₹${itr.charge ?? 0}</td>
 
                                 <td>${statusBadge}</td>
 

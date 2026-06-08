@@ -132,7 +132,7 @@
 
                         <h5>
 
-                            {{ $application->created_at->format('d M Y') }}
+                            {{ $application->created_at }}
 
                         </h5>
 

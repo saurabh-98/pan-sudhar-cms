@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\DTO\FileItrDTO;
 use App\Models\ItrFile;
-use App\Models\User;
 use App\Repositories\ItrFileRepository;
 use Illuminate\Support\Facades\DB;
 
@@ -45,10 +44,9 @@ class ItrFileService
         FileItrDTO $dto
     ): array {
 
-        $oldPreview =
-            get_itr_session();
+        $oldPreview = get_itr_session();
 
-        $existingFiles =
+        $sessionFiles =
             $oldPreview['files'] ?? [];
 
         $aadhaarFront =
@@ -60,7 +58,13 @@ class ItrFileService
                     'itr/aadhaar-front'
                 )
 
-                : ($existingFiles['aadhaar_front'] ?? null);
+                : (
+                    $dto->existingAadhaarFront
+                    ??
+                    $sessionFiles['aadhaar_front']
+                    ??
+                    null
+                );
 
         $aadhaarBack =
 
@@ -71,7 +75,13 @@ class ItrFileService
                     'itr/aadhaar-back'
                 )
 
-                : ($existingFiles['aadhaar_back'] ?? null);
+                : (
+                    $dto->existingAadhaarBack
+                    ??
+                    $sessionFiles['aadhaar_back']
+                    ??
+                    null
+                );
 
         $panCard =
 
@@ -82,7 +92,13 @@ class ItrFileService
                     'itr/pan-card'
                 )
 
-                : ($existingFiles['pan_card'] ?? null);
+                : (
+                    $dto->existingPanCard
+                    ??
+                    $sessionFiles['pan_card']
+                    ??
+                    null
+                );
 
         $preview = [
 
@@ -139,9 +155,8 @@ class ItrFileService
 
             if (!$session) {
 
-                abort(
-                    404,
-                    'Session Expired.'
+                throw new \Exception(
+                    'Session expired.'
                 );
             }
 
@@ -150,41 +165,6 @@ class ItrFileService
 
             $files =
                 $session['files'];
-
-            $user =
-                auth()->user();
-
-            $admin =
-                User::role('admin')
-                    ->first();
-
-            $charge = 99;
-
-            if (
-                $user->wallet_balance
-                < $charge
-            ) {
-
-                throw new \Exception(
-                    'Insufficient wallet balance.'
-                );
-            }
-
-            $beforeBalance =
-                $user->wallet_balance;
-
-            $user->wallet_balance -=
-                $charge;
-
-            $user->save();
-
-            if ($admin) {
-
-                $admin->wallet_balance +=
-                    $charge;
-
-                $admin->save();
-            }
 
             $itrFile =
                 $this->itrFileRepository
@@ -215,72 +195,13 @@ class ItrFileService
                             $files['pan_card'],
 
                         'charge' =>
-                            $charge,
+                            $data['charge']
+                            ??
+                            99,
 
                         'status' =>
-                            'pending'
+                            'pending',
                     ]);
-
-            DB::table(
-                'wallet_transactions'
-            )->insert([
-
-                'user_id' =>
-                    $user->id,
-
-                'receiver_id' =>
-                    $admin?->id,
-
-                'amount' =>
-                    $charge,
-
-                'type' =>
-                    'debit',
-
-                'transaction_type' =>
-                    'itr_filing',
-
-                'remarks' =>
-                    'ITR filing charge deducted',
-
-                'created_at' =>
-                    now(),
-
-                'updated_at' =>
-                    now()
-            ]);
-
-            if ($admin) {
-
-                DB::table(
-                    'wallet_transactions'
-                )->insert([
-
-                    'user_id' =>
-                        $admin->id,
-
-                    'receiver_id' =>
-                        $user->id,
-
-                    'amount' =>
-                        $charge,
-
-                    'type' =>
-                        'credit',
-
-                    'transaction_type' =>
-                        'itr_filing_income',
-
-                    'remarks' =>
-                        'ITR filing payment received',
-
-                    'created_at' =>
-                        now(),
-
-                    'updated_at' =>
-                        now()
-                ]);
-            }
 
             clear_itr_session();
 
@@ -348,9 +269,12 @@ class ItrFileService
 
         ] as $file) {
 
-            delete_uploaded_file(
-                $file
-            );
+            if ($file) {
+
+                delete_uploaded_file(
+                    $file
+                );
+            }
         }
 
         return $this

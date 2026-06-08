@@ -152,6 +152,31 @@
 
                         </div>
 
+                         <div class="col-md-6">
+
+                            <div class="pan-info-box">
+
+                                <label>
+
+                                    Submitted Date
+
+                                </label>
+
+                                <div>
+
+                                   <h6>
+
+                                    {{ $application->created_at }}
+
+                                </h6>
+
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
                     </div>
 
                 </div>
