@@ -38,7 +38,7 @@ return new class extends Migration
                 |--------------------------------------------------------------------------
                 */
 
-                $table->string('first_name');
+                $table->string('first_name')->nullable();
 
                 $table->string('middle_name')->nullable();
 
@@ -56,7 +56,7 @@ return new class extends Migration
                 |--------------------------------------------------------------------------
                 */
 
-                $table->string('father_first_name');
+                $table->string('father_first_name')->nullable();
 
                 $table->string('father_middle_name')->nullable();
 
@@ -68,7 +68,7 @@ return new class extends Migration
                 |--------------------------------------------------------------------------
                 */
 
-                $table->string('mother_first_name');
+                $table->string('mother_first_name')->nullable();
 
                 $table->string('mother_middle_name')->nullable();
 

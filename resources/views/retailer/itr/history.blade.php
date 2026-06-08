@@ -125,11 +125,11 @@
 
 <script>
 
-    $(document).ready(function(){
+    $(document).ready(function () {
 
         loadItrHistory();
 
-        $('#refreshBtn').click(function(){
+        $('#refreshBtn').click(function () {
 
             loadItrHistory();
 
@@ -137,7 +137,23 @@
 
     });
 
+    function getFileUrl(path)
+    {
+        if (!path) {
+            return null;
+        }
 
+        // Cloudinary URL
+        if (
+            path.startsWith('http://') ||
+            path.startsWith('https://')
+        ) {
+            return path;
+        }
+
+        // Local/Public uploads
+        return "{{ url('/') }}/" + path;
+    }
 
     function loadItrHistory(page = 1)
     {
@@ -152,42 +168,56 @@
 
             type: "GET",
 
-            success: function(response)
+            success: function (response)
             {
 
                 $('#loaderBox').addClass('d-none');
 
                 let rows = '';
 
-                if(response.data.length > 0)
+                if (response.data.length > 0)
                 {
 
-                    $.each(response.data, function(index, itr){
+                    $.each(response.data, function (index, itr)
+                    {
 
                         let statusBadge = '';
 
-                        if(itr.status === 'approved'){
+                        if (itr.status === 'approved') {
 
                             statusBadge =
                                 `<span class="badge-status badge-approved">
                                     Approved
                                 </span>`;
 
-                        }else if(itr.status === 'pending'){
+                        }
+                        else if (
+                            itr.status === 'Processing' ||
+                            itr.status === 'pending'
+                        ) {
 
                             statusBadge =
                                 `<span class="badge-status badge-pending">
-                                    Pending
+                                    Processing
                                 </span>`;
 
-                        }else{
+                        }
+                        else {
 
                             statusBadge =
                                 `<span class="badge-status badge-rejected">
                                     Rejected
                                 </span>`;
-
                         }
+
+                        let aadhaarFrontUrl =
+                            getFileUrl(itr.aadhaar_front);
+
+                        let aadhaarBackUrl =
+                            getFileUrl(itr.aadhaar_back);
+
+                        let panCardUrl =
+                            getFileUrl(itr.pan_card);
 
                         rows += `
 
@@ -207,14 +237,30 @@
 
                                 <td>${itr.admin_remarks ?? 'N/A'}</td>
 
-                                <td>${itr.created_at}</td>
+                                <td>
+                                    ${
+                                        itr.created_at
+                                        ?
+                                        new Date(itr.created_at)
+                                        .toLocaleString('en-IN', {
+                                            day:'2-digit',
+                                            month:'short',
+                                            year:'numeric',
+                                            hour:'2-digit',
+                                            minute:'2-digit',
+                                            hour12:true
+                                        })
+                                        :
+                                        'N/A'
+                                    }
+                                </td>
 
                                 <td>
 
                                     ${
-                                        itr.aadhaar_front
+                                        aadhaarFrontUrl
                                         ?
-                                        `<a href="/storage/${itr.aadhaar_front}"
+                                        `<a href="${aadhaarFrontUrl}"
                                             target="_blank"
                                             class="file-btn">
 
@@ -230,9 +276,9 @@
                                 <td>
 
                                     ${
-                                        itr.aadhaar_back
+                                        aadhaarBackUrl
                                         ?
-                                        `<a href="/storage/${itr.aadhaar_back}"
+                                        `<a href="${aadhaarBackUrl}"
                                             target="_blank"
                                             class="file-btn">
 
@@ -248,9 +294,9 @@
                                 <td>
 
                                     ${
-                                        itr.pan_card
+                                        panCardUrl
                                         ?
-                                        `<a href="/storage/${itr.pan_card}"
+                                        `<a href="${panCardUrl}"
                                             target="_blank"
                                             class="file-btn">
 
@@ -273,11 +319,12 @@
 
                     $('#tableWrapper').removeClass('d-none');
 
-                    renderPagination(response.pagination);
+                    renderPagination(
+                        response.pagination
+                    );
 
                 }
-                else
-                {
+                else {
 
                     $('#emptyBox').removeClass('d-none');
 
@@ -285,7 +332,8 @@
 
             },
 
-            error:function(){
+            error: function ()
+            {
 
                 $('#loaderBox').addClass('d-none');
 
@@ -297,23 +345,30 @@
 
     }
 
-
-
     function renderPagination(pagination)
     {
 
         let html = '';
 
-        for(let i = 1; i <= pagination.last_page; i++)
-        {
+        for (
+            let i = 1;
+            i <= pagination.last_page;
+            i++
+        ) {
 
             html += `
 
-                <li class="page-item ${pagination.current_page == i ? 'active' : ''}">
+                <li class="page-item ${
+                    pagination.current_page == i
+                    ? 'active'
+                    : ''
+                }">
 
-                    <a href="javascript:void(0)"
-                       onclick="loadItrHistory(${i})"
-                       class="page-link">
+                    <a
+                        href="javascript:void(0)"
+                        onclick="loadItrHistory(${i})"
+                        class="page-link"
+                    >
 
                         ${i}
 
@@ -322,7 +377,6 @@
                 </li>
 
             `;
-
         }
 
         $('#paginationLinks').html(html);
@@ -330,5 +384,4 @@
     }
 
 </script>
-
 @endsection

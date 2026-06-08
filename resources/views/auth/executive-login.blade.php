@@ -7,7 +7,7 @@
 
 <div class="exl-wrapper">
 
-```
+
 <div class="exl-shape exl-shape-1"></div>
 <div class="exl-shape exl-shape-2"></div>
 

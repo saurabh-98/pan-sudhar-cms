@@ -718,7 +718,7 @@ class AdminPanCorrectionController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    $application = PanApplication::with(
+    $application = PanCorrectionApplication::with(
         'documents'
     )->findOrFail($id);
 

@@ -265,7 +265,7 @@
 
                                 <h6>
 
-                                    {{ $application->dob }}
+                                    {{ $application->dob_formatted }}
 
                                 </h6>
 
@@ -325,7 +325,7 @@
 
                                 <h6>
 
-                                    {{ $application->masked_aadhaar }}
+                                    {{ $application->aadhaar_no }}
 
                                 </h6>
 

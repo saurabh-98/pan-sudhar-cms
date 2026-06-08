@@ -348,8 +348,8 @@ class FileItrController extends Controller
                 'message' => 'ITR filed successfully.',
 
                 'redirect_url' => route(
-                    'itr.acknowledgement',
-                    $application->id
+                    'retailer.itr.history'
+                   
                 )
 
             ]);

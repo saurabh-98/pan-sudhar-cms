@@ -673,7 +673,7 @@ Route::prefix('pan-correction')
             session()->regenerateToken();
 
             return redirect()
-                ->route('retailer.login');
+                ->route('login');
 
         }
     )->name('logout.idle');

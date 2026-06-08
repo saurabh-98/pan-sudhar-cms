@@ -1,38 +1,36 @@
 /* ==========================================================
-   RETAILER PORTAL - PRO DASHBOARD 2026
+   RETAILER FINTECH DASHBOARD 2026
 ========================================================== */
 
 :root{
 
-    --primary:#2563eb;
-    --primary-dark:#1d4ed8;
-    --secondary:#6366f1;
+    --bg:#f4f7fc;
 
-    --success:#10b981;
-    --success-dark:#059669;
+    --card:#ffffff;
 
-    --warning:#f59e0b;
-    --danger:#ef4444;
+    --navy:#0b1220;
+    --navy-2:#162033;
 
-    --dark:#0f172a;
-    --dark-2:#1e293b;
+    --green:#16a34a;
+    --green-2:#22c55e;
 
-    --white:#ffffff;
+    --amber:#f59e0b;
+    --amber-2:#fbbf24;
 
     --text:#0f172a;
     --muted:#64748b;
 
     --border:#e5e7eb;
 
-    --radius:18px;
+    --radius:16px;
 
     --shadow:
     0 6px 18px rgba(15,23,42,.05);
 
     --shadow-hover:
-    0 15px 35px rgba(37,99,235,.12);
+    0 15px 35px rgba(15,23,42,.10);
 
-    --transition:.35s cubic-bezier(.4,0,.2,1);
+    --transition:.25s ease;
 }
 
 /* ==========================================================
@@ -43,283 +41,18 @@
 
     min-height:100vh;
 
-    padding:14px;
-
-    background:
-    radial-gradient(
-        circle at top right,
-        rgba(37,99,235,.08),
-        transparent 25%
-    ),
-
-    radial-gradient(
-        circle at bottom left,
-        rgba(16,185,129,.06),
-        transparent 25%
-    ),
-
-    #f8fafc;
-}
-
-/* ==========================================================
-   HERO
-========================================================== */
-
-.rtd-hero{
-
-    display:grid;
-
-    grid-template-columns:
-    minmax(0,2.8fr)
-    minmax(300px,1fr);
-
-    gap:12px;
-
-    margin-bottom:14px;
-}
-
-/* ==========================================================
-   WELCOME CARD
-========================================================== */
-
-.rtd-welcome-card{
-
-    position:relative;
-
-    overflow:hidden;
-
-    padding:18px 24px;
-
-    min-height:105px;
-
-    border-radius:24px;
+    padding:10px;
 
     background:
     linear-gradient(
-        135deg,
-        #2563eb 0%,
-        #3b82f6 45%,
-        #6366f1 100%
+        180deg,
+        #f8fafc,
+        #eef4ff
     );
-
-    color:#fff;
-
-    box-shadow:
-    0 15px 40px rgba(37,99,235,.18);
-
-    transition:var(--transition);
-}
-
-.rtd-welcome-card:hover{
-
-    transform:translateY(-3px);
-}
-
-.rtd-welcome-card::before{
-
-    content:"";
-
-    position:absolute;
-
-    width:240px;
-    height:240px;
-
-    right:-100px;
-    top:-120px;
-
-    border-radius:50%;
-
-    background:
-    rgba(255,255,255,.08);
-}
-
-.rtd-welcome-title{
-
-    font-size:22px;
-
-    font-weight:800;
-
-    margin-bottom:4px;
-
-    position:relative;
-
-    z-index:2;
-}
-
-.rtd-welcome-text{
-
-    font-size:13px;
-
-    opacity:.95;
-
-    margin-bottom:10px;
-
-    position:relative;
-
-    z-index:2;
 }
 
 /* ==========================================================
-   ACTION BUTTONS
-========================================================== */
-
-.rtd-action-group{
-
-    display:flex;
-
-    flex-wrap:wrap;
-
-    gap:8px;
-}
-
-.rtd-action-btn{
-
-    display:inline-flex;
-
-    align-items:center;
-
-    gap:6px;
-
-    padding:8px 14px;
-
-    border-radius:12px;
-
-    background:#fff;
-
-    color:#2563eb;
-
-    font-size:12px;
-
-    font-weight:700;
-
-    text-decoration:none;
-
-    transition:var(--transition);
-}
-
-.rtd-action-btn:hover{
-
-    transform:translateY(-2px);
-
-    color:#2563eb;
-}
-
-/* ==========================================================
-   WALLET CARD
-========================================================== */
-
-.rtd-wallet-card{
-
-    position:relative;
-
-    overflow:hidden;
-
-    min-height:105px;
-
-    padding:18px;
-
-    border-radius:24px;
-
-    color:#fff;
-
-    background:
-    linear-gradient(
-        135deg,
-        #059669,
-        #10b981,
-        #34d399
-    );
-
-    box-shadow:
-    0 15px 40px rgba(16,185,129,.18);
-
-    transition:var(--transition);
-}
-
-.rtd-wallet-card:hover{
-
-    transform:translateY(-3px);
-}
-
-.rtd-wallet-card::before{
-
-    content:"";
-
-    position:absolute;
-
-    width:180px;
-    height:180px;
-
-    right:-60px;
-    top:-60px;
-
-    border-radius:50%;
-
-    background:
-    rgba(255,255,255,.12);
-}
-
-.rtd-wallet-top{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    margin-bottom:6px;
-}
-
-.rtd-wallet-label{
-
-    font-size:10px;
-
-    letter-spacing:1px;
-
-    text-transform:uppercase;
-}
-
-.rtd-wallet-balance{
-
-    font-size:34px;
-
-    font-weight:900;
-
-    line-height:1;
-}
-
-.rtd-wallet-mini{
-
-    font-size:12px;
-
-    opacity:.95;
-
-    margin-bottom:8px;
-}
-
-.rtd-wallet-btn{
-
-    display:inline-flex;
-
-    align-items:center;
-
-    gap:6px;
-
-    padding:8px 14px;
-
-    border-radius:12px;
-
-    background:#fff;
-
-    color:#059669;
-
-    text-decoration:none;
-
-    font-size:12px;
-
-    font-weight:700;
-}
-
-/* ==========================================================
-   KPI CARDS
+   STATS GRID
 ========================================================== */
 
 .rtd-stats-grid{
@@ -327,12 +60,16 @@
     display:grid;
 
     grid-template-columns:
-    repeat(4,1fr);
+    repeat(auto-fit,minmax(190px,1fr));
 
-    gap:12px;
+    gap:10px;
 
     margin-bottom:14px;
 }
+
+/* ==========================================================
+   KPI CARD
+========================================================== */
 
 .rtd-stat-card{
 
@@ -340,32 +77,35 @@
 
     overflow:hidden;
 
-    min-height:78px;
-
     display:flex;
 
     align-items:center;
 
-    gap:12px;
+    gap:10px;
+
+    min-height:72px;
 
     padding:12px;
 
     background:#fff;
 
-    border:1px solid var(--border);
+    border:
+    1px solid rgba(15,23,42,.06);
 
-    border-radius:18px;
-
-    transition:var(--transition);
+    border-radius:16px;
 
     box-shadow:var(--shadow);
+
+    transition:var(--transition);
 }
 
 .rtd-stat-card:hover{
 
-    transform:translateY(-5px);
+    transform:
+    translateY(-4px);
 
-    box-shadow:var(--shadow-hover);
+    box-shadow:
+    var(--shadow-hover);
 }
 
 .rtd-stat-card::before{
@@ -378,15 +118,19 @@
     left:0;
 
     width:100%;
-    height:3px;
+    height:4px;
 
     background:
     linear-gradient(
         90deg,
-        #2563eb,
-        #6366f1
+        var(--green),
+        var(--amber)
     );
 }
+
+/* ==========================================================
+   KPI ICON
+========================================================== */
 
 .rtd-stat-icon{
 
@@ -395,42 +139,54 @@
 
     flex-shrink:0;
 
-    border-radius:14px;
-
     display:flex;
 
     align-items:center;
 
     justify-content:center;
 
+    border-radius:12px;
+
     background:
     linear-gradient(
         135deg,
-        #2563eb,
-        #6366f1
+        var(--navy),
+        var(--navy-2)
     );
 
     color:#fff;
+
+    font-size:18px;
 }
+
+/* ==========================================================
+   KPI CONTENT
+========================================================== */
 
 .rtd-stat-value{
 
-    font-size:24px;
+    font-size:22px;
 
-    font-weight:800;
+    font-weight:900;
 
     line-height:1;
+
+    color:var(--navy);
 }
 
 .rtd-stat-text{
 
+    margin-top:2px;
+
     font-size:11px;
 
-    color:#64748b;
+    font-weight:600;
+
+    color:var(--muted);
 }
 
 /* ==========================================================
-   SECTIONS
+   SECTION
 ========================================================== */
 
 .rtd-section{
@@ -442,11 +198,11 @@
 
     display:flex;
 
-    justify-content:space-between;
-
     align-items:center;
 
-    margin-bottom:8px;
+    justify-content:space-between;
+
+    margin-bottom:10px;
 }
 
 .rtd-section-title{
@@ -455,18 +211,111 @@
 
     font-weight:800;
 
-    color:#0f172a;
+    color:var(--navy);
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
 }
 
 .rtd-section-count{
 
-    font-size:12px;
+    padding:4px 10px;
 
-    color:#64748b;
+    border-radius:999px;
+
+    background:
+    rgba(22,163,74,.08);
+
+    color:var(--green);
+
+    font-size:11px;
+
+    font-weight:700;
 }
 
 /* ==========================================================
-   SERVICE CARDS
+   CATEGORY
+========================================================== */
+
+.rtd-category-block{
+
+    margin-bottom:14px;
+}
+
+.rtd-category-head{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:10px 14px;
+
+    margin-bottom:10px;
+
+    border-radius:14px;
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(22,163,74,.06),
+        rgba(245,158,11,.05)
+    );
+
+    border:
+    1px solid rgba(15,23,42,.05);
+}
+
+.rtd-category-title{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    color:var(--navy);
+}
+
+.rtd-category-badge{
+
+    width:28px;
+    height:28px;
+
+    min-width:28px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:
+    linear-gradient(
+        135deg,
+        var(--green),
+        var(--amber)
+    );
+
+    color:#fff;
+
+    font-size:11px;
+
+    font-weight:800;
+}
+
+/* ==========================================================
+   SERVICES GRID
 ========================================================== */
 
 .rtd-services{
@@ -474,10 +323,14 @@
     display:grid;
 
     grid-template-columns:
-    repeat(auto-fill,minmax(220px,1fr));
+    repeat(auto-fill,minmax(210px,1fr));
 
-    gap:12px;
+    gap:10px;
 }
+
+/* ==========================================================
+   SERVICE CARD
+========================================================== */
 
 .rtd-service-card{
 
@@ -485,21 +338,22 @@
 
     overflow:hidden;
 
-    min-height:80px;
-
     display:flex;
 
     align-items:center;
 
-    gap:12px;
+    gap:10px;
 
-    padding:12px;
+    min-height:62px;
+
+    padding:10px 12px;
 
     background:#fff;
 
-    border:1px solid var(--border);
+    border:
+    1px solid rgba(15,23,42,.05);
 
-    border-radius:18px;
+    border-radius:16px;
 
     text-decoration:none;
 
@@ -510,9 +364,11 @@
 
 .rtd-service-card:hover{
 
-    transform:translateY(-5px);
+    transform:
+    translateY(-4px);
 
-    box-shadow:var(--shadow-hover);
+    box-shadow:
+    var(--shadow-hover);
 }
 
 .rtd-service-card::before{
@@ -529,19 +385,48 @@
 
     background:
     linear-gradient(
-        #2563eb,
-        #6366f1
+        180deg,
+        var(--green),
+        var(--amber)
     );
 }
 
+.rtd-service-card::after{
+
+    content:"→";
+
+    position:absolute;
+
+    right:14px;
+    top:50%;
+
+    transform:
+    translateY(-50%);
+
+    opacity:0;
+
+    color:var(--green);
+
+    transition:.25s;
+}
+
+.rtd-service-card:hover::after{
+
+    opacity:1;
+
+    right:10px;
+}
+
+/* ==========================================================
+   SERVICE ICON
+========================================================== */
+
 .rtd-service-icon{
 
-    width:44px;
-    height:44px;
+    width:38px;
+    height:38px;
 
     flex-shrink:0;
-
-    border-radius:14px;
 
     display:flex;
 
@@ -549,14 +434,18 @@
 
     justify-content:center;
 
+    border-radius:10px;
+
     background:
     linear-gradient(
         135deg,
-        #2563eb,
-        #6366f1
+        var(--navy),
+        var(--navy-2)
     );
 
     color:#fff;
+
+    font-size:14px;
 
     transition:var(--transition);
 }
@@ -564,9 +453,19 @@
 .rtd-service-card:hover .rtd-service-icon{
 
     transform:
-    rotate(8deg)
     scale(1.08);
+
+    background:
+    linear-gradient(
+        135deg,
+        var(--green),
+        var(--amber)
+    );
 }
+
+/* ==========================================================
+   SERVICE TITLE
+========================================================== */
 
 .rtd-service-title{
 
@@ -574,40 +473,122 @@
 
     font-weight:700;
 
-    color:#0f172a;
+    color:var(--navy);
+
+    line-height:1.3;
 }
 
 /* ==========================================================
-   RESPONSIVE
+   ALERT
 ========================================================== */
 
-@media(max-width:1200px){
+.alert-info{
 
-    .rtd-hero{
-        grid-template-columns:1fr;
-    }
+    padding:14px;
 
-    .rtd-stats-grid{
-        grid-template-columns:repeat(2,1fr);
+    border:none;
+
+    border-radius:14px;
+
+    background:#eff6ff;
+
+    color:#1d4ed8;
+
+    font-weight:600;
+}
+
+/* ==========================================================
+   SCROLLBAR
+========================================================== */
+
+::-webkit-scrollbar{
+
+    width:7px;
+}
+
+::-webkit-scrollbar-thumb{
+
+    border-radius:999px;
+
+    background:
+    linear-gradient(
+        var(--green),
+        var(--amber)
+    );
+}
+
+/* ==========================================================
+   LARGE DESKTOP
+========================================================== */
+
+@media(min-width:1400px){
+
+    .rtd-services{
+
+        grid-template-columns:
+        repeat(5,1fr);
     }
 }
 
-@media(max-width:768px){
+@media(min-width:1800px){
 
     .rtd-services{
-        grid-template-columns:repeat(2,1fr);
+
+        grid-template-columns:
+        repeat(6,1fr);
+    }
+}
+
+/* ==========================================================
+   TABLET
+========================================================== */
+
+@media(max-width:992px){
+
+    .rtd-services{
+
+        grid-template-columns:
+        repeat(2,1fr);
+    }
+}
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media(max-width:768px){
+
+    .rtd-stats-grid{
+
+        grid-template-columns:
+        repeat(2,1fr);
+    }
+
+    .rtd-section-title{
+
+        font-size:18px;
     }
 }
 
 @media(max-width:576px){
 
-    .rtd-hero,
     .rtd-stats-grid,
     .rtd-services{
+
         grid-template-columns:1fr;
     }
 
     .rtd-custom-dashboard{
-        padding:10px;
+
+        padding:8px;
+    }
+
+    .rtd-section-head{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:6px;
     }
 }

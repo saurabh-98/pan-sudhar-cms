@@ -128,6 +128,8 @@
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
+
 
 <script>
 
@@ -196,9 +198,11 @@ $(function () {
                 orderable: false
             },
 
-            {
+             {
                 data: 'created_at',
-                name: 'created_at'
+                render: function(data) {
+                    return moment(data).format('DD MMM YYYY hh:mm A');
+                }
             },
 
             {

@@ -185,7 +185,7 @@ class AdminItrController extends Controller
                         ';
 
                     }
-                    elseif($row->status == 'processing')
+                    elseif($row->status == 'Processing')
                     {
 
                         return '
@@ -503,17 +503,16 @@ class AdminItrController extends Controller
     public function uploadDocument(
         Request $request,
         int $id
-    )
-    {
-
+        )
+        {
         /*
         |--------------------------------------------------------------------------
         | ONLY EXECUTIVE
         |--------------------------------------------------------------------------
         */
 
-        if(!auth()->user()->hasRole('Executive'))
-        {
+        if (!auth()->user()->hasRole('Executive')) {
+
             abort(403);
         }
 
@@ -558,8 +557,8 @@ class AdminItrController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        if($application->assigned_to != auth()->id())
-        {
+        if ($application->assigned_to != auth()->id()) {
+
             abort(403);
         }
 
@@ -572,32 +571,26 @@ class AdminItrController extends Controller
         $alreadyUploaded = ServiceDocument::where(
 
             'service_type',
-
             'itr'
 
         )
-
         ->where(
 
             'service_id',
-
             $application->id
 
         )
-
         ->exists();
 
-        if($alreadyUploaded)
-        {
+        if ($alreadyUploaded) {
 
             return response()->json([
 
-                'status' => false,
+                'status'  => false,
 
                 'message' => 'Receipt already uploaded.'
 
             ], 422);
-
         }
 
         /*
@@ -606,15 +599,24 @@ class AdminItrController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $path = $request->file('support_file')
+        $path = store_uploaded_file(
 
-            ->store(
+            $request->file('support_file'),
 
-                'service-documents/itr',
+            'service-documents/itr'
 
-                'public'
+        );
 
-            );
+        if (!$path) {
+
+            return response()->json([
+
+                'status'  => false,
+
+                'message' => 'File upload failed.'
+
+            ], 422);
+        }
 
         /*
         |--------------------------------------------------------------------------
@@ -624,17 +626,17 @@ class AdminItrController extends Controller
 
         ServiceDocument::create([
 
-            'service_type' => 'itr',
+            'service_type'  => 'itr',
 
-            'service_id'   => $application->id,
+            'service_id'    => $application->id,
 
-            'user_id'      => auth()->id(),
+            'user_id'       => auth()->id(),
 
-            'file_path'    => $path,
+            'file_path'     => $path,
 
-            'remarks'      => $request->upload_remarks,
+            'remarks'       => $request->upload_remarks,
 
-            'document_type'=> 'receipt'
+            'document_type' => 'receipt'
 
         ]);
 
@@ -682,8 +684,7 @@ class AdminItrController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        if($admin)
-        {
+        if ($admin) {
 
             $admin->decrement(
 
@@ -692,7 +693,6 @@ class AdminItrController extends Controller
                 $commissionAmount
 
             );
-
         }
 
         /*
@@ -705,13 +705,14 @@ class AdminItrController extends Controller
 
             'user_id' => $executive->id,
 
-            'amount' => $commissionAmount,
+            'amount'  => $commissionAmount,
 
-            'type' => 'credit',
+            'type'    => 'credit',
 
-            'remark' =>
+            'remark'  =>
 
-                'ITR Service Commission #ITR-'.$application->id
+                'ITR Service Commission #ITR-' .
+                $application->id
 
         ]);
 
@@ -721,23 +722,22 @@ class AdminItrController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        if($admin)
-        {
+        if ($admin) {
 
             WalletTransaction::create([
 
                 'user_id' => $admin->id,
 
-                'amount' => $commissionAmount,
+                'amount'  => $commissionAmount,
 
-                'type' => 'debit',
+                'type'    => 'debit',
 
-                'remark' =>
+                'remark'  =>
 
-                    'Executive ITR Commission #ITR-'.$application->id
+                    'Executive ITR Commission #ITR-' .
+                    $application->id
 
             ]);
-
         }
 
         /*
@@ -764,11 +764,14 @@ class AdminItrController extends Controller
 
             'message' =>
 
-                'ITR receipt uploaded successfully.'
+                'ITR receipt uploaded successfully.',
+
+            'file_url' => file_url($path)
 
         ]);
+        
 
-    }
+        }
 
 
 
@@ -778,139 +781,294 @@ class AdminItrController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function downloadDocuments(
-        int $id
-    )
+    public function downloadDocuments(int $id)
     {
+    $application = ItrFile::with('documents')
+    ->findOrFail($id);
 
-        $application = ItrFile::with(
 
-            'documents'
+    if (
+        auth()->user()->hasRole('Executive') &&
+        $application->assigned_to != auth()->id()
+    ) {
+        abort(
+            403,
+            'Unauthorized Access'
+        );
+    }
 
-        )->findOrFail($id);
+    $zipFileName =
+        'itr-documents-' .
+        $application->id .
+        '.zip';
 
-        if(
-            auth()->user()->hasRole('Executive') &&
-            $application->assigned_to != auth()->id()
-        )
-        {
-            abort(
-                403,
-                'Unauthorized Access'
-            );
+    $tempDirectory =
+        storage_path('app/temp');
+
+    if (!File::exists($tempDirectory)) {
+
+        File::makeDirectory(
+            $tempDirectory,
+            0755,
+            true
+        );
+    }
+
+    $zipPath =
+        $tempDirectory .
+        '/' .
+        $zipFileName;
+
+    $zip = new ZipArchive;
+
+    if (
+        $zip->open(
+            $zipPath,
+            ZipArchive::CREATE |
+            ZipArchive::OVERWRITE
+        ) !== true
+    ) {
+        abort(
+            500,
+            'Unable to create ZIP file.'
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | MAIN DOCUMENTS
+    |--------------------------------------------------------------------------
+    */
+
+    $documents = [
+
+        'aadhaar_front' =>
+            $application->aadhaar_front,
+
+        'aadhaar_back' =>
+            $application->aadhaar_back,
+
+        'pan_card' =>
+            $application->pan_card,
+
+    ];
+
+    foreach ($documents as $name => $file) {
+
+        if (!$file) {
+            continue;
         }
 
-        $zipFileName =
-            'itr-documents-'.$application->id.'.zip';
+        try {
 
-        $zipPath =
-            storage_path('app/temp/'.$zipFileName);
+            /*
+            |--------------------------------------------------------------------------
+            | CLOUDINARY FILE
+            |--------------------------------------------------------------------------
+            */
 
-        if(!File::exists(storage_path('app/temp')))
-        {
-            File::makeDirectory(
+            if (
+                str_starts_with(
+                    $file,
+                    'http://'
+                ) ||
+                str_starts_with(
+                    $file,
+                    'https://'
+                )
+            ) {
 
-                storage_path('app/temp'),
+                $contents =
+                    @file_get_contents(
+                        $file
+                    );
 
-                0755,
+                if ($contents !== false) {
 
-                true
-
-            );
-        }
-
-        $zip = new ZipArchive;
-
-        if(
-            $zip->open(
-
-                $zipPath,
-
-                ZipArchive::CREATE |
-                ZipArchive::OVERWRITE
-
-            ) === TRUE
-        )
-        {
-
-            $documents = [
-
-                'aadhaar_card' =>
-
-                    $application->aadhaar_card,
-
-
-                'pan_card' =>
-
-                    $application->pan_card
-
-            ];
-
-            foreach($documents as $name => $file)
-            {
-
-                if($file)
-                {
-
-                    $filePath =
-                        storage_path('app/public/'.$file);
-
-                    if(file_exists($filePath))
-                    {
-
-                        $zip->addFile(
-
-                            $filePath,
-
-                            basename($filePath)
-
+                    $extension =
+                        pathinfo(
+                            parse_url(
+                                $file,
+                                PHP_URL_PATH
+                            ),
+                            PATHINFO_EXTENSION
                         );
 
-                    }
+                    $zip->addFromString(
 
+                        $name .
+                        '.' .
+                        ($extension ?: 'jpg'),
+
+                        $contents
+
+                    );
                 }
 
+                continue;
             }
 
             /*
             |--------------------------------------------------------------------------
-            | EXECUTIVE RECEIPT
+            | LOCAL FILE
             |--------------------------------------------------------------------------
             */
 
-            foreach($application->documents as $doc)
-            {
+            $filePath =
+                public_path($file);
 
-                $docPath = storage_path(
+            if (
+                file_exists(
+                    $filePath
+                )
+            ) {
 
-                    'app/public/'.$doc->file_path
+                $zip->addFile(
+
+                    $filePath,
+
+                    basename(
+                        $filePath
+                    )
 
                 );
-
-                if(file_exists($docPath))
-                {
-
-                    $zip->addFile(
-
-                        $docPath,
-
-                        basename($docPath)
-
-                    );
-
-                }
-
             }
 
-            $zip->close();
+        } catch (\Throwable $e) {
 
+            logger()->error(
+
+                'Document ZIP error',
+
+                [
+
+                    'file' =>
+                        $file,
+
+                    'error' =>
+                        $e->getMessage()
+
+                ]
+
+            );
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | EXECUTIVE DOCUMENTS
+    |--------------------------------------------------------------------------
+    */
+
+    foreach ($application->documents as $doc) {
+
+        $file =
+            $doc->file_path;
+
+        if (!$file) {
+            continue;
         }
 
-        return response()
+        try {
 
-            ->download($zipPath)
+            /*
+            |--------------------------------------------------------------------------
+            | CLOUDINARY FILE
+            |--------------------------------------------------------------------------
+            */
 
-            ->deleteFileAfterSend(true);
+            if (
+                str_starts_with(
+                    $file,
+                    'http://'
+                ) ||
+                str_starts_with(
+                    $file,
+                    'https://'
+                )
+            ) {
+
+                $contents =
+                    @file_get_contents(
+                        $file
+                    );
+
+                if ($contents !== false) {
+
+                    $zip->addFromString(
+
+                        basename(
+                            parse_url(
+                                $file,
+                                PHP_URL_PATH
+                            )
+                        ),
+
+                        $contents
+
+                    );
+                }
+
+                continue;
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | LOCAL FILE
+            |--------------------------------------------------------------------------
+            */
+
+            $docPath =
+                public_path(
+                    $file
+                );
+
+            if (
+                file_exists(
+                    $docPath
+                )
+            ) {
+
+                $zip->addFile(
+
+                    $docPath,
+
+                    basename(
+                        $docPath
+                    )
+
+                );
+            }
+
+        } catch (\Throwable $e) {
+
+            logger()->error(
+
+                'Executive document ZIP error',
+
+                [
+
+                    'file' =>
+                        $file,
+
+                    'error' =>
+                        $e->getMessage()
+
+                ]
+
+            );
+        }
+    }
+
+    $zip->close();
+
+    return response()
+        ->download(
+            $zipPath,
+            $zipFileName
+        )
+        ->deleteFileAfterSend(true);
+
 
     }
 

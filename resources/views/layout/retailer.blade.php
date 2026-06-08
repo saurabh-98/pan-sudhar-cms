@@ -336,7 +336,7 @@
             }).then(function(){
 
                 window.location.replace(
-                    "{{ route('admin.logout.idle') }}"
+                    "{{ route('retailer.logout.idle') }}"
                 );
 
             });

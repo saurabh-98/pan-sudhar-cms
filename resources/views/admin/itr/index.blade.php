@@ -122,6 +122,8 @@
 
 @section('scripts')
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
+
 
 <script>
 
@@ -188,9 +190,11 @@ $(function () {
                 orderable: false
             },
 
-            {
+           {
                 data: 'created_at',
-                name: 'created_at'
+                render: function(data) {
+                    return moment(data).format('DD MMM YYYY hh:mm A');
+                }
             },
 
             {

@@ -37,6 +37,22 @@
 
         </div>
 
+        <div class="pan-charge-card">
+
+            <span class="pan-charge-label">
+
+                Service Charge
+
+            </span>
+
+            <span class="pan-charge-amount">
+
+                ₹{{ number_format($panCharge, 2) }}
+
+            </span>
+
+        </div>
+
     </div>
 
     {{-- FORM --}}
@@ -87,7 +103,7 @@
 
                     <div class="col-md-4">
 
-                        <label class="pan-label required">
+                        <label class="pan-label ">
                             Applicant First Name
                         </label>
 
@@ -96,7 +112,7 @@
                             name="first_name"
                             class="form-control"
                             value="{{ old('first_name', request('first_name')) }}"
-                            required
+                          
                         >
 
                     </div>
@@ -2026,45 +2042,30 @@ $(document).ready(function () {
 
             },
 
-            error: function (xhr) {
-
-                Swal.close();
-
-                console.log(xhr);
-
+           error: function(xhr)
+            {
                 if (
-                    xhr.status === 422
+                    xhr.status === 422 &&
+                    xhr.responseJSON?.errors
                 ) {
 
                     Swal.fire({
-
-                        icon: 'error',
-
-                        title:
-                        'Validation Error',
-
-                        text:
-                        'Please fix highlighted fields.'
-
+                        icon:'error',
+                        title:'Validation Error',
+                        text:'Please fix highlighted fields.'
                     });
 
                     return;
                 }
 
                 Swal.fire({
-
-                    icon: 'error',
-
-                    title:
-                    'Server Error',
-
+                    icon:'error',
+                    title:'Error',
                     text:
-                    xhr.responseJSON?.message
-                    ??
-                    'Something went wrong.'
-
+                        xhr.responseJSON?.message
+                        ??
+                        'Something went wrong'
                 });
-
             }
 
         });

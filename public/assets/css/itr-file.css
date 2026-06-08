@@ -158,45 +158,72 @@ body{
 
 
 
-/* =========================================================
-| HEADER
-========================================================= */
-
 .itr-header{
 
     position:relative;
 
     overflow:hidden;
 
+    padding:38px 42px;
+
     background:
-        linear-gradient(
-            135deg,
-            #0f172a 0%,
-            #1e3a8a 50%,
-            #2563eb 100%
-        );
-
-    padding:45px;
-
+    linear-gradient(
+        135deg,
+        #081028 0%,
+        #162456 45%,
+        #2563eb 100%
+    );
 }
 
 .itr-header::before{
 
-    content:'';
+    content:"";
 
     position:absolute;
 
-    width:250px;
-    height:250px;
+    width:320px;
+    height:320px;
 
-    background:
-        rgba(255,255,255,0.08);
+    right:-80px;
+    top:-120px;
 
     border-radius:50%;
 
-    top:-100px;
-    right:-50px;
+    background:
+    rgba(255,255,255,.08);
+}
 
+.itr-header::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:180px;
+    height:180px;
+
+    left:-60px;
+    bottom:-80px;
+
+    border-radius:50%;
+
+    background:
+    rgba(255,255,255,.05);
+}
+
+.itr-header-content{
+
+    position:relative;
+
+    z-index:5;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:30px;
 }
 
 .itr-header-left{
@@ -205,32 +232,20 @@ body{
 
     align-items:center;
 
-    gap:24px;
-
-    position:relative;
-
-    z-index:2;
-
+    gap:22px;
 }
-
-
-
-/* =========================================================
-| HEADER ICON
-========================================================= */
 
 .itr-header-icon{
 
-    width:90px;
-    height:90px;
+    width:88px;
+    height:88px;
 
-    border-radius:28px;
+    border-radius:24px;
 
     background:
-        rgba(255,255,255,0.12);
+    rgba(255,255,255,.12);
 
-    border:
-        1px solid rgba(255,255,255,0.18);
+    border:1px solid rgba(255,255,255,.15);
 
     display:flex;
 
@@ -238,10 +253,7 @@ body{
 
     justify-content:center;
 
-    backdrop-filter:blur(8px);
-
-    animation:floatIcon 3s ease-in-out infinite;
-
+    backdrop-filter:blur(10px);
 }
 
 .itr-header-icon i{
@@ -249,55 +261,73 @@ body{
     font-size:38px;
 
     color:#fff;
-
 }
-
-@keyframes floatIcon{
-
-    0%{
-        transform:translateY(0px);
-    }
-
-    50%{
-        transform:translateY(-6px);
-    }
-
-    100%{
-        transform:translateY(0px);
-    }
-
-}
-
-
-
-/* =========================================================
-| HEADER TEXT
-========================================================= */
 
 .itr-header h2{
 
-    color:#fff;
-
     margin:0;
 
-    font-size:34px;
+    font-size:42px;
 
-    font-weight:800;
+    font-weight:900;
 
-    letter-spacing:-0.5px;
+    color:#fff;
 
+    line-height:1.2;
 }
 
 .itr-header p{
 
-    color:rgba(255,255,255,0.82);
-
     margin-top:8px;
 
-    font-size:15px;
+    margin-bottom:0;
 
+    color:rgba(255,255,255,.80);
+
+    font-size:15px;
 }
 
+.itr-charge-card{
+
+    min-width:220px;
+
+    padding:18px 24px;
+
+    border-radius:24px;
+
+    background:
+    rgba(255,255,255,.12);
+
+    backdrop-filter:blur(14px);
+
+    border:1px solid rgba(255,255,255,.15);
+
+    text-align:center;
+}
+
+.charge-label{
+
+    display:block;
+
+    font-size:13px;
+
+    color:rgba(255,255,255,.75);
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+    margin-bottom:6px;
+}
+
+.charge-price{
+
+    font-size:34px;
+
+    font-weight:900;
+
+    color:#fff;
+}
 
 
 /* =========================================================

@@ -275,7 +275,16 @@ class PanCorrectionApplication extends Model
         'pan_correction'
 
     );
+
 }
+
+
+    public function getDobFormattedAttribute()
+    {
+        return \Carbon\Carbon::parse($this->dob)
+            ->format('d M Y');
+    }
+    
     /*
     |--------------------------------------------------------------------------
     | STATUS BADGE

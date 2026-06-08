@@ -270,7 +270,7 @@ class PanCorrectionService
 
 
                 'pan_type' =>
-                    'New PAN',
+                    'Correction PAN',
 
 
 

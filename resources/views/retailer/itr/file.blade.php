@@ -34,19 +34,44 @@
                     | HEADER
                     ========================================================= -->
 
-                    <div class="itr-header">
+                  <div class="itr-header">
 
-                        <div class="itr-header-left">
+                        <div class="itr-header-content">
 
-                            <div class="itr-header-icon">
+                            <div class="itr-header-left">
 
-                                <i class="fas fa-file-shield"></i>
+                                <div class="itr-header-icon">
+                                    <i class="fas fa-file-shield"></i>
+                                </div>
+
+                                <div>
+
+                                    <h2>Income Tax Return Filing</h2>
+
+                                    <p>
+                                        Securely upload documents and submit your ITR application online
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            <div class="itr-charge-card">
+
+                                <span class="charge-label">
+                                    Service Charge
+                                </span>
+
+                                <span class="charge-price">
+                                    ₹{{ number_format($itrCharge ?? 99,2) }}
+                                </span>
 
                             </div>
 
                         </div>
 
                     </div>
+
 
 
 
@@ -75,44 +100,6 @@
                                 @csrf
 
                                 <div class="row">
-
-
-
-                                    <!-- =========================================================
-                                    | WALLET
-                                    ========================================================= -->
-
-                                    <div class="col-md-12 mb-4">
-
-                                        <div class="wallet-balance-box">
-
-                                            <div>
-
-                                                <h6>
-
-                                                    Available Wallet Balance
-
-                                                </h6>
-
-                                                <p>
-
-                                                    Current usable wallet amount
-
-                                                </p>
-
-                                            </div>
-
-                                            <div class="wallet-balance">
-
-                                                ₹{{ number_format(auth()->user()->wallet_balance, 2) }}
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-
 
 
 

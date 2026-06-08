@@ -7,7 +7,7 @@
 
 <div class="container-fluid py-4">
 
-    {{-- PAGE HEADER --}}
+   {{-- PAGE HEADER --}}
 
     <div class="pan-page-header">
 
@@ -34,6 +34,22 @@
                 </p>
 
             </div>
+
+        </div>
+
+        <div class="pan-charge-card">
+
+            <span class="pan-charge-label">
+
+                Service Charge
+
+            </span>
+
+            <span class="pan-charge-amount">
+
+                ₹{{ number_format($panCharge, 2) }}
+
+            </span>
 
         </div>
 
@@ -87,7 +103,7 @@
 
                     <div class="col-md-4">
 
-                        <label class="pan-label required">
+                        <label class="pan-label">
                             Applicant First Name
                         </label>
 
@@ -1892,40 +1908,30 @@ $(document).ready(function () {
 
                     },
 
-                    error: function (xhr) {
-
-                        Swal.close();
-
-                        if (xhr.status === 422) {
-
-                            Swal.fire({
-
-                                icon: 'error',
-
-                                title:
-                                'Validation Error',
-
-                                text:
-                                'Please fix highlighted fields.'
-
-                            });
-
-                        } else {
+                   error: function(xhr)
+                    {
+                        if (
+                            xhr.status === 422 &&
+                            xhr.responseJSON?.errors
+                        ) {
 
                             Swal.fire({
-
-                                icon: 'error',
-
-                                title:
-                                'Server Error',
-
-                                text:
-                                'Something went wrong.'
-
+                                icon:'error',
+                                title:'Validation Error',
+                                text:'Please fix highlighted fields.'
                             });
 
+                            return;
                         }
 
+                        Swal.fire({
+                            icon:'error',
+                            title:'Error',
+                            text:
+                                xhr.responseJSON?.message
+                                ??
+                                'Something went wrong'
+                        });
                     }
 
                 });

@@ -258,7 +258,7 @@
 
                         <h6>
 
-                            {{ $application->dob }}
+                            {{ $application->dob_formatted }}
 
                         </h6>
 

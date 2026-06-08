@@ -79,7 +79,7 @@
 
                                 <h6>
 
-                                    ITR-{{ $application->id }}
+                                    {{ $application->application_no }}
 
                                 </h6>
 
@@ -115,7 +115,7 @@
 
                                         </span>
 
-                                    @elseif($application->status == 'processing')
+                                    @elseif($application->status == 'Processing')
 
                                         <span class="badge bg-info">
 
@@ -286,7 +286,7 @@
 
             </div>
 
-            {{-- =====================================================
+           {{-- =====================================================
             | DOCUMENTS
             ====================================================== --}}
             <div class="card admin-pan-card">
@@ -294,9 +294,7 @@
                 <div class="card-header pan-card-header d-flex justify-content-between align-items-center">
 
                     <span>
-
                         Uploaded Documents
-
                     </span>
 
                     <button
@@ -338,31 +336,44 @@
                                 <div class="document-image-wrapper">
 
                                     <div class="document-title">
-
                                         Aadhaar Front
-
                                     </div>
 
-                                    <img
-                                        src="{{ asset('storage/'.$application->aadhaar_front) }}"
-                                        alt="Aadhaar Front"
-                                    >
+                                    @if($application->aadhaar_front)
 
-                                    <div class="document-overlay">
-
-                                        <a
-                                            href="{{ asset('storage/'.$application->aadhaar_front) }}"
-                                            target="_blank"
-                                            class="document-view-btn"
+                                        <img
+                                            src="{{ file_url($application->aadhaar_front) }}"
+                                            alt="Aadhaar Front"
+                                            loading="lazy"
                                         >
 
-                                            <i class="fa fa-eye me-2"></i>
+                                        <div class="document-overlay">
 
-                                            View
+                                            <a
+                                                href="{{ file_url($application->aadhaar_front) }}"
+                                                target="_blank"
+                                                class="document-view-btn"
+                                            >
 
-                                        </a>
+                                                <i class="fa fa-eye me-2"></i>
 
-                                    </div>
+                                                View
+
+                                            </a>
+
+                                        </div>
+
+                                    @else
+
+                                        <div class="document-not-found">
+
+                                            <i class="fa fa-file-circle-xmark"></i>
+
+                                            <span>File Not Available</span>
+
+                                        </div>
+
+                                    @endif
 
                                 </div>
 
@@ -378,31 +389,44 @@
                                 <div class="document-image-wrapper">
 
                                     <div class="document-title">
-
                                         Aadhaar Back
-
                                     </div>
 
-                                    <img
-                                        src="{{ asset('storage/'.$application->aadhaar_back) }}"
-                                        alt="Aadhaar Back"
-                                    >
+                                    @if($application->aadhaar_back)
 
-                                    <div class="document-overlay">
-
-                                        <a
-                                            href="{{ asset('storage/'.$application->aadhaar_back) }}"
-                                            target="_blank"
-                                            class="document-view-btn"
+                                        <img
+                                            src="{{ file_url($application->aadhaar_back) }}"
+                                            alt="Aadhaar Back"
+                                            loading="lazy"
                                         >
 
-                                            <i class="fa fa-eye me-2"></i>
+                                        <div class="document-overlay">
 
-                                            View
+                                            <a
+                                                href="{{ file_url($application->aadhaar_back) }}"
+                                                target="_blank"
+                                                class="document-view-btn"
+                                            >
 
-                                        </a>
+                                                <i class="fa fa-eye me-2"></i>
 
-                                    </div>
+                                                View
+
+                                            </a>
+
+                                        </div>
+
+                                    @else
+
+                                        <div class="document-not-found">
+
+                                            <i class="fa fa-file-circle-xmark"></i>
+
+                                            <span>File Not Available</span>
+
+                                        </div>
+
+                                    @endif
 
                                 </div>
 
@@ -418,31 +442,44 @@
                                 <div class="document-image-wrapper">
 
                                     <div class="document-title">
-
                                         PAN Card
-
                                     </div>
 
-                                    <img
-                                        src="{{ asset('storage/'.$application->pan_card) }}"
-                                        alt="PAN Card"
-                                    >
+                                    @if($application->pan_card)
 
-                                    <div class="document-overlay">
-
-                                        <a
-                                            href="{{ asset('storage/'.$application->pan_card) }}"
-                                            target="_blank"
-                                            class="document-view-btn"
+                                        <img
+                                            src="{{ file_url($application->pan_card) }}"
+                                            alt="PAN Card"
+                                            loading="lazy"
                                         >
 
-                                            <i class="fa fa-eye me-2"></i>
+                                        <div class="document-overlay">
 
-                                            View
+                                            <a
+                                                href="{{ file_url($application->pan_card) }}"
+                                                target="_blank"
+                                                class="document-view-btn"
+                                            >
 
-                                        </a>
+                                                <i class="fa fa-eye me-2"></i>
 
-                                    </div>
+                                                View
+
+                                            </a>
+
+                                        </div>
+
+                                    @else
+
+                                        <div class="document-not-found">
+
+                                            <i class="fa fa-file-circle-xmark"></i>
+
+                                            <span>File Not Available</span>
+
+                                        </div>
+
+                                    @endif
 
                                 </div>
 

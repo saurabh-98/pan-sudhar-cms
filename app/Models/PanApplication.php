@@ -464,6 +464,13 @@ class PanApplication extends Model
         ->implode(' ');
     }
 
+    public function getDobFormattedAttribute()
+    {
+        return \Carbon\Carbon::parse($this->dob)
+            ->format('d M Y');
+    }
+    
+
     /*
     |--------------------------------------------------------------------------
     | ASSIGNED USER NAME

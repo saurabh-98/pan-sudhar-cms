@@ -128,15 +128,59 @@ class ItrFile extends Model
 
     /*
     |--------------------------------------------------------------------------
-    | USER
+    | USER RELATIONSHIP
     |--------------------------------------------------------------------------
     */
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(
+
             User::class,
+
             'user_id'
+
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | ASSIGNED USER
+    |--------------------------------------------------------------------------
+    */
+
+    public function assignedEmployee(): BelongsTo
+    {
+        return $this->belongsTo(
+
+            User::class,
+
+            'assigned_to'
+
+        );
+    }
+
+
+     /*
+    |--------------------------------------------------------------------------
+    | DOCUMENTS
+    |--------------------------------------------------------------------------
+    */
+
+    public function documents()
+    {
+        return $this->hasMany(
+
+            ServiceDocument::class,
+
+            'service_id'
+
+        )->where(
+
+            'service_type',
+
+            'itr'
+
         );
     }
 
