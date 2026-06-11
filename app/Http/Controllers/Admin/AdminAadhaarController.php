@@ -12,6 +12,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\File;
+
 
 class AdminAadhaarController extends Controller
 {
@@ -503,7 +505,7 @@ class AdminAadhaarController extends Controller
             ], 422);
         }
 
-        $application = ItrFile::findOrFail(
+        $application = AadhaarService::findOrFail(
             $id
         );
 
@@ -546,7 +548,7 @@ class AdminAadhaarController extends Controller
 
             'status' => true,
 
-            'message' => 'ITR Assigned Successfully.',
+            'message' => 'Aadhar Assigned Successfully.',
 
             'data' => [
 
@@ -842,13 +844,17 @@ class AdminAadhaarController extends Controller
     }
 
 
+   
+
     public function downloadDocuments(int $id)
     {
-        $application = AadhaarService::findOrFail($id);
+        $application = AadhaarService::with([
+            'serviceDocuments.user'
+        ])->findOrFail($id);
 
         /*
         |--------------------------------------------------------------------------
-        | EXECUTIVE SECURITY
+        | EXECUTIVE ACCESS CHECK
         |--------------------------------------------------------------------------
         */
 
@@ -864,7 +870,7 @@ class AdminAadhaarController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | ZIP NAME
+        | ZIP SETUP
         |--------------------------------------------------------------------------
         */
 
@@ -907,7 +913,7 @@ class AdminAadhaarController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | CUSTOMER DOCUMENTS
+        | AADHAAR APPLICATION DOCUMENTS
         |--------------------------------------------------------------------------
         */
 
@@ -916,7 +922,7 @@ class AdminAadhaarController extends Controller
             as $name => $file
         ) {
 
-            if (!$file) {
+            if (empty($file)) {
                 continue;
             }
 
@@ -924,27 +930,20 @@ class AdminAadhaarController extends Controller
 
                 /*
                 |--------------------------------------------------------------------------
-                | CLOUDINARY FILE
+                | CLOUDINARY / REMOTE FILE
                 |--------------------------------------------------------------------------
                 */
 
                 if (
-                    str_starts_with(
-                        $file,
-                        'http://'
-                    ) ||
-                    str_starts_with(
-                        $file,
-                        'https://'
-                    )
+                    str_starts_with($file, 'http://')
+                    ||
+                    str_starts_with($file, 'https://')
                 ) {
 
-                    $response = Http::timeout(30)
-                        ->get($file);
+                    $contents =
+                        @file_get_contents($file);
 
-                    if (
-                        $response->successful()
-                    ) {
+                    if ($contents !== false) {
 
                         $extension =
                             pathinfo(
@@ -961,8 +960,7 @@ class AdminAadhaarController extends Controller
                             '.' .
                             ($extension ?: 'jpg'),
 
-                            $response->body()
-
+                            $contents
                         );
                     }
 
@@ -975,36 +973,18 @@ class AdminAadhaarController extends Controller
                 |--------------------------------------------------------------------------
                 */
 
-                $normalizedFile =
-                    normalize_file_path(
-                        $file
-                    );
+                $filePath =
+                    public_path($file);
 
                 if (
-                    file_exists_custom(
-                        $normalizedFile
-                    )
+                    file_exists($filePath)
                 ) {
-
-                    $filePath =
-                        public_path(
-                            $normalizedFile
-                        );
-
-                    $extension =
-                        pathinfo(
-                            $filePath,
-                            PATHINFO_EXTENSION
-                        );
 
                     $zip->addFile(
 
                         $filePath,
 
-                        $name .
-                        '.' .
-                        $extension
-
+                        basename($filePath)
                     );
                 }
 
@@ -1012,45 +992,33 @@ class AdminAadhaarController extends Controller
 
                 logger()->error(
 
-                    'Aadhaar Document ZIP Error',
+                    'AADHAAR DOCUMENT ZIP ERROR',
 
                     [
 
-                        'file' =>
-                            $file,
+                        'file' => $file,
 
                         'error' =>
                             $e->getMessage()
 
                     ]
-
                 );
             }
         }
 
         /*
         |--------------------------------------------------------------------------
-        | EXECUTIVE DOCUMENTS
+        | EXECUTIVE UPLOADED DOCUMENTS
         |--------------------------------------------------------------------------
         */
 
-        $serviceDocuments = ServiceDocument::query()
+        foreach (
+            $application->serviceDocuments ?? []
+            as $doc
+        ) {
 
-            ->where(
-                'service_type',
-                'aadhaar'
-            )
-
-            ->where(
-                'service_id',
-                $application->id
-            )
-
-            ->get();
-
-        foreach ($serviceDocuments as $doc) {
-
-            $file = $doc->file_path;
+            $file =
+                $doc->file_path;
 
             if (!$file) {
                 continue;
@@ -1058,91 +1026,47 @@ class AdminAadhaarController extends Controller
 
             try {
 
-                /*
-                |--------------------------------------------------------------------------
-                | CLOUDINARY FILE
-                |--------------------------------------------------------------------------
-                */
-
                 if (
-                    str_starts_with(
-                        $file,
-                        'http://'
-                    ) ||
-                    str_starts_with(
-                        $file,
-                        'https://'
-                    )
+                    str_starts_with($file, 'http://')
+                    ||
+                    str_starts_with($file, 'https://')
                 ) {
 
-                    $response =
-                        Http::timeout(30)
-                        ->get($file);
+                    $contents =
+                        @file_get_contents($file);
 
-                    if (
-                        $response->successful()
-                    ) {
-
-                        $extension =
-                            pathinfo(
-                                parse_url(
-                                    $file,
-                                    PHP_URL_PATH
-                                ),
-                                PATHINFO_EXTENSION
-                            );
+                    if ($contents !== false) {
 
                         $zip->addFromString(
 
-                            'Executive_Document_' .
-                            $doc->id .
-                            '.' .
-                            ($extension ?: 'pdf'),
+                            'executive_' .
+                            basename(
+                                parse_url(
+                                    $file,
+                                    PHP_URL_PATH
+                                )
+                            ),
 
-                            $response->body()
-
+                            $contents
                         );
                     }
 
                     continue;
                 }
 
-                /*
-                |--------------------------------------------------------------------------
-                | LOCAL FILE
-                |--------------------------------------------------------------------------
-                */
-
-                $normalizedFile =
-                    normalize_file_path(
-                        $file
-                    );
+                $filePath =
+                    public_path($file);
 
                 if (
-                    file_exists_custom(
-                        $normalizedFile
-                    )
+                    file_exists($filePath)
                 ) {
-
-                    $docPath =
-                        public_path(
-                            $normalizedFile
-                        );
-
-                    $extension =
-                        pathinfo(
-                            $docPath,
-                            PATHINFO_EXTENSION
-                        );
 
                     $zip->addFile(
 
-                        $docPath,
+                        $filePath,
 
-                        'Executive_Document_' .
-                        $doc->id .
-                        '.' .
-                        $extension
+                        'executive_' .
+                        basename($filePath)
 
                     );
                 }
@@ -1151,41 +1075,32 @@ class AdminAadhaarController extends Controller
 
                 logger()->error(
 
-                    'Executive Aadhaar ZIP Error',
+                    'AADHAAR EXECUTIVE DOCUMENT ZIP ERROR',
 
                     [
 
-                        'file' =>
-                            $file,
+                        'file' => $file,
 
                         'error' =>
                             $e->getMessage()
 
                     ]
-
                 );
             }
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | CLOSE ZIP
-        |--------------------------------------------------------------------------
-        */
-
         $zip->close();
 
-        /*
-        |--------------------------------------------------------------------------
-        | DOWNLOAD
-        |--------------------------------------------------------------------------
-        */
-
         return response()
+
             ->download(
+
                 $zipPath,
+
                 $zipFileName
+
             )
+
             ->deleteFileAfterSend(true);
     }
 }
