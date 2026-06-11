@@ -2,20 +2,66 @@
 
 @section('content')
 
+<style>
+
+.module-card{
+border:none;
+border-radius:16px;
+overflow:hidden;
+box-shadow:0 8px 25px rgba(0,0,0,.08);
+}
+
+.module-header{
+background:linear-gradient(
+135deg,
+#0d6efd,
+#2563eb
+);
+color:#fff;
+padding:14px 18px;
+font-size:15px;
+font-weight:600;
+}
+
+.module-check{
+padding:8px 10px;
+border-radius:10px;
+transition:.3s;
+}
+
+.module-check:hover
+
+.standalone-module{
+background:#fff;
+border:1px solid #e5e7eb;
+border-radius:12px;
+padding:14px;
+}
+
+.form-check-input{
+cursor:pointer;
+}
+
+.form-check-label{
+cursor:pointer;
+width:100%;
+}
+
+</style>
+
 <div class="container-fluid">
 
+<div class="card shadow-sm border-0">
 
-<div class="card">
+    <div class="card-header bg-white">
 
-    <div class="card-header">
-
-        <h4>
+        <h4 class="page-title">
 
             Manage Retailer Modules
 
         </h4>
 
-        <p class="mb-0">
+        <p class="mb-0 retailer-name">
 
             {{ $user->name }}
 
@@ -38,13 +84,18 @@
 
             @csrf
 
-            <div class="row">
+            {{-- TOP MODULES --}}
 
-                @foreach($modules as $module)
+            <div class="row mb-4">
 
-                    <div class="col-md-4 mb-3">
 
-                        <div class="form-check">
+            @foreach($modules->whereNull('parent_id') as $module)
+
+                @if($module->children->count() == 0)
+
+                    <div class="col-md-3 mb-3">
+
+                        <div class="form-check standalone-module">
 
                             <input
                                 type="checkbox"
@@ -56,43 +107,107 @@
                             >
 
                             <label
-                                class="form-check-label"
+                                class="form-check-label fw-semibold"
                                 for="module_{{ $module->id }}"
                             >
-
                                 {{ $module->name }}
-
                             </label>
 
                         </div>
 
                     </div>
 
-                @endforeach
+                @endif
+
+            @endforeach
+
 
             </div>
 
-            <div class="mt-3">
+            {{-- CATEGORY MODULES --}}
 
-                <button
-                    type="submit"
-                    class="btn btn-success"
-                    id="saveModulesBtn"
-                >
+            @foreach($modules->whereNull('parent_id') as $parent)
 
-                    <i class="fa fa-save"></i>
+            @if($parent->children->count() > 0)
 
-                    Update Modules
+                <div class="module-card card mb-4">
 
-                </button>
+                    <div class="module-header">
+
+                        <i class="{{ $parent->icon ?? 'fa fa-folder' }}"></i>
+
+                        {{ $parent->name }}
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="row">
+
+                            @foreach($parent->children->sortBy('sort_order') as $child)
+
+                                <div class="col-lg-4 col-md-6 mb-2">
+
+                                    <div class="form-check module-check">
+
+                                        <input
+                                            type="checkbox"
+                                            class="form-check-input"
+                                            name="modules[]"
+                                            value="{{ $child->id }}"
+                                            id="module_{{ $child->id }}"
+                                            {{ in_array($child->id, $assignedModules) ? 'checked' : '' }}
+                                        >
+
+                                        <label
+                                            class="form-check-label"
+                                            for="module_{{ $child->id }}"
+                                        >
+                                            {{ $child->name }}
+                                        </label>
+
+                                    </div>
+
+                                </div>
+
+                            @endforeach
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            @endif
+
+            @endforeach
+
+            <div class="mt-4">
+
+
+            <button
+                type="submit"
+                class="btn btn-success save-btn"
+                id="saveModulesBtn"
+            >
+
+                <i class="fa fa-save"></i>
+
+                Update Modules
+
+            </button>
+
 
             </div>
+
+
 
         </form>
 
     </div>
 
 </div>
+
 
 </div>
 

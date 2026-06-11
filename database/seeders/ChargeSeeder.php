@@ -119,6 +119,177 @@ class ChargeSeeder extends Seeder
                 'updated_at'  => now(),
             ],
 
+            /*
+            |--------------------------------------------------------------------------
+            | AADHAAR SERVICES
+            |--------------------------------------------------------------------------
+            */
+
+            [
+                'name'        => 'Mobile Number Update',
+                'code'        => 'mobile_number_update',
+                'type'        => 'fixed',
+                'value'       => 50,
+                'description' => 'Mobile Number Update Charge',
+                'is_active'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+
+            [
+                'name'        => 'Name Correction',
+                'code'        => 'name_correction',
+                'type'        => 'fixed',
+                'value'       => 50,
+                'description' => 'Name Correction Charge',
+                'is_active'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+
+            [
+                'name'        => 'DOB Correction',
+                'code'        => 'dob_correction',
+                'type'        => 'fixed',
+                'value'       => 75,
+                'description' => 'Date Of Birth Correction Charge',
+                'is_active'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+
+            [
+                'name'        => 'Address Update',
+                'code'        => 'address_update',
+                'type'        => 'fixed',
+                'value'       => 50,
+                'description' => 'Address Update Charge',
+                'is_active'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+
+            [
+                'name'        => 'Father Name Update',
+                'code'        => 'father_name_update',
+                'type'        => 'fixed',
+                'value'       => 50,
+                'description' => 'Father Name Update Charge',
+                'is_active'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+
+            [
+                'name'        => 'Husband Name Update',
+                'code'        => 'husband_name_update',
+                'type'        => 'fixed',
+                'value'       => 50,
+                'description' => 'Husband Name Update Charge',
+                'is_active'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+
+            [
+                'name'        => 'Gender Update',
+                'code'        => 'gender_update',
+                'type'        => 'fixed',
+                'value'       => 50,
+                'description' => 'Gender Update Charge',
+                'is_active'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+
+            [
+                'name'        => 'Email Update',
+                'code'        => 'email_update',
+                'type'        => 'fixed',
+                'value'       => 50,
+                'description' => 'Email Update Charge',
+                'is_active'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+
+            [
+                'name'        => 'Biometric Update',
+                'code'        => 'biometric_update',
+                'type'        => 'fixed',
+                'value'       => 100,
+                'description' => 'Biometric Update Charge',
+                'is_active'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+
+            [
+                'name'        => 'Child Aadhaar Enrollment',
+                'code'        => 'child_aadhaar_enrollment',
+                'type'        => 'fixed',
+                'value'       => 100,
+                'description' => 'Child Aadhaar Enrollment Charge',
+                'is_active'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+
+            [
+                'name'        => 'New Aadhaar Apply',
+                'code'        => 'new_aadhaar_apply',
+                'type'        => 'fixed',
+                'value'       => 150,
+                'description' => 'New Aadhaar Apply Charge',
+                'is_active'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+
+            [
+                'name'        => 'Aadhaar PVC Card',
+                'code'        => 'aadhaar_pvc_card',
+                'type'        => 'fixed',
+                'value'       => 75,
+                'description' => 'PVC Card Charge',
+                'is_active'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+
+            [
+                'name'        => 'Aadhaar Download',
+                'code'        => 'aadhaar_download',
+                'type'        => 'fixed',
+                'value'       => 20,
+                'description' => 'Aadhaar Download Charge',
+                'is_active'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+
+            [
+                'name'        => 'Aadhaar Status Check',
+                'code'        => 'aadhaar_status_check',
+                'type'        => 'fixed',
+                'value'       => 10,
+                'description' => 'Aadhaar Status Check Charge',
+                'is_active'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+
+            [
+                'name'        => 'Aadhaar Verification',
+                'code'        => 'aadhaar_verification',
+                'type'        => 'fixed',
+                'value'       => 10,
+                'description' => 'Aadhaar Verification Charge',
+                'is_active'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+
         ]);
     }
 }

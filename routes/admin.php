@@ -39,6 +39,7 @@ use App\Http\Controllers\Admin\AdminWalletController ;
 use App\Http\Controllers\Admin\RetailerApprovalController;
 use App\Http\Controllers\Admin\ModuleController;
 use App\Http\Controllers\Admin\ChargeController;
+use App\Http\Controllers\Admin\AdminAadhaarController;
 
 /*
 |--------------------------------------------------------------------------
@@ -828,6 +829,97 @@ Route::prefix('pages')
 
 
 
+    });
+
+
+
+    /*
+|--------------------------------------------------------------------------
+| AADHAAR MODULE
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('aadhaar')
+    ->name('aadhaar.')
+    ->middleware('permission:aadhaar.view')
+    ->group(function () {
+
+        /*
+        |--------------------------------------------------------------------------
+        | LIST
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/',
+            [AdminAadhaarController::class, 'index']
+        )->name('index');
+
+        /*
+        |--------------------------------------------------------------------------
+        | SHOW
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/show/{id}',
+            [AdminAadhaarController::class, 'show']
+        )->name('show');
+
+        /*
+        |--------------------------------------------------------------------------
+        | ASSIGN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post(
+            '/assign/{id}',
+            [AdminAadhaarController::class, 'assign']
+        )->name('assign');
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE STATUS
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post(
+            '/status/{id}',
+            [AdminAadhaarController::class, 'status']
+        )->name('status');
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPLOAD DOCUMENT
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post(
+            '/document-upload/{id}',
+            [AdminAadhaarController::class, 'uploadDocument']
+        )->name('document.upload');
+
+        /*
+        |--------------------------------------------------------------------------
+        | DOWNLOAD DOCUMENTS
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/download-documents/{id}',
+            [AdminAadhaarController::class, 'downloadDocuments']
+        )->name('download.documents');
+
+        /*
+        |--------------------------------------------------------------------------
+        | DELETE
+        |--------------------------------------------------------------------------
+        */
+
+        Route::delete(
+            '/delete/{id}',
+            [AdminAadhaarController::class, 'delete']
+        )->name('delete');
     });
 
 

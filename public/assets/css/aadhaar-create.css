@@ -1,0 +1,683 @@
+/* ==========================================================
+   AADHAAR SERVICE FORM - PREMIUM MODERN UI
+   ========================================================== */
+
+:root{
+
+    --primary:#2563eb;
+    --primary-dark:#1d4ed8;
+    --secondary:#4f46e5;
+    --success:#10b981;
+    --warning:#f59e0b;
+    --danger:#ef4444;
+
+    --text:#111827;
+    --text-light:#6b7280;
+
+    --border:#e5e7eb;
+    --bg:#f8fafc;
+
+    --shadow-sm:
+        0 8px 20px rgba(15,23,42,.05);
+
+    --shadow:
+        0 15px 35px rgba(15,23,42,.08);
+
+    --shadow-lg:
+        0 25px 60px rgba(15,23,42,.12);
+
+    --radius:22px;
+}
+
+/* ==========================================================
+   PAGE
+   ========================================================== */
+
+.aadhaar-page-wrapper{
+
+    padding:30px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #f8fafc 0%,
+            #eef4ff 100%
+        );
+
+    min-height:100vh;
+}
+
+/* ==========================================================
+   MAIN CARD
+   ========================================================== */
+
+.aadhaar-form-card{
+
+    border:none !important;
+
+    border-radius:30px !important;
+
+    overflow:hidden;
+
+    background:#fff;
+
+    box-shadow:var(--shadow-lg);
+
+    position:relative;
+}
+
+.aadhaar-form-card::before{
+
+    content:'';
+
+    position:absolute;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:6px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--primary),
+            var(--secondary),
+            #7c3aed
+        );
+}
+
+/* ==========================================================
+   HEADER
+   ========================================================== */
+
+.aadhaar-form-header{
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #4f46e5,
+            #7c3aed
+        ) !important;
+
+    padding:35px 40px;
+
+    border:none !important;
+
+    position:relative;
+
+    overflow:hidden;
+}
+
+.aadhaar-form-header::before{
+
+    content:'';
+
+    position:absolute;
+
+    width:250px;
+    height:250px;
+
+    right:-80px;
+    top:-80px;
+
+    border-radius:50%;
+
+    background:
+        rgba(255,255,255,.08);
+}
+
+.aadhaar-form-header::after{
+
+    content:'';
+
+    position:absolute;
+
+    width:180px;
+    height:180px;
+
+    left:-60px;
+    bottom:-60px;
+
+    border-radius:50%;
+
+    background:
+        rgba(255,255,255,.05);
+}
+
+/* ==========================================================
+   TITLE
+   ========================================================== */
+
+.aadhaar-title{
+
+    color:#fff;
+
+    font-size:32px;
+
+    font-weight:800;
+
+    margin:0;
+
+    letter-spacing:.4px;
+}
+
+.aadhaar-subtitle{
+
+    color:rgba(255, 255, 255, 0.9);
+
+    margin-top:8px;
+
+    font-size:14px;
+}
+
+/* ==========================================================
+   CHARGE BADGE
+   ========================================================== */
+
+.aadhaar-charge-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    background:#fff;
+
+    color:#111827;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    padding:14px 22px;
+
+    border-radius:50px;
+
+    box-shadow:
+        0 12px 30px rgba(0,0,0,.15);
+
+    transition:.35s ease;
+}
+
+.aadhaar-charge-badge:hover{
+
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 18px 35px rgba(0,0,0,.18);
+}
+
+/* ==========================================================
+   BODY
+   ========================================================== */
+
+.aadhaar-form-body{
+
+    padding:40px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #ffffff,
+            #f8fafc
+        );
+}
+
+/* ==========================================================
+   FIELD CARD
+   ========================================================== */
+
+.aadhaar-field-card{
+
+    background:#fff;
+
+    border:1px solid #edf2f7;
+
+    border-radius:20px;
+
+    padding:20px;
+
+    transition:.35s ease;
+
+    box-shadow:
+        0 4px 15px rgba(0,0,0,.03);
+
+    height:100%;
+}
+
+.aadhaar-field-card:hover{
+
+    transform:
+        translateY(-4px);
+
+    border-color:#bfdbfe;
+
+    box-shadow:
+        0 15px 35px rgba(37,99,235,.12);
+}
+
+/* ==========================================================
+   LABEL
+   ========================================================== */
+
+.aadhaar-label{
+
+    display:block;
+
+    margin-bottom:10px;
+
+    color:var(--text);
+
+    font-size:14px;
+
+    font-weight:700;
+
+    letter-spacing:.2px;
+}
+
+.required{
+
+    color:var(--danger);
+
+    font-weight:800;
+}
+
+/* ==========================================================
+   INPUTS
+   ========================================================== */
+
+.aadhaar-input{
+
+    border:2px solid #e2e8f0 !important;
+
+    border-radius:16px !important;
+
+    min-height:58px;
+
+    font-size:15px !important;
+
+    padding:14px 18px !important;
+
+    transition:.3s ease !important;
+
+    background:#fff !important;
+
+    box-shadow:none !important;
+}
+
+.aadhaar-input:hover{
+
+    border-color:#cbd5e1 !important;
+}
+
+.aadhaar-input:focus{
+
+    border-color:var(--primary) !important;
+
+    box-shadow:
+        0 0 0 5px rgba(37,99,235,.12) !important;
+
+    transform:
+        translateY(-1px);
+}
+
+textarea.aadhaar-input{
+
+    min-height:150px;
+
+    resize:vertical;
+}
+
+select.aadhaar-input{
+
+    cursor:pointer;
+}
+
+/* ==========================================================
+   FILE UPLOAD
+   ========================================================== */
+
+.aadhaar-upload-box{
+
+    border:2px dashed #93c5fd;
+
+    border-radius:18px;
+
+    padding:18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eff6ff,
+            #dbeafe
+        );
+
+    transition:.35s ease;
+}
+
+.aadhaar-upload-box:hover{
+
+    border-color:var(--primary);
+
+    background:
+        linear-gradient(
+            135deg,
+            #dbeafe,
+            #bfdbfe
+        );
+}
+
+.aadhaar-upload-box input{
+
+    background:#fff !important;
+}
+
+/* ==========================================================
+   FILE BUTTON
+   ========================================================== */
+
+.aadhaar-file-btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #10b981,
+            #059669
+        );
+
+    color:#fff !important;
+
+    border:none;
+
+    padding:12px 18px;
+
+    border-radius:14px;
+
+    font-weight:600;
+
+    text-decoration:none;
+
+    transition:.3s ease;
+}
+
+.aadhaar-file-btn:hover{
+
+    color:#fff !important;
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 12px 25px rgba(16,185,129,.3);
+}
+
+/* ==========================================================
+   REMARKS
+   ========================================================== */
+
+textarea[name="remarks"]{
+
+    min-height:170px;
+}
+
+/* ==========================================================
+   WALLET CARD
+   ========================================================== */
+
+.aadhaar-wallet-card{
+
+    margin-top:35px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #4f46e5
+        );
+
+    border-radius:24px;
+
+    padding:30px;
+
+    color:#fff;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:20px;
+
+    flex-wrap:wrap;
+
+    position:relative;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 25px 50px rgba(37,99,235,.25);
+}
+
+.aadhaar-wallet-card::before{
+
+    content:'';
+
+    position:absolute;
+
+    width:250px;
+    height:250px;
+
+    right:-70px;
+    top:-70px;
+
+    background:
+        rgba(255,255,255,.08);
+
+    border-radius:50%;
+}
+
+.wallet-item{
+
+    flex:1;
+
+    min-width:220px;
+
+    position:relative;
+
+    z-index:2;
+}
+
+.wallet-label{
+
+    display:block;
+
+    font-size:14px;
+
+    opacity:.85;
+
+    margin-bottom:10px;
+}
+
+.wallet-item h3{
+
+    margin:0;
+
+    font-size:32px;
+
+    font-weight:800;
+}
+
+/* ==========================================================
+   ACTION BUTTON
+   ========================================================== */
+
+.aadhaar-action-area{
+
+    margin-top:35px;
+
+    text-align:right;
+}
+
+.aadhaar-submit-btn{
+
+    border:none;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #4f46e5
+        );
+
+    color:#fff;
+
+    font-size:16px;
+
+    font-weight:700;
+
+    padding:16px 34px;
+
+    border-radius:18px;
+
+    transition:.35s ease;
+
+    box-shadow:
+        0 15px 35px rgba(37,99,235,.25);
+}
+
+.aadhaar-submit-btn:hover{
+
+    transform:
+        translateY(-4px);
+
+    box-shadow:
+        0 25px 50px rgba(37,99,235,.35);
+}
+
+.aadhaar-submit-btn:active{
+
+    transform:
+        translateY(-1px);
+}
+
+/* ==========================================================
+   SCROLLBAR
+   ========================================================== */
+
+::-webkit-scrollbar{
+
+    width:8px;
+}
+
+::-webkit-scrollbar-track{
+
+    background:#f1f5f9;
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#94a3b8;
+
+    border-radius:20px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:#64748b;
+}
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+
+@media (max-width:991px){
+
+    .aadhaar-form-header{
+
+        padding:25px;
+    }
+
+    .aadhaar-form-body{
+
+        padding:25px;
+    }
+
+    .aadhaar-title{
+
+        font-size:26px;
+    }
+
+    .aadhaar-wallet-card{
+
+        flex-direction:column;
+    }
+
+    .wallet-item h3{
+
+        font-size:26px;
+    }
+}
+
+@media (max-width:767px){
+
+    .aadhaar-page-wrapper{
+
+        padding:12px;
+    }
+
+    .aadhaar-form-card{
+
+        border-radius:20px !important;
+    }
+
+    .aadhaar-form-header{
+
+        padding:20px;
+    }
+
+    .aadhaar-title{
+
+        font-size:22px;
+    }
+
+    .aadhaar-charge-badge{
+
+        width:100%;
+
+        justify-content:center;
+    }
+
+    .aadhaar-form-body{
+
+        padding:18px;
+    }
+
+    .aadhaar-field-card{
+
+        padding:15px;
+    }
+
+    .aadhaar-action-area{
+
+        text-align:center;
+    }
+
+    .aadhaar-submit-btn{
+
+        width:100%;
+    }
+
+    .wallet-item{
+
+        text-align:center;
+    }
+}

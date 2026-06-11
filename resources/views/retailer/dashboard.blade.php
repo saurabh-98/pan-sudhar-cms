@@ -173,8 +173,33 @@
 
                             @foreach($services as $child)
 
+                                @php
+
+                                    $serviceUrl = '#';
+
+                                    if (
+                                        $child->route_name ===
+                                        'retailer.aadhaar.service'
+                                    ) {
+
+                                        $serviceUrl = route(
+                                            'retailer.aadhaar.service',
+                                            [
+                                                'service' => $child->slug
+                                            ]
+                                        );
+
+                                    } else {
+
+                                        $serviceUrl = route(
+                                            $child->route_name
+                                        );
+                                    }
+
+                                @endphp
+
                                 <a
-                                    href="{{ route($child->route_name) }}"
+                                    href="{{ $serviceUrl }}"
                                     class="rtd-service-card"
                                 >
 

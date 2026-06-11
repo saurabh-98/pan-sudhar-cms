@@ -256,7 +256,14 @@ class RolePermissionSeeder extends Seeder
             'charges.view',
             'charges.create',
             'charges.edit',
-            'charges.delete'
+            'charges.delete',
+
+            'aadhaar.view',
+            'aadhaar.assign',
+            'aadhaar.status',
+            'aadhaar.delete',
+            'aadhaar.document.upload'
+            
 
             
         ];

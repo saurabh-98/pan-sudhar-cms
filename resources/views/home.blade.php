@@ -147,15 +147,7 @@
 
             </h2>
 
-            <p class="notice-subtitle">
-
-                Stay updated with the latest PAN Card,
-                Aadhaar, correction services, government
-                notifications, online documentation updates,
-                and important announcements.
-
-            </p>
-
+          
         </div>
 
         <!-- NOTICE BOX -->
@@ -249,14 +241,7 @@
         <!-- SECTION HEADER -->
         <div class="stats-section-header">
 
-            <span class="stats-badge">
-
-                <i class="fa-solid fa-id-card"></i>
-
-                PAN & Aadhaar Service Overview
-
-            </span>
-
+         
             <h2 class="stats-title">
 
                 Fast & Secure
@@ -264,14 +249,7 @@
 
             </h2>
 
-            <p class="stats-subtitle">
-
-                Providing trusted PAN Card, Aadhaar,
-                correction, verification, and online
-                government documentation services.
-
-            </p>
-
+           
         </div>
 
         <!-- STATS GRID -->
@@ -466,13 +444,7 @@
 
             </h2>
 
-            <p class="features-subtitle">
-
-                We provide fast, secure, and reliable PAN Card,
-                Aadhaar, correction, verification, and government
-                documentation services with complete online support.
-
-            </p>
+           
 
         </div>
 
@@ -576,14 +548,7 @@
 
             </h2>
 
-            <p class="sg-gallery-subtitle">
-
-                Explore our PAN Card, Aadhaar,
-                online documentation services,
-                customer support activities,
-                and digital service center moments.
-
-            </p>
+        
 
         </div>
 
@@ -704,52 +669,10 @@
 
                 </h2>
 
-                <p class="home-support-subtitle">
-
-                    Our support team is available to help you with
-                    PAN Card applications, Aadhaar updates,
-                    correction services, online documentation,
-                    and service request tracking.
-
-                </p>
 
                 <!-- FEATURES -->
 
-                <div class="support-feature-list">
-
-                    <div class="support-feature-item">
-
-                        <i class="fa-solid fa-circle-check"></i>
-
-                        PAN Card Apply & Correction
-
-                    </div>
-
-                    <div class="support-feature-item">
-
-                        <i class="fa-solid fa-circle-check"></i>
-
-                        Aadhaar Update Assistance
-
-                    </div>
-
-                    <div class="support-feature-item">
-
-                        <i class="fa-solid fa-circle-check"></i>
-
-                        Online Document Support
-
-                    </div>
-
-                    <div class="support-feature-item">
-
-                        <i class="fa-solid fa-circle-check"></i>
-
-                        Fast Response Team
-
-                    </div>
-
-                </div>
+           
 
             </div>
 

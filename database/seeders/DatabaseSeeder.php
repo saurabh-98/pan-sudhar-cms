@@ -70,6 +70,9 @@ class DatabaseSeeder extends Seeder
             StateSeeder::class,
             DistrictSeeder::class,
 
+            ModuleSeeder::class,
+            ChargeSeeder::class,
+
         ]);
 
         /*

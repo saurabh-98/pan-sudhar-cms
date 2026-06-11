@@ -54,22 +54,7 @@ class ModuleSeeder extends Seeder
                 'status'     => 1,
             ]);
 
-            /*
-            |--------------------------------------------------------------------------
-            | CUSTOMERS
-            |--------------------------------------------------------------------------
-            */
-
-            Module::create([
-                'name'       => 'Customers',
-                'slug'       => 'customers',
-                'icon'       => 'fa fa-users',
-                'route_name' => 'retailer.customers',
-                'parent_id'  => null,
-                'sort_order' => 3,
-                'status'     => 1,
-            ]);
-
+          
             /*
             |--------------------------------------------------------------------------
             | WALLET
@@ -211,6 +196,145 @@ class ModuleSeeder extends Seeder
                     'route_name' => 'retailer.itr.history',
                     'parent_id'  => $itr->id,
                     'sort_order' => 2,
+                    'status'     => 1,
+                ],
+
+            ]);
+
+
+        /*
+            |--------------------------------------------------------------------------
+            | AADHAAR SERVICES
+            |--------------------------------------------------------------------------
+            */
+
+            $aadhaar = Module::create([
+                'name'       => 'Aadhaar Services',
+                'slug'       => 'aadhaar-services',
+                'icon'       => 'fa fa-address-card',
+                'route_name' => null,
+                'parent_id'  => null,
+                'sort_order' => 30,
+                'status'     => 1,
+            ]);
+
+            Module::insert([
+
+                [
+                    'name'       => 'Mobile Number Update',
+                    'slug'       => 'mobile-number-update',
+                    'route_name' => 'retailer.aadhaar.service',
+                    'parent_id'  => $aadhaar->id,
+                    'sort_order' => 1,
+                    'status'     => 1,
+                ],
+
+                [
+                    'name'       => 'Name Correction',
+                    'slug'       => 'name-correction',
+                    'route_name' => 'retailer.aadhaar.service',
+                    'parent_id'  => $aadhaar->id,
+                    'sort_order' => 2,
+                    'status'     => 1,
+                ],
+
+                [
+                    'name'       => 'DOB Correction',
+                    'slug'       => 'dob-correction',
+                    'route_name' => 'retailer.aadhaar.service',
+                    'parent_id'  => $aadhaar->id,
+                    'sort_order' => 3,
+                    'status'     => 1,
+                ],
+
+                [
+                    'name'       => 'Address Update',
+                    'slug'       => 'address-update',
+                    'route_name' => 'retailer.aadhaar.service',
+                    'parent_id'  => $aadhaar->id,
+                    'sort_order' => 4,
+                    'status'     => 1,
+                ],
+
+                [
+                    'name'       => 'Father Name Update',
+                    'slug'       => 'father-name-update',
+                    'route_name' => 'retailer.aadhaar.service',
+                    'parent_id'  => $aadhaar->id,
+                    'sort_order' => 5,
+                    'status'     => 1,
+                ],
+
+                [
+                    'name'       => 'Husband Name Update',
+                    'slug'       => 'husband-name-update',
+                    'route_name' => 'retailer.aadhaar.service',
+                    'parent_id'  => $aadhaar->id,
+                    'sort_order' => 6,
+                    'status'     => 1,
+                ],
+
+                [
+                    'name'       => 'Gender Update',
+                    'slug'       => 'gender-update',
+                    'route_name' => 'retailer.aadhaar.service',
+                    'parent_id'  => $aadhaar->id,
+                    'sort_order' => 7,
+                    'status'     => 1,
+                ],
+
+                [
+                    'name'       => 'Email Update',
+                    'slug'       => 'email-update',
+                    'route_name' => 'retailer.aadhaar.service',
+                    'parent_id'  => $aadhaar->id,
+                    'sort_order' => 8,
+                    'status'     => 1,
+                ],
+
+                [
+                    'name'       => 'Biometric Appointment',
+                    'slug'       => 'biometric-appointment',
+                    'route_name' => 'retailer.aadhaar.service',
+                    'parent_id'  => $aadhaar->id,
+                    'sort_order' => 9,
+                    'status'     => 1,
+                ],
+
+                [
+                    'name'       => 'Child Aadhaar Enrollment',
+                    'slug'       => 'child-aadhaar-enrollment',
+                    'route_name' => 'retailer.aadhaar.service',
+                    'parent_id'  => $aadhaar->id,
+                    'sort_order' => 10,
+                    'status'     => 1,
+                ],
+
+                [
+                    'name'       => 'New Aadhaar Apply',
+                    'slug'       => 'new-aadhaar-apply',
+                    'route_name' => 'retailer.aadhaar.service',
+                    'parent_id'  => $aadhaar->id,
+                    'sort_order' => 11,
+                    'status'     => 1,
+                ],
+
+                [
+                    'name'       => 'Aadhaar PVC Card',
+                    'slug'       => 'aadhaar-pvc-card',
+                    'route_name' => 'retailer.aadhaar.service',
+                    'parent_id'  => $aadhaar->id,
+                    'sort_order' => 12,
+                    'status'     => 1,
+                ],
+
+
+                [
+                    'name'       => 'Aadhaar Service History',
+                    'slug'       => 'aadhaar-history',
+                    'route_name' => 'retailer.aadhaar.history',
+                    'parent_id'  => $aadhaar->id,
+                    'sort_order' => 16,
                     'status'     => 1,
                 ],
 

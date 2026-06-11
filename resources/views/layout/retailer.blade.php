@@ -140,6 +140,11 @@
         href="{{ asset('assets/css/itr-file-history.css') }}"
     >
 
+    <link
+        rel="stylesheet"
+        href="{{ asset('assets/css/aadhaar-create.css') }}"
+    >
+
 
 </head>
 

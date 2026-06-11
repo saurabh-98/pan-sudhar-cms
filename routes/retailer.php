@@ -23,6 +23,15 @@ use App\Http\Controllers\Retailer\Pan\PanVerifyController;
 
 /*
 |--------------------------------------------------------------------------
+| AADHAR CONTROLLERS
+|--------------------------------------------------------------------------
+*/
+
+
+use App\Http\Controllers\Retailer\Aadhaar\AadhaarServiceController;
+
+/*
+|--------------------------------------------------------------------------
 | ITR CONTROLLERS
 |--------------------------------------------------------------------------
 */
@@ -645,6 +654,71 @@ Route::prefix('pan-correction')
             [PassportPhotoController::class, 'index']
         )->name('passport.photo');
 
+    });
+
+
+
+    /*
+|--------------------------------------------------------------------------
+| AADHAAR SERVICES
+|--------------------------------------------------------------------------
+*/
+
+/*
+|--------------------------------------------------------------------------
+| AADHAAR SERVICES
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('aadhaar')
+    ->name('aadhaar.')
+    ->controller(AadhaarServiceController::class)
+    ->group(function () {
+
+        Route::get(
+            '/service/{service}',
+            'create'
+        )->name('service');
+
+        Route::post(
+            '/preview',
+            'preview'
+        )->name('preview');
+
+        Route::get(
+            '/preview-page',
+            'previewPage'
+        )->name('preview-page');
+
+        Route::post(
+            '/final-submit',
+            'finalSubmit'
+        )->name('final-submit');
+
+        Route::get(
+            '/history',
+            'index'
+        )->name('history');
+
+        Route::get(
+            '/show/{id}',
+            'show'
+        )->name('show');
+
+        Route::get(
+            '/receiving/{id}',
+            'acknowledgement'
+        )->name('receiving');
+
+        Route::get(
+            '/print/{id}',
+            'print'
+        )->name('print');
+
+        Route::delete(
+            '/delete/{id}',
+            'destroy'
+        )->name('delete');
     });
 
     /*

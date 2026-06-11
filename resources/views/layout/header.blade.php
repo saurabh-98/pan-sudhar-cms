@@ -16,20 +16,9 @@
             <!-- LEFT -->
             <div class="topbar-contact">
 
-                <a href="tel:{{ $settings['phone'] ?? '+919876543210' }}"
-                   class="topbar-link">
+               
 
-                    <i class="fa-solid fa-phone-volume"></i>
-
-                    <span>
-
-                        {{ $settings['phone'] ?? '+91 9876543210' }}
-
-                    </span>
-
-                </a>
-
-                <a href="mailto:{{ $settings['email'] ?? 'support@panaadhaarsuvidha.com' }}"
+                <a href="mailto:{{ $settings['email'] ?? 'info@bhartiyadigitalcafe.com' }}"
                    class="topbar-link">
 
                     <i class="fa-solid fa-envelope"></i>
@@ -48,7 +37,7 @@
 
                     <span>
 
-                        Mon - Sat : 9:00 AM - 7:00 PM
+                        MON-SUN : 10:00 AM - 10:00 PM
 
                     </span>
 

@@ -12,6 +12,7 @@
     "require": {
         "php": "^8.2",
         "cloudinary-labs/cloudinary-laravel": "^3.0",
+        "doctrine/dbal": "^4.4",
         "endroid/qr-code": "^5.0",
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.10.1",
@@ -40,7 +41,9 @@
             "app/Helpers/FileHelper.php",
             "app/Helpers/PanSessionHelper.php",
             "app/Helpers/PanCorrectionSessionHelper.php",
-            "app/Helpers/ItrSessionHelper.php"
+            "app/Helpers/ItrSessionHelper.php",
+            "app/Helpers/AadharSessionHelper.php",
+            "app/Helpers/AadhaarFormHelper.php"
         ]
     },
 
