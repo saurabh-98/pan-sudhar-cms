@@ -283,12 +283,77 @@ class AadhaarServiceController extends Controller
 
         try {
 
-          $session = get_aadhaar_session();
+            /*
+            |--------------------------------------------------------------------------
+            | GET SESSION
+            |--------------------------------------------------------------------------
+            */
 
-            $aadhaarCharge =
+            $session = get_aadhaar_session();
+
+            if (
+                empty($session)
+                ||
+                !is_array($session)
+                ||
+                !isset($session['data'])
+            ) {
+
+                DB::rollBack();
+
+                return response()->json([
+
+                    'status' => false,
+
+                    'message' => 'Preview session expired.'
+
+                ], 422);
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | SESSION DATA
+            |--------------------------------------------------------------------------
+            */
+
+            $data = $session['data'];
+
+            /*
+            |--------------------------------------------------------------------------
+            | SERVICE SLUG CHECK
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                empty($data['service_slug'])
+            ) {
+
+                DB::rollBack();
+
+                return response()->json([
+
+                    'status' => false,
+
+                    'message' => 'Service information missing.'
+
+                ], 422);
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | CHARGE
+            |--------------------------------------------------------------------------
+            */
+
+            $aadhaarCharge = (float) (
+
+                $data['aadhaar_charge']
+                ??
                 $this->getAadhaarCharge(
-                    $session['data']['service_slug']
-                );
+                    $data['service_slug']
+                )
+
+            );
 
             if ($aadhaarCharge <= 0) {
 
@@ -306,7 +371,7 @@ class AadhaarServiceController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | USER LOCK
+            | USER
             |--------------------------------------------------------------------------
             */
 
@@ -315,6 +380,25 @@ class AadhaarServiceController extends Controller
                 ->lockForUpdate()
 
                 ->find(auth()->id());
+
+            if (!$user) {
+
+                DB::rollBack();
+
+                return response()->json([
+
+                    'status' => false,
+
+                    'message' => 'User not found.'
+
+                ], 404);
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | ADMIN
+            |--------------------------------------------------------------------------
+            */
 
             $admin = User::query()
 
@@ -336,29 +420,6 @@ class AadhaarServiceController extends Controller
                         'Admin account not found.'
 
                 ], 500);
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | SESSION CHECK
-            |--------------------------------------------------------------------------
-            */
-
-            $session =
-                get_aadhaar_session();
-
-            if (!$session) {
-
-                DB::rollBack();
-
-                return response()->json([
-
-                    'status' => false,
-
-                    'message' =>
-                        'Preview session expired.'
-
-                ], 422);
             }
 
             /*
@@ -395,6 +456,20 @@ class AadhaarServiceController extends Controller
                 $this->aadhaarServiceService
                     ->storeFromSession();
 
+            if (!$application) {
+
+                DB::rollBack();
+
+                return response()->json([
+
+                    'status' => false,
+
+                    'message' =>
+                        'Unable to create application.'
+
+                ], 500);
+            }
+
             /*
             |--------------------------------------------------------------------------
             | BALANCE BEFORE
@@ -409,7 +484,7 @@ class AadhaarServiceController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | WALLET UPDATE
+            | DEDUCT RETAILER
             |--------------------------------------------------------------------------
             */
 
@@ -420,6 +495,12 @@ class AadhaarServiceController extends Controller
                 $aadhaarCharge
 
             );
+
+            /*
+            |--------------------------------------------------------------------------
+            | CREDIT ADMIN
+            |--------------------------------------------------------------------------
+            */
 
             $admin->increment(
 
@@ -441,25 +522,15 @@ class AadhaarServiceController extends Controller
 
             $application->update([
 
-                'amount' =>
+                'amount' => $aadhaarCharge,
 
-                    $aadhaarCharge,
+                'wallet_deducted' => true,
 
-                'wallet_deducted' =>
+                'wallet_deducted_at' => now(),
 
-                    true,
+                'payment_status' => 'Paid',
 
-                'wallet_deducted_at' =>
-
-                    now(),
-
-                'payment_status' =>
-
-                    'Paid',
-
-                'status' =>
-
-                    'Processing'
+                'status' => 'Processing',
 
             ]);
 
@@ -471,40 +542,24 @@ class AadhaarServiceController extends Controller
 
             WalletTransaction::create([
 
-                'user_id' =>
+                'user_id' => $user->id,
 
-                    $user->id,
+                'amount' => $aadhaarCharge,
 
-                'amount' =>
+                'before_balance' => $retailerBefore,
 
-                    $aadhaarCharge,
+                'after_balance' => $user->wallet_balance,
 
-                'before_balance' =>
+                'type' => 'debit',
 
-                    $retailerBefore,
-
-                'after_balance' =>
-
-                    $user->wallet_balance,
-
-                'type' =>
-
-                    'debit',
-
-                'status' =>
-
-                    'success',
+                'status' => 'success',
 
                 'transaction_no' =>
-
                     'AAD'
-
                     . now()->format('YmdHis')
-
-                    . rand(1000,9999),
+                    . rand(1000, 9999),
 
                 'remark' =>
-
                     'Aadhaar Service Charge'
 
             ]);
@@ -517,43 +572,35 @@ class AadhaarServiceController extends Controller
 
             WalletTransaction::create([
 
-                'user_id' =>
+                'user_id' => $admin->id,
 
-                    $admin->id,
+                'amount' => $aadhaarCharge,
 
-                'amount' =>
+                'before_balance' => $adminBefore,
 
-                    $aadhaarCharge,
+                'after_balance' => $admin->wallet_balance,
 
-                'before_balance' =>
+                'type' => 'credit',
 
-                    $adminBefore,
-
-                'after_balance' =>
-
-                    $admin->wallet_balance,
-
-                'type' =>
-
-                    'credit',
-
-                'status' =>
-
-                    'success',
+                'status' => 'success',
 
                 'transaction_no' =>
-
                     'AADADM'
-
                     . now()->format('YmdHis')
-
-                    . rand(1000,9999),
+                    . rand(1000, 9999),
 
                 'remark' =>
-
                     'Aadhaar Service Received Amount'
 
             ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | CLEAR SESSION
+            |--------------------------------------------------------------------------
+            */
+
+            clear_aadhaar_session();
 
             DB::commit();
 
@@ -562,18 +609,15 @@ class AadhaarServiceController extends Controller
                 'status' => true,
 
                 'message' =>
-
                     'Aadhaar Service Submitted Successfully.',
 
-                'redirect_url' =>
+                'redirect_url' => route(
 
-                    route(
+                    'retailer.aadhaar.receiving',
 
-                        'retailer.aadhaar.receiving',
+                    $application->id
 
-                        $application->id
-
-                    )
+                )
 
             ]);
 
@@ -587,14 +631,15 @@ class AadhaarServiceController extends Controller
 
                 [
 
-                    'message' =>
-                        $e->getMessage(),
+                    'message' => $e->getMessage(),
 
-                    'file' =>
-                        $e->getFile(),
+                    'file' => $e->getFile(),
 
-                    'line' =>
-                        $e->getLine()
+                    'line' => $e->getLine(),
+
+                    'user_id' => auth()->id(),
+
+                    'session' => get_aadhaar_session()
 
                 ]
 
@@ -604,12 +649,12 @@ class AadhaarServiceController extends Controller
 
                 'status' => false,
 
-                'message' =>
-                    $e->getMessage()
+                'message' => $e->getMessage()
 
             ], 500);
         }
     }
+
     /*
     |--------------------------------------------------------------------------
     | HISTORY
@@ -751,7 +796,7 @@ class AadhaarServiceController extends Controller
             'retailer.aadhaar.history'
         );
     }
-    
+
     /*
     |--------------------------------------------------------------------------
     | SHOW
