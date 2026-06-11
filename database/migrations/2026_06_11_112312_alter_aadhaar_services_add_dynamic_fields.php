@@ -6,19 +6,41 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        //
+        Schema::table('aadhaar_services', function (Blueprint $table) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | DYNAMIC SERVICE SUPPORT
+            |--------------------------------------------------------------------------
+            */
+
+            $table->string('service_slug')
+                ->nullable()
+                ->after('service_name');
+
+            $table->json('form_data')
+                ->nullable()
+                ->after('service_slug');
+
+            $table->json('documents')
+                ->nullable()
+                ->after('form_data');
+
+        });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        //
+        Schema::table('aadhaar_services', function (Blueprint $table) {
+
+            $table->dropColumn([
+                'service_slug',
+                'form_data',
+                'documents'
+            ]);
+
+        });
     }
 };
