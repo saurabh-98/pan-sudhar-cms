@@ -300,26 +300,81 @@ class AdminAadhaarController extends Controller
 
                 ->addColumn('action', function ($row) {
 
-                    return '
+                    $buttons = '
 
-                        <a href="'
+                        <div class="d-flex gap-2">
 
-                        . route(
-                            'admin.aadhaar.show',
-                            $row->id
-                        )
+                            <a href="'
 
-                        . '"
+                            . route(
+                                'admin.aadhaar.show',
+                                $row->id
+                            )
 
-                        class="view-btn">
+                            . '"
 
-                            <i class="fa fa-eye"></i>
+                            class="btn btn-primary btn-sm">
 
-                            View
+                                <i class="fa fa-eye"></i>
 
-                        </a>
+                                View
+
+                            </a>
 
                     ';
+
+                    if (
+                        !in_array(
+                            strtolower($row->status),
+                            ['approved', 'completed', 'rejected']
+                        )
+                    ) {
+
+                        $buttons .= '
+
+                            <form
+                                action="'
+
+                                . route(
+                                    'admin.aadhaar.reject',
+                                    $row->id
+                                )
+
+                                . '"
+                                method="POST"
+                                style="display:inline-block"
+                                onsubmit="return confirm(\'Are you sure you want to reject this application?\')"
+                            >
+
+                                '
+
+                                . csrf_field()
+
+                                . '
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-danger btn-sm"
+                                >
+
+                                    <i class="fa fa-times"></i>
+
+                                    Reject
+
+                                </button>
+
+                            </form>
+
+                        ';
+                    }
+
+                    $buttons .= '
+
+                        </div>
+
+                    ';
+
+                    return $buttons;
                 })
 
                 ->rawColumns([
@@ -1102,5 +1157,183 @@ class AdminAadhaarController extends Controller
             )
 
             ->deleteFileAfterSend(true);
+    }
+
+
+    
+
+    public function reject($id)
+    {
+        try {
+
+            DB::beginTransaction();
+
+            $application = AadhaarService::lockForUpdate()
+                ->findOrFail($id);
+
+            if (
+                in_array(
+                    strtolower($application->status),
+                    ['approved', 'completed']
+                )
+            ) {
+                DB::rollBack();
+
+                return back()->with(
+                    'error',
+                    'Approved or completed application cannot be rejected.'
+                );
+            }
+
+            if (
+                strtolower($application->status) === 'rejected'
+            ) {
+                DB::rollBack();
+
+                return back()->with(
+                    'error',
+                    'Application already rejected.'
+                );
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | REFUND PROCESS
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                $application->wallet_deducted &&
+                $application->amount > 0
+            ) {
+
+                $retailer = User::lockForUpdate()
+                    ->findOrFail(
+                        $application->user_id
+                    );
+
+                /*
+                |--------------------------------------------------------------------------
+                | ADMIN USER
+                |--------------------------------------------------------------------------
+                */
+
+                $admin = User::lockForUpdate()
+                    ->role('Admin')
+                    ->first();
+
+                if (!$admin) {
+                    throw new \Exception(
+                        'Admin account not found.'
+                    );
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | DEBIT ADMIN WALLET
+                |--------------------------------------------------------------------------
+                */
+
+                if (
+                    $admin->wallet_balance <
+                    $application->amount
+                ) {
+                    throw new \Exception(
+                        'Admin wallet balance is insufficient.'
+                    );
+                }
+
+                $admin->decrement(
+                    'wallet_balance',
+                    $application->amount
+                );
+
+                WalletTransaction::create([
+
+                    'user_id' => $admin->id,
+
+                    'receiver_id' => $retailer->id,
+
+                    'amount' => $application->amount,
+
+                    'type' => 'debit',
+
+                    'transaction_type' => 'aadhaar_refund',
+
+                    'remark' =>
+                        'Refund amount debited for Aadhaar Application No. '
+                        . $application->application_no
+
+                ]);
+
+                /*
+                |--------------------------------------------------------------------------
+                | CREDIT RETAILER WALLET
+                |--------------------------------------------------------------------------
+                */
+
+                $retailer->increment(
+                    'wallet_balance',
+                    $application->amount
+                );
+
+                WalletTransaction::create([
+
+                    'user_id' => $retailer->id,
+
+                    'receiver_id' => $admin->id,
+
+                    'amount' => $application->amount,
+
+                    'type' => 'credit',
+
+                    'transaction_type' => 'aadhaar_refund',
+
+                    'remark' =>
+                        'Refund received for Aadhaar Application No. '
+                        . $application->application_no
+
+                ]);
+
+                /*
+                |--------------------------------------------------------------------------
+                | MARK REFUNDED
+                |--------------------------------------------------------------------------
+                */
+
+                $application->wallet_deducted = 0;
+
+                $application->wallet_deducted_at = null;
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE STATUS
+            |--------------------------------------------------------------------------
+            */
+
+            $application->status = 'Rejected';
+
+            $application->admin_remark =
+                'Rejected by Admin';
+
+            $application->save();
+
+            DB::commit();
+
+            return back()->with(
+                'success',
+                'Application rejected and amount refunded successfully.'
+            );
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return back()->with(
+                'error',
+                $e->getMessage()
+            );
+        }
     }
 }

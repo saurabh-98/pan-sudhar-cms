@@ -340,6 +340,128 @@ class ModuleSeeder extends Seeder
 
             ]);
 
+            /*                                                                         |
+            | -------------------------------------------------------------------------- |
+            | CSC SERVICES                                                               |
+            | -------------------------------------------------------------------------- |
+            | */                                                                         
+
+            $csc = Module::create([
+            'name'       => 'CSC Services',
+            'slug'       => 'csc-services',
+            'icon'       => 'fa fa-landmark',
+            'route_name' => null,
+            'parent_id'  => null,
+            'sort_order' => 40,
+            'status'     => 1,
+            ]);
+
+            Module::insert([
+
+
+            [
+                'name'       => 'PM Kisan Registration',
+                'slug'       => 'pm-kisan-registration',
+                'route_name' => 'retailer.csc.service',
+                'parent_id'  => $csc->id,
+                'sort_order' => 1,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'Ayushman Card',
+                'slug'       => 'ayushman-card',
+                'route_name' => 'retailer.csc.service',
+                'parent_id'  => $csc->id,
+                'sort_order' => 2,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'Income Certificate',
+                'slug'       => 'income-certificate',
+                'route_name' => 'retailer.csc.service',
+                'parent_id'  => $csc->id,
+                'sort_order' => 3,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'Residence Certificate',
+                'slug'       => 'residence-certificate',
+                'route_name' => 'retailer.csc.service',
+                'parent_id'  => $csc->id,
+                'sort_order' => 4,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'Caste Certificate',
+                'slug'       => 'caste-certificate',
+                'route_name' => 'retailer.csc.service',
+                'parent_id'  => $csc->id,
+                'sort_order' => 5,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'Birth Certificate',
+                'slug'       => 'birth-certificate',
+                'route_name' => 'retailer.csc.service',
+                'parent_id'  => $csc->id,
+                'sort_order' => 6,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'Death Certificate',
+                'slug'       => 'death-certificate',
+                'route_name' => 'retailer.csc.service',
+                'parent_id'  => $csc->id,
+                'sort_order' => 7,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'Labour Card',
+                'slug'       => 'labour-card',
+                'route_name' => 'retailer.csc.service',
+                'parent_id'  => $csc->id,
+                'sort_order' => 8,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'E-Shram Card',
+                'slug'       => 'e-shram-card',
+                'route_name' => 'retailer.csc.service',
+                'parent_id'  => $csc->id,
+                'sort_order' => 9,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'Ration Card',
+                'slug'       => 'ration-card',
+                'route_name' => 'retailer.csc.service',
+                'parent_id'  => $csc->id,
+                'sort_order' => 10,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'CSC Service History',
+                'slug'       => 'csc-history',
+                'route_name' => 'retailer.csc.history',
+                'parent_id'  => $csc->id,
+                'sort_order' => 11,
+                'status'     => 1,
+            ],
+
+
+            ]);
+
+
             DB::commit();
 
         } catch (\Throwable $e) {

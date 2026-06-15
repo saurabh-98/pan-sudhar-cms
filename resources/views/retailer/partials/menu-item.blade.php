@@ -1,148 +1,159 @@
 @php
 
-    $hasChildren = $menu->children->count() > 0;
+use Illuminate\Support\Facades\Route;
 
-    $isActive = false;
+$hasChildren = $menu->children->count() > 0;
 
-    /*
-    |--------------------------------------------------------------------------
-    | ACTIVE CHECK
-    |--------------------------------------------------------------------------
-    */
+$isActive = false;
 
-    if ($menu->route_name) {
+/*
+|--------------------------------------------------------------------------
+| ACTIVE MENU CHECK
+|--------------------------------------------------------------------------
+*/
 
-        if (
-            $menu->route_name === 'retailer.aadhaar.service'
-        ) {
+if (!empty($menu->route_name)) {
 
-            $isActive =
-                request()->routeIs(
-                    'retailer.aadhaar.service'
-                );
+    $isActive = request()->routeIs(
+        $menu->route_name
+    );
 
-        } else {
+}
 
-            $isActive =
-                request()->routeIs(
-                    $menu->route_name
-                );
-        }
-    }
-
-    foreach ($menu->children as $child) {
-
-        if ($child->route_name) {
-
-            if (
-                $child->route_name === 'retailer.aadhaar.service'
-            ) {
-
-                if (
-                    request()->routeIs(
-                        'retailer.aadhaar.service'
-                    )
-                ) {
-                    $isActive = true;
-                    break;
-                }
-
-            } else {
-
-                if (
-                    request()->routeIs(
-                        $child->route_name
-                    )
-                ) {
-                    $isActive = true;
-                    break;
-                }
-            }
-        }
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | URL GENERATION
-    |--------------------------------------------------------------------------
-    */
-
-    $url = '#';
+foreach ($menu->children as $child) {
 
     if (
-        !$hasChildren
+        !empty($child->route_name)
         &&
-        !empty($menu->route_name)
+        request()->routeIs($child->route_name)
     ) {
 
-        if (
-            $menu->route_name === 'retailer.aadhaar.service'
-        ) {
-
-            $url = route(
-
-                'retailer.aadhaar.service',
-
-                [
-                    'service' => $menu->slug
-                ]
-
-            );
-
-        } else {
-
-            $url = route(
-                $menu->route_name
-            );
-        }
+        $isActive = true;
+        break;
     }
+}
+
+/*
+|--------------------------------------------------------------------------
+| URL GENERATION
+|--------------------------------------------------------------------------
+*/
+
+$url = '#';
+
+if (
+    !$hasChildren
+    &&
+    !empty($menu->route_name)
+    &&
+    Route::has($menu->route_name)
+) {
+
+    try {
+
+        $route = Route::getRoutes()
+            ->getByName($menu->route_name);
+
+        $parameters = [];
+
+        if ($route) {
+
+            foreach (
+                $route->parameterNames()
+                as $parameter
+            ) {
+
+                switch ($parameter) {
+
+                    case 'service':
+
+                        $parameters[$parameter] =
+                            $menu->slug;
+
+                    break;
+
+                    case 'slug':
+
+                        $parameters[$parameter] =
+                            $menu->slug;
+
+                    break;
+
+                    case 'id':
+
+                        $parameters[$parameter] =
+                            $menu->id;
+
+                    break;
+
+                }
+
+            }
+
+        }
+
+        $url = route(
+            $menu->route_name,
+            $parameters
+        );
+
+    } catch (\Throwable $e) {
+
+        $url = '#';
+
+    }
+
+}
+
 
 @endphp
 
 <li class="{{ $hasChildren ? 'stf-dropdown' : '' }}">
 
-    <a
-        href="{{ $url }}"
-        class="stf-link {{ $isActive ? 'stf-active' : '' }}"
-    >
+```
+<a
+    href="{{ $url }}"
+    class="stf-link {{ $isActive ? 'stf-active' : '' }}"
+>
 
-        <div class="stf-link-left">
+    <div class="stf-link-left">
 
-            <i class="{{ $menu->icon ?: 'fa fa-circle' }}"></i>
+        <i class="{{ $menu->icon ?: 'fa fa-circle' }}"></i>
 
-            <span>
+        <span>
 
-                {{ $menu->name }}
+            {{ $menu->name }}
 
-            </span>
+        </span>
 
-        </div>
-
-        @if($hasChildren)
-
-            <i class="fa fa-chevron-down stf-arrow"></i>
-
-        @endif
-
-    </a>
+    </div>
 
     @if($hasChildren)
 
-        <ul class="stf-submenu">
-
-            @foreach($menu->children as $child)
-
-                @include(
-                    'retailer.partials.menu-item',
-                    [
-                        'menu' => $child
-                    ]
-                )
-
-            @endforeach
-
-        </ul>
+        <i class="fa fa-chevron-down stf-arrow"></i>
 
     @endif
+
+</a>
+
+@if($hasChildren)
+
+    <ul class="stf-submenu">
+
+        @foreach($menu->children as $child)
+
+            @include(
+                'retailer.partials.menu-item',
+                [
+                    'menu' => $child
+                ]
+            )
+
+        @endforeach
+
+    </ul>
+
+@endif
+
 
 </li>

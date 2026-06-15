@@ -2,50 +2,47 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-use Illuminate\View\View;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
-
 use ZipArchive;
-
-use App\Models\ItrFile;
 use App\Models\User;
+use Illuminate\Http\Request;
+use App\Models\CscService;
 use App\Models\ServiceDocument;
 use App\Models\WalletTransaction;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\File;
 
-class AdminItrController extends Controller
+
+class AdminCscController extends Controller
 {
 
-    /*
-    |--------------------------------------------------------------------------
-    | ITR LIST
-    |--------------------------------------------------------------------------
-    */
+    
 
     public function index(Request $request)
     {
-        if($request->ajax())
-        {
-            $applications = ItrFile::query()
+        if ($request->ajax()) {
+
+            $applications = CscService::query()
 
                 ->with([
                     'user',
-                    'assignedEmployee'
+                    'assignedUser'
                 ]);
 
             /*
             |--------------------------------------------------------------------------
-            | EXECUTIVE CAN SEE ONLY ASSIGNED ITR
+            | EXECUTIVE CAN SEE ONLY ASSIGNED APPLICATIONS
             |--------------------------------------------------------------------------
             */
 
-            if(auth()->user()->hasRole('Executive'))
-            {
+            if (auth()->user()->hasRole('Executive')) {
+
                 $applications
+
                     ->whereNotNull('assigned_to')
+
                     ->where(
                         'assigned_to',
                         auth()->id()
@@ -60,7 +57,13 @@ class AdminItrController extends Controller
 
                 ->addIndexColumn()
 
-                ->addColumn('retailer', function($row){
+                /*
+                |--------------------------------------------------------------------------
+                | RETAILER
+                |--------------------------------------------------------------------------
+                */
+
+                ->addColumn('retailer', function ($row) {
 
                     return '
 
@@ -68,9 +71,9 @@ class AdminItrController extends Controller
 
                             <div class="retailer-avatar">
 
-                                '
+                                ' .
 
-                                . strtoupper(
+                                strtoupper(
                                     substr(
                                         $row->user->name ?? 'N',
                                         0,
@@ -86,9 +89,9 @@ class AdminItrController extends Controller
 
                                 <div class="retailer-name">
 
-                                    '
+                                    ' .
 
-                                    . ($row->user->name ?? 'N/A')
+                                    ($row->user->name ?? 'N/A')
 
                                     . '
 
@@ -101,7 +104,13 @@ class AdminItrController extends Controller
                     ';
                 })
 
-                ->addColumn('itr_no', function($row){
+                /*
+                |--------------------------------------------------------------------------
+                | APPLICATION NUMBER
+                |--------------------------------------------------------------------------
+                */
+
+                ->addColumn('application_no', function ($row) {
 
                     return '
 
@@ -109,7 +118,11 @@ class AdminItrController extends Controller
 
                             <span class="application-id">
 
-                                ITR-'.$row->id.'
+                                ' .
+
+                                $row->application_no .
+
+                                '
 
                             </span>
 
@@ -118,90 +131,113 @@ class AdminItrController extends Controller
                     ';
                 })
 
-                ->addColumn('applicant', function($row){
+                /*
+                |--------------------------------------------------------------------------
+                | CUSTOMER
+                |--------------------------------------------------------------------------
+                */
+
+                ->addColumn('applicant', function ($row) {
+
+                    $customerName =
+
+                        $row->getField(
+                            'customer_name',
+                            $row->getField(
+                                'child_name',
+                                'N/A'
+                            )
+                        );
 
                     return '
 
                         <div class="applicant-box">
 
-                            '.$row->name.'
+                            ' . e($customerName) . '
 
                         </div>
 
                     ';
                 })
 
-                ->addColumn('status', function($row){
+                /*
+                |--------------------------------------------------------------------------
+                | MOBILE
+                |--------------------------------------------------------------------------
+                */
 
-                    if($row->status == 'completed')
-                    {
-                        return '
+                ->addColumn('mobile', function ($row) {
 
-                            <span class="badge bg-success">
+                    return $row->getField(
+                        'mobile',
+                        '-'
+                    );
+                })
 
-                                Completed
+                /*
+                |--------------------------------------------------------------------------
+                | SERVICE
+                |--------------------------------------------------------------------------
+                */
 
-                            </span>
-
-                        ';
-                    }
-                    elseif($row->status == 'approved')
-                    {
-                        return '
-
-                            <span class="badge bg-success">
-
-                                Approved
-
-                            </span>
-
-                        ';
-                    }
-                    elseif($row->status == 'pending')
-                    {
-                        return '
-
-                            <span class="badge bg-warning text-dark">
-
-                                Pending
-
-                            </span>
-
-                        ';
-                    }
-                    elseif($row->status == 'Processing')
-                    {
-                        return '
-
-                            <span class="badge bg-primary">
-
-                                Processing
-
-                            </span>
-
-                        ';
-                    }
+                ->addColumn('service', function ($row) {
 
                     return '
 
-                        <span class="badge bg-danger">
+                        <span class="badge bg-info">
 
-                            Rejected
+                            '
+
+                            . e($row->service_name) .
+
+                            '
 
                         </span>
 
                     ';
                 })
 
-                ->addColumn('assigned_to', function($row){
+                /*
+                |--------------------------------------------------------------------------
+                | STATUS
+                |--------------------------------------------------------------------------
+                */
 
-                    if($row->assignedEmployee)
-                    {
+                ->addColumn('status', function ($row) {
+
+                    return $row->status_badge;
+                })
+
+                /*
+                |--------------------------------------------------------------------------
+                | PAYMENT
+                |--------------------------------------------------------------------------
+                */
+
+                ->addColumn('payment', function ($row) {
+
+                    return $row->payment_badge;
+                })
+
+                /*
+                |--------------------------------------------------------------------------
+                | ASSIGNED USER
+                |--------------------------------------------------------------------------
+                */
+
+                ->addColumn('assigned_to', function ($row) {
+
+                    if ($row->assignedUser) {
+
                         return '
 
                             <span class="assigned-badge">
 
-                                '.$row->assignedEmployee->name.'
+                                '
+
+                                . $row->assignedUser->name .
+
+                                '
 
                             </span>
 
@@ -219,7 +255,50 @@ class AdminItrController extends Controller
                     ';
                 })
 
-                ->addColumn('action', function($row){
+                /*
+                |--------------------------------------------------------------------------
+                | DATE
+                |--------------------------------------------------------------------------
+                */
+
+                ->addColumn('created_at', function ($row) {
+
+                    return '
+
+                        <div>
+
+                            <div class="fw-semibold">
+
+                                '
+
+                                . $row->created_at->format('d M Y')
+
+                                . '
+
+                            </div>
+
+                            <small class="text-muted">
+
+                                '
+
+                                . $row->created_at->format('h:i A')
+
+                                . '
+
+                            </small>
+
+                        </div>
+
+                    ';
+                })
+
+                /*
+                |--------------------------------------------------------------------------
+                | ACTION
+                |--------------------------------------------------------------------------
+                */
+
+                ->addColumn('action', function ($row) {
 
                     $buttons = '
 
@@ -228,7 +307,7 @@ class AdminItrController extends Controller
                             <a href="'
 
                             . route(
-                                'admin.itr.show',
+                                'admin.csc.show',
                                 $row->id
                             )
 
@@ -244,27 +323,27 @@ class AdminItrController extends Controller
 
                     ';
 
-                    if(
+                    if (
                         !in_array(
                             strtolower($row->status),
-                            ['approved','completed','rejected']
+                            ['approved', 'completed', 'rejected']
                         )
-                    )
-                    {
+                    ) {
+
                         $buttons .= '
 
                             <form
                                 action="'
 
                                 . route(
-                                    'admin.itr.reject',
+                                    'admin.csc.reject',
                                     $row->id
                                 )
 
                                 . '"
                                 method="POST"
                                 style="display:inline-block"
-                                onsubmit="return confirm(\'Are you sure you want to reject this ITR application?\')"
+                                onsubmit="return confirm(\'Are you sure you want to reject this application?\')"
                             >
 
                                 '
@@ -299,18 +378,23 @@ class AdminItrController extends Controller
                 })
 
                 ->rawColumns([
+
                     'retailer',
-                    'itr_no',
+                    'application_no',
+                    'applicant',
+                    'service',
                     'status',
+                    'payment',
                     'assigned_to',
-                    'action',
-                    'applicant'
+                    'created_at',
+                    'action'
+
                 ])
 
                 ->make(true);
         }
 
-        return view('admin.itr.index');
+        return view('admin.csc.index');
     }
 
 
@@ -320,19 +404,28 @@ class AdminItrController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function show(
-        int $id
-    ): View {
+    
 
-        $application = ItrFile::query()
+   
+
+
+    public function show(int $id): View
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | APPLICATION
+        |--------------------------------------------------------------------------
+        */
+
+        $application = CscService::query()
 
             ->with([
 
                 'user',
 
-                'assignedEmployee',
+                'assignedUser',
 
-                'documents.user'
+                'serviceDocuments.user'
 
             ])
 
@@ -344,16 +437,30 @@ class AdminItrController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        if(
-            auth()->user()->hasRole('Executive') &&
+        if (
+
+            auth()->user()->hasRole('Executive')
+
+            &&
+
             $application->assigned_to != auth()->id()
-        )
-        {
+
+        ) {
+
             abort(
+
                 403,
+
                 'Unauthorized Access'
+
             );
         }
+
+        /*
+        |--------------------------------------------------------------------------
+        | EXECUTIVE USERS
+        |--------------------------------------------------------------------------
+        */
 
         $users = User::query()
 
@@ -362,19 +469,29 @@ class AdminItrController extends Controller
                 1
             )
 
-            ->orderBy('name')
+            ->orderBy(
+                'name'
+            )
 
             ->get()
 
             ->filter(function ($user) {
 
-                return $user->hasRole('Executive');
+                return $user->hasRole(
+                    'Executive'
+                );
 
             });
 
+        /*
+        |--------------------------------------------------------------------------
+        | RETURN VIEW
+        |--------------------------------------------------------------------------
+        */
+
         return view(
 
-            'admin.itr.show',
+            'admin.csc.show',
 
             compact(
 
@@ -385,9 +502,7 @@ class AdminItrController extends Controller
             )
 
         );
-
     }
-
 
 
     /*
@@ -445,7 +560,7 @@ class AdminItrController extends Controller
             ], 422);
         }
 
-        $application = ItrFile::findOrFail(
+        $application = CscService::findOrFail(
             $id
         );
 
@@ -488,7 +603,7 @@ class AdminItrController extends Controller
 
             'status' => true,
 
-            'message' => 'ITR Assigned Successfully.',
+            'message' => 'Aadhar Assigned Successfully.',
 
             'data' => [
 
@@ -517,8 +632,8 @@ class AdminItrController extends Controller
     public function uploadDocument(
         Request $request,
         int $id
-        )
-        {
+    )
+    {
         /*
         |--------------------------------------------------------------------------
         | ONLY EXECUTIVE
@@ -526,7 +641,6 @@ class AdminItrController extends Controller
         */
 
         if (!auth()->user()->hasRole('Executive')) {
-
             abort(403);
         }
 
@@ -563,7 +677,7 @@ class AdminItrController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $application = ItrFile::findOrFail($id);
+        $application = CscService::findOrFail($id);
 
         /*
         |--------------------------------------------------------------------------
@@ -572,7 +686,6 @@ class AdminItrController extends Controller
         */
 
         if ($application->assigned_to != auth()->id()) {
-
             abort(403);
         }
 
@@ -585,7 +698,7 @@ class AdminItrController extends Controller
         $alreadyUploaded = ServiceDocument::where(
 
             'service_type',
-            'itr'
+            'aadhaar'
 
         )
         ->where(
@@ -617,7 +730,7 @@ class AdminItrController extends Controller
 
             $request->file('support_file'),
 
-            'service-documents/itr'
+            'service-documents/aadhaar'
 
         );
 
@@ -640,7 +753,7 @@ class AdminItrController extends Controller
 
         ServiceDocument::create([
 
-            'service_type'  => 'itr',
+            'service_type'  => 'aadhaar',
 
             'service_id'    => $application->id,
 
@@ -725,8 +838,8 @@ class AdminItrController extends Controller
 
             'remark'  =>
 
-                'ITR Service Commission #ITR-' .
-                $application->id
+                'Aadhaar Service Commission #' .
+                $application->application_no
 
         ]);
 
@@ -748,8 +861,8 @@ class AdminItrController extends Controller
 
                 'remark'  =>
 
-                    'Executive ITR Commission #ITR-' .
-                    $application->id
+                    'Executive Aadhaar Commission #' .
+                    $application->application_no
 
             ]);
         }
@@ -778,315 +891,276 @@ class AdminItrController extends Controller
 
             'message' =>
 
-                'ITR receipt uploaded successfully.',
+                'Csc receipt uploaded successfully.',
 
             'file_url' => file_url($path)
 
         ]);
-        
-
-        }
+    }
 
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | DOWNLOAD ALL DOCUMENTS
-    |--------------------------------------------------------------------------
-    */
+   
 
     public function downloadDocuments(int $id)
     {
-    $application = ItrFile::with('documents')
-    ->findOrFail($id);
+        $application = AadhaarService::with([
+            'serviceDocuments.user'
+        ])->findOrFail($id);
 
+        /*
+        |--------------------------------------------------------------------------
+        | EXECUTIVE ACCESS CHECK
+        |--------------------------------------------------------------------------
+        */
 
-    if (
-        auth()->user()->hasRole('Executive') &&
-        $application->assigned_to != auth()->id()
-    ) {
-        abort(
-            403,
-            'Unauthorized Access'
-        );
-    }
-
-    $zipFileName =
-        'itr-documents-' .
-        $application->id .
-        '.zip';
-
-    $tempDirectory =
-        storage_path('app/temp');
-
-    if (!File::exists($tempDirectory)) {
-
-        File::makeDirectory(
-            $tempDirectory,
-            0755,
-            true
-        );
-    }
-
-    $zipPath =
-        $tempDirectory .
-        '/' .
-        $zipFileName;
-
-    $zip = new ZipArchive;
-
-    if (
-        $zip->open(
-            $zipPath,
-            ZipArchive::CREATE |
-            ZipArchive::OVERWRITE
-        ) !== true
-    ) {
-        abort(
-            500,
-            'Unable to create ZIP file.'
-        );
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | MAIN DOCUMENTS
-    |--------------------------------------------------------------------------
-    */
-
-    $documents = [
-
-        'aadhaar_front' =>
-            $application->aadhaar_front,
-
-        'aadhaar_back' =>
-            $application->aadhaar_back,
-
-        'pan_card' =>
-            $application->pan_card,
-
-    ];
-
-    foreach ($documents as $name => $file) {
-
-        if (!$file) {
-            continue;
+        if (
+            auth()->user()->hasRole('Executive') &&
+            $application->assigned_to != auth()->id()
+        ) {
+            abort(
+                403,
+                'Unauthorized Access'
+            );
         }
 
-        try {
+        /*
+        |--------------------------------------------------------------------------
+        | ZIP SETUP
+        |--------------------------------------------------------------------------
+        */
 
-            /*
-            |--------------------------------------------------------------------------
-            | CLOUDINARY FILE
-            |--------------------------------------------------------------------------
-            */
+        $zipFileName =
+            'csc-documents-' .
+            $application->application_no .
+            '.zip';
 
-            if (
-                str_starts_with(
-                    $file,
-                    'http://'
-                ) ||
-                str_starts_with(
-                    $file,
-                    'https://'
-                )
-            ) {
+        $tempDirectory =
+            storage_path('app/temp');
 
-                $contents =
-                    @file_get_contents(
-                        $file
-                    );
+        if (!File::exists($tempDirectory)) {
 
-                if ($contents !== false) {
+            File::makeDirectory(
+                $tempDirectory,
+                0755,
+                true
+            );
+        }
 
-                    $extension =
-                        pathinfo(
-                            parse_url(
-                                $file,
-                                PHP_URL_PATH
-                            ),
-                            PATHINFO_EXTENSION
+        $zipPath =
+            $tempDirectory .
+            '/' .
+            $zipFileName;
+
+        $zip = new ZipArchive;
+
+        if (
+            $zip->open(
+                $zipPath,
+                ZipArchive::CREATE |
+                ZipArchive::OVERWRITE
+            ) !== true
+        ) {
+            abort(
+                500,
+                'Unable to create ZIP file.'
+            );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | AADHAAR APPLICATION DOCUMENTS
+        |--------------------------------------------------------------------------
+        */
+
+        foreach (
+            ($application->documents ?? [])
+            as $name => $file
+        ) {
+
+            if (empty($file)) {
+                continue;
+            }
+
+            try {
+
+                /*
+                |--------------------------------------------------------------------------
+                | CLOUDINARY / REMOTE FILE
+                |--------------------------------------------------------------------------
+                */
+
+                if (
+                    str_starts_with($file, 'http://')
+                    ||
+                    str_starts_with($file, 'https://')
+                ) {
+
+                    $contents =
+                        @file_get_contents($file);
+
+                    if ($contents !== false) {
+
+                        $extension =
+                            pathinfo(
+                                parse_url(
+                                    $file,
+                                    PHP_URL_PATH
+                                ),
+                                PATHINFO_EXTENSION
+                            );
+
+                        $zip->addFromString(
+
+                            $name .
+                            '.' .
+                            ($extension ?: 'jpg'),
+
+                            $contents
                         );
+                    }
 
-                    $zip->addFromString(
+                    continue;
+                }
 
-                        $name .
-                        '.' .
-                        ($extension ?: 'jpg'),
+                /*
+                |--------------------------------------------------------------------------
+                | LOCAL FILE
+                |--------------------------------------------------------------------------
+                */
 
-                        $contents
+                $filePath =
+                    public_path($file);
+
+                if (
+                    file_exists($filePath)
+                ) {
+
+                    $zip->addFile(
+
+                        $filePath,
+
+                        basename($filePath)
+                    );
+                }
+
+            } catch (\Throwable $e) {
+
+                logger()->error(
+
+                    'CSC DOCUMENT ZIP ERROR',
+
+                    [
+
+                        'file' => $file,
+
+                        'error' =>
+                            $e->getMessage()
+
+                    ]
+                );
+            }
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | EXECUTIVE UPLOADED DOCUMENTS
+        |--------------------------------------------------------------------------
+        */
+
+        foreach (
+            $application->serviceDocuments ?? []
+            as $doc
+        ) {
+
+            $file =
+                $doc->file_path;
+
+            if (!$file) {
+                continue;
+            }
+
+            try {
+
+                if (
+                    str_starts_with($file, 'http://')
+                    ||
+                    str_starts_with($file, 'https://')
+                ) {
+
+                    $contents =
+                        @file_get_contents($file);
+
+                    if ($contents !== false) {
+
+                        $zip->addFromString(
+
+                            'executive_' .
+                            basename(
+                                parse_url(
+                                    $file,
+                                    PHP_URL_PATH
+                                )
+                            ),
+
+                            $contents
+                        );
+                    }
+
+                    continue;
+                }
+
+                $filePath =
+                    public_path($file);
+
+                if (
+                    file_exists($filePath)
+                ) {
+
+                    $zip->addFile(
+
+                        $filePath,
+
+                        'executive_' .
+                        basename($filePath)
 
                     );
                 }
 
-                continue;
-            }
+            } catch (\Throwable $e) {
 
-            /*
-            |--------------------------------------------------------------------------
-            | LOCAL FILE
-            |--------------------------------------------------------------------------
-            */
+                logger()->error(
 
-            $filePath =
-                public_path($file);
+                    'CSC EXECUTIVE DOCUMENT ZIP ERROR',
 
-            if (
-                file_exists(
-                    $filePath
-                )
-            ) {
+                    [
 
-                $zip->addFile(
+                        'file' => $file,
 
-                    $filePath,
+                        'error' =>
+                            $e->getMessage()
 
-                    basename(
-                        $filePath
-                    )
-
+                    ]
                 );
             }
-
-        } catch (\Throwable $e) {
-
-            logger()->error(
-
-                'Document ZIP error',
-
-                [
-
-                    'file' =>
-                        $file,
-
-                    'error' =>
-                        $e->getMessage()
-
-                ]
-
-            );
-        }
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | EXECUTIVE DOCUMENTS
-    |--------------------------------------------------------------------------
-    */
-
-    foreach ($application->documents as $doc) {
-
-        $file =
-            $doc->file_path;
-
-        if (!$file) {
-            continue;
         }
 
-        try {
+        $zip->close();
 
-            /*
-            |--------------------------------------------------------------------------
-            | CLOUDINARY FILE
-            |--------------------------------------------------------------------------
-            */
+        return response()
 
-            if (
-                str_starts_with(
-                    $file,
-                    'http://'
-                ) ||
-                str_starts_with(
-                    $file,
-                    'https://'
-                )
-            ) {
+            ->download(
 
-                $contents =
-                    @file_get_contents(
-                        $file
-                    );
+                $zipPath,
 
-                if ($contents !== false) {
+                $zipFileName
 
-                    $zip->addFromString(
+            )
 
-                        basename(
-                            parse_url(
-                                $file,
-                                PHP_URL_PATH
-                            )
-                        ),
-
-                        $contents
-
-                    );
-                }
-
-                continue;
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | LOCAL FILE
-            |--------------------------------------------------------------------------
-            */
-
-            $docPath =
-                public_path(
-                    $file
-                );
-
-            if (
-                file_exists(
-                    $docPath
-                )
-            ) {
-
-                $zip->addFile(
-
-                    $docPath,
-
-                    basename(
-                        $docPath
-                    )
-
-                );
-            }
-
-        } catch (\Throwable $e) {
-
-            logger()->error(
-
-                'Executive document ZIP error',
-
-                [
-
-                    'file' =>
-                        $file,
-
-                    'error' =>
-                        $e->getMessage()
-
-                ]
-
-            );
-        }
+            ->deleteFileAfterSend(true);
     }
 
-    $zip->close();
 
-    return response()
-        ->download(
-            $zipPath,
-            $zipFileName
-        )
-        ->deleteFileAfterSend(true);
-
-
-    }
-
-   
+    
 
     public function reject($id)
     {
@@ -1094,14 +1168,8 @@ class AdminItrController extends Controller
 
             DB::beginTransaction();
 
-            $application = ItrFile::lockForUpdate()
+            $application = CscService::lockForUpdate()
                 ->findOrFail($id);
-
-            /*
-            |--------------------------------------------------------------------------
-            | PREVENT REJECTING APPROVED / COMPLETED
-            |--------------------------------------------------------------------------
-            */
 
             if (
                 in_array(
@@ -1109,25 +1177,17 @@ class AdminItrController extends Controller
                     ['approved', 'completed']
                 )
             ) {
-
                 DB::rollBack();
 
                 return back()->with(
                     'error',
-                    'Approved or completed ITR application cannot be rejected.'
+                    'Approved or completed application cannot be rejected.'
                 );
             }
-
-            /*
-            |--------------------------------------------------------------------------
-            | PREVENT DOUBLE REJECTION
-            |--------------------------------------------------------------------------
-            */
 
             if (
                 strtolower($application->status) === 'rejected'
             ) {
-
                 DB::rollBack();
 
                 return back()->with(
@@ -1138,7 +1198,7 @@ class AdminItrController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | REFUND WALLET
+            | REFUND PROCESS
             |--------------------------------------------------------------------------
             */
 
@@ -1152,6 +1212,12 @@ class AdminItrController extends Controller
                         $application->user_id
                     );
 
+                /*
+                |--------------------------------------------------------------------------
+                | ADMIN USER
+                |--------------------------------------------------------------------------
+                */
+
                 $admin = User::lockForUpdate()
                     ->role('admin')
                     ->first();
@@ -1162,6 +1228,12 @@ class AdminItrController extends Controller
                     );
                 }
 
+                /*
+                |--------------------------------------------------------------------------
+                | DEBIT ADMIN WALLET
+                |--------------------------------------------------------------------------
+                */
+
                 if (
                     $admin->wallet_balance <
                     $application->amount
@@ -1170,12 +1242,6 @@ class AdminItrController extends Controller
                         'Admin wallet balance is insufficient.'
                     );
                 }
-
-                /*
-                |--------------------------------------------------------------------------
-                | DEBIT ADMIN WALLET
-                |--------------------------------------------------------------------------
-                */
 
                 $admin->decrement(
                     'wallet_balance',
@@ -1192,11 +1258,11 @@ class AdminItrController extends Controller
 
                     'type' => 'debit',
 
-                    'transaction_type' => 'itr_refund',
+                    'transaction_type' => 'aadhaar_refund',
 
                     'remark' =>
-                        'Refund debited for ITR Application ID #'
-                        . $application->id
+                        'Refund amount debited for Aadhaar Application No. '
+                        . $application->application_no
 
                 ]);
 
@@ -1221,11 +1287,11 @@ class AdminItrController extends Controller
 
                     'type' => 'credit',
 
-                    'transaction_type' => 'itr_refund',
+                    'transaction_type' => 'aadhaar_refund',
 
                     'remark' =>
-                        'Refund received for ITR Application ID #'
-                        . $application->id
+                        'Refund received for Aadhaar Application No. '
+                        . $application->application_no
 
                 ]);
 
@@ -1246,13 +1312,10 @@ class AdminItrController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            $application->status = 'rejected';
+            $application->status = 'Rejected';
 
-            if (isset($application->admin_remark)) {
-
-                $application->admin_remark =
-                    'Rejected by Admin';
-            }
+            $application->admin_remark =
+                'Rejected by Admin';
 
             $application->save();
 
@@ -1260,7 +1323,7 @@ class AdminItrController extends Controller
 
             return back()->with(
                 'success',
-                'ITR application rejected and amount refunded successfully.'
+                'Application rejected and amount refunded successfully.'
             );
 
         } catch (\Exception $e) {

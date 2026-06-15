@@ -298,29 +298,32 @@ if ($request->ajax())
 
                 ';
             }
-            else
+           else
             {
-                $buttons .= '
+                if (!empty($row->user_id))
+                {
+                    $buttons .= '
 
-                    <a
-                        href="'
+                        <a
+                            href="' .
 
-                        . route(
-                            'admin.retailer-approvals.modules',
-                            $row->user_id
-                        )
+                            route(
+                                'admin.retailer-approvals.modules',
+                                ['user' => $row->user_id]
+                            )
 
-                        . '"
+                            . '"
 
-                        class="btn btn-warning btn-sm">
+                            class="btn btn-warning btn-sm">
 
-                        <i class="fa fa-lock"></i>
+                            <i class="fa fa-lock"></i>
 
-                        Manage Modules
+                            Manage Modules
 
-                    </a>
+                        </a>
 
-                ';
+                    ';
+                }
             }
 
             $buttons .= '
@@ -543,6 +546,36 @@ return back()
 
 }
 
+
+public function reject(Request $request, $id)
+{
+    $retailer = DB::table('retailers')
+        ->where('id', $id)
+        ->first();
+
+    if (!$retailer) {
+        abort(404);
+    }
+
+    if ($retailer->status === 'approved') {
+        return back()->with(
+            'error',
+            'Approved retailer cannot be rejected.'
+        );
+    }
+
+    DB::table('retailers')
+        ->where('id', $id)
+        ->update([
+            'status' => 'rejected',
+            'updated_at' => now(),
+        ]);
+
+    return back()->with(
+        'success',
+        'Retailer rejected successfully.'
+    );
+}
 
     /*
     |--------------------------------------------------------------------------

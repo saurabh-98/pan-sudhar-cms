@@ -102,22 +102,7 @@ class ChargeSeeder extends Seeder
                 'updated_at'  => now(),
             ],
 
-            /*
-            |--------------------------------------------------------------------------
-            | PLATFORM SERVICES
-            |--------------------------------------------------------------------------
-            */
-
-            [
-                'name'        => 'GST',
-                'code'        => 'gst',
-                'type'        => 'percentage',
-                'value'       => 18,
-                'description' => 'GST percentage',
-                'is_active'   => 1,
-                'created_at'  => now(),
-                'updated_at'  => now(),
-            ],
+           
 
             /*
             |--------------------------------------------------------------------------
@@ -289,6 +274,123 @@ class ChargeSeeder extends Seeder
                 'created_at'  => now(),
                 'updated_at'  => now(),
             ],
+
+            /*                                                                         |
+            | -------------------------------------------------------------------------- |
+            | CSC SERVICES                                                               |
+            | -------------------------------------------------------------------------- |
+            | */                                                                         
+
+            [
+            'name'        => 'PM Kisan Registration',
+            'code'        => 'pm_kisan_registration',
+            'type'        => 'fixed',
+            'value'       => 50,
+            'description' => 'PM Kisan Registration Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+            ],
+
+            [
+            'name'        => 'Ayushman Card',
+            'code'        => 'ayushman_card',
+            'type'        => 'fixed',
+            'value'       => 30,
+            'description' => 'Ayushman Card Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+            ],
+
+            [
+            'name'        => 'Income Certificate',
+            'code'        => 'income_certificate',
+            'type'        => 'fixed',
+            'value'       => 40,
+            'description' => 'Income Certificate Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+            ],
+
+            [
+            'name'        => 'Residence Certificate',
+            'code'        => 'residence_certificate',
+            'type'        => 'fixed',
+            'value'       => 40,
+            'description' => 'Residence Certificate Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+            ],
+
+            [
+            'name'        => 'Caste Certificate',
+            'code'        => 'caste_certificate',
+            'type'        => 'fixed',
+            'value'       => 40,
+            'description' => 'Caste Certificate Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+            ],
+
+            [
+            'name'        => 'Birth Certificate',
+            'code'        => 'birth_certificate',
+            'type'        => 'fixed',
+            'value'       => 50,
+            'description' => 'Birth Certificate Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+            ],
+
+            [
+            'name'        => 'Death Certificate',
+            'code'        => 'death_certificate',
+            'type'        => 'fixed',
+            'value'       => 50,
+            'description' => 'Death Certificate Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+            ],
+
+            [
+            'name'        => 'Labour Card',
+            'code'        => 'labour_card',
+            'type'        => 'fixed',
+            'value'       => 30,
+            'description' => 'Labour Card Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+            ],
+
+            [
+            'name'        => 'E-Shram Card',
+            'code'        => 'e_shram_card',
+            'type'        => 'fixed',
+            'value'       => 30,
+            'description' => 'E-Shram Card Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+            ],
+
+            [
+            'name'        => 'Ration Card',
+            'code'        => 'ration_card',
+            'type'        => 'fixed',
+            'value'       => 60,
+            'description' => 'Ration Card Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+            ],
+
 
         ]);
     }

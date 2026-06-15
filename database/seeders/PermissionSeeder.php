@@ -235,12 +235,18 @@ class PermissionSeeder extends Seeder
             'charges.create',
             'charges.edit',
             'charges.delete',
+
             'aadhaar.view',
-            
             'aadhaar.assign',
             'aadhaar.status',
             'aadhaar.delete',
             'aadhaar.document.upload',
+            
+            'csc.view',
+            'csc.assign',
+            'csc.status',
+            'csc.delete',
+            'csc.document.upload'
 
         ];
 

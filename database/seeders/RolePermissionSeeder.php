@@ -262,7 +262,13 @@ class RolePermissionSeeder extends Seeder
             'aadhaar.assign',
             'aadhaar.status',
             'aadhaar.delete',
-            'aadhaar.document.upload'
+            'aadhaar.document.upload',
+            
+            'csc.view',
+            'csc.assign',
+            'csc.status',
+            'csc.delete',
+            'csc.document.upload'
             
 
             

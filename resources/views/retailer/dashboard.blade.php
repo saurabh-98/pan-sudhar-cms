@@ -5,6 +5,7 @@
 @php
 
     $heroButtons = collect();
+
     $trendingServicesCount = 0;
 
     foreach ($retailerMenus ?? [] as $menu) {
@@ -12,13 +13,16 @@
         foreach ($menu->children as $child) {
 
             if (
-                !empty($child->route_name) &&
-                Route::has($child->route_name)
+                empty($child->route_name)
+                ||
+                !Route::has($child->route_name)
             ) {
-
-                $heroButtons->push($child);
-                $trendingServicesCount++;
+                continue;
             }
+
+            $heroButtons->push($child);
+
+            $trendingServicesCount++;
         }
     }
 
@@ -177,23 +181,61 @@
 
                                     $serviceUrl = '#';
 
-                                    if (
-                                        $child->route_name ===
-                                        'retailer.aadhaar.service'
-                                    ) {
+                                    try {
+
+                                        $route = app('router')
+                                            ->getRoutes()
+                                            ->getByName(
+                                                $child->route_name
+                                            );
+
+                                        $params = [];
+
+                                        if ($route) {
+
+                                            foreach (
+                                                $route->parameterNames()
+                                                as $param
+                                            ) {
+
+                                                switch ($param) {
+
+                                                    case 'service':
+
+                                                        $params[$param] =
+                                                            $child->slug;
+
+                                                    break;
+
+                                                    case 'slug':
+
+                                                        $params[$param] =
+                                                            $child->slug;
+
+                                                    break;
+
+                                                    case 'id':
+
+                                                        $params[$param] =
+                                                            $child->id;
+
+                                                    break;
+
+                                                }
+
+                                            }
+
+                                        }
 
                                         $serviceUrl = route(
-                                            'retailer.aadhaar.service',
-                                            [
-                                                'service' => $child->slug
-                                            ]
+                                            $child->route_name,
+                                            $params
                                         );
 
-                                    } else {
+                                    } catch (\Throwable $e) {
 
-                                        $serviceUrl = route(
-                                            $child->route_name
-                                        );
+                                        $serviceUrl = '#';
+
                                     }
 
                                 @endphp

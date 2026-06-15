@@ -123,6 +123,34 @@
 
         ->count();
 
+
+
+
+        $cscCount = \App\Models\CscService::query()
+
+        ->when(
+
+            auth()->user()->hasRole('Executive'),
+
+            function ($query) {
+
+                $query->where(
+                    'assigned_to',
+                    auth()->id()
+                );
+
+            },
+
+            function ($query) {
+
+                $query->whereNull('assigned_to');
+
+            }
+
+        )
+
+        ->count();
+
 @endphp
 
 <div id="sbxSidebar" class="sbx-sidebar">
@@ -443,6 +471,61 @@
                             <span class="sbx-count-badge">
 
                                 {{ $aadhaarCount }}
+
+                            </span>
+
+                        @endif
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </li>
+
+        @endif
+
+
+
+
+         {{-- =====================================================
+        | CSC MODULE
+        ====================================================== --}}
+        @if(
+            auth()->user()->can('csc.view')
+        )
+
+        <li class="sbx-section">
+
+            Csc Services
+
+        </li>
+
+        <li class="sbx-group">
+
+            <ul class="sbx-submenu">
+
+                <li>
+
+                    <a href="{{ route('admin.csc.index') }}"
+                    class="sbx-link
+                    {{ request()->routeIs('admin.csc.*')
+                            ? 'sbx-active' : '' }}">
+
+                        <i class="fa fa-id-card"></i>
+
+                        <span>
+
+                            Csc Applications
+
+                        </span>
+
+                        @if($aadhaarCount > 0)
+
+                            <span class="sbx-count-badge">
+
+                                {{ $cscCount }}
 
                             </span>
 

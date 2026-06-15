@@ -40,6 +40,7 @@ use App\Http\Controllers\Admin\RetailerApprovalController;
 use App\Http\Controllers\Admin\ModuleController;
 use App\Http\Controllers\Admin\ChargeController;
 use App\Http\Controllers\Admin\AdminAadhaarController;
+use App\Http\Controllers\Admin\AdminCscController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,7 +58,7 @@ use App\Http\Controllers\Admin\AdminAadhaarController;
 Route::middleware([
 
     'auth',
-    'session.timeout'
+    
 
 ])->group(function () {
 
@@ -516,81 +517,18 @@ Route::prefix('pages')
     });
 
     
-    /*
-    |--------------------------------------------------------------------------
-    | HR MODULES
-    |--------------------------------------------------------------------------
-    */
+  
 
-    Route::resource(
-        'departments',
-        DepartmentController::class
-    );
+   
+   
 
-    Route::resource(
-        'designations',
-        DesignationController::class
-    );
+   
 
-    Route::resource(
-        'employees',
-        EmployeeController::class
-    );
+   
 
-    /*
-    |--------------------------------------------------------------------------
-    | ATTENDANCE
-    |--------------------------------------------------------------------------
-    */
+   
 
-    Route::prefix('employee-attendance')
-        ->name('employee-attendance.')
-        ->group(function () {
-
-        Route::get(
-            '/',
-            [EmployeeAttendanceController::class, 'index']
-        )->name('index');
-
-        Route::post(
-            '/store',
-            [EmployeeAttendanceController::class, 'store']
-        )->name('store');
-
-    });
-
-    /*
-    |--------------------------------------------------------------------------
-    | LEAVE
-    |--------------------------------------------------------------------------
-    */
-
-    Route::resource(
-        'leave',
-        LeaveController::class
-    );
-
-    /*
-    |--------------------------------------------------------------------------
-    | PAYROLL
-    |--------------------------------------------------------------------------
-    */
-
-    Route::resource(
-        'salary-structure',
-        SalaryStructureController::class
-    );
-
-    Route::resource(
-        'payroll',
-        PayrollController::class
-    );
-
-    Route::resource(
-        'payslip',
-        PayslipController::class
-    );
-
+    
     /*
     |--------------------------------------------------------------------------
     | COMMUNICATION
@@ -607,16 +545,7 @@ Route::prefix('pages')
         MessageController::class
     );
 
-    /*
-    |--------------------------------------------------------------------------
-    | EVENTS
-    |--------------------------------------------------------------------------
-    */
-
-    Route::resource(
-        'events',
-        EventController::class
-    );
+  
 
     /*
     |--------------------------------------------------------------------------
@@ -764,7 +693,10 @@ Route::prefix('pages')
 
             )->name('new.download.documents');
 
-
+        Route::post(
+            '/pan/{id}/reject',
+            [AdminNewPanController::class, 'reject']
+        )->name('reject');
 
     });
 
@@ -827,6 +759,11 @@ Route::prefix('pages')
 
             )->name('new.download.documents');
 
+         Route::post(
+            '/pan-correction/{id}/reject',
+            [AdminPanCorrectionController::class, 'reject']
+        )->name('reject');
+
 
 
     });
@@ -834,48 +771,270 @@ Route::prefix('pages')
 
 
     /*
-|--------------------------------------------------------------------------
-| AADHAAR MODULE
-|--------------------------------------------------------------------------
-*/
+    |--------------------------------------------------------------------------
+    | AADHAAR MODULE
+    |--------------------------------------------------------------------------
+    */
 
-Route::prefix('aadhaar')
-    ->name('aadhaar.')
-    ->middleware('permission:aadhaar.view')
-    ->group(function () {
+    Route::prefix('aadhaar')
+        ->name('aadhaar.')
+        ->middleware('permission:aadhaar.view')
+        ->group(function () {
+
+            /*
+            |--------------------------------------------------------------------------
+            | LIST
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/',
+                [AdminAadhaarController::class, 'index']
+            )->name('index');
+
+            /*
+            |--------------------------------------------------------------------------
+            | SHOW
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/show/{id}',
+                [AdminAadhaarController::class, 'show']
+            )->name('show');
+
+            /*
+            |--------------------------------------------------------------------------
+            | ASSIGN
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/assign/{id}',
+                [AdminAadhaarController::class, 'assign']
+            )->name('assign');
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE STATUS
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/status/{id}',
+                [AdminAadhaarController::class, 'status']
+            )->name('status');
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPLOAD DOCUMENT
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/document-upload/{id}',
+                [AdminAadhaarController::class, 'uploadDocument']
+            )->name('document.upload');
+
+            /*
+            |--------------------------------------------------------------------------
+            | DOWNLOAD DOCUMENTS
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/download-documents/{id}',
+                [AdminAadhaarController::class, 'downloadDocuments']
+            )->name('download.documents');
+
+            /*
+            |--------------------------------------------------------------------------
+            | DELETE
+            |--------------------------------------------------------------------------
+            */
+
+            Route::delete(
+                '/delete/{id}',
+                [AdminAadhaarController::class, 'delete']
+            )->name('delete');
+
+             Route::post(
+                '/rejected/{id}/reject',
+                [AdminAadhaarController::class, 'reject']
+            )->name('reject');
+
+        });
+
+
+
+     /*
+    |--------------------------------------------------------------------------
+    | CSC MODULE
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('csc')
+        ->name('csc.')
+        ->middleware('permission:csc.view')
+        ->group(function () {
+
+            /*
+            |--------------------------------------------------------------------------
+            | LIST
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/',
+                [AdminCscController::class, 'index']
+            )->name('index');
+
+            /*
+            |--------------------------------------------------------------------------
+            | SHOW
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/show/{id}',
+                [AdminCscController::class, 'show']
+            )->name('show');
+
+            /*
+            |--------------------------------------------------------------------------
+            | ASSIGN
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/assign/{id}',
+                [AdminCscController::class, 'assign']
+            )->name('assign');
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE STATUS
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/status/{id}',
+                [AdminCscController::class, 'status']
+            )->name('status');
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPLOAD DOCUMENT
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/document-upload/{id}',
+                [AdminCscController::class, 'uploadDocument']
+            )->name('document.upload');
+
+            /*
+            |--------------------------------------------------------------------------
+            | DOWNLOAD DOCUMENTS
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/download-documents/{id}',
+                [AdminCscController::class, 'downloadDocuments']
+            )->name('download.documents');
+
+            /*
+            |--------------------------------------------------------------------------
+            | DELETE
+            |--------------------------------------------------------------------------
+            */
+
+            Route::delete(
+                '/delete/{id}',
+                [AdminCscController::class, 'delete']
+            )->name('delete');
+
+             Route::post(
+                '/rejected/{id}/reject',
+                [AdminCscController::class, 'reject']
+            )->name('reject');
+
+        });
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ITR MODULE
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    Route::prefix('itr')
+        ->name('itr.')
+        ->middleware([
+
+            'auth',
+        
+            'permission:itr.view'
+
+        ])
+        ->group(function () {
 
         /*
         |--------------------------------------------------------------------------
-        | LIST
+        | ITR DASHBOARD / LIST
         |--------------------------------------------------------------------------
         */
 
         Route::get(
             '/',
-            [AdminAadhaarController::class, 'index']
+            [ItrFileController::class, 'index']
         )->name('index');
+
+
 
         /*
         |--------------------------------------------------------------------------
-        | SHOW
+        | ITR HISTORY
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/history',
+            [ItrFileController::class, 'history']
+        )->name('history');
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SHOW ITR DETAILS
         |--------------------------------------------------------------------------
         */
 
         Route::get(
             '/show/{id}',
-            [AdminAadhaarController::class, 'show']
+            [ItrFileController::class, 'show']
         )->name('show');
+
+
 
         /*
         |--------------------------------------------------------------------------
-        | ASSIGN
+        | ASSIGN ITR
         |--------------------------------------------------------------------------
         */
 
         Route::post(
             '/assign/{id}',
-            [AdminAadhaarController::class, 'assign']
+            [ItrFileController::class, 'assign']
         )->name('assign');
+
+
 
         /*
         |--------------------------------------------------------------------------
@@ -885,334 +1044,220 @@ Route::prefix('aadhaar')
 
         Route::post(
             '/status/{id}',
-            [AdminAadhaarController::class, 'status']
+            [ItrFileController::class, 'status']
         )->name('status');
 
-        /*
-        |--------------------------------------------------------------------------
-        | UPLOAD DOCUMENT
-        |--------------------------------------------------------------------------
-        */
 
         Route::post(
             '/document-upload/{id}',
-            [AdminAadhaarController::class, 'uploadDocument']
+            [ItrFileController::class, 'uploadDocument']
         )->name('document.upload');
 
-        /*
-        |--------------------------------------------------------------------------
-        | DOWNLOAD DOCUMENTS
-        |--------------------------------------------------------------------------
-        */
-
-        Route::get(
-            '/download-documents/{id}',
-            [AdminAadhaarController::class, 'downloadDocuments']
-        )->name('download.documents');
 
         /*
         |--------------------------------------------------------------------------
-        | DELETE
+        | DELETE ITR
         |--------------------------------------------------------------------------
         */
 
         Route::delete(
             '/delete/{id}',
-            [AdminAadhaarController::class, 'delete']
+            [ItrFileController::class, 'delete']
         )->name('delete');
+
+        /*
+            |--------------------------------------------------------------------------
+            | DOWNLOAD ALL DOCUMENTS
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+
+                '/itr/{id}/download-documents',
+
+                [ItrFileController::class, 'downloadDocuments']
+
+            )->name('download.documents');
+
+
+              Route::post(
+                '/rejected/{id}/reject',
+                [ItrFileController::class, 'reject']
+            )->name('reject');
+
+
     });
 
 
 
 
-
-
-
-/*
-|--------------------------------------------------------------------------
-| ITR MODULE
-|--------------------------------------------------------------------------
-|
-*/
-
-Route::prefix('itr')
-    ->name('itr.')
-    ->middleware([
-
-        'auth',
-       
-        'permission:itr.view'
-
-    ])
-    ->group(function () {
-
     /*
     |--------------------------------------------------------------------------
-    | ITR DASHBOARD / LIST
+    | ADMIN WALLET MODULE
     |--------------------------------------------------------------------------
+    |
+    | URL:
+    | /admin/admin-wallet
+    |
+    | NAME:
+    | admin.admin-wallet.*
+    |
     */
 
-    Route::get(
-        '/',
-        [ItrFileController::class, 'index']
-    )->name('index');
+    Route::prefix('admin-wallet')
+        ->name('admin-wallet.')
+        ->middleware([
 
+            'auth',
+            'permission:admin.wallet.view'
 
+        ])
+        ->group(function () {
 
-    /*
-    |--------------------------------------------------------------------------
-    | ITR HISTORY
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get(
-        '/history',
-        [ItrFileController::class, 'history']
-    )->name('history');
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | SHOW ITR DETAILS
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get(
-        '/show/{id}',
-        [ItrFileController::class, 'show']
-    )->name('show');
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | ASSIGN ITR
-    |--------------------------------------------------------------------------
-    */
-
-    Route::post(
-        '/assign/{id}',
-        [ItrFileController::class, 'assign']
-    )->name('assign');
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | UPDATE STATUS
-    |--------------------------------------------------------------------------
-    */
-
-    Route::post(
-        '/status/{id}',
-        [ItrFileController::class, 'status']
-    )->name('status');
-
-
-    Route::post(
-        '/document-upload/{id}',
-        [ItrFileController::class, 'uploadDocument']
-    )->name('document.upload');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | DELETE ITR
-    |--------------------------------------------------------------------------
-    */
-
-    Route::delete(
-        '/delete/{id}',
-        [ItrFileController::class, 'delete']
-    )->name('delete');
-
-    /*
+        /*
         |--------------------------------------------------------------------------
-        | DOWNLOAD ALL DOCUMENTS
+        | WALLET DASHBOARD
         |--------------------------------------------------------------------------
         */
-
-        Route::get(
-
-            '/itr/{id}/download-documents',
-
-            [ItrFileController::class, 'downloadDocuments']
-
-        )->name('download.documents');
-
-});
-
-
-
-
-/*
-|--------------------------------------------------------------------------
-| ADMIN WALLET MODULE
-|--------------------------------------------------------------------------
-|
-| URL:
-| /admin/admin-wallet
-|
-| NAME:
-| admin.admin-wallet.*
-|
-*/
-
-Route::prefix('admin-wallet')
-    ->name('admin-wallet.')
-    ->middleware([
-
-        'auth',
-        'permission:admin.wallet.view'
-
-    ])
-    ->group(function () {
-
-    /*
-    |--------------------------------------------------------------------------
-    | WALLET DASHBOARD
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get(
-        '/',
-        [AdminWalletController::class, 'index']
-    )->name('index');
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | WALLET HISTORY
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get(
-        '/history',
-        [AdminWalletController::class, 'history']
-    )->name('history');
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | TRANSACTION DETAILS
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get(
-        '/show/{id}',
-        [AdminWalletController::class, 'show']
-    )->name('show');
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | ADD BALANCE
-    |--------------------------------------------------------------------------
-    */
-
-    Route::post(
-        '/add-balance',
-        [AdminWalletController::class, 'addBalance']
-    )->name('add-balance');
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | WITHDRAW BALANCE
-    |--------------------------------------------------------------------------
-    */
-
-    Route::post(
-        '/withdraw-balance',
-        [AdminWalletController::class, 'withdrawBalance']
-    )->name('withdraw-balance');
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | DELETE TRANSACTION
-    |--------------------------------------------------------------------------
-    */
-
-    Route::delete(
-        '/delete/{id}',
-        [AdminWalletController::class, 'delete']
-    )->name('delete');
-
-});
-
-
-    Route::prefix('retailer-approvals')
-    ->name('retailer-approvals.')
-    ->group(function () {
 
         Route::get(
             '/',
-            [RetailerApprovalController::class, 'index']
+            [AdminWalletController::class, 'index']
         )->name('index');
 
-        Route::post(
-            '/approve/{id}',
-            [RetailerApprovalController::class, 'approve']
-        )->name('approve');
 
-        Route::post(
-            '/reject/{id}',
-            [RetailerApprovalController::class, 'reject']
-        )->name('reject');
 
         /*
         |--------------------------------------------------------------------------
-        | LOGIN AS RETAILER
+        | WALLET HISTORY
         |--------------------------------------------------------------------------
         */
 
         Route::get(
-            '/login-as/{userId}',
-            [RetailerApprovalController::class, 'loginAsRetailer']
-        )->name('login-as');
+            '/history',
+            [AdminWalletController::class, 'history']
+        )->name('history');
+
+
 
         /*
         |--------------------------------------------------------------------------
-        | BACK TO ADMIN
+        | TRANSACTION DETAILS
         |--------------------------------------------------------------------------
         */
 
         Route::get(
-                    '/back-to-admin',
-                    [RetailerApprovalController::class, 'backToAdmin']
-                )->name('back-to-admin');
+            '/show/{id}',
+            [AdminWalletController::class, 'show']
+        )->name('show');
 
-                Route::get(
-            '/modules/{user}',
-            [RetailerApprovalController::class, 'modules']
-        )->name(
-            'modules'
-        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ADD BALANCE
+        |--------------------------------------------------------------------------
+        */
 
         Route::post(
-            '/modules/{user}',
-            [RetailerApprovalController::class, 'updateModules']
-        )->name(
-            'modules.update'
+            '/add-balance',
+            [AdminWalletController::class, 'addBalance']
+        )->name('add-balance');
 
-        );
 
-        Route::get(
-                '/retailer-modules/{userId}',
-                [RetailerApprovalController::class, 'getModules']
+
+        /*
+        |--------------------------------------------------------------------------
+        | WITHDRAW BALANCE
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post(
+            '/withdraw-balance',
+            [AdminWalletController::class, 'withdrawBalance']
+        )->name('withdraw-balance');
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DELETE TRANSACTION
+        |--------------------------------------------------------------------------
+        */
+
+        Route::delete(
+            '/delete/{id}',
+            [AdminWalletController::class, 'delete']
+        )->name('delete');
+
+    });
+
+
+        Route::prefix('retailer-approvals')
+            ->name('retailer-approvals.')
+            ->group(function () {
+
+            Route::get(
+                '/',
+                [RetailerApprovalController::class, 'index']
+            )->name('index');
+
+            Route::post(
+                '/approve/{id}',
+                [RetailerApprovalController::class, 'approve']
+            )->name('approve');
+
+            Route::post(
+                '/reject/{id}',
+                [RetailerApprovalController::class, 'reject']
+            )->name('reject');
+
+            /*
+            |--------------------------------------------------------------------------
+            | LOGIN AS RETAILER
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/login-as/{userId}',
+                [RetailerApprovalController::class, 'loginAsRetailer']
+            )->name('login-as');
+
+            /*
+            |--------------------------------------------------------------------------
+            | BACK TO ADMIN
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                        '/back-to-admin',
+                        [RetailerApprovalController::class, 'backToAdmin']
+                    )->name('back-to-admin');
+
+                    Route::get(
+                '/modules/{user}',
+                [RetailerApprovalController::class, 'modules']
             )->name(
-                'get-modules'
+                'modules'
             );
 
+            Route::post(
+                '/modules/{user}',
+                [RetailerApprovalController::class, 'updateModules']
+            )->name(
+                'modules.update'
 
-        });
+            );
+
+            Route::get(
+                    '/retailer-modules/{userId}',
+                    [RetailerApprovalController::class, 'getModules']
+                )->name(
+                    'get-modules'
+                );
+
+
+            });
 
 
         Route::prefix('modules')
