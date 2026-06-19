@@ -45,7 +45,9 @@
             "app/Helpers/AadharSessionHelper.php",
             "app/Helpers/AadhaarFormHelper.php",
              "app/Helpers/CscSessionHelper.php",
-            "app/Helpers/CscFormHelper.php"
+            "app/Helpers/CscFormHelper.php",
+             "app/Helpers/VoterIdSessionHelper.php",
+            "app/Helpers/VoterIdFormHelper.php"
         ]
     },
 

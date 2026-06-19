@@ -2,14 +2,50 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Carbon\Carbon;
 use Illuminate\Validation\Rule;
+use Illuminate\Foundation\Http\FormRequest;
 
 class StorePanApplicationRequest extends FormRequest
 {
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        if ($this->filled('dob')) {
+
+            try {
+
+                $this->merge([
+                    'dob' => Carbon::createFromFormat(
+                        'd/m/Y',
+                        trim($this->dob)
+                    )->format('Y-m-d')
+                ]);
+
+            } catch (\Exception $e) {
+                //
+            }
+        }
+
+        if ($this->filled('confirm_dob')) {
+
+            try {
+
+                $this->merge([
+                    'confirm_dob' => Carbon::createFromFormat(
+                        'd/m/Y',
+                        trim($this->confirm_dob)
+                    )->format('Y-m-d')
+                ]);
+
+            } catch (\Exception $e) {
+                //
+            }
+        }
     }
 
     public function rules(): array
@@ -28,8 +64,7 @@ class StorePanApplicationRequest extends FormRequest
 
             'last_name' => 'required|string|max:100',
 
-            'gender' =>
-                'required|in:Male,Female,Transgender',
+            'gender' => 'required|in:Male,Female,Transgender',
 
             /*
             |--------------------------------------------------------------------------
@@ -37,14 +72,11 @@ class StorePanApplicationRequest extends FormRequest
             |--------------------------------------------------------------------------
             */
 
-            'father_first_name' =>
-                'nullable|string|max:100',
+            'father_first_name' => 'nullable|string|max:100',
 
-            'father_middle_name' =>
-                'nullable|string|max:100',
+            'father_middle_name' => 'nullable|string|max:100',
 
-            'father_last_name' =>
-                'required|string|max:100',
+            'father_last_name' => 'required|string|max:100',
 
             /*
             |--------------------------------------------------------------------------
@@ -52,14 +84,11 @@ class StorePanApplicationRequest extends FormRequest
             |--------------------------------------------------------------------------
             */
 
-            'mother_first_name' =>
-                'nullable|string|max:100',
+            'mother_first_name' => 'nullable|string|max:100',
 
-            'mother_middle_name' =>
-                'nullable|string|max:100',
+            'mother_middle_name' => 'nullable|string|max:100',
 
-            'mother_last_name' =>
-                'required|string|max:100',
+            'mother_last_name' => 'required|string|max:100',
 
             /*
             |--------------------------------------------------------------------------
@@ -67,8 +96,7 @@ class StorePanApplicationRequest extends FormRequest
             |--------------------------------------------------------------------------
             */
 
-            'pan_print_name' =>
-                'required|in:Father,Mother',
+            'pan_print_name' => 'required|in:Father,Mother',
 
             /*
             |--------------------------------------------------------------------------
@@ -76,11 +104,9 @@ class StorePanApplicationRequest extends FormRequest
             |--------------------------------------------------------------------------
             */
 
-            'mobile_no' =>
-                'required|digits:10',
+            'mobile_no' => 'required|digits:10',
 
-            'email' =>
-                'required|email',
+            'email' => 'required|email',
 
             /*
             |--------------------------------------------------------------------------
@@ -88,26 +114,19 @@ class StorePanApplicationRequest extends FormRequest
             |--------------------------------------------------------------------------
             */
 
-            'house_no' =>
-                'required|string|max:255',
+            'house_no' => 'required|string|max:255',
 
-            'village' =>
-                'required|string|max:255',
+            'village' => 'required|string|max:255',
 
-            'post_office' =>
-                'required|string|max:255',
+            'post_office' => 'required|string|max:255',
 
-            'area' =>
-                'required|string|max:255',
+            'area' => 'required|string|max:255',
 
-            'state' =>
-                'required|exists:states,id',
+            'state' => 'required|exists:states,id',
 
-            'district' =>
-                'required|exists:districts,id',
+            'district' => 'required|exists:districts,id',
 
-            'pincode' =>
-                'required|digits:6',
+            'pincode' => 'required|digits:6',
 
             /*
             |--------------------------------------------------------------------------
@@ -115,14 +134,11 @@ class StorePanApplicationRequest extends FormRequest
             |--------------------------------------------------------------------------
             */
 
-            'identity_proof' =>
-                'required',
+            'identity_proof' => 'required',
 
-            'address_proof' =>
-                'required',
+            'address_proof' => 'required',
 
-            'dob_proof' =>
-                'required',
+            'dob_proof' => 'required',
 
             /*
             |--------------------------------------------------------------------------
@@ -130,11 +146,16 @@ class StorePanApplicationRequest extends FormRequest
             |--------------------------------------------------------------------------
             */
 
-            'dob' =>
-                'required|date',
+            'dob' => [
+                'required',
+                'date',
+            ],
 
-            'confirm_dob' =>
-                'required|same:dob',
+            'confirm_dob' => [
+                'required',
+                'date',
+                'same:dob',
+            ],
 
             /*
             |--------------------------------------------------------------------------
@@ -142,11 +163,9 @@ class StorePanApplicationRequest extends FormRequest
             |--------------------------------------------------------------------------
             */
 
-            'aadhaar_no' =>
-                'required|digits:12',
+            'aadhaar_no' => 'required|digits:12',
 
-            'aadhaar_name' =>
-                'required|string|max:255',
+            'aadhaar_name' => 'required|string|max:255',
 
             /*
             |--------------------------------------------------------------------------
@@ -158,71 +177,76 @@ class StorePanApplicationRequest extends FormRequest
                 'required|in:Signature,Thumb Impression',
 
             /*
-        |--------------------------------------------------------------------------
-        | FILES
-        |--------------------------------------------------------------------------
-        */
+            |--------------------------------------------------------------------------
+            | FILES
+            |--------------------------------------------------------------------------
+            */
 
-        'photo' => [
+            'photo' => [
 
-            Rule::requiredIf(
-                empty($this->existing_files['photo'])
-            ),
+                Rule::requiredIf(
+                    empty($this->existing_files['photo'])
+                ),
 
-            'nullable',
-            'file',
-            'image',
-            'mimes:jpg,jpeg,png',
-            'max:5120',
-        ],
+                'nullable',
+                'file',
+                'image',
+                'mimes:jpg,jpeg,png',
+                'max:5120',
+            ],
 
-        'signature' => [
+            'signature' => [
 
-            Rule::requiredIf(
-                empty($this->existing_files['signature'])
-            ),
+                Rule::requiredIf(
+                    empty($this->existing_files['signature'])
+                ),
 
-            'nullable',
-            'file',
-            'image',
-            'mimes:jpg,jpeg,png',
-            'max:5120',
-        ],
+                'nullable',
+                'file',
+                'image',
+                'mimes:jpg,jpeg,png',
+                'max:5120',
+            ],
 
-        'aadhaar_card' => [
+            'aadhaar_card' => [
 
-            Rule::requiredIf(
-                empty($this->existing_files['aadhaar_card'])
-            ),
+                Rule::requiredIf(
+                    empty($this->existing_files['aadhaar_card'])
+                ),
 
-            'nullable',
-            'file',
-            'mimes:jpg,jpeg,png,pdf',
-            'max:5120',
-        ],
+                'nullable',
+                'file',
+                'mimes:jpg,jpeg,png,pdf',
+                'max:5120',
+            ],
 
-        'dob_proof_file' => [
+            'dob_proof_file' => [
 
-            'nullable',
-            'file',
-            'mimes:jpg,jpeg,png,pdf',
-            'max:5120',
-        ],
+                'nullable',
+                'file',
+                'mimes:jpg,jpeg,png,pdf',
+                'max:5120',
+            ],
 
-        'supporting_document' => [
+            'supporting_document' => [
 
-            'nullable',
-            'file',
-            'mimes:jpg,jpeg,png,pdf',
-            'max:5120',
-        ],
-
+                'nullable',
+                'file',
+                'mimes:jpg,jpeg,png,pdf',
+                'max:5120',
+            ],
         ];
     }
 
     public function messages(): array
     {
         return [
+
+            'confirm_dob.same' =>
+                'Date of Birth and Re-enter DOB must match.',
+
+            'dob.date' =>
+                'Please enter a valid Date of Birth.',
 
             'photo.max' =>
                 'Applicant Photo must not exceed 5 MB.',

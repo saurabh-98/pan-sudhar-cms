@@ -392,6 +392,68 @@ class ChargeSeeder extends Seeder
             ],
 
 
+            /*
+        |--------------------------------------------------------------------------
+        | VOTER ID SERVICES
+        |--------------------------------------------------------------------------
+        */
+
+        [
+            'name'        => 'New Voter ID Apply',
+            'code'        => 'new_voter_id',
+            'type'        => 'fixed',
+            'value'       => 150,
+            'description' => 'New Voter ID Application Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ],
+
+        [
+            'name'        => 'Voter ID Correction',
+            'code'        => 'voter_id_correction',
+            'type'        => 'fixed',
+            'value'       => 100,
+            'description' => 'Voter ID Correction Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ],
+
+        [
+            'name'        => 'Mobile Number Update',
+            'code'        => 'voter_id_mobile_update',
+            'type'        => 'fixed',
+            'value'       => 100,
+            'description' => 'Voter ID Mobile Number Update Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ],
+
+        [
+            'name'        => 'Address Update',
+            'code'        => 'voter_id_address_update',
+            'type'        => 'fixed',
+            'value'       => 100,
+            'description' => 'Voter ID Address Update Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ],
+
+        [
+            'name'        => 'DOB Update',
+            'code'        => 'voter_id_dob_update',
+            'type'        => 'fixed',
+            'value'       => 100,
+            'description' => 'Voter ID DOB Update Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ],
+
+
         ]);
     }
 }

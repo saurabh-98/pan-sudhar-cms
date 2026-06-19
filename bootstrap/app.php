@@ -92,50 +92,38 @@ return Application::configure(
 
 ->withMiddleware(function (Middleware $middleware): void {
 
-    /*
-    |--------------------------------------------------------------------------
-    | MIDDLEWARE ALIAS
-    |--------------------------------------------------------------------------
-    */
+    $middleware->redirectGuestsTo(function ($request) {
+
+        if ($request->is('retailer/*')) {
+            return route('retailer.login');
+        }
+
+        if ($request->is('executive/*')) {
+            return route('executive.login');
+        }
+
+        if ($request->is('admin/*')) {
+            return route('login');
+        }
+
+        return route('login');
+    });
 
     $middleware->alias([
 
-        /*
-        |--------------------------------------------------------------------------
-        | CUSTOM
-        |--------------------------------------------------------------------------
-        */
-
         'admin' =>
-
             \App\Http\Middleware\AdminMiddleware::class,
 
-        
-        /*
-        |--------------------------------------------------------------------------
-        | SPATIE
-        |--------------------------------------------------------------------------
-        */
-
         'role' =>
-
             \Spatie\Permission\Middleware\RoleMiddleware::class,
 
         'permission' =>
-
             \Spatie\Permission\Middleware\PermissionMiddleware::class,
 
         'role_or_permission' =>
-
             \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
 
     ]);
-
-    /*
-    |--------------------------------------------------------------------------
-    | API GROUP
-    |--------------------------------------------------------------------------
-    */
 
     $middleware->group('api', [
 

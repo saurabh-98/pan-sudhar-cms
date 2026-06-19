@@ -2,14 +2,59 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Carbon\Carbon;
 use Illuminate\Validation\Rule;
+use Illuminate\Foundation\Http\FormRequest;
 
 class PanCorrectionPreviewRequest extends FormRequest
 {
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        if ($this->filled('dob')) {
+
+            try {
+
+                $this->merge([
+                    'dob' => Carbon::createFromFormat(
+                        'd/m/Y',
+                        trim($this->dob)
+                    )->format('Y-m-d')
+                ]);
+
+            } catch (\Exception $e) {
+                //
+            }
+        }
+
+        if ($this->filled('confirm_dob')) {
+
+            try {
+
+                $this->merge([
+                    'confirm_dob' => Carbon::createFromFormat(
+                        'd/m/Y',
+                        trim($this->confirm_dob)
+                    )->format('Y-m-d')
+                ]);
+
+            } catch (\Exception $e) {
+                //
+            }
+        }
+
+        if ($this->filled('old_pan_number')) {
+
+            $this->merge([
+                'old_pan_number' => strtoupper(
+                    trim($this->old_pan_number)
+                )
+            ]);
+        }
     }
 
     public function rules(): array
@@ -28,8 +73,9 @@ class PanCorrectionPreviewRequest extends FormRequest
 
             'last_name' => 'required|string|max:100',
 
-            'old_pan_number' =>'required|string|size:10|regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/',
-            
+            'old_pan_number' =>
+                'required|string|size:10|regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/',
+
             'gender' =>
                 'required|in:Male,Female,Transgender',
 
@@ -132,11 +178,16 @@ class PanCorrectionPreviewRequest extends FormRequest
             |--------------------------------------------------------------------------
             */
 
-            'dob' =>
-                'required|date',
+            'dob' => [
+                'required',
+                'date',
+            ],
 
-            'confirm_dob' =>
-                'required|same:dob',
+            'confirm_dob' => [
+                'required',
+                'date',
+                'same:dob',
+            ],
 
             /*
             |--------------------------------------------------------------------------
@@ -168,78 +219,99 @@ class PanCorrectionPreviewRequest extends FormRequest
             'photo' => [
 
                 Rule::requiredIf(
-
-                    empty(
-                        $this->existing_files['photo']
-                    )
-
+                    empty($this->existing_files['photo'])
                 ),
 
                 'nullable',
-
                 'image',
-
                 'mimes:jpg,jpeg,png',
-
-                'max:5120'   // 5 MB
+                'max:5120',
             ],
 
             'signature' => [
 
                 Rule::requiredIf(
-
-                    empty(
-                        $this->existing_files['signature']
-                    )
-
+                    empty($this->existing_files['signature'])
                 ),
 
                 'nullable',
-
                 'image',
-
                 'mimes:jpg,jpeg,png',
-
-                'max:5120'   // 5 MB
+                'max:5120',
             ],
 
             'aadhaar_card' => [
 
                 Rule::requiredIf(
-
-                    empty(
-                        $this->existing_files['aadhaar_card']
-                    )
-
+                    empty($this->existing_files['aadhaar_card'])
                 ),
 
                 'nullable',
-
                 'mimes:jpg,jpeg,png,pdf',
-
-                'max:5120'   // 5 MB
+                'max:5120',
             ],
-
 
             'dob_proof_file' => [
 
-
                 'nullable',
-
                 'mimes:jpg,jpeg,png,pdf',
-
-                'max:5120'   // 5 MB
+                'max:5120',
             ],
 
             'supporting_document' => [
 
                 'nullable',
-
                 'mimes:jpg,jpeg,png,pdf',
-
-                'max:5120'   // 5 MB
+                'max:5120',
             ],
+        ];
+    }
 
+    public function messages(): array
+    {
+        return [
+
+            'old_pan_number.regex' =>
+                'Please enter a valid PAN Number.',
+
+            'old_pan_number.size' =>
+                'PAN Number must be 10 characters.',
+
+            'confirm_dob.same' =>
+                'Date of Birth and Re-enter DOB must match.',
+
+            'dob.date' =>
+                'Please enter a valid Date of Birth.',
+
+            'photo.max' =>
+                'Applicant Photo must not exceed 5 MB.',
+
+            'signature.max' =>
+                'Signature must not exceed 5 MB.',
+
+            'aadhaar_card.max' =>
+                'Aadhaar Card must not exceed 5 MB.',
+
+            'dob_proof_file.max' =>
+                'DOB Proof must not exceed 5 MB.',
+
+            'supporting_document.max' =>
+                'Supporting Document must not exceed 5 MB.',
+
+            'photo.mimes' =>
+                'Photo must be JPG, JPEG or PNG.',
+
+            'signature.mimes' =>
+                'Signature must be JPG, JPEG or PNG.',
+
+            'aadhaar_card.mimes' =>
+                'Aadhaar Card must be JPG, PNG or PDF.',
+
+            'dob_proof_file.mimes' =>
+                'DOB Proof must be JPG, PNG or PDF.',
+
+            'supporting_document.mimes' =>
+                'Supporting Document must be JPG, PNG or PDF.',
         ];
     }
 }

@@ -268,7 +268,13 @@ class RolePermissionSeeder extends Seeder
             'csc.assign',
             'csc.status',
             'csc.delete',
-            'csc.document.upload'
+            'csc.document.upload',
+
+            'voter.view',
+            'voter.assign',
+            'voter.status',
+            'voter.delete',
+            'voter.document.upload'
             
 
             

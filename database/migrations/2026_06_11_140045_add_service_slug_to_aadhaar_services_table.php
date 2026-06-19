@@ -8,12 +8,14 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('aadhaar_services', function ($table) {
+        Schema::table('aadhaar_services', function (Blueprint $table) {
 
-            $table->string('service_slug')
-                ->nullable()
-                ->after('service_name');
+            if (! Schema::hasColumn('aadhaar_services', 'service_slug')) {
 
+                $table->string('service_slug')
+                    ->nullable()
+                    ->after('service_name');
+            }
         });
     }
 

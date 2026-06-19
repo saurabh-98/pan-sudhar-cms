@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('csc_services', function (Blueprint $table) {
+        Schema::create('voter_id_services', function (Blueprint $table) {
 
             $table->id();
 
@@ -63,18 +63,9 @@ return new class extends Migration
 
             $table->timestamps();
 
-            /*
-            |--------------------------------------------------------------------------
-            | Indexes
-            |--------------------------------------------------------------------------
-            */
-
-            $table->index('user_id');
-            $table->index('assigned_to');
-            $table->index('application_no');
+            $table->index(['user_id', 'status']);
+            $table->index(['assigned_to', 'status']);
             $table->index('service_slug');
-            $table->index('status');
-            $table->index('payment_status');
         });
     }
 
@@ -83,6 +74,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('csc_services');
+        Schema::dropIfExists('voter_id_services');
     }
 };

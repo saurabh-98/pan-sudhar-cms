@@ -347,16 +347,16 @@ class ModuleSeeder extends Seeder
             | */                                                                         
 
             $csc = Module::create([
-            'name'       => 'CSC Services',
-            'slug'       => 'csc-services',
-            'icon'       => 'fa fa-landmark',
-            'route_name' => null,
-            'parent_id'  => null,
-            'sort_order' => 40,
-            'status'     => 1,
-            ]);
+                'name'       => 'CSC Services',
+                'slug'       => 'csc-services',
+                'icon'       => 'fa fa-landmark',
+                'route_name' => null,
+                'parent_id'  => null,
+                'sort_order' => 40,
+                'status'     => 1,
+                ]);
 
-            Module::insert([
+                Module::insert([
 
 
             [
@@ -458,6 +458,84 @@ class ModuleSeeder extends Seeder
                 'status'     => 1,
             ],
 
+
+            
+
+
+            ]);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | VOTER ID SERVICES
+            |--------------------------------------------------------------------------
+            */
+
+            $voterId = Module::create([
+                'name'       => 'Voter ID Services',
+                'slug'       => 'voter-id-services',
+                'icon'       => 'fa fa-vote-yea',
+                'route_name' => null,
+                'parent_id'  => null,
+                'sort_order' => 50,
+                'status'     => 1,
+            ]);
+
+            Module::insert([
+
+                [
+                    'name'       => 'New Voter ID Apply',
+                    'slug'       => 'new-voter-id',
+                    'route_name' => 'retailer.voter-id.service',
+                    'parent_id'  => $voterId->id,
+                    'sort_order' => 1,
+                    'status'     => 1,
+                ],
+
+                [
+                    'name'       => 'Voter ID Correction',
+                    'slug'       => 'voter-id-correction',
+                    'route_name' => 'retailer.voter-id.service',
+                    'parent_id'  => $voterId->id,
+                    'sort_order' => 2,
+                    'status'     => 1,
+                ],
+
+                [
+                    'name'       => 'Mobile Number Update',
+                    'slug'       => 'voter-id-mobile-update',
+                    'route_name' => 'retailer.voter-id.service',
+                    'parent_id'  => $voterId->id,
+                    'sort_order' => 3,
+                    'status'     => 1,
+                ],
+
+                [
+                    'name'       => 'Address Update',
+                    'slug'       => 'voter-id-address-update',
+                    'route_name' => 'retailer.voter-id.service',
+                    'parent_id'  => $voterId->id,
+                    'sort_order' => 4,
+                    'status'     => 1,
+                ],
+
+                [
+                    'name'       => 'DOB Update',
+                    'slug'       => 'voter-id-dob-update',
+                    'route_name' => 'retailer.voter-id.service',
+                    'parent_id'  => $voterId->id,
+                    'sort_order' => 5,
+                    'status'     => 1,
+                ],
+
+                [
+                    'name'       => 'Voter ID History',
+                    'slug'       => 'voter-id-history',
+                    'route_name' => 'retailer.voter-id.history',
+                    'parent_id'  => $voterId->id,
+                    'sort_order' => 6,
+                    'status'     => 1,
+                ],
 
             ]);
 
