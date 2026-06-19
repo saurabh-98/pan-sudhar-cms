@@ -79,6 +79,44 @@ if (! function_exists('clear_bank_session')) {
 
 /*
 |--------------------------------------------------------------------------
+| COMPATIBILITY HELPERS
+|--------------------------------------------------------------------------
+*/
+
+if (! function_exists('get_bank_account_session')) {
+
+    function get_bank_account_session(
+        array $default = []
+    ): array {
+
+        return get_bank_session(
+            $default
+        );
+    }
+}
+
+if (! function_exists('save_bank_account_session')) {
+
+    function save_bank_account_session(
+        array $data
+    ): void {
+
+        save_bank_session(
+            $data
+        );
+    }
+}
+
+if (! function_exists('clear_bank_account_session')) {
+
+    function clear_bank_account_session(): void
+    {
+        clear_bank_session();
+    }
+}
+
+/*
+|--------------------------------------------------------------------------
 | PREPARE BANK PREVIEW
 |--------------------------------------------------------------------------
 */
@@ -90,47 +128,46 @@ if (! function_exists('prepare_bank_preview')) {
     ): array {
 
         $preview['data']['customer_name'] =
-
             $preview['data']['customer_name']
             ?? '';
 
-        $preview['data']['mobile'] =
+        $preview['data']['account_holder_name'] =
+            $preview['data']['account_holder_name']
+            ?? '';
 
+        $preview['data']['mobile'] =
             $preview['data']['mobile']
             ?? '';
 
         $preview['data']['aadhaar_number'] =
-
             $preview['data']['aadhaar_number']
             ?? '';
 
         $preview['data']['pan_number'] =
-
             $preview['data']['pan_number']
             ?? '';
 
         $preview['data']['email'] =
-
             $preview['data']['email']
             ?? '';
 
         $preview['data']['address'] =
-
             $preview['data']['address']
             ?? '';
 
         $preview['data']['service_name'] =
-
             $preview['data']['service_name']
             ?? '';
 
         $preview['data']['service_slug'] =
-
             $preview['data']['service_slug']
             ?? '';
 
-        $preview['data']['remarks'] =
+        $preview['data']['bank_account_charge'] =
+            $preview['data']['bank_account_charge']
+            ?? 0;
 
+        $preview['data']['remarks'] =
             $preview['data']['remarks']
             ?? '';
 

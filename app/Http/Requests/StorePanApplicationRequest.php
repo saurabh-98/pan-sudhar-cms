@@ -47,7 +47,6 @@ class StorePanApplicationRequest extends FormRequest
             }
         }
     }
-
     public function rules(): array
     {
         return [
@@ -148,12 +147,12 @@ class StorePanApplicationRequest extends FormRequest
 
             'dob' => [
                 'required',
-                'date',
+                'date_format:Y-m-d',
             ],
 
             'confirm_dob' => [
                 'required',
-                'date',
+                'date_format:Y-m-d',
                 'same:dob',
             ],
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Retailer\VoterId;
+namespace App\Http\Controllers\Retailer\BankAccount;
 
 use App\Http\Controllers\Controller;
 
@@ -8,11 +8,11 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
-use App\DTO\VoterIdServiceDTO;
-use App\Http\Requests\StoreVoterIdServiceRequest;
-use App\Services\VoterIdServiceService;
+use App\DTO\BankAccountServiceDTO;
+use App\Http\Requests\StoreBankAccountServiceRequest;
+use App\Services\BankAccountServiceService;
 
-use App\Models\VoterIdService;
+use App\Models\BankAccountService;
 use App\Models\Charge;
 use App\Models\User;
 use App\Models\WalletTransaction;
@@ -20,14 +20,14 @@ use App\Models\WalletTransaction;
 use Yajra\DataTables\Facades\DataTables;
 
 
-class VoterIdServiceController extends Controller
+class BankAccountServiceController extends Controller
 {
     public function __construct(
-        protected VoterIdServiceService $voterIdService
+        protected BankAccountServiceService $bankAccountService
     ) {}
 
 
-       private function getVoterIdCharge(
+       private function getBankAccountCharge(
             string $serviceSlug
         ): float {
 
@@ -66,19 +66,20 @@ class VoterIdServiceController extends Controller
         )
         ->map(fn ($word) => ucfirst($word))
         ->implode(' ');
+        
 
-        $session = get_voter_id_session();
-
+        $session = get_bank_account_session();
+        
         return view(
-            'retailer.voter-id.create',
+            'retailer.bank-account.create',
             [
                 'serviceSlug' => $service,
 
                 'serviceName' => $serviceName,
 
-                'fields' => voter_id_fields($service),
+                'fields' => bank_account_fields($service),
 
-                'voterCharge' => $this->getVoterIdCharge($service),
+                'bankAccountCharge' => $this->getBankAccountCharge($service),
 
                 'walletBalance' => auth()->user()->wallet_balance,
 
@@ -96,15 +97,15 @@ class VoterIdServiceController extends Controller
     */
 
     public function preview(
-    StoreVoterIdServiceRequest $request
+        StoreBankAccountServiceRequest $request
     ): JsonResponse {
 
         try {
 
             $user = auth()->user();
 
-            $voterIdCharge =
-                $this->getVoterIdCharge(
+            $bankAccountCharge =
+                $this->getBankAccountCharge(
                     $request->service_slug
                 );
 
@@ -114,14 +115,14 @@ class VoterIdServiceController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            if ($voterIdCharge <= 0) {
+            if ($bankAccountCharge <= 0) {
 
                 return response()->json([
 
                     'status' => false,
 
                     'message' =>
-                        'Voter ID service charge is not configured.'
+                        'Bank Account service charge is not configured.'
 
                 ], 422);
             }
@@ -132,7 +133,7 @@ class VoterIdServiceController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            if ($user->wallet_balance < $voterIdCharge) {
+            if ($user->wallet_balance < $bankAccountCharge) {
 
                 return response()->json([
 
@@ -150,7 +151,7 @@ class VoterIdServiceController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            $dto = VoterIdServiceDTO::fromRequest(
+            $dto = BankAccountServiceDTO::fromRequest(
                 $request
             );
 
@@ -162,7 +163,7 @@ class VoterIdServiceController extends Controller
 
             $preview =
 
-                $this->voterIdService
+                $this->bankAccountService
                     ->preview($dto);
 
             /*
@@ -171,8 +172,8 @@ class VoterIdServiceController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            $preview['data']['voter_id_charge'] =
-                $voterIdCharge;
+            $preview['data']['bank_account_charge'] =
+                $bankAccountCharge;
 
             /*
             |--------------------------------------------------------------------------
@@ -180,7 +181,7 @@ class VoterIdServiceController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            save_voter_id_session(
+            save_bank_account_session(
                 $preview
             );
 
@@ -194,7 +195,7 @@ class VoterIdServiceController extends Controller
                 'redirect_url' =>
 
                     route(
-                        'retailer.voter-id.preview-page'
+                        'retailer.bank-account.preview-page'
                     )
 
             ]);
@@ -203,7 +204,7 @@ class VoterIdServiceController extends Controller
 
             Log::error(
 
-                'VOTER ID PREVIEW ERROR',
+                'BANK ACCOUNT PREVIEW ERROR',
 
                 [
 
@@ -231,6 +232,7 @@ class VoterIdServiceController extends Controller
         }
     }
 
+
     /*
     |--------------------------------------------------------------------------
     | PREVIEW PAGE
@@ -239,7 +241,7 @@ class VoterIdServiceController extends Controller
 
     public function previewPage()
     {
-        $preview = get_voter_id_session();
+        $preview = get_bank_account_session();
 
         if (
             empty($preview)
@@ -248,7 +250,7 @@ class VoterIdServiceController extends Controller
         ) {
 
             return redirect()
-                ->route('retailer.voter-id.history')
+                ->route('retailer.bank-account.history')
                 ->with(
                     'error',
                     'Preview session expired.'
@@ -256,21 +258,20 @@ class VoterIdServiceController extends Controller
         }
 
         return view(
-            'retailer.voter-id.preview',
+            'retailer.bank-account.preview',
             [
 
                 'data' => $preview['data'],
 
                 'files' => $preview['files'] ?? [],
 
-                'voterCharge' =>
-                    $preview['data']['voter_id_charge']
+                'bankAccountCharge' =>
+                    $preview['data']['bank_account_charge']
                     ?? 0,
 
             ]
         );
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -284,7 +285,7 @@ class VoterIdServiceController extends Controller
 
         try {
 
-            $session = get_voter_id_session();
+            $session = get_bank_account_session();
 
             if (
                 empty($session)
@@ -322,17 +323,17 @@ class VoterIdServiceController extends Controller
                 ], 422);
             }
 
-            $voterIdCharge = (float) (
+            $bankAccountCharge = (float) (
 
-                $data['voter_id_charge']
+                $data['bank_account_charge']
                 ??
-                $this->getVoterIdCharge(
+                $this->getBankAccountCharge(
                     $data['service_slug']
                 )
 
             );
 
-            if ($voterIdCharge <= 0) {
+            if ($bankAccountCharge <= 0) {
 
                 DB::rollBack();
 
@@ -341,7 +342,7 @@ class VoterIdServiceController extends Controller
                     'status' => false,
 
                     'message' =>
-                        'Voter ID service charge is not configured.'
+                        'Bank Account service charge is not configured.'
 
                 ], 422);
             }
@@ -389,7 +390,7 @@ class VoterIdServiceController extends Controller
 
             if (
                 $user->wallet_balance <
-                $voterIdCharge
+                $bankAccountCharge
             ) {
 
                 DB::rollBack();
@@ -406,7 +407,7 @@ class VoterIdServiceController extends Controller
 
             $application =
 
-                $this->voterIdService
+                $this->bankAccountService
                     ->storeFromSession();
 
             if (! $application) {
@@ -433,7 +434,7 @@ class VoterIdServiceController extends Controller
 
                 'wallet_balance',
 
-                $voterIdCharge
+                $bankAccountCharge
 
             );
 
@@ -441,7 +442,7 @@ class VoterIdServiceController extends Controller
 
                 'wallet_balance',
 
-                $voterIdCharge
+                $bankAccountCharge
 
             );
 
@@ -451,7 +452,7 @@ class VoterIdServiceController extends Controller
 
             $application->update([
 
-                'amount' => $voterIdCharge,
+                'amount' => $bankAccountCharge,
 
                 'wallet_deducted' => true,
 
@@ -467,7 +468,7 @@ class VoterIdServiceController extends Controller
 
                 'user_id' => $user->id,
 
-                'amount' => $voterIdCharge,
+                'amount' => $bankAccountCharge,
 
                 'before_balance' => $retailerBefore,
 
@@ -478,12 +479,12 @@ class VoterIdServiceController extends Controller
                 'status' => 'success',
 
                 'transaction_no' =>
-                    'VID'
+                    'BANK'
                     . now()->format('YmdHis')
                     . rand(1000, 9999),
 
                 'remark' =>
-                    'Voter ID Service Charge'
+                    'Bank Account Service Charge'
 
             ]);
 
@@ -491,7 +492,7 @@ class VoterIdServiceController extends Controller
 
                 'user_id' => $admin->id,
 
-                'amount' => $voterIdCharge,
+                'amount' => $bankAccountCharge,
 
                 'before_balance' => $adminBefore,
 
@@ -502,16 +503,16 @@ class VoterIdServiceController extends Controller
                 'status' => 'success',
 
                 'transaction_no' =>
-                    'VIDADM'
+                    'BANKADM'
                     . now()->format('YmdHis')
                     . rand(1000, 9999),
 
                 'remark' =>
-                    'Voter ID Service Received Amount'
+                    'Bank Account Service Received Amount'
 
             ]);
 
-            clear_voter_id_session();
+            clear_bank_account_session();
 
             DB::commit();
 
@@ -520,11 +521,11 @@ class VoterIdServiceController extends Controller
                 'status' => true,
 
                 'message' =>
-                    'Voter ID Service Submitted Successfully.',
+                    'Bank Account Service Submitted Successfully.',
 
                 'redirect_url' => route(
 
-                    'retailer.voter-id.receiving',
+                    'retailer.bank-account.receiving',
 
                     $application->id
 
@@ -538,7 +539,7 @@ class VoterIdServiceController extends Controller
 
             Log::error(
 
-                'VOTER ID FINAL SUBMIT ERROR',
+                'BANK ACCOUNT FINAL SUBMIT ERROR',
 
                 [
 
@@ -550,7 +551,7 @@ class VoterIdServiceController extends Controller
 
                     'user_id' => auth()->id(),
 
-                    'session' => get_voter_id_session()
+                    'session' => get_bank_account_session()
 
                 ]
 
@@ -565,6 +566,7 @@ class VoterIdServiceController extends Controller
             ], 500);
         }
     }
+
     
     /*
     |--------------------------------------------------------------------------
@@ -577,7 +579,7 @@ class VoterIdServiceController extends Controller
     {
         if (request()->ajax()) {
 
-            $applications = VoterIdService::query()
+            $applications = BankAccountService::query()
 
                 ->with('user.retailer')
 
@@ -598,11 +600,8 @@ class VoterIdServiceController extends Controller
                         $row->getField(
                             'customer_name',
                             $row->getField(
-                                'farmer_name',
-                                $row->getField(
-                                    'child_name',
-                                    'N/A'
-                                )
+                                'account_holder_name',
+                                'N/A'
                             )
                         )
                     );
@@ -675,7 +674,7 @@ class VoterIdServiceController extends Controller
 
                             <a
                                 href="'.route(
-                                    'retailer.voter-id.show',
+                                    'retailer.bank-account.show',
                                     $row->id
                                 ).'"
                                 class="btn btn-sm btn-primary"
@@ -707,9 +706,10 @@ class VoterIdServiceController extends Controller
         }
 
         return view(
-            'retailer.voter-id.history'
+            'retailer.bank-account.history'
         );
     }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -723,13 +723,13 @@ class VoterIdServiceController extends Controller
 
         return view(
 
-            'retailer.voter-id.show',
+            'retailer.bank-account.show',
 
             [
 
                 'application' =>
 
-                    $this->voterIdService
+                    $this->bankAccountService
                         ->find(
 
                             $id,
@@ -743,7 +743,6 @@ class VoterIdServiceController extends Controller
         );
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | ACKNOWLEDGEMENT
@@ -756,13 +755,13 @@ class VoterIdServiceController extends Controller
 
         return view(
 
-            'retailer.voter-id.acknowledgement',
+            'retailer.bank-account.acknowledgement',
 
             [
 
                 'application' =>
 
-                    $this->voterIdService
+                    $this->bankAccountService
                         ->find(
 
                             $id,
@@ -782,19 +781,19 @@ class VoterIdServiceController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function print(
-        int $id
+   public function print(
+    int $id
     ) {
 
         return view(
 
-            'retailer.voter-id.print',
+            'retailer.bank-account.print',
 
             [
 
                 'application' =>
 
-                    $this->voterIdService
+                    $this->bankAccountService
                         ->find(
 
                             $id,
@@ -818,7 +817,7 @@ class VoterIdServiceController extends Controller
         int $id
     ) {
 
-        $this->voterIdService
+        $this->bankAccountService
             ->delete(
 
                 $id,
@@ -837,6 +836,5 @@ class VoterIdServiceController extends Controller
 
         ]);
     }
-
    
 }

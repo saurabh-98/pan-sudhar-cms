@@ -31,6 +31,7 @@ use App\Http\Controllers\Retailer\Pan\PanVerifyController;
 use App\Http\Controllers\Retailer\Aadhaar\AadhaarServiceController;
 use App\Http\Controllers\Retailer\Csc\CscServiceController;
 use App\Http\Controllers\Retailer\VoterId\VoterIdServiceController;
+use App\Http\Controllers\Retailer\BankAccount\BankAccountServiceController;
 
 
 /*
@@ -844,6 +845,112 @@ Route::prefix('aadhaar')
     Route::prefix('voter-id')
         ->name('voter-id.')
         ->controller(VoterIdServiceController::class)
+        ->group(function () {
+
+            /*
+            |--------------------------------------------------------------------------
+            | SERVICE FORM
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/service/{service}',
+                'create'
+            )->name('service');
+
+            /*
+            |--------------------------------------------------------------------------
+            | PREVIEW
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/preview',
+                'preview'
+            )->name('preview');
+
+            /*
+            |--------------------------------------------------------------------------
+            | PREVIEW PAGE
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/preview-page',
+                'previewPage'
+            )->name('preview-page');
+
+            /*
+            |--------------------------------------------------------------------------
+            | FINAL SUBMIT
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/final-submit',
+                'finalSubmit'
+            )->name('final-submit');
+
+            /*
+            |--------------------------------------------------------------------------
+            | HISTORY
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/history',
+                'index'
+            )->name('history');
+
+            /*
+            |--------------------------------------------------------------------------
+            | SHOW
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/show/{id}',
+                'show'
+            )->name('show');
+
+            /*
+            |--------------------------------------------------------------------------
+            | RECEIVING
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/receiving/{id}',
+                'acknowledgement'
+            )->name('receiving');
+
+            /*
+            |--------------------------------------------------------------------------
+            | PRINT
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/print/{id}',
+                'print'
+            )->name('print');
+
+            /*
+            |--------------------------------------------------------------------------
+            | DELETE
+            |--------------------------------------------------------------------------
+            */
+
+            Route::delete(
+                '/delete/{id}',
+                'destroy'
+            )->name('delete');
+        });
+
+    
+    Route::prefix('bank-account')
+        ->name('bank-account.')
+        ->controller(BankAccountServiceController::class)
         ->group(function () {
 
             /*

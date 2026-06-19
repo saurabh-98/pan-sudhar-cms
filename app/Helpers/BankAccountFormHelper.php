@@ -51,18 +51,21 @@ if (! function_exists('bank_account_fields')) {
                 'name' => 'photo',
                 'label' => 'Passport Size Photo',
                 'type' => 'file',
+                'required' => true,
             ],
 
             [
                 'name' => 'aadhaar_front',
                 'label' => 'Aadhaar Front',
                 'type' => 'file',
+                'required' => true,
             ],
 
             [
                 'name' => 'aadhaar_back',
                 'label' => 'Aadhaar Back',
                 'type' => 'file',
+                'required' => true,
             ],
 
             [
@@ -77,67 +80,108 @@ if (! function_exists('bank_account_fields')) {
 
             /*
             |--------------------------------------------------------------------------
-            | KOTAK BANK ZERO BALANCE
+            | NEW BANK ACCOUNT
             |--------------------------------------------------------------------------
             */
 
-            'kotak-bank-zero-balance' => $commonFields,
+            'new-bank-account' => $commonFields,
 
             /*
             |--------------------------------------------------------------------------
-            | INDIA POST PAYMENT BANK
+            | ACCOUNT CLOSURE
             |--------------------------------------------------------------------------
             */
 
-            'india-post-payment-bank' => $commonFields,
+            'account-closure' => array_merge(
+                $commonFields,
+                [
+                    [
+                        'name' => 'account_number',
+                        'label' => 'Account Number',
+                        'type' => 'text',
+                        'required' => true,
+                    ],
+                ]
+            ),
 
             /*
             |--------------------------------------------------------------------------
-            | NSDL PAYMENT BANK
+            | MOBILE NUMBER UPDATE
             |--------------------------------------------------------------------------
             */
 
-            'nsdl-payment-bank' => $commonFields,
+            'bank-mobile-update' => array_merge(
+                $commonFields,
+                [
+                    [
+                        'name' => 'new_mobile_number',
+                        'label' => 'New Mobile Number',
+                        'type' => 'text',
+                        'required' => true,
+                    ],
+                ]
+            ),
 
             /*
             |--------------------------------------------------------------------------
-            | AIRTEL PAYMENT BANK
+            | ADDRESS UPDATE
             |--------------------------------------------------------------------------
             */
 
-            'airtel-payment-bank' => $commonFields,
+            'bank-address-update' => array_merge(
+                $commonFields,
+                [
+                    [
+                        'name' => 'new_address',
+                        'label' => 'New Address',
+                        'type' => 'textarea',
+                        'required' => true,
+                    ],
+                ]
+            ),
 
             /*
             |--------------------------------------------------------------------------
-            | BANK OF INDIA
+            | KYC UPDATE
             |--------------------------------------------------------------------------
             */
 
-            'bank-of-india' => $commonFields,
+            'kyc-update' => array_merge(
+                $commonFields,
+                [
+                    [
+                        'name' => 'kyc_document',
+                        'label' => 'KYC Document',
+                        'type' => 'file',
+                        'required' => true,
+                    ],
+                ]
+            ),
 
             /*
             |--------------------------------------------------------------------------
-            | PNB BANK
+            | NOMINEE UPDATE
             |--------------------------------------------------------------------------
             */
 
-            'pnb-bank' => $commonFields,
+            'nominee-update' => array_merge(
+                $commonFields,
+                [
+                    [
+                        'name' => 'nominee_name',
+                        'label' => 'Nominee Name',
+                        'type' => 'text',
+                        'required' => true,
+                    ],
 
-            /*
-            |--------------------------------------------------------------------------
-            | INDIAN BANK
-            |--------------------------------------------------------------------------
-            */
-
-            'indian-bank' => $commonFields,
-
-            /*
-            |--------------------------------------------------------------------------
-            | INDIAN OVERSEAS BANK
-            |--------------------------------------------------------------------------
-            */
-
-            'indian-overseas-bank' => $commonFields,
+                    [
+                        'name' => 'nominee_relation',
+                        'label' => 'Nominee Relation',
+                        'type' => 'text',
+                        'required' => true,
+                    ],
+                ]
+            ),
 
         ][$serviceSlug] ?? [];
     }

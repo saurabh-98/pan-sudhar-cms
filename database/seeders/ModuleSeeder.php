@@ -539,8 +539,91 @@ class ModuleSeeder extends Seeder
 
             ]);
 
+            /*
+        |--------------------------------------------------------------------------
+        | BANK ACCOUNT SERVICES
+        |--------------------------------------------------------------------------
+        */
 
-            DB::commit();
+        $bankAccount = Module::create([
+            'name'       => 'Bank Account Services',
+            'slug'       => 'bank-account-services',
+            'icon'       => 'fa fa-university',
+            'route_name' => null,
+            'parent_id'  => null,
+            'sort_order' => 60,
+            'status'     => 1,
+        ]);
+
+        Module::insert([
+
+            [
+                'name'       => 'New Bank Account Opening',
+                'slug'       => 'new-bank-account',
+                'route_name' => 'retailer.bank-account.service',
+                'parent_id'  => $bankAccount->id,
+                'sort_order' => 1,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'Account Closure',
+                'slug'       => 'account-closure',
+                'route_name' => 'retailer.bank-account.service',
+                'parent_id'  => $bankAccount->id,
+                'sort_order' => 2,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'Mobile Number Update',
+                'slug'       => 'bank-mobile-update',
+                'route_name' => 'retailer.bank-account.service',
+                'parent_id'  => $bankAccount->id,
+                'sort_order' => 3,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'Address Update',
+                'slug'       => 'bank-address-update',
+                'route_name' => 'retailer.bank-account.service',
+                'parent_id'  => $bankAccount->id,
+                'sort_order' => 4,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'KYC Update',
+                'slug'       => 'kyc-update',
+                'route_name' => 'retailer.bank-account.service',
+                'parent_id'  => $bankAccount->id,
+                'sort_order' => 5,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'Nominee Update',
+                'slug'       => 'nominee-update',
+                'route_name' => 'retailer.bank-account.service',
+                'parent_id'  => $bankAccount->id,
+                'sort_order' => 6,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'Bank Account History',
+                'slug'       => 'bank-account-history',
+                'route_name' => 'retailer.bank-account.history',
+                'parent_id'  => $bankAccount->id,
+                'sort_order' => 7,
+                'status'     => 1,
+            ],
+
+        ]);
+
+
+         DB::commit();
 
         } catch (\Throwable $e) {
 
