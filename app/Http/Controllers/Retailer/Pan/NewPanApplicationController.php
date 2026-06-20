@@ -19,7 +19,7 @@ use App\Models\State;
 use App\Models\User;
 use App\Models\WalletTransaction;
 use App\Models\Charge;
-
+use Carbon\Carbon;
 use App\Services\DistrictService;
 use App\Services\PanApplicationService;
 use App\Services\StateService;
@@ -43,23 +43,24 @@ class NewPanApplicationController extends Controller
    
 
     private function getPanCharge(): float
-{
-    return (float) Charge::query()
+    {
+        return (float) Charge::query()
 
-        ->where(
-            'code',
-            'new_pan_apply'
-        )
+            ->where(
+                'code',
+                'new_pan_apply'
+            )
 
-        ->where(
-            'is_active',
-            1
-        )
+            ->where(
+                'is_active',
+                1
+            )
 
-        ->value(
-            'value'
-        );
-}
+            ->value(
+                'value'
+            );
+    }
+
     public function index()
     {
         if (request()->ajax()) {
@@ -438,9 +439,37 @@ class NewPanApplicationController extends Controller
     |--------------------------------------------------------------------------
     */
 
+   
+
     public function create()
     {
         $preview = get_pan_session();
+
+        if (!empty($preview['data']['dob'])) {
+
+            try {
+
+                $preview['data']['dob'] = Carbon::parse(
+                    $preview['data']['dob']
+                )->format('d/m/Y');
+
+            } catch (\Exception $e) {
+                //
+            }
+        }
+
+        if (!empty($preview['data']['confirm_dob'])) {
+
+            try {
+
+                $preview['data']['confirm_dob'] = Carbon::parse(
+                    $preview['data']['confirm_dob']
+                )->format('d/m/Y');
+
+            } catch (\Exception $e) {
+                //
+            }
+        }
 
         return view(
 
@@ -449,32 +478,26 @@ class NewPanApplicationController extends Controller
             [
 
                 'states' =>
-
                     $this->stateService
                         ->getAll(),
 
                 'walletBalance' =>
-
                     auth()->user()
                         ->wallet_balance,
 
                 'panCharge' =>
-
                     $this->getPanCharge(),
 
                 'data' =>
-
                     $preview['data'] ?? [],
 
                 'files' =>
-
                     $preview['files'] ?? []
 
             ]
 
         );
     }
-
   
 
     public function preview(
@@ -624,71 +647,80 @@ class NewPanApplicationController extends Controller
     }
    
 
+  
+
     public function previewPage()
     {
         $preview = get_pan_session();
 
-       
-
         if (
-
             empty($preview)
-
             ||
-
             !isset($preview['data'])
-
             ||
-
             !is_array($preview['data'])
-
         ) {
 
             return redirect()
-
-                ->route(
-                    'retailer.pan.apply'
-                )
-
+                ->route('retailer.pan.apply')
                 ->with(
                     'error',
                     'Preview session expired.'
                 );
-
         }
 
-        
+        $data = $preview['data'];
+
+        // Format DOB for preview display
+        if (!empty($data['dob'])) {
+
+            try {
+
+                $data['dob'] = Carbon::parse(
+                    $data['dob']
+                )->format('d/m/Y');
+
+            } catch (\Exception $e) {
+                //
+            }
+        }
+
+        // Format Confirm DOB for preview display
+        if (!empty($data['confirm_dob'])) {
+
+            try {
+
+                $data['confirm_dob'] = Carbon::parse(
+                    $data['confirm_dob']
+                )->format('d/m/Y');
+
+            } catch (\Exception $e) {
+                //
+            }
+        }
+
         return view(
 
             'retailer.pan.preview',
 
             [
 
-                'data' =>
-
-                    $preview['data'],
+                'data' => $data,
 
                 'files' =>
-
                     $preview['files']
-
                     ??
-
                     [],
 
                 'panCharge' =>
-
                     $preview['data']['pan_charge']
-
                     ??
-
                     $this->getPanCharge()
 
             ]
 
         );
     }
-
     /*
     |--------------------------------------------------------------------------
     | FINAL SUBMIT
@@ -782,9 +814,21 @@ class NewPanApplicationController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            foreach ($session['files'] ?? [] as $file) {
+            $requiredFiles = [
 
-                if (!$file) {
+                'photo',
+
+                'signature',
+
+                'aadhaar_card',
+
+            ];
+
+            foreach ($requiredFiles as $key) {
+
+                $file = $session['files'][$key] ?? null;
+
+                if (empty($file)) {
 
                     DB::rollBack();
 
@@ -792,7 +836,28 @@ class NewPanApplicationController extends Controller
 
                         'status' => false,
 
-                        'message' => 'Uploaded document missing. Please upload again.'
+                        'message' => ucfirst(
+                            str_replace('_', ' ', $key)
+                        ) . ' is missing. Please upload again.'
+
+                    ], 422);
+                }
+
+                if (
+                    function_exists('file_exists_custom')
+                    &&
+                    !file_exists_custom($file)
+                ) {
+
+                    DB::rollBack();
+
+                    return response()->json([
+
+                        'status' => false,
+
+                        'message' => ucfirst(
+                            str_replace('_', ' ', $key)
+                        ) . ' file not found. Please upload again.'
 
                     ], 422);
                 }

@@ -204,114 +204,101 @@ class PanApplicationService
     */
 
     public function storeFromSession(): PanApplication
-    {
-        return DB::transaction(function () {
+{
+    return DB::transaction(function () {
 
-            $session = get_pan_session();
+        $session = get_pan_session();
 
-            if (!$session) {
+        if (!$session) {
 
-                abort(
-                    404,
-                    'Session Expired.'
-                );
-            }
-
-            $data = $session['data'] ?? [];
-
-            $files = $session['files'] ?? [];
-
-            if (!empty($data['dob'])) {
-
-                try {
-
-                    $data['dob'] = Carbon::createFromFormat(
-                        'd/m/Y',
-                        $data['dob']
-                    )->format('Y-m-d');
-
-                } catch (\Exception $e) {
-
-                    abort(
-                        422,
-                        'Invalid DOB format.'
-                    );
-                }
-            }
-
-            unset(
-                $data['confirm_dob']
+            abort(
+                404,
+                'Session Expired.'
             );
+        }
 
-            $panCharge = $data['pan_charge'] ?? 0;
+        $data = $session['data'] ?? [];
 
-            unset(
-                $data['pan_charge']
-            );
+        $files = $session['files'] ?? [];
 
-            $storeData = [
+        /*
+        |--------------------------------------------------------------------------
+        | DOB ALREADY STORED AS Y-m-d
+        |--------------------------------------------------------------------------
+        */
 
-                'user_id' =>
-                    auth()->id(),
+        unset(
+            $data['confirm_dob']
+        );
 
-                'application_no' =>
-                    'PAN'
-                    . date('YmdHis')
-                    . rand(1000, 9999),
+        $panCharge = $data['pan_charge'] ?? 0;
 
-                'pan_type' =>
-                    'New PAN',
+        unset(
+            $data['pan_charge']
+        );
 
-                ...$data,
+        $storeData = [
 
-                'photo' =>
-                    $files['photo'] ?? null,
+            'user_id' =>
+                auth()->id(),
 
-                'signature' =>
-                    $files['signature'] ?? null,
+            'application_no' =>
+                'PAN'
+                . date('YmdHis')
+                . rand(1000, 9999),
 
-                'aadhaar_card' =>
-                    $files['aadhaar_card'] ?? null,
+            'pan_type' =>
+                'New PAN',
 
-                'dob_proof_file' =>
-                    $files['dob_proof_file'] ?? null,
+            ...$data,
 
-                'supporting_document' =>
-                    $files['supporting_document'] ?? null,
+            'photo' =>
+                $files['photo'] ?? null,
 
-                'amount' =>
-                    $panCharge,
+            'signature' =>
+                $files['signature'] ?? null,
 
-                'payment_status' =>
-                    'Pending',
+            'aadhaar_card' =>
+                $files['aadhaar_card'] ?? null,
 
-                'status' =>
-                    'Pending',
+            'dob_proof_file' =>
+                $files['dob_proof_file'] ?? null,
 
-                'wallet_deducted' =>
-                    false,
+            'supporting_document' =>
+                $files['supporting_document'] ?? null,
 
-                'wallet_deducted_at' =>
-                    null,
+            'amount' =>
+                $panCharge,
 
-                'ip_address' =>
-                    request()->ip(),
+            'payment_status' =>
+                'Pending',
 
-                'browser' =>
-                    request()->userAgent(),
-            ];
+            'status' =>
+                'Pending',
 
-            $application =
-                $this->repository
-                    ->create($storeData);
+            'wallet_deducted' =>
+                false,
 
-            clear_pan_session();
+            'wallet_deducted_at' =>
+                null,
 
-            return $application;
+            'ip_address' =>
+                request()->ip(),
 
-        });
-    }
+            'browser' =>
+                request()->userAgent(),
+        ];
 
+        $application =
+            $this->repository
+                ->create($storeData);
+
+        clear_pan_session();
+
+        return $application;
+
+    });
+}
 
 
     public function history(

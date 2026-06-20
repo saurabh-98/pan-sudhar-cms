@@ -18,6 +18,7 @@ use App\Models\State;
 use App\Models\User;
 use App\Models\WalletTransaction;
 use App\Models\Charge;
+ use Carbon\Carbon;
 
 use App\Services\DistrictService;
 use App\Services\PanCorrectionService;
@@ -439,9 +440,37 @@ class PanCorrectionController extends Controller
     |--------------------------------------------------------------------------
     */
 
+   
+
     public function create()
     {
         $preview = get_pan_correction_session();
+
+        if (!empty($preview['data']['dob'])) {
+
+            try {
+
+                $preview['data']['dob'] = Carbon::parse(
+                    $preview['data']['dob']
+                )->format('d/m/Y');
+
+            } catch (\Exception $e) {
+                //
+            }
+        }
+
+        if (!empty($preview['data']['confirm_dob'])) {
+
+            try {
+
+                $preview['data']['confirm_dob'] = Carbon::parse(
+                    $preview['data']['confirm_dob']
+                )->format('d/m/Y');
+
+            } catch (\Exception $e) {
+                //
+            }
+        }
 
         return view(
 
@@ -454,8 +483,7 @@ class PanCorrectionController extends Controller
                     $this->stateService
                         ->getAll(),
 
-
-               'walletBalance' =>
+                'walletBalance' =>
 
                     auth()->user()
                         ->wallet_balance,
@@ -468,7 +496,6 @@ class PanCorrectionController extends Controller
 
                     $preview['data'] ?? [],
 
-
                 'files' =>
 
                     $preview['files'] ?? []
@@ -477,163 +504,163 @@ class PanCorrectionController extends Controller
 
         );
     }
-
   
 
     public function preview(
-    PanCorrectionPreviewRequest $request
-): JsonResponse {
+        PanCorrectionPreviewRequest $request
+    ): JsonResponse {
 
-    try {
+        try {
 
-        $user = auth()->user();
+            $user = auth()->user();
 
-        $panCharge = $this->getPanCorrectionCharge();
+            $panCharge = $this->getPanCorrectionCharge();
 
-        if ($panCharge <= 0) {
+            if ($panCharge <= 0) {
+
+                return response()->json([
+
+                    'status' => false,
+
+                    'message' => 'PAN correction charge is not configured.'
+
+                ], 422);
+
+            }
+
+            if ($user->wallet_balance < $panCharge) {
+
+                return response()->json([
+
+                    'status' => false,
+
+                    'message' =>
+                        'Insufficient wallet balance.'
+
+                ], 422);
+
+            }
+
+            $dto = PanCorrectionDTO::fromRequest(
+                $request
+            );
+
+            /*
+            |--------------------------------------------------------------------------
+            | CLOUDINARY UPLOAD + SESSION SAVE FROM SERVICE
+            |--------------------------------------------------------------------------
+            */
+
+            $preview =
+
+                $this->panCorrectionService
+                    ->preview($dto);
+
+            /*
+            |--------------------------------------------------------------------------
+            | ADD STATE NAME
+            |--------------------------------------------------------------------------
+            */
+
+            $preview['data']['state_name'] =
+
+                State::where(
+
+                    'id',
+
+                    $request->state
+
+                )->value('name')
+
+                ??
+
+                'N/A';
+
+            /*
+            |--------------------------------------------------------------------------
+            | ADD DISTRICT NAME
+            |--------------------------------------------------------------------------
+            */
+
+            $preview['data']['district_name'] =
+
+                District::where(
+
+                    'id',
+
+                    $request->district
+
+                )->value('name')
+
+                ??
+
+                'N/A';
+
+            /*
+            |--------------------------------------------------------------------------
+            | STORE CHARGE IN SESSION
+            |--------------------------------------------------------------------------
+            */
+
+            $preview['data']['pan_charge'] =
+                $panCharge;
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE SESSION
+            |--------------------------------------------------------------------------
+            */
+
+            save_pan_correction_session(
+                $preview
+            );
 
             return response()->json([
 
-                'status' => false,
-
-                'message' => 'PAN correction charge is not configured.'
-
-            ], 422);
-
-        }
-
-        if ($user->wallet_balance < $panCharge) {
-
-            return response()->json([
-
-                'status' => false,
+                'status' => true,
 
                 'message' =>
-                    'Insufficient wallet balance.'
+                    'Preview generated successfully.',
 
-            ], 422);
+                'redirect_url' =>
+
+                    route(
+                        'retailer.pan-correction.preview-page'
+                    )
+
+            ]);
+
+        } catch (\Throwable $e) {
+
+            Log::error(
+
+                'PAN PREVIEW ERROR',
+
+                [
+
+                    'message' => $e->getMessage(),
+
+                    'line' => $e->getLine(),
+
+                    'file' => $e->getFile()
+
+                ]
+
+            );
+
+            return response()->json([
+
+                'status' => false,
+
+                'message' => $e->getMessage()
+
+            ], 500);
 
         }
-
-        $dto = PanCorrectionDTO::fromRequest(
-            $request
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | CLOUDINARY UPLOAD + SESSION SAVE FROM SERVICE
-        |--------------------------------------------------------------------------
-        */
-
-        $preview =
-
-            $this->panCorrectionService
-                ->preview($dto);
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADD STATE NAME
-        |--------------------------------------------------------------------------
-        */
-
-        $preview['data']['state_name'] =
-
-            State::where(
-
-                'id',
-
-                $request->state
-
-            )->value('name')
-
-            ??
-
-            'N/A';
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADD DISTRICT NAME
-        |--------------------------------------------------------------------------
-        */
-
-        $preview['data']['district_name'] =
-
-            District::where(
-
-                'id',
-
-                $request->district
-
-            )->value('name')
-
-            ??
-
-            'N/A';
-
-        /*
-        |--------------------------------------------------------------------------
-        | STORE CHARGE IN SESSION
-        |--------------------------------------------------------------------------
-        */
-
-        $preview['data']['pan_charge'] =
-            $panCharge;
-
-        /*
-        |--------------------------------------------------------------------------
-        | UPDATE SESSION
-        |--------------------------------------------------------------------------
-        */
-
-        save_pan_correction_session(
-            $preview
-        );
-
-        return response()->json([
-
-            'status' => true,
-
-            'message' =>
-                'Preview generated successfully.',
-
-            'redirect_url' =>
-
-                route(
-                    'retailer.pan-correction.preview-page'
-                )
-
-        ]);
-
-    } catch (\Throwable $e) {
-
-        Log::error(
-
-            'PAN PREVIEW ERROR',
-
-            [
-
-                'message' => $e->getMessage(),
-
-                'line' => $e->getLine(),
-
-                'file' => $e->getFile()
-
-            ]
-
-        );
-
-        return response()->json([
-
-            'status' => false,
-
-            'message' => $e->getMessage()
-
-        ], 500);
-
     }
-}
-   
+    
 
+   
     public function previewPage()
     {
         $preview = get_pan_correction_session();
@@ -670,6 +697,34 @@ class PanCorrectionController extends Controller
 
         }
 
+        $data = $preview['data'];
+
+        if (!empty($data['dob'])) {
+
+            try {
+
+                $data['dob'] = Carbon::parse(
+                    $data['dob']
+                )->format('d/m/Y');
+
+            } catch (\Exception $e) {
+                //
+            }
+        }
+
+        if (!empty($data['confirm_dob'])) {
+
+            try {
+
+                $data['confirm_dob'] = Carbon::parse(
+                    $data['confirm_dob']
+                )->format('d/m/Y');
+
+            } catch (\Exception $e) {
+                //
+            }
+        }
+
         return view(
 
             'retailer.pan-correction.preview',
@@ -678,7 +733,7 @@ class PanCorrectionController extends Controller
 
                 'data' =>
 
-                    $preview['data'],
+                    $data,
 
                 'files' =>
 
@@ -774,15 +829,51 @@ class PanCorrectionController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            foreach ($session['files'] ?? [] as $file) {
+            $requiredFiles = [
 
-                if (!$file) {
+                'photo',
+
+                'signature',
+
+                'aadhaar_card',
+
+            ];
+
+            foreach ($requiredFiles as $key) {
+
+                $file = $session['files'][$key] ?? null;
+
+                if (empty($file)) {
 
                     DB::rollBack();
 
                     return response()->json([
+
                         'status'  => false,
-                        'message' => 'Uploaded document missing. Please upload again.'
+
+                        'message' => ucfirst(
+                            str_replace('_', ' ', $key)
+                        ) . ' is missing. Please upload again.'
+
+                    ], 422);
+                }
+
+                if (
+                    function_exists('file_exists_custom')
+                    &&
+                    !file_exists_custom($file)
+                ) {
+
+                    DB::rollBack();
+
+                    return response()->json([
+
+                        'status'  => false,
+
+                        'message' => ucfirst(
+                            str_replace('_', ' ', $key)
+                        ) . ' file not found. Please upload again.'
+
                     ], 422);
                 }
             }

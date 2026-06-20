@@ -205,9 +205,7 @@ class PanCorrectionService
 
     public function storeFromSession(): PanCorrectionApplication
     {
-
         return DB::transaction(function () {
-
 
             /*
             |--------------------------------------------------------------------------
@@ -215,56 +213,29 @@ class PanCorrectionService
             |--------------------------------------------------------------------------
             */
 
-            $session =
-                get_pan_correction_session();
-
-
+            $session = get_pan_correction_session();
 
             if (!$session) {
 
-
                 abort(
-
                     404,
-
                     'Session Expired.'
-
                 );
             }
 
+            $data = $session['data'] ?? [];
 
+            $files = $session['files'] ?? [];
 
-            $data =
-                $session['data'] ?? [];
+            /*
+            |--------------------------------------------------------------------------
+            | DOB ALREADY SAVED AS Y-m-d
+            |--------------------------------------------------------------------------
+            */
 
-
-
-            $files =
-                $session['files'] ?? [];
-
-            
-             if (!empty($data['dob'])) {
-
-                try {
-
-                    $data['dob'] = Carbon::createFromFormat(
-                        'd/m/Y',
-                        $data['dob']
-                    )->format('Y-m-d');
-
-                } catch (\Exception $e) {
-
-                    abort(
-                        422,
-                        'Invalid DOB format.'
-                    );
-                }
-            }
-
-           
-
-
-
+            unset(
+                $data['confirm_dob']
+            );
 
             /*
             |--------------------------------------------------------------------------
@@ -274,30 +245,19 @@ class PanCorrectionService
 
             $storeData = [
 
-
                 'user_id' =>
                     auth()->id(),
-
-
 
                 'application_no' =>
 
                     'PAN'
-
                     . date('YmdHis')
-
                     . rand(1000,9999),
-
-
 
                 'pan_type' =>
                     'Correction PAN',
 
-
-
                 ...$data,
-
-
 
                 /*
                 |--------------------------------------------------------------------------
@@ -305,31 +265,20 @@ class PanCorrectionService
                 |--------------------------------------------------------------------------
                 */
 
-
                 'photo' =>
                     $files['photo'] ?? null,
-
-
 
                 'signature' =>
                     $files['signature'] ?? null,
 
-
-
                 'aadhaar_card' =>
                     $files['aadhaar_card'] ?? null,
-
-
 
                 'dob_proof_file' =>
                     $files['dob_proof_file'] ?? null,
 
-
-
                 'supporting_document' =>
                     $files['supporting_document'] ?? null,
-
-
 
                 /*
                 |--------------------------------------------------------------------------
@@ -337,52 +286,35 @@ class PanCorrectionService
                 |--------------------------------------------------------------------------
                 */
 
-
                 'amount' =>
-                    107,
-
+                    $data['pan_charge'] ?? 107,
 
                 'payment_status' =>
                     'Pending',
 
-
                 'status' =>
                     'Pending',
-
 
                 'wallet_deducted' =>
                     false,
 
-
                 'wallet_deducted_at' =>
                     null,
 
-
                 'ip_address' =>
                     request()->ip(),
-
 
                 'browser' =>
                     request()->userAgent(),
 
             ];
 
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | CREATE
-            |--------------------------------------------------------------------------
-            */
+            unset($storeData['pan_charge']);
 
             $application =
 
                 $this->panCorrectionRepository
-
                     ->create($storeData);
-
-
-
 
             /*
             |--------------------------------------------------------------------------
@@ -392,15 +324,10 @@ class PanCorrectionService
 
             clear_pan_correction_session();
 
-
-
-
             return $application;
 
         });
-
     }
-
 
 
 

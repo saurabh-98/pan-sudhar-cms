@@ -1933,16 +1933,6 @@ $(document).ready(function () {
         return;
     }
 
-    if (!hasFile('dob_proof_file')) {
-
-        Swal.fire({
-            icon: 'warning',
-            title: 'DOB Proof Required',
-            text: 'Please upload DOB proof.'
-        });
-
-        return;
-    }
 
     Swal.fire({
 
