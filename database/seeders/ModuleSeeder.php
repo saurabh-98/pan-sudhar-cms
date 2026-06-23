@@ -622,6 +622,116 @@ class ModuleSeeder extends Seeder
 
         ]);
 
+        /*
+        |--------------------------------------------------------------------------
+        | OTHER SERVICES
+        |--------------------------------------------------------------------------
+        */
+
+        $otherService = Module::create([
+            'name'       => 'Other Services',
+            'slug'       => 'other-services',
+            'icon'       => 'fa fa-briefcase',
+            'route_name' => null,
+            'parent_id'  => null,
+            'sort_order' => 70,
+            'status'     => 1,
+        ]);
+
+        Module::insert([
+
+            [
+                'name'       => 'Raj Patra',
+                'slug'       => 'raj-patra',
+                'route_name' => 'retailer.other-service.service',
+                'parent_id'  => $otherService->id,
+                'sort_order' => 1,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'GST Registration / Filing',
+                'slug'       => 'gst-registration-filing',
+                'route_name' => 'retailer.other-service.service',
+                'parent_id'  => $otherService->id,
+                'sort_order' => 2,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'Food Licence',
+                'slug'       => 'food-licence',
+                'route_name' => 'retailer.other-service.service',
+                'parent_id'  => $otherService->id,
+                'sort_order' => 3,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'ITR Filing / TDS Refund',
+                'slug'       => 'itr-filing-tds-refund',
+                'route_name' => 'retailer.other-service.service',
+                'parent_id'  => $otherService->id,
+                'sort_order' => 4,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'DSC Digital Signature',
+                'slug'       => 'dsc-digital-signature',
+                'route_name' => 'retailer.other-service.service',
+                'parent_id'  => $otherService->id,
+                'sort_order' => 5,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'MSME Registration',
+                'slug'       => 'msme-registration',
+                'route_name' => 'retailer.other-service.service',
+                'parent_id'  => $otherService->id,
+                'sort_order' => 6,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'Import Export Certificate',
+                'slug'       => 'import-export-certificate',
+                'route_name' => 'retailer.other-service.service',
+                'parent_id'  => $otherService->id,
+                'sort_order' => 7,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'Rent Agreement',
+                'slug'       => 'rent-agreement',
+                'route_name' => 'retailer.other-service.service',
+                'parent_id'  => $otherService->id,
+                'sort_order' => 8,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'Police Verification',
+                'slug'       => 'police-verification',
+                'route_name' => 'retailer.other-service.service',
+                'parent_id'  => $otherService->id,
+                'sort_order' => 9,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'Other Service History',
+                'slug'       => 'other-service-history',
+                'route_name' => 'retailer.other-service.history',
+                'parent_id'  => $otherService->id,
+                'sort_order' => 10,
+                'status'     => 1,
+            ],
+
+        ]);
+
 
          DB::commit();
 

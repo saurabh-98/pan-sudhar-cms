@@ -41,6 +41,9 @@ use App\Http\Controllers\Admin\ModuleController;
 use App\Http\Controllers\Admin\ChargeController;
 use App\Http\Controllers\Admin\AdminAadhaarController;
 use App\Http\Controllers\Admin\AdminCscController;
+use App\Http\Controllers\Admin\AdminVoterIdController;
+use App\Http\Controllers\Admin\AdminBankAccountController;
+use App\Http\Controllers\Admin\AdminOtherServiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -334,83 +337,83 @@ Route::middleware([
 
     /* ================= NAVIGATION ================= */
 
-Route::prefix('navigation')
-    ->name('navigation.')
-    ->middleware('permission:navigation.view')
-    ->group(function () {
+    Route::prefix('navigation')
+        ->name('navigation.')
+        ->middleware('permission:navigation.view')
+        ->group(function () {
+
+        Route::get(
+            '/',
+            [NavigationMenuController::class, 'index']
+        )->name('index');
+
+        Route::get(
+            '/create',
+            [NavigationMenuController::class, 'create']
+        )->name('create')
+        ->middleware('permission:navigation.create');
+
+        Route::post(
+            '/store',
+            [NavigationMenuController::class, 'store']
+        )->name('store')
+        ->middleware('permission:navigation.create');
+
+        Route::get(
+            '/list',
+            [NavigationMenuController::class, 'list']
+        )->name('list');
+
+        Route::get(
+            '/edit/{id}',
+            [NavigationMenuController::class, 'edit']
+        )->name('edit')
+        ->middleware('permission:navigation.edit');
+
+        Route::post(
+            '/update/{id}',
+            [NavigationMenuController::class, 'update']
+        )->name('update')
+        ->middleware('permission:navigation.edit');
+
+        Route::delete(
+            '/delete/{id}',
+            [NavigationMenuController::class, 'destroy']
+        )->name('delete')
+        ->middleware('permission:navigation.delete');
+
+    });
+
+    /* ================= UPI ================= */
 
     Route::get(
-        '/',
-        [NavigationMenuController::class, 'index']
-    )->name('index');
-
-    Route::get(
-        '/create',
-        [NavigationMenuController::class, 'create']
-    )->name('create')
-     ->middleware('permission:navigation.create');
+        '/upi',
+        [UpiController::class,'index']
+    )->name('upi.index')
+    ->middleware('permission:upi.view');
 
     Route::post(
-        '/store',
-        [NavigationMenuController::class, 'store']
-    )->name('store')
-     ->middleware('permission:navigation.create');
+        '/upi',
+        [UpiController::class,'store']
+    )->name('upi.store')
+    ->middleware('permission:upi.create');
 
     Route::get(
-        '/list',
-        [NavigationMenuController::class, 'list']
-    )->name('list');
-
-    Route::get(
-        '/edit/{id}',
-        [NavigationMenuController::class, 'edit']
-    )->name('edit')
-     ->middleware('permission:navigation.edit');
+        '/upi/activate/{id}',
+        [UpiController::class,'activate']
+    )->name('admin.upi.activate')
+    ->middleware('permission:upi.activate');
 
     Route::post(
-        '/update/{id}',
-        [NavigationMenuController::class, 'update']
-    )->name('update')
-     ->middleware('permission:navigation.edit');
+        '/upi/update/{id}',
+        [UpiController::class,'update']
+    )->name('upi.update')
+    ->middleware('permission:upi.edit');
 
-    Route::delete(
-        '/delete/{id}',
-        [NavigationMenuController::class, 'destroy']
-    )->name('delete')
-     ->middleware('permission:navigation.delete');
-
-});
-
-/* ================= UPI ================= */
-
-Route::get(
-    '/upi',
-    [UpiController::class,'index']
-)->name('upi.index')
- ->middleware('permission:upi.view');
-
-Route::post(
-    '/upi',
-    [UpiController::class,'store']
-)->name('upi.store')
- ->middleware('permission:upi.create');
-
-Route::get(
-    '/upi/activate/{id}',
-    [UpiController::class,'activate']
-)->name('admin.upi.activate')
- ->middleware('permission:upi.activate');
-
-Route::post(
-    '/upi/update/{id}',
-    [UpiController::class,'update']
-)->name('upi.update')
- ->middleware('permission:upi.edit');
-
-Route::post(
-    '/upi/delete/{id}',
-    [UpiController::class,'delete']
-)->name('upi.delete')
+    Route::post(
+        '/upi/delete/{id}',
+        [UpiController::class,'delete']
+    )->name('upi.delete')
  ->middleware('permission:upi.delete');
 
 
@@ -517,17 +520,6 @@ Route::prefix('pages')
     });
 
     
-  
-
-   
-   
-
-   
-
-   
-
-   
-
     
     /*
     |--------------------------------------------------------------------------
@@ -958,6 +950,287 @@ Route::prefix('pages')
              Route::post(
                 '/rejected/{id}/reject',
                 [AdminCscController::class, 'reject']
+            )->name('reject');
+
+        });
+
+
+     Route::prefix('voter-id')
+        ->name('voter-id.')
+        ->middleware('permission:voter-id.view')
+        ->group(function () {
+
+            /*
+            |--------------------------------------------------------------------------
+            | LIST
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/',
+                [AdminVoterIdController::class, 'index']
+            )->name('index');
+
+            /*
+            |--------------------------------------------------------------------------
+            | SHOW
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/show/{id}',
+                [AdminVoterIdController::class, 'show']
+            )->name('show');
+
+            /*
+            |--------------------------------------------------------------------------
+            | ASSIGN
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/assign/{id}',
+                [AdminVoterIdController::class, 'assign']
+            )->name('assign');
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE STATUS
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/status/{id}',
+                [AdminVoterIdController::class, 'status']
+            )->name('status');
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPLOAD DOCUMENT
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/document-upload/{id}',
+                [AdminVoterIdController::class, 'uploadDocument']
+            )->name('document.upload');
+
+            /*
+            |--------------------------------------------------------------------------
+            | DOWNLOAD DOCUMENTS
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/download-documents/{id}',
+                [AdminVoterIdController::class, 'downloadDocuments']
+            )->name('download.documents');
+
+            /*
+            |--------------------------------------------------------------------------
+            | DELETE
+            |--------------------------------------------------------------------------
+            */
+
+            Route::delete(
+                '/delete/{id}',
+                [AdminVoterIdController::class, 'delete']
+            )->name('delete');
+
+             Route::post(
+                '/rejected/{id}/reject',
+                [AdminVoterIdController::class, 'reject']
+            )->name('reject');
+
+        });
+
+
+     /*
+    |--------------------------------------------------------------------------
+    | BANK-ACCOUNT MODULE
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('bank-account')
+        ->name('bank-account.')
+        ->middleware('permission:bank-account.view')
+        ->group(function () {
+
+            /*
+            |--------------------------------------------------------------------------
+            | LIST
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/',
+                [AdminBankAccountController::class, 'index']
+            )->name('index');
+
+            /*
+            |--------------------------------------------------------------------------
+            | SHOW
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/show/{id}',
+                [AdminBankAccountController::class, 'show']
+            )->name('show');
+
+            /*
+            |--------------------------------------------------------------------------
+            | ASSIGN
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/assign/{id}',
+                [AdminBankAccountController::class, 'assign']
+            )->name('assign');
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE STATUS
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/status/{id}',
+                [AdminBankAccountController::class, 'status']
+            )->name('status');
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPLOAD DOCUMENT
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/document-upload/{id}',
+                [AdminBankAccountController::class, 'uploadDocument']
+            )->name('document.upload');
+
+            /*
+            |--------------------------------------------------------------------------
+            | DOWNLOAD DOCUMENTS
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/download-documents/{id}',
+                [AdminBankAccountController::class, 'downloadDocuments']
+            )->name('download.documents');
+
+            /*
+            |--------------------------------------------------------------------------
+            | DELETE
+            |--------------------------------------------------------------------------
+            */
+
+            Route::delete(
+                '/delete/{id}',
+                [AdminBankAccountController::class, 'delete']
+            )->name('delete');
+
+             Route::post(
+                '/rejected/{id}/reject',
+                [AdminBankAccountController::class, 'reject']
+            )->name('reject');
+
+        });
+
+     /*
+    |--------------------------------------------------------------------------
+    | OTHER SERVICE MODULE
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('other-service')
+        ->name('other-service.')
+        ->middleware('permission:other-service.view')
+        ->group(function () {
+
+            /*
+            |--------------------------------------------------------------------------
+            | LIST
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/',
+                [AdminOtherServiceController::class, 'index']
+            )->name('index');
+
+            /*
+            |--------------------------------------------------------------------------
+            | SHOW
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/show/{id}',
+                [AdminOtherServiceController::class, 'show']
+            )->name('show');
+
+            /*
+            |--------------------------------------------------------------------------
+            | ASSIGN
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/assign/{id}',
+                [AdminOtherServiceController::class, 'assign']
+            )->name('assign');
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE STATUS
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/status/{id}',
+                [AdminOtherServiceController::class, 'status']
+            )->name('status');
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPLOAD DOCUMENT
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/document-upload/{id}',
+                [AdminOtherServiceController::class, 'uploadDocument']
+            )->name('document.upload');
+
+            /*
+            |--------------------------------------------------------------------------
+            | DOWNLOAD DOCUMENTS
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/download-documents/{id}',
+                [AdminOtherServiceController::class, 'downloadDocuments']
+            )->name('download.documents');
+
+            /*
+            |--------------------------------------------------------------------------
+            | DELETE
+            |--------------------------------------------------------------------------
+            */
+
+            Route::delete(
+                '/delete/{id}',
+                [AdminOtherServiceController::class, 'delete']
+            )->name('delete');
+
+             Route::post(
+                '/rejected/{id}/reject',
+                [AdminOtherServiceController::class, 'reject']
             )->name('reject');
 
         });

@@ -6,7 +6,7 @@
 
     position:relative;
 
-    overflow:hidden;
+    overflow:visible;
 
     background:
         linear-gradient(
@@ -876,4 +876,76 @@
         width:28px;
         height:28px;
     }
+}
+
+/* STAFF LOGIN DROPDOWN FIX */
+
+.header-navbar,
+.navbar-wrapper,
+.nav-actions{
+    overflow:visible !important;
+}
+
+.login-dropdown{
+    position:relative;
+    display:inline-block;
+}
+
+.login-dropdown-menu{
+    position:absolute;
+    top:calc(100% + 10px);
+    right:0;
+
+    min-width:250px;
+
+    background:#fff;
+    border-radius:16px;
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,.18);
+
+    z-index:9999999;
+
+    opacity:0;
+    visibility:hidden;
+    transform:translateY(10px);
+
+    transition:all .3s ease;
+}
+
+.login-dropdown:hover .login-dropdown-menu{
+    opacity:1;
+    visibility:visible;
+    transform:translateY(0);
+}
+
+.dropdown-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    padding:14px 18px;
+
+    color:#334155;
+    text-decoration:none;
+    font-weight:600;
+
+    border-bottom:1px solid #f1f5f9;
+
+    background:#fff;
+}
+
+.dropdown-item:last-child{
+    border-bottom:none;
+}
+
+.dropdown-item:hover{
+    background:#f8fafc;
+    color:#2563eb;
+}
+
+.login-dropdown-menu.show{
+    opacity:1;
+    visibility:visible;
+    transform:translateY(0);
 }

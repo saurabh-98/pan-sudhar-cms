@@ -167,15 +167,20 @@
             ================================================= -->
 
             <div class="nav-container"
-                 id="mobileMenu">
+                id="mobileMenu">
 
-                <!-- NAVIGATION -->
+            <!-- ==============================
+                NAVIGATION SECTION
+            =============================== -->
+
+            <div class="mobile-menu-section">
+
                 <nav class="main-nav">
 
                     @foreach($navMenus as $menu)
 
                         <a href="{{ url($menu->url) }}"
-                           class="{{ request()->is(ltrim($menu->url,'/').'*') ? 'active' : '' }}">
+                        class="{{ request()->is(ltrim($menu->url,'/').'*') ? 'active' : '' }}">
 
                             {{ $menu->name }}
 
@@ -185,80 +190,94 @@
 
                 </nav>
 
-               <!-- ACTIONS -->
+            </div>
+
+            <!-- ==============================
+                PORTAL ACCESS SECTION
+            =============================== -->
+
+            <div class="mobile-menu-section">
+
+
                 <div class="nav-actions">
 
-                    <!-- =====================================================
-                    | RETAILER LOGIN
-                    ===================================================== -->
+                    <!-- RETAILER LOGIN -->
 
                     <a href="{{ route('retailer.login') }}"
                     class="action-btn parent-btn">
 
                         <i class="fa-solid fa-shop"></i>
 
-                        <span>
-
-                            Retailer Login
-
-                        </span>
+                        <span>Retailer Login</span>
 
                     </a>
 
-                    <!-- =====================================================
-                    | RETAILER REGISTRATION
-                    ===================================================== -->
+                    <!-- RETAILER REGISTER -->
 
                     <a href="{{ route('retailer.register') }}"
                     class="action-btn retailer-register-btn">
 
                         <i class="fa-solid fa-user-plus"></i>
 
-                        <span>
-
-                            Retailer Register
-
-                        </span>
+                        <span>Retailer Register</span>
 
                     </a>
 
-                    <!-- =====================================================
-                    |  EXECUTIVE
-                    ===================================================== -->
+                    <!-- STAFF LOGIN -->
 
-                    <a href="{{route('executive.login')}}"
-                    class="action-btn bde-btn">
+                    <div class="login-dropdown">
 
-                        <i class="fa-solid fa-briefcase"></i>
+                        <button type="button"
+                                class="action-btn dept-btn login-dropdown-btn">
 
-                        <span>
+                            <i class="fa-solid fa-user-shield"></i>
 
-                            Executive Login
+                            <span>Staff Login</span>
 
-                        </span>
+                            <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
 
-                    </a>
+                        </button>
 
-                    <!-- =====================================================
-                    | ADMIN LOGIN
-                    ===================================================== -->
+                        <div class="login-dropdown-menu">
 
-                    <a href="{{ route('login') }}"
-                    class="action-btn dept-btn">
+                            <a href="{{ route('distributor.login') }}"
+                            class="dropdown-item">
 
-                        <i class="fa-solid fa-user-shield"></i>
+                                <i class="fa-solid fa-users"></i>
 
-                        <span>
+                                <span>Distributor Login</span>
 
-                            Admin Login
+                            </a>
 
-                        </span>
+                            <a href="{{ route('executive.login') }}"
+                            class="dropdown-item">
 
-                    </a>
+                                <i class="fa-solid fa-briefcase"></i>
+
+                                <span>Executive Login</span>
+
+                            </a>
+
+                            <a href="{{ route('login') }}"
+                            class="dropdown-item">
+
+                                <i class="fa-solid fa-user-shield"></i>
+
+                                <span>Admin Login</span>
+
+                            </a>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
             </div>
+
+
+            </div>
+
 
         </div>
 

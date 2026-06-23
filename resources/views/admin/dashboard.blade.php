@@ -5,15 +5,8 @@
 @section('content')
 
 @php
-
-    /*
-    |--------------------------------------------------------------------------
-    | ROLE
-    |--------------------------------------------------------------------------
-    */
-
     $isExecutive = auth()->user()->hasRole('Executive');
-
+    $isDistributor = auth()->user()->hasRole('Distributor');
 @endphp
 
 <div class="container-fluid dashboard">
@@ -26,11 +19,15 @@
         <div>
 
             <h3 class="fw-bold mb-1">
-
                 <i class="fa fa-chart-line me-2 text-primary"></i>
 
-                {{ $isExecutive ? 'Executive Dashboard' : 'Admin Dashboard' }}
-
+                @if($isExecutive)
+                    Executive Dashboard
+                @elseif($isDistributor)
+                    Distributor Dashboard
+                @else
+                    Admin Dashboard
+                @endif
             </h3>
 
             <p class="text-muted mb-0">
@@ -58,160 +55,95 @@
     ========================================================== --}}
     <div class="row g-4">
 
-        {{-- TOTAL PAN --}}
-        <div class="col-xl-3 col-md-6 col-12">
-
-            <a
-                href="{{ route('admin.pan.index') }}"
-                class="dashboard-link-card"
-            >
-
-                <div class="dash-card-modern bg-primary">
-
-                    <div>
-
-                        <h6>
-
-                            PAN Applications
-
-                        </h6>
-
-                        <h2 class="counter">
-
-                            {{ $totalPanApplications ?? 0 }}
-
-                        </h2>
-
-                    </div>
-
-                    <div class="icon">
-
-                        <i class="fa fa-id-card"></i>
-
-                    </div>
-
+    {{-- PAN --}}
+    <div class="col-xl-2 col-lg-4 col-md-6 col-12">
+        <a href="{{ route('admin.pan.index') }}" class="dashboard-link-card">
+            <div class="dash-card-modern bg-primary">
+                <div>
+                    <h6>PAN Applications</h6>
+                    <h2 class="counter">{{ $totalPanApplications ?? 0 }}</h2>
                 </div>
-
-            </a>
-
-        </div>
-
-        {{-- TOTAL ITR --}}
-        <div class="col-xl-3 col-md-6 col-12">
-
-            <a
-                href="{{ route('admin.itr.index') }}"
-                class="dashboard-link-card"
-            >
-
-                <div class="dash-card-modern bg-success">
-
-                    <div>
-
-                        <h6>
-
-                            ITR Applications
-
-                        </h6>
-
-                        <h2 class="counter">
-
-                            {{ $totalItrApplications ?? 0 }}
-
-                        </h2>
-
-                    </div>
-
-                    <div class="icon">
-
-                        <i class="fa fa-file-invoice-dollar"></i>
-
-                    </div>
-
+                <div class="icon">
+                    <i class="fa fa-id-card"></i>
                 </div>
-
-            </a>
-
-        </div>
-
-        {{-- ASSIGNED --}}
-        <div class="col-xl-3 col-md-6 col-12">
-
-            <a
-                href="{{ route('admin.pan.index', ['filter' => 'assigned']) }}"
-                class="dashboard-link-card"
-            >
-
-                <div class="dash-card-modern bg-warning">
-
-                    <div>
-
-                        <h6>
-
-                            Assigned Applications
-
-                        </h6>
-
-                        <h2 class="counter">
-
-                            {{ $assignedApplications ?? 0 }}
-
-                        </h2>
-
-                    </div>
-
-                    <div class="icon">
-
-                        <i class="fa fa-user-check"></i>
-
-                    </div>
-
-                </div>
-
-            </a>
-
-        </div>
-
-        {{-- COMPLETED --}}
-        <div class="col-xl-3 col-md-6 col-12">
-
-            <a
-                href="{{ route('admin.pan.index', ['status' => 'completed']) }}"
-                class="dashboard-link-card"
-            >
-
-                <div class="dash-card-modern bg-info">
-
-                    <div>
-
-                        <h6>
-
-                            Completed Services
-
-                        </h6>
-
-                        <h2 class="counter">
-
-                            {{ $completedApplications ?? 0 }}
-
-                        </h2>
-
-                    </div>
-
-                    <div class="icon">
-
-                        <i class="fa fa-check-circle"></i>
-
-                    </div>
-
-                </div>
-
-            </a>
-
-        </div>
-
+            </div>
+        </a>
     </div>
 
+    {{-- ITR --}}
+    <div class="col-xl-2 col-lg-4 col-md-6 col-12">
+        <a href="{{ route('admin.itr.index') }}" class="dashboard-link-card">
+            <div class="dash-card-modern bg-success">
+                <div>
+                    <h6>ITR Applications</h6>
+                    <h2 class="counter">{{ $totalItrApplications ?? 0 }}</h2>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-file-invoice-dollar"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    {{-- RETAILERS --}}
+    <div class="col-xl-2 col-lg-4 col-md-6 col-12">
+        <div class="dash-card-modern bg-info">
+            <div>
+                <h6>Retailers</h6>
+                <h2 class="counter">{{ $totalRetailers ?? 0 }}</h2>
+            </div>
+            <div class="icon">
+                <i class="fa fa-store"></i>
+            </div>
+        </div>
+    </div>
+
+    {{-- DISTRIBUTORS --}}
+    <div class="col-xl-2 col-lg-4 col-md-6 col-12">
+        <div class="dash-card-modern bg-purple">
+            <div>
+                <h6>Distributors</h6>
+                <h2 class="counter">{{ $totalDistributors ?? 0 }}</h2>
+            </div>
+            <div class="icon">
+                <i class="fa fa-network-wired"></i>
+            </div>
+        </div>
+    </div>
+
+    {{-- ASSIGNED --}}
+    <div class="col-xl-2 col-lg-4 col-md-6 col-12">
+        <a href="{{ route('admin.pan.index', ['filter' => 'assigned']) }}"
+           class="dashboard-link-card">
+            <div class="dash-card-modern bg-warning">
+                <div>
+                    <h6>Assigned</h6>
+                    <h2 class="counter">{{ $assignedApplications ?? 0 }}</h2>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-user-check"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    {{-- COMPLETED --}}
+    <div class="col-xl-2 col-lg-4 col-md-6 col-12">
+        <a href="{{ route('admin.pan.index', ['status' => 'completed']) }}"
+           class="dashboard-link-card">
+            <div class="dash-card-modern bg-secondary">
+                <div>
+                    <h6>Completed</h6>
+                    <h2 class="counter">{{ $completedApplications ?? 0 }}</h2>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-check-circle"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+
+</div>
 
     {{-- =========================================================
     | SECOND ROW
@@ -308,7 +240,13 @@
 
                         <h6>
 
-                            {{ $isExecutive ? 'Commission Earned' : 'Total Revenue' }}
+                            @if($isExecutive)
+                                Commission Earned
+                            @elseif($isDistributor)
+                                Distributor Earnings
+                            @else
+                                Total Revenue
+                            @endif
 
                         </h6>
 
@@ -447,6 +385,16 @@
 
                         </strong>
 
+                    </div>
+
+                    <div class="quick-stat-item">
+                        <span>Total Retailers</span>
+                        <strong>{{ $totalRetailers ?? 0 }}</strong>
+                    </div>
+
+                    <div class="quick-stat-item">
+                        <span>Total Distributors</span>
+                        <strong>{{ $totalDistributors ?? 0 }}</strong>
                     </div>
 
                     <div class="quick-stat-item border-0">

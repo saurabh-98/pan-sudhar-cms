@@ -252,7 +252,20 @@ class PermissionSeeder extends Seeder
             'voter.assign',
             'voter.status',
             'voter.delete',
-            'voter.document.upload'
+            'voter.document.upload',
+
+            'bank-account.view',
+            'bank-account.assign',
+            'bank-account.status',
+            'bank-account.delete',
+            'bank-account.upload',
+
+            'other-service.view',
+            'other-service.assign',
+            'other-service.status',
+            'other-service.delete',
+            'other-service.upload'
+
 
         ];
 

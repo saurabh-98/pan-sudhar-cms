@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/gallery-view.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/retailer-login.css') }}">
      <link rel="stylesheet" href="{{ asset('assets/css/executive-login.css') }}">
+     <link rel="stylesheet" href="{{ asset('assets/css/distributor-login.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/retailer-register.css') }}">
 
 
@@ -65,62 +66,44 @@
 
 <script>
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function(){
 
     const mobileToggle =
-    document.getElementById("mobileToggle");
+    document.getElementById('mobileToggle');
 
     const mobileMenu =
-    document.getElementById("mobileMenu");
+    document.getElementById('mobileMenu');
 
-    const overlay =
-    document.getElementById("mobileOverlay");
+    const mobileOverlay =
+    document.getElementById('mobileOverlay');
 
-    if(mobileToggle){
+    if(mobileToggle && mobileMenu && mobileOverlay){
 
-        mobileToggle.addEventListener("click", function () {
+        mobileToggle.addEventListener('click', function(){
 
-            mobileToggle.classList.toggle("active");
+            mobileToggle.classList.toggle('active');
 
-            mobileMenu.classList.toggle("show");
+            mobileMenu.classList.toggle('show');
 
-            overlay.classList.toggle("show");
+            mobileOverlay.classList.toggle('show');
 
-            document.body.classList.toggle("menu-open");
+            document.body.classList.toggle('menu-open');
+
+        });
+
+        mobileOverlay.addEventListener('click', function(){
+
+            mobileToggle.classList.remove('active');
+
+            mobileMenu.classList.remove('show');
+
+            mobileOverlay.classList.remove('show');
+
+            document.body.classList.remove('menu-open');
+
         });
 
     }
-
-    if(overlay){
-
-        overlay.addEventListener("click", function () {
-
-            mobileToggle.classList.remove("active");
-
-            mobileMenu.classList.remove("show");
-
-            overlay.classList.remove("show");
-
-            document.body.classList.remove("menu-open");
-        });
-
-    }
-
-    document.querySelectorAll(".main-nav a")
-    .forEach(link => {
-
-        link.addEventListener("click", () => {
-
-            mobileToggle?.classList.remove("active");
-
-            mobileMenu?.classList.remove("show");
-
-            overlay?.classList.remove("show");
-
-            document.body.classList.remove("menu-open");
-        });
-
-    });
 
 });
 
@@ -242,73 +225,43 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </script>
 
-<!-- =========================================================
-| USER DROPDOWN
-========================================================= -->
 
 <script>
 
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener('DOMContentLoaded', function(){
 
-    const dropdown =
-    document.querySelector(".user-dropdown");
+    const loginDropdown =
+    document.querySelector('.login-dropdown');
 
-    const trigger =
-    document.querySelector(".user-trigger");
+    const loginBtn =
+    document.querySelector('.login-dropdown-btn');
 
-    if(trigger){
+    if(loginBtn && loginDropdown){
 
-        trigger.addEventListener("click", function(e){
+        loginBtn.addEventListener('click', function(e){
 
-            e.stopPropagation();
+            if(window.innerWidth <= 991){
 
-            dropdown?.classList.toggle("active");
+                e.preventDefault();
+
+                e.stopPropagation();
+
+                loginDropdown.classList.toggle('active');
+            }
+
+        });
+
+        document.addEventListener('click', function(){
+
+            loginDropdown.classList.remove('active');
+
         });
 
     }
 
-    document.addEventListener("click", function(){
-
-        dropdown?.classList.remove("active");
-    });
-
 });
 
 </script>
-
-<!-- =========================================================
-| POPUP
-========================================================= -->
-
-<script>
-
-$(document).ready(function(){
-
-    let popupShown =
-    sessionStorage.getItem('popupShown');
-
-    if(!popupShown && $('#offerPopup').length){
-
-        setTimeout(()=>{
-
-            $('#offerPopup').fadeIn();
-
-            sessionStorage.setItem('popupShown', true);
-
-        }, 1200);
-    }
-
-});
-
-function closePopup(){
-
-    $('#offerPopup').fadeOut();
-}
-
-</script>
-
-
-
 
 @yield('scripts')
 

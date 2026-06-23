@@ -1,0 +1,300 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
+class StoreOtherServiceRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return auth()->check();
+    }
+
+    public function rules(): array
+    {
+        $service = $this->input('service_slug');
+
+        $rules = [
+
+            'service_name' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'service_slug' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+        ];
+
+        switch ($service) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | RAJ PATRA
+            |--------------------------------------------------------------------------
+            */
+
+            case 'raj-patra':
+
+                $rules += [
+
+                    'customer_name' => 'required|string|max:255',
+
+                    'mobile' => 'required|digits:10',
+
+                    'village_name' => 'required|string|max:255',
+
+                    'khata_number' => 'nullable|string|max:100',
+
+                    'plot_number' => 'nullable|string|max:100',
+
+                    'document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                ];
+
+            break;
+
+            /*
+            |--------------------------------------------------------------------------
+            | GST REGISTRATION / FILING
+            |--------------------------------------------------------------------------
+            */
+
+            case 'gst-registration-filing':
+
+                $rules += [
+
+                    'customer_name' => 'required|string|max:255',
+
+                    'mobile' => 'required|digits:10',
+
+                    'business_name' => 'required|string|max:255',
+
+                    'pan_number' => 'required|string|max:20',
+
+                    'business_address' => 'required|string|max:1000',
+
+                    'document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                ];
+
+            break;
+
+            /*
+            |--------------------------------------------------------------------------
+            | FOOD LICENCE
+            |--------------------------------------------------------------------------
+            */
+
+            case 'food-licence':
+
+                $rules += [
+
+                    'customer_name' => 'required|string|max:255',
+
+                    'mobile' => 'required|digits:10',
+
+                    'shop_name' => 'required|string|max:255',
+
+                    'business_type' => 'required|string|max:255',
+
+                    'document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                ];
+
+            break;
+
+            /*
+            |--------------------------------------------------------------------------
+            | ITR FILING / TDS REFUND
+            |--------------------------------------------------------------------------
+            */
+
+            case 'itr-filing-tds-refund':
+
+                $rules += [
+
+                    'customer_name' => 'required|string|max:255',
+
+                    'mobile' => 'required|digits:10',
+
+                    'pan_number' => 'required|string|max:20',
+
+                    'assessment_year' => 'required|string|max:20',
+
+                    'document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                ];
+
+            break;
+
+            /*
+            |--------------------------------------------------------------------------
+            | DSC DIGITAL SIGNATURE
+            |--------------------------------------------------------------------------
+            */
+
+            case 'dsc-digital-signature':
+
+                $rules += [
+
+                    'customer_name' => 'required|string|max:255',
+
+                    'mobile' => 'required|digits:10',
+
+                    'aadhaar_number' => 'required|digits:12',
+
+                    'pan_number' => 'required|string|max:20',
+
+                    'organisation_name' => 'nullable|string|max:255',
+
+                    'document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                ];
+
+            break;
+
+            /*
+            |--------------------------------------------------------------------------
+            | MSME REGISTRATION
+            |--------------------------------------------------------------------------
+            */
+
+            case 'msme-registration':
+
+                $rules += [
+
+                    'customer_name' => 'required|string|max:255',
+
+                    'mobile' => 'required|digits:10',
+
+                    'business_name' => 'required|string|max:255',
+
+                    'business_type' => 'nullable|string|max:255',
+
+                    'document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                ];
+
+            break;
+
+            /*
+            |--------------------------------------------------------------------------
+            | IMPORT EXPORT CERTIFICATE
+            |--------------------------------------------------------------------------
+            */
+
+            case 'import-export-certificate':
+
+                $rules += [
+
+                    'customer_name' => 'required|string|max:255',
+
+                    'mobile' => 'required|digits:10',
+
+                    'firm_name' => 'required|string|max:255',
+
+                    'pan_number' => 'required|string|max:20',
+
+                    'document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                ];
+
+            break;
+
+            /*
+            |--------------------------------------------------------------------------
+            | RENT AGREEMENT
+            |--------------------------------------------------------------------------
+            */
+
+            case 'rent-agreement':
+
+                $rules += [
+
+                    'customer_name' => 'required|string|max:255',
+
+                    'mobile' => 'required|digits:10',
+
+                    'owner_name' => 'required|string|max:255',
+
+                    'tenant_name' => 'required|string|max:255',
+
+                    'property_address' => 'required|string|max:1000',
+
+                    'document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                ];
+
+            break;
+
+            /*
+            |--------------------------------------------------------------------------
+            | POLICE VERIFICATION
+            |--------------------------------------------------------------------------
+            */
+
+            case 'police-verification':
+
+                $rules += [
+
+                    'customer_name' => 'required|string|max:255',
+
+                    'mobile' => 'required|digits:10',
+
+                    'purpose' => 'required|string|max:255',
+
+                    'verification_address' => 'required|string|max:1000',
+
+                    'document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                ];
+
+            break;
+
+            default:
+
+                $rules['service_slug'][] = Rule::in([
+
+                    'raj-patra',
+
+                    'gst-registration-filing',
+
+                    'food-licence',
+
+                    'itr-filing-tds-refund',
+
+                    'dsc-digital-signature',
+
+                    'msme-registration',
+
+                    'import-export-certificate',
+
+                    'rent-agreement',
+
+                    'police-verification',
+
+                ]);
+        }
+
+        return $rules;
+    }
+
+    public function messages(): array
+    {
+        return [
+
+            '*.required' =>
+                'This field is required.',
+
+            '*.digits' =>
+                'Invalid number format.',
+
+            '*.email' =>
+                'Please enter a valid email address.',
+
+            '*.mimes' =>
+                'Only JPG, JPEG, PNG and PDF files are allowed.',
+
+            '*.max' =>
+                'The uploaded file size exceeds the allowed limit.',
+        ];
+    }
+}

@@ -49,7 +49,9 @@
              "app/Helpers/VoterIdSessionHelper.php",
             "app/Helpers/VoterIdFormHelper.php",
             "app/Helpers/BankAccountSessionHelper.php",
-            "app/Helpers/BankAccountFormHelper.php"
+            "app/Helpers/BankAccountFormHelper.php",
+             "app/Helpers/OtherServiceSessionHelper.php",
+            "app/Helpers/OtherServiceFormHelper.php"
         ]
     },
 

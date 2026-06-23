@@ -707,3 +707,12 @@
         --bs-gutter-y:1rem;
     }
 }
+
+.bg-purple{
+    background: linear-gradient(135deg,#7c3aed,#9333ea);
+    color:#fff;
+}
+
+.bg-purple .icon{
+    color:rgba(255,255,255,.25);
+}

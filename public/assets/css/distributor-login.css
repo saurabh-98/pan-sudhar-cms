@@ -1,0 +1,663 @@
+/* ==========================================================
+   DISTRIBUTOR LOGIN PORTAL
+========================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root{
+
+    --dist-primary:#059669;
+    --dist-primary-dark:#047857;
+
+    --dist-secondary:#0891b2;
+
+    --dist-success:#10b981;
+
+    --dist-dark:#0f172a;
+
+    --dist-text:#334155;
+
+    --dist-muted:#64748b;
+
+    --dist-border:#e2e8f0;
+
+    --dist-white:#ffffff;
+
+    --dist-bg:#f8fafc;
+
+    --dist-radius:28px;
+
+    --dist-shadow:
+    0 25px 70px rgba(15,23,42,.15);
+
+    --dist-transition:
+    all .35s cubic-bezier(.4,0,.2,1);
+
+}
+
+/* ==========================================================
+   BODY
+========================================================== */
+
+body{
+
+    margin:0;
+
+    min-height:100vh;
+
+    overflow-x:hidden;
+
+    font-family:'Inter',sans-serif;
+
+    background:
+    radial-gradient(
+        circle at top left,
+        rgba(5,150,105,.18),
+        transparent 30%
+    ),
+    radial-gradient(
+        circle at bottom right,
+        rgba(8,145,178,.18),
+        transparent 35%
+    ),
+    linear-gradient(
+        135deg,
+        #ecfdf5,
+        #f0fdfa,
+        #eff6ff
+    );
+
+}
+
+/* ==========================================================
+   WRAPPER
+========================================================== */
+
+.dist-wrapper{
+
+    min-height:100vh;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:35px 20px;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+/* ==========================================================
+   FLOATING SHAPES
+========================================================== */
+
+.dist-shape{
+
+    position:absolute;
+
+    border-radius:50%;
+
+    filter:blur(90px);
+
+    pointer-events:none;
+
+}
+
+.dist-shape-1{
+
+    width:350px;
+    height:350px;
+
+    top:-120px;
+    left:-120px;
+
+    background:
+    rgba(5,150,105,.25);
+
+}
+
+.dist-shape-2{
+
+    width:320px;
+    height:320px;
+
+    right:-120px;
+    bottom:-120px;
+
+    background:
+    rgba(8,145,178,.22);
+
+}
+
+/* ==========================================================
+   MAIN CARD
+========================================================== */
+
+.dist-card{
+
+    width:100%;
+
+    max-width:1180px;
+
+    border-radius:32px;
+
+    overflow:hidden;
+
+    background:
+    rgba(255,255,255,.85);
+
+    backdrop-filter:blur(20px);
+
+    box-shadow:
+    var(--dist-shadow);
+
+    border:
+    1px solid rgba(255,255,255,.6);
+
+    position:relative;
+
+    z-index:5;
+
+}
+
+/* ==========================================================
+   LEFT PANEL
+========================================================== */
+
+.dist-left{
+
+    height:100%;
+
+    min-height:720px;
+
+    position:relative;
+
+    padding:50px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #065f46,
+        #047857
+    );
+
+    color:#fff;
+
+    overflow:hidden;
+
+}
+
+.dist-overlay{
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+    radial-gradient(
+        circle at top right,
+        rgba(16,185,129,.30),
+        transparent 35%
+    );
+
+}
+
+.dist-left-content{
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+.dist-logo{
+
+    width:80px;
+
+    margin-bottom:30px;
+
+}
+
+.dist-left-title{
+
+    font-size:42px;
+
+    font-weight:900;
+
+    margin-bottom:18px;
+
+    line-height:1.15;
+
+}
+
+.dist-left-desc{
+
+    color:rgba(255,255,255,.82);
+
+    line-height:1.8;
+
+    font-size:15px;
+
+    margin-bottom:35px;
+
+}
+
+/* FEATURES */
+
+.dist-feature-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+
+}
+
+.dist-feature{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+    padding:16px;
+
+    border-radius:18px;
+
+    background:
+    rgba(255,255,255,.08);
+
+    backdrop-filter:blur(10px);
+
+    transition:var(--dist-transition);
+
+}
+
+.dist-feature:hover{
+
+    transform:translateX(8px);
+
+    background:
+    rgba(255,255,255,.12);
+
+}
+
+.dist-feature-icon{
+
+    width:52px;
+    height:52px;
+
+    border-radius:14px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    background:
+    linear-gradient(
+        135deg,
+        var(--dist-primary),
+        var(--dist-secondary)
+    );
+
+    color:#fff;
+
+    font-size:18px;
+
+}
+
+.dist-feature h5{
+
+    margin:0;
+
+    font-size:15px;
+
+    font-weight:700;
+
+}
+
+.dist-feature span{
+
+    font-size:13px;
+
+    color:#d1fae5;
+
+}
+
+/* RIGHT PANEL */
+
+.dist-right{
+
+    padding:55px;
+
+    background:#fff;
+
+    height:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+}
+
+/* HEADER */
+
+.dist-header{
+
+    text-align:center;
+
+    margin-bottom:35px;
+
+}
+
+.dist-login-icon{
+
+    width:95px;
+    height:95px;
+
+    margin:auto;
+
+    border-radius:24px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    background:
+    linear-gradient(
+        135deg,
+        var(--dist-primary),
+        var(--dist-secondary)
+    );
+
+    color:#fff;
+
+    font-size:34px;
+
+    margin-bottom:20px;
+
+    box-shadow:
+    0 20px 40px rgba(5,150,105,.25);
+
+}
+
+.dist-title{
+
+    font-size:34px;
+
+    font-weight:900;
+
+    color:var(--dist-dark);
+
+    margin-bottom:8px;
+
+}
+
+.dist-subtitle{
+
+    color:var(--dist-muted);
+
+    font-size:14px;
+
+}
+
+/* FORM */
+
+.dist-group{
+
+    margin-bottom:22px;
+
+}
+
+.dist-label{
+
+    display:block;
+
+    margin-bottom:10px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    color:var(--dist-dark);
+
+}
+
+.dist-input-wrap{
+
+    position:relative;
+
+}
+
+.dist-input-icon{
+
+    position:absolute;
+
+    left:18px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    color:#64748b;
+
+}
+
+.dist-input{
+
+    width:100%;
+
+    height:58px;
+
+    border-radius:16px;
+
+    border:2px solid #e2e8f0;
+
+    background:#f8fafc;
+
+    padding-left:52px;
+
+    padding-right:52px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    transition:var(--dist-transition);
+
+}
+
+.dist-input:focus{
+
+    outline:none;
+
+    border-color:var(--dist-primary);
+
+    background:#fff;
+
+    box-shadow:
+    0 0 0 4px rgba(5,150,105,.10);
+
+}
+
+.toggle-password{
+
+    position:absolute;
+
+    right:18px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    cursor:pointer;
+
+    color:#64748b;
+
+}
+
+/* OPTIONS */
+
+.dist-options{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    margin-bottom:24px;
+
+    font-size:14px;
+
+}
+
+.dist-forgot{
+
+    color:var(--dist-primary);
+
+    text-decoration:none;
+
+    font-weight:700;
+
+}
+
+/* CAPTCHA */
+
+.dist-captcha{
+
+    margin-bottom:24px;
+
+}
+
+/* BUTTON */
+
+.dist-btn{
+
+    width:100%;
+
+    height:60px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:
+    linear-gradient(
+        135deg,
+        var(--dist-primary),
+        var(--dist-secondary)
+    );
+
+    color:#fff;
+
+    font-size:15px;
+
+    font-weight:800;
+
+    cursor:pointer;
+
+    transition:var(--dist-transition);
+
+}
+
+.dist-btn:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+    0 20px 40px rgba(5,150,105,.25);
+
+}
+
+/* ERROR */
+
+.dist-error{
+
+    display:block;
+
+    margin-top:6px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    color:#ef4444;
+
+}
+
+/* FOOTER */
+
+.dist-footer{
+
+    text-align:center;
+
+    margin-top:30px;
+
+    color:#94a3b8;
+
+    font-size:13px;
+
+}
+
+/* RESPONSIVE */
+
+@media(max-width:991px){
+
+    .dist-left{
+        display:none;
+    }
+
+    .dist-card{
+        max-width:560px;
+    }
+
+    .dist-right{
+        padding:40px 28px;
+    }
+
+}
+
+@media(max-width:576px){
+
+    .dist-wrapper{
+        padding:15px;
+    }
+
+    .dist-right{
+        padding:28px 20px;
+    }
+
+    .dist-title{
+        font-size:28px;
+    }
+
+    .dist-login-icon{
+        width:75px;
+        height:75px;
+        font-size:28px;
+    }
+
+    .dist-input{
+        height:54px;
+    }
+
+    .dist-btn{
+        height:56px;
+    }
+
+    .dist-options{
+        flex-direction:column;
+        gap:10px;
+        align-items:flex-start;
+    }
+
+}

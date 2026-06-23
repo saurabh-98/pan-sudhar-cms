@@ -151,6 +151,31 @@
 
         ->count();
 
+
+        $voterIdCount = \App\Models\VoterIdService::query()
+        ->when(
+            auth()->user()->hasRole('Executive'),
+            fn ($query) => $query->where('assigned_to', auth()->id()),
+            fn ($query) => $query->whereNull('assigned_to')
+        )
+        ->count();
+
+    $bankAccountCount = \App\Models\BankAccountService::query()
+        ->when(
+            auth()->user()->hasRole('Executive'),
+            fn ($query) => $query->where('assigned_to', auth()->id()),
+            fn ($query) => $query->whereNull('assigned_to')
+        )
+        ->count();
+
+    $otherServiceCount = \App\Models\OtherService::query()
+        ->when(
+            auth()->user()->hasRole('Executive'),
+            fn ($query) => $query->where('assigned_to', auth()->id()),
+            fn ($query) => $query->whereNull('assigned_to')
+        )
+        ->count();
+
 @endphp
 
 <div id="sbxSidebar" class="sbx-sidebar">
@@ -298,242 +323,157 @@
 
 
         {{-- =====================================================
-        | NEW PAN MODULE
-        ====================================================== --}}
+        | CITIZEN SERVICES
+        ===================================================== --}}
         @if(
-            auth()->user()->can('pan.view')
+            auth()->user()->can('pan.view') ||
+            auth()->user()->can('aadhaar.view') ||
+            auth()->user()->can('csc.view') ||
+            auth()->user()->can('itr.view') ||
+            auth()->user()->can('voter-id.view') ||
+            auth()->user()->can('bank-account.view')
         )
 
         <li class="sbx-section">
-
-            PAN Services
-
+            Citizen Services
         </li>
 
         <li class="sbx-group">
 
             <ul class="sbx-submenu">
 
-                {{-- NEW PAN APPLICATIONS --}}
+                {{-- PAN APPLICATIONS --}}
+                @can('pan.view')
                 <li>
-
                     <a href="{{ route('admin.pan.index') }}"
-                    class="sbx-link
-                    {{ request()->routeIs('admin.pan.*')
-                            ? 'sbx-active' : '' }}">
-
+                    class="sbx-link {{ request()->routeIs('admin.pan.*') ? 'sbx-active' : '' }}">
                         <i class="fa fa-id-card"></i>
-
-                        <span>
-
-                            New PAN Applications
-
-                        </span>
+                        <span>New PAN Applications</span>
 
                         @if($panCount > 0)
-
                             <span class="sbx-count-badge">
-
                                 {{ $panCount }}
-
                             </span>
-
                         @endif
-
                     </a>
-
                 </li>
 
-                {{-- PAN CORRECTION APPLICATIONS --}}
                 <li>
-
                     <a href="{{ route('admin.pan-correction.index') }}"
-                    class="sbx-link
-                    {{ request()->routeIs('admin.pan-correction.*')
-                            ? 'sbx-active' : '' }}">
-
-                        <i class="fa fa-id-card"></i>
-
-                        <span>
-
-                            PAN Correction Applications
-
-                        </span>
+                    class="sbx-link {{ request()->routeIs('admin.pan-correction.*') ? 'sbx-active' : '' }}">
+                        <i class="fa fa-edit"></i>
+                        <span>PAN Corrections</span>
 
                         @if($panCorrectionCount > 0)
-
                             <span class="sbx-count-badge">
-
                                 {{ $panCorrectionCount }}
-
                             </span>
-
                         @endif
-
                     </a>
-
                 </li>
+                @endcan
 
-            </ul>
-
-        </li>
-
-        @endif
-
-
-        {{-- =====================================================
-        | ITR MODULE
-        ====================================================== --}}
-        @if(
-            auth()->user()->can('itr.view')
-        )
-
-        <li class="sbx-section">
-
-            ITR Services
-
-        </li>
-
-        <li class="sbx-group">
-
-            <ul class="sbx-submenu">
-
-                {{-- ITR APPLICATIONS --}}
+                {{-- AADHAAR --}}
+                @can('aadhaar.view')
                 <li>
+                    <a href="{{ route('admin.aadhaar.index') }}"
+                    class="sbx-link {{ request()->routeIs('admin.aadhaar.*') ? 'sbx-active' : '' }}">
+                        <i class="fa fa-address-card"></i>
+                        <span>Aadhaar Services</span>
 
+                        @if($aadhaarCount > 0)
+                            <span class="sbx-count-badge">
+                                {{ $aadhaarCount }}
+                            </span>
+                        @endif
+                    </a>
+                </li>
+                @endcan
+
+                {{-- CSC --}}
+                @can('csc.view')
+                <li>
+                    <a href="{{ route('admin.csc.index') }}"
+                    class="sbx-link {{ request()->routeIs('admin.csc.*') ? 'sbx-active' : '' }}">
+                        <i class="fa fa-cogs"></i>
+                        <span>CSC Services</span>
+
+                        @if($cscCount > 0)
+                            <span class="sbx-count-badge">
+                                {{ $cscCount }}
+                            </span>
+                        @endif
+                    </a>
+                </li>
+                @endcan
+
+                {{-- ITR --}}
+                @can('itr.view')
+                <li>
                     <a href="{{ route('admin.itr.index') }}"
-                    class="sbx-link
-                    {{ request()->routeIs('admin.itr.*')
-                            ? 'sbx-active' : '' }}">
-
+                    class="sbx-link {{ request()->routeIs('admin.itr.*') ? 'sbx-active' : '' }}">
                         <i class="fa fa-file-invoice-dollar"></i>
-
-                        <span>
-
-                            ITR Applications
-
-                        </span>
+                        <span>ITR Services</span>
 
                         @if($itrCount > 0)
-
                             <span class="sbx-count-badge">
-
                                 {{ $itrCount }}
-
                             </span>
-
                         @endif
-
                     </a>
-
                 </li>
+                @endcan
 
-            </ul>
-
-        </li>
-
-        @endif
-
-        {{-- =====================================================
-        | AADHAAR MODULE
-        ====================================================== --}}
-        @if(
-            auth()->user()->can('aadhaar.view')
-        )
-
-        <li class="sbx-section">
-
-            Aadhaar Services
-
-        </li>
-
-        <li class="sbx-group">
-
-            <ul class="sbx-submenu">
-
+                {{-- VOTER ID --}}
+                @can('voter-id.view')
                 <li>
+                    <a href="{{ route('admin.voter-id.index') }}"
+                    class="sbx-link {{ request()->routeIs('admin.voter-id.*') ? 'sbx-active' : '' }}">
+                        <i class="fa fa-vote-yea"></i>
+                        <span>Voter ID Services</span>
 
-                    <a href="{{ route('admin.aadhaar.index') }}"
-                    class="sbx-link
-                    {{ request()->routeIs('admin.aadhaar.*')
-                            ? 'sbx-active' : '' }}">
-
-                        <i class="fa fa-id-card"></i>
-
-                        <span>
-
-                            Aadhaar Applications
-
-                        </span>
-
-                        @if($aadhaarCount > 0)
-
+                        @if($voterIdCount > 0)
                             <span class="sbx-count-badge">
-
-                                {{ $aadhaarCount }}
-
+                                {{ $voterIdCount }}
                             </span>
-
                         @endif
-
                     </a>
-
                 </li>
+                @endcan
 
-            </ul>
-
-        </li>
-
-        @endif
-
-
-
-
-         {{-- =====================================================
-        | CSC MODULE
-        ====================================================== --}}
-        @if(
-            auth()->user()->can('csc.view')
-        )
-
-        <li class="sbx-section">
-
-            Csc Services
-
-        </li>
-
-        <li class="sbx-group">
-
-            <ul class="sbx-submenu">
-
+                {{-- BANK ACCOUNT --}}
+                @can('bank-account.view')
                 <li>
+                    <a href="{{ route('admin.bank-account.index') }}"
+                    class="sbx-link {{ request()->routeIs('admin.bank-account.*') ? 'sbx-active' : '' }}">
+                        <i class="fa fa-university"></i>
+                        <span>Bank Account Services</span>
 
-                    <a href="{{ route('admin.csc.index') }}"
-                    class="sbx-link
-                    {{ request()->routeIs('admin.csc.*')
-                            ? 'sbx-active' : '' }}">
-
-                        <i class="fa fa-id-card"></i>
-
-                        <span>
-
-                            Csc Applications
-
-                        </span>
-
-                        @if($aadhaarCount > 0)
-
+                        @if($bankAccountCount > 0)
                             <span class="sbx-count-badge">
-
-                                {{ $cscCount }}
-
+                                {{ $bankAccountCount }}
                             </span>
-
                         @endif
-
                     </a>
-
                 </li>
+                @endcan
+
+                {{-- OTHER SERVICE --}}
+                @can('other-service.view')
+                <li>
+                    <a href="{{ route('admin.other-service.index') }}"
+                    class="sbx-link {{ request()->routeIs('admin.other-service.*') ? 'sbx-active' : '' }}">
+                        <i class="fa fa-university"></i>
+                        <span>Other Services</span>
+
+                        @if($otherServiceCount > 0)
+                            <span class="sbx-count-badge">
+                                {{ $otherServiceCount }}
+                            </span>
+                        @endif
+                    </a>
+                </li>
+                @endcan
 
             </ul>
 

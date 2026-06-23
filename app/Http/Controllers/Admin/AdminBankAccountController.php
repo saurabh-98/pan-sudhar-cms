@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use ZipArchive;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\AadhaarService;
+use App\Models\BankAccountService;
 use App\Models\ServiceDocument;
 use App\Models\WalletTransaction;
 use App\Http\Controllers\Controller;
@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\File;
 
 
-class AdminAadhaarController extends Controller
+class AdminBankAccountController extends Controller
 {
 
     
@@ -24,7 +24,7 @@ class AdminAadhaarController extends Controller
     {
         if ($request->ajax()) {
 
-            $applications = AadhaarService::query()
+            $applications = BankAccountService::query()
 
                 ->with([
                     'user',
@@ -307,7 +307,7 @@ class AdminAadhaarController extends Controller
                             <a href="'
 
                             . route(
-                                'admin.aadhaar.show',
+                                'admin.bank-account.show',
                                 $row->id
                             )
 
@@ -336,7 +336,7 @@ class AdminAadhaarController extends Controller
                                 action="'
 
                                 . route(
-                                    'admin.aadhaar.reject',
+                                    'admin.bank-account.reject',
                                     $row->id
                                 )
 
@@ -394,7 +394,7 @@ class AdminAadhaarController extends Controller
                 ->make(true);
         }
 
-        return view('admin.aadhaar.index');
+        return view('admin.bank-account.index');
     }
 
 
@@ -417,7 +417,7 @@ class AdminAadhaarController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $application = AadhaarService::query()
+        $application = BankAccountService::query()
 
             ->with([
 
@@ -491,7 +491,7 @@ class AdminAadhaarController extends Controller
 
         return view(
 
-            'admin.aadhaar.show',
+            'admin.bank-account.show',
 
             compact(
 
@@ -560,7 +560,7 @@ class AdminAadhaarController extends Controller
             ], 422);
         }
 
-        $application = AadhaarService::findOrFail(
+        $application = BankAccountService::findOrFail(
             $id
         );
 
@@ -603,7 +603,7 @@ class AdminAadhaarController extends Controller
 
             'status' => true,
 
-            'message' => 'Aadhar Assigned Successfully.',
+            'message' => 'Bank Account Service Assigned Successfully.',
 
             'data' => [
 
@@ -677,7 +677,7 @@ class AdminAadhaarController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $application = AadhaarService::findOrFail($id);
+        $application = BankAccountService::findOrFail($id);
 
         /*
         |--------------------------------------------------------------------------
@@ -730,7 +730,7 @@ class AdminAadhaarController extends Controller
 
             $request->file('support_file'),
 
-            'service-documents/aadhaar'
+            'service-documents/bank-accounts'
 
         );
 
@@ -753,7 +753,7 @@ class AdminAadhaarController extends Controller
 
         ServiceDocument::create([
 
-            'service_type'  => 'aadhaar',
+            'service_type'  => 'bank',
 
             'service_id'    => $application->id,
 
@@ -838,7 +838,7 @@ class AdminAadhaarController extends Controller
 
             'remark'  =>
 
-                'Aadhaar Service Commission #' .
+                'Bank Service Commission #' .
                 $application->application_no
 
         ]);
@@ -861,7 +861,7 @@ class AdminAadhaarController extends Controller
 
                 'remark'  =>
 
-                    'Executive Aadhaar Commission #' .
+                    'Executive Bank Commission #' .
                     $application->application_no
 
             ]);
@@ -891,7 +891,7 @@ class AdminAadhaarController extends Controller
 
             'message' =>
 
-                'Aadhaar receipt uploaded successfully.',
+                'bank Service receipt uploaded successfully.',
 
             'file_url' => file_url($path)
 
@@ -903,7 +903,7 @@ class AdminAadhaarController extends Controller
 
     public function downloadDocuments(int $id)
     {
-        $application = AadhaarService::with([
+        $application = BankAccountService::with([
             'serviceDocuments.user'
         ])->findOrFail($id);
 
@@ -930,7 +930,7 @@ class AdminAadhaarController extends Controller
         */
 
         $zipFileName =
-            'aadhaar-documents-' .
+            'csc-documents-' .
             $application->application_no .
             '.zip';
 
@@ -1047,7 +1047,7 @@ class AdminAadhaarController extends Controller
 
                 logger()->error(
 
-                    'AADHAAR DOCUMENT ZIP ERROR',
+                    'CSC DOCUMENT ZIP ERROR',
 
                     [
 
@@ -1130,7 +1130,7 @@ class AdminAadhaarController extends Controller
 
                 logger()->error(
 
-                    'AADHAAR EXECUTIVE DOCUMENT ZIP ERROR',
+                    'CSC EXECUTIVE DOCUMENT ZIP ERROR',
 
                     [
 
@@ -1162,178 +1162,170 @@ class AdminAadhaarController extends Controller
 
     
 
-    public function reject($id)
-    {
-        try {
+    public function reject(int $id)
+{
+try {
 
-            DB::beginTransaction();
 
-            $application = AadhaarService::lockForUpdate()
-                ->findOrFail($id);
+    DB::beginTransaction();
 
-            if (
-                in_array(
-                    strtolower($application->status),
-                    ['approved', 'completed']
-                )
-            ) {
-                DB::rollBack();
+    $application = BankAccountService::lockForUpdate()
+        ->findOrFail($id);
 
-                return back()->with(
-                    'error',
-                    'Approved or completed application cannot be rejected.'
-                );
-            }
+    if (
+        in_array(
+            strtolower($application->status),
+            ['approved', 'completed']
+        )
+    ) {
+        DB::rollBack();
 
-            if (
-                strtolower($application->status) === 'rejected'
-            ) {
-                DB::rollBack();
+        return back()->with(
+            'error',
+            'Approved or completed application cannot be rejected.'
+        );
+    }
 
-                return back()->with(
-                    'error',
-                    'Application already rejected.'
-                );
-            }
+    if (
+        strtolower($application->status) === 'rejected'
+    ) {
+        DB::rollBack();
 
-            /*
-            |--------------------------------------------------------------------------
-            | REFUND PROCESS
-            |--------------------------------------------------------------------------
-            */
+        return back()->with(
+            'error',
+            'Application already rejected.'
+        );
+    }
 
-            if (
-                $application->wallet_deducted &&
-                $application->amount > 0
-            ) {
+    /*
+    |--------------------------------------------------------------------------
+    | REFUND PROCESS
+    |--------------------------------------------------------------------------
+    */
 
-                $retailer = User::lockForUpdate()
-                    ->findOrFail(
-                        $application->user_id
-                    );
+    if (
+        $application->wallet_deducted &&
+        $application->amount > 0
+    ) {
 
-                /*
-                |--------------------------------------------------------------------------
-                | ADMIN USER
-                |--------------------------------------------------------------------------
-                */
-
-                $admin = User::lockForUpdate()
-                    ->role('admin')
-                    ->first();
-
-                if (!$admin) {
-                    throw new \Exception(
-                        'Admin account not found.'
-                    );
-                }
-
-                /*
-                |--------------------------------------------------------------------------
-                | DEBIT ADMIN WALLET
-                |--------------------------------------------------------------------------
-                */
-
-                if (
-                    $admin->wallet_balance <
-                    $application->amount
-                ) {
-                    throw new \Exception(
-                        'Admin wallet balance is insufficient.'
-                    );
-                }
-
-                $admin->decrement(
-                    'wallet_balance',
-                    $application->amount
-                );
-
-                WalletTransaction::create([
-
-                    'user_id' => $admin->id,
-
-                    'receiver_id' => $retailer->id,
-
-                    'amount' => $application->amount,
-
-                    'type' => 'debit',
-
-                    'transaction_type' => 'aadhaar_refund',
-
-                    'remark' =>
-                        'Refund amount debited for Aadhaar Application No. '
-                        . $application->application_no
-
-                ]);
-
-                /*
-                |--------------------------------------------------------------------------
-                | CREDIT RETAILER WALLET
-                |--------------------------------------------------------------------------
-                */
-
-                $retailer->increment(
-                    'wallet_balance',
-                    $application->amount
-                );
-
-                WalletTransaction::create([
-
-                    'user_id' => $retailer->id,
-
-                    'receiver_id' => $admin->id,
-
-                    'amount' => $application->amount,
-
-                    'type' => 'credit',
-
-                    'transaction_type' => 'aadhaar_refund',
-
-                    'remark' =>
-                        'Refund received for Aadhaar Application No. '
-                        . $application->application_no
-
-                ]);
-
-                /*
-                |--------------------------------------------------------------------------
-                | MARK REFUNDED
-                |--------------------------------------------------------------------------
-                */
-
-                $application->wallet_deducted = 0;
-
-                $application->wallet_deducted_at = null;
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | UPDATE STATUS
-            |--------------------------------------------------------------------------
-            */
-
-            $application->status = 'Rejected';
-
-            $application->admin_remark =
-                'Rejected by Admin';
-
-            $application->save();
-
-            DB::commit();
-
-            return back()->with(
-                'success',
-                'Application rejected and amount refunded successfully.'
+        $retailer = User::lockForUpdate()
+            ->findOrFail(
+                $application->user_id
             );
 
-        } catch (\Exception $e) {
+        $admin = User::lockForUpdate()
+            ->role('admin')
+            ->first();
 
-            DB::rollBack();
-
-            return back()->with(
-                'error',
-                $e->getMessage()
+        if (!$admin) {
+            throw new \Exception(
+                'Admin account not found.'
             );
         }
+
+        if (
+            $admin->wallet_balance <
+            $application->amount
+        ) {
+            throw new \Exception(
+                'Admin wallet balance is insufficient.'
+            );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | DEBIT ADMIN
+        |--------------------------------------------------------------------------
+        */
+
+        $admin->decrement(
+            'wallet_balance',
+            $application->amount
+        );
+
+        WalletTransaction::create([
+
+            'user_id'          => $admin->id,
+
+            'receiver_id'      => $retailer->id,
+
+            'amount'           => $application->amount,
+
+            'type'             => 'debit',
+
+            'transaction_type' => 'bank_account_refund',
+
+            'remark'           =>
+                'Refund amount debited for Bank Account Service Application No. '
+                . $application->application_no
+
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | CREDIT RETAILER
+        |--------------------------------------------------------------------------
+        */
+
+        $retailer->increment(
+            'wallet_balance',
+            $application->amount
+        );
+
+        WalletTransaction::create([
+
+            'user_id'          => $retailer->id,
+
+            'receiver_id'      => $admin->id,
+
+            'amount'           => $application->amount,
+
+            'type'             => 'credit',
+
+            'transaction_type' => 'bank_account_refund',
+
+            'remark'           =>
+                'Refund received for Bank Account Service Application No. '
+                . $application->application_no
+
+        ]);
+
+        $application->wallet_deducted = 0;
+
+        $application->wallet_deducted_at = null;
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE STATUS
+    |--------------------------------------------------------------------------
+    */
+
+    $application->status = 'Rejected';
+
+    $application->admin_remark =
+        'Rejected by Admin';
+
+    $application->save();
+
+    DB::commit();
+
+    return back()->with(
+        'success',
+        'Bank Account Service application rejected and amount refunded successfully.'
+    );
+
+} catch (\Exception $e) {
+
+    DB::rollBack();
+
+    return back()->with(
+        'error',
+        $e->getMessage()
+    );
+}
+
+
+}
+
 }

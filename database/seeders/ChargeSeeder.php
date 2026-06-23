@@ -526,6 +526,112 @@ class ChargeSeeder extends Seeder
         ],
 
 
+        /*
+        |--------------------------------------------------------------------------
+        | OTHER SERVICES
+        |--------------------------------------------------------------------------
+        */
+
+        [
+            'name'        => 'Raj Patra',
+            'code'        => 'raj_patra',
+            'type'        => 'fixed',
+            'value'       => 7000,
+            'description' => 'Raj Patra Service Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ],
+
+        [
+            'name'        => 'GST Registration / Filing',
+            'code'        => 'gst_registration_filing',
+            'type'        => 'fixed',
+            'value'       => 500,
+            'description' => 'GST Registration / Filing Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ],
+
+        [
+            'name'        => 'Food Licence',
+            'code'        => 'food_licence',
+            'type'        => 'fixed',
+            'value'       => 500,
+            'description' => 'Food Licence Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ],
+
+        [
+            'name'        => 'ITR Filing / TDS Refund',
+            'code'        => 'itr_filing_tds_refund',
+            'type'        => 'fixed',
+            'value'       => 500,
+            'description' => 'ITR Filing / TDS Refund Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ],
+
+        [
+            'name'        => 'DSC Digital Signature',
+            'code'        => 'dsc_digital_signature',
+            'type'        => 'fixed',
+            'value'       => 2000,
+            'description' => 'DSC Digital Signature Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ],
+
+        [
+            'name'        => 'MSME Registration',
+            'code'        => 'msme_registration',
+            'type'        => 'fixed',
+            'value'       => 100,
+            'description' => 'MSME Registration Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ],
+
+        [
+            'name'        => 'Import Export Certificate',
+            'code'        => 'import_export_certificate',
+            'type'        => 'fixed',
+            'value'       => 600,
+            'description' => 'Import Export Certificate Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ],
+
+        [
+            'name'        => 'Rent Agreement',
+            'code'        => 'rent_agreement',
+            'type'        => 'fixed',
+            'value'       => 250,
+            'description' => 'Rent Agreement Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ],
+
+        [
+            'name'        => 'Police Verification',
+            'code'        => 'police_verification',
+            'type'        => 'fixed',
+            'value'       => 100,
+            'description' => 'Police Verification Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ],
+
+
         ]);
     }
 }

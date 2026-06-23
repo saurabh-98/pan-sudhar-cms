@@ -1,662 +1,448 @@
 /* =========================================================
-   PRODUCTION READY PREMIUM DESKTOP NAVBAR
-========================================================= */
-
-/* =========================================================
-   ROOT CONTAINER
+MODERN NAVBAR 2026
 ========================================================= */
 
 .container-custom{
-
-    width:100%;
-
-    max-width:1320px;
-
-    margin:auto;
-
-    padding:0 18px;
+max-width:1320px;
+margin:auto;
+padding:0 20px;
 }
 
 /* =========================================================
-   MAIN NAVBAR
+HEADER
 ========================================================= */
+
+.modern-header{
+position:sticky;
+top:0;
+z-index:9999;
+}
 
 .header-navbar{
 
-    position:relative;
 
-    overflow:hidden;
+background:
+linear-gradient(
+    135deg,
+    #0f172a,
+    #1e293b,
+    #312e81
+);
 
-    background:
-        linear-gradient(
-            135deg,
-            #0f172a 0%,
-            #1e293b 35%,
-            #312e81 70%,
-            #4338ca 100%
-        );
+border-bottom:
+1px solid rgba(255,255,255,.08);
 
-    backdrop-filter:blur(22px);
+backdrop-filter:blur(20px);
 
-    border-top:
-        1px solid rgba(255,255,255,.04);
+box-shadow:
+0 10px 35px rgba(0,0,0,.20);
 
-    border-bottom:
-        1px solid rgba(255,255,255,.08);
 
-    box-shadow:
-        0 18px 50px rgba(0,0,0,.35);
-
-    transition:
-        background .35s ease,
-        box-shadow .35s ease;
 }
 
 /* =========================================================
-   NAVBAR GLOW EFFECTS
-========================================================= */
-
-.header-navbar::before{
-
-    content:'';
-
-    position:absolute;
-
-    top:-220px;
-    right:-140px;
-
-    width:460px;
-    height:460px;
-
-    border-radius:50%;
-
-    background:
-        radial-gradient(
-            rgba(99,102,241,.20),
-            transparent 72%
-        );
-
-    pointer-events:none;
-}
-
-.header-navbar::after{
-
-    content:'';
-
-    position:absolute;
-
-    bottom:-180px;
-    left:-140px;
-
-    width:380px;
-    height:380px;
-
-    border-radius:50%;
-
-    background:
-        radial-gradient(
-            rgba(14,165,233,.14),
-            transparent 72%
-        );
-
-    pointer-events:none;
-}
-
-/* =========================================================
-   SCROLL EFFECT
-========================================================= */
-
-.modern-header.scrolled .header-navbar{
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(15,23,42,.97),
-            rgba(30,41,59,.98),
-            rgba(49,46,129,.97)
-        );
-
-    box-shadow:
-        0 20px 60px rgba(0,0,0,.42);
-}
-
-/* =========================================================
-   NAVBAR WRAPPER
+NAVBAR WRAPPER
 ========================================================= */
 
 .navbar-wrapper{
 
-    position:relative;
 
-    z-index:5;
+min-height:82px;
 
-    min-height:88px;
+display:flex;
 
-    display:flex;
+align-items:center;
 
-    align-items:center;
+justify-content:space-between;
 
-    justify-content:space-between;
+gap:25px;
 
-    gap:24px;
+
 }
 
 /* =========================================================
-   BRAND LOGO
+LOGO
 ========================================================= */
 
 .brand-logo{
 
-    display:flex;
 
-    align-items:center;
+display:flex;
 
-    gap:14px;
+align-items:center;
 
-    text-decoration:none;
+gap:14px;
 
-    flex-shrink:0;
+text-decoration:none;
 
-    max-width:260px;
 
-    min-width:auto;
-
-    transition:.35s ease;
 }
-
-.brand-logo:hover{
-
-    transform:translateY(-2px);
-}
-
-/* =========================================================
-   LOGO ICON
-========================================================= */
 
 .logo-icon{
 
-    width:58px;
-    height:58px;
 
-    min-width:58px;
+width:54px;
+height:54px;
 
-    border-radius:18px;
+border-radius:14px;
 
-    position:relative;
+display:flex;
 
-    display:flex;
+align-items:center;
+justify-content:center;
 
-    align-items:center;
+background:
+linear-gradient(
+    135deg,
+    #3b82f6,
+    #2563eb
+);
 
-    justify-content:center;
+box-shadow:
+0 10px 25px rgba(37,99,235,.30);
 
-    overflow:hidden;
 
-    background:
-        linear-gradient(
-            135deg,
-            #3b82f6,
-            #2563eb,
-            #1d4ed8
-        );
-
-    box-shadow:
-        0 14px 32px rgba(37,99,235,.35);
-
-    transition:.35s ease;
-}
-
-/* INNER LIGHT */
-
-.logo-icon::before{
-
-    content:'';
-
-    position:absolute;
-
-    inset:0;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(255,255,255,.16),
-            transparent
-        );
 }
 
 .logo-icon img{
 
-    width:34px;
-    height:34px;
 
-    object-fit:contain;
+width:32px;
+height:32px;
 
-    position:relative;
+object-fit:contain;
 
-    z-index:2;
-}
 
-/* =========================================================
-   LOGO TEXT
-========================================================= */
-
-.logo-text{
-
-    display:flex;
-
-    flex-direction:column;
-
-    min-width:0;
 }
 
 .logo-text h2{
 
-    margin:0;
 
-    font-size:20px;
+margin:0;
 
-    line-height:1.05;
+color:#fff;
 
-    font-weight:900;
+font-size:20px;
 
-    color:#ffffff;
+font-weight:800;
 
-    white-space:nowrap;
 
-    letter-spacing:-0.3px;
-}
-
-.logo-text span{
-
-    margin-top:4px;
-
-    font-size:10px;
-
-    font-weight:700;
-
-    letter-spacing:1.5px;
-
-    text-transform:uppercase;
-
-    color:rgba(255,255,255,.68);
-
-    white-space:nowrap;
 }
 
 /* =========================================================
-   NAV CONTAINER
+MENU
 ========================================================= */
 
 .nav-container{
 
-    flex:1;
 
-    min-width:0;
+flex:1;
 
-    display:flex;
+display:flex;
 
-    align-items:center;
+align-items:center;
 
-    justify-content:space-between;
+justify-content:space-between;
 
-    gap:18px;
+gap:20px;
+
+
 }
-
-/* =========================================================
-   MAIN NAVIGATION
-========================================================= */
 
 .main-nav{
 
-    display:flex;
 
-    align-items:center;
+display:flex;
 
-    justify-content:center;
+align-items:center;
 
-    gap:2px;
+gap:6px;
 
-    flex-wrap:nowrap;
 
-    min-width:0;
-
-    overflow:hidden;
 }
-
-/* =========================================================
-   NAV LINKS
-========================================================= */
 
 .main-nav a{
 
-    position:relative;
 
-    display:flex;
+height:42px;
 
-    align-items:center;
+display:flex;
 
-    justify-content:center;
+align-items:center;
 
-    height:46px;
+padding:0 14px;
 
-    padding:0 12px;
+border-radius:10px;
 
-    border-radius:13px;
+text-decoration:none;
 
-    overflow:hidden;
+color:rgba(255,255,255,.85);
 
-    white-space:nowrap;
+font-size:14px;
 
-    text-decoration:none;
+font-weight:600;
 
-    color:rgba(255,255,255,.88);
+transition:.3s;
 
-    font-size:13px;
 
-    font-weight:700;
-
-    letter-spacing:.2px;
-
-    transition:.35s ease;
-
-    flex-shrink:1;
 }
-
-/* =========================================================
-   HOVER LIGHT EFFECT
-========================================================= */
-
-.main-nav a::before{
-
-    content:'';
-
-    position:absolute;
-
-    top:0;
-    left:-100%;
-
-    width:100%;
-    height:100%;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(255,255,255,.10),
-            transparent
-        );
-
-    transition:.6s ease;
-}
-
-.main-nav a:hover::before{
-
-    left:100%;
-}
-
-/* =========================================================
-   ACTIVE LINE
-========================================================= */
-
-.main-nav a::after{
-
-    content:'';
-
-    position:absolute;
-
-    left:50%;
-    bottom:6px;
-
-    transform:translateX(-50%);
-
-    width:0;
-
-    height:3px;
-
-    border-radius:50px;
-
-    background:
-        linear-gradient(
-            90deg,
-            #60a5fa,
-            #38bdf8
-        );
-
-    transition:.35s ease;
-}
-
-.main-nav a:hover::after,
-.main-nav a.active::after{
-
-    width:60%;
-}
-
-/* =========================================================
-   HOVER / ACTIVE
-========================================================= */
 
 .main-nav a:hover,
 .main-nav a.active{
 
-    color:#ffffff;
 
-    background:
-        rgba(255,255,255,.08);
+background:
+rgba(255,255,255,.10);
 
-    transform:translateY(-2px);
+color:#fff;
+
+
 }
 
 /* =========================================================
-   ACTION BUTTONS
+ACTIONS
 ========================================================= */
 
 .nav-actions{
 
-    display:flex;
 
-    align-items:center;
+display:flex;
 
-    gap:8px;
+align-items:center;
 
-    flex-shrink:0;
+gap:10px;
+
+
 }
-
-/* =========================================================
-   BUTTONS
-========================================================= */
 
 .action-btn{
 
-    position:relative;
 
-    min-width:auto;
+height:44px;
 
-    height:42px;
+padding:0 18px;
 
-    padding:0 15px;
+border:none;
 
-    border-radius:14px;
+border-radius:12px;
 
-    display:flex;
+display:flex;
 
-    align-items:center;
+align-items:center;
 
-    justify-content:center;
+gap:8px;
 
-    gap:7px;
+text-decoration:none;
 
-    overflow:hidden;
+color:#fff;
 
-    white-space:nowrap;
+font-size:13px;
 
-    text-decoration:none;
+font-weight:700;
 
-    color:#ffffff;
+transition:.3s;
 
-    font-size:12px;
+cursor:pointer;
 
-    font-weight:700;
 
-    letter-spacing:.2px;
-
-    transition:.35s ease;
-
-    box-shadow:
-        0 12px 28px rgba(0,0,0,.18);
 }
-
-/* =========================================================
-   BUTTON SHINE
-========================================================= */
-
-.action-btn::before{
-
-    content:'';
-
-    position:absolute;
-
-    top:0;
-    left:-100%;
-
-    width:100%;
-    height:100%;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(255,255,255,.16),
-            transparent
-        );
-
-    transition:.6s ease;
-}
-
-.action-btn:hover::before{
-
-    left:100%;
-}
-
-/* =========================================================
-   BUTTON HOVER
-========================================================= */
 
 .action-btn:hover{
 
-    transform:
-        translateY(-3px)
-        scale(1.02);
 
-    color:#ffffff;
-}
+transform:translateY(-2px);
 
-/* =========================================================
-   BUTTON COLORS
-========================================================= */
 
-.student-btn{
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #1d4ed8
-        );
 }
 
 .parent-btn{
 
-    background:
-        linear-gradient(
-            135deg,
-            #059669,
-            #047857
-        );
+
+background:
+linear-gradient(
+    135deg,
+    #10b981,
+    #059669
+);
+
+
+}
+
+.retailer-register-btn{
+
+
+background:
+linear-gradient(
+    135deg,
+    #3b82f6,
+    #2563eb
+);
+
+
 }
 
 .dept-btn{
 
-    background:
-        linear-gradient(
-            135deg,
-            #ea580c,
-            #c2410c
-        );
+background:
+linear-gradient(
+    135deg,
+    #f97316,
+    #ea580c
+);
+
+
 }
 
 /* =========================================================
-   MOBILE ELEMENTS HIDE
+DROPDOWN
 ========================================================= */
 
-.mobile-toggle,
-.mobile-overlay{
+.login-dropdown{
+position:relative;
+}
 
-    display:none !important;
+.login-dropdown-menu{
+
+
+position:absolute;
+
+top:55px;
+
+right:0;
+
+min-width:250px;
+
+background:#fff;
+
+border-radius:14px;
+
+overflow:hidden;
+
+box-shadow:
+0 20px 40px rgba(0,0,0,.15);
+
+opacity:0;
+
+visibility:hidden;
+
+transform:translateY(10px);
+
+transition:.3s;
+
+z-index:99999;
+
+
+}
+
+.login-dropdown:hover .login-dropdown-menu{
+
+
+opacity:1;
+
+visibility:visible;
+
+transform:translateY(0);
+
+
+}
+
+.dropdown-item{
+
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
+
+padding:15px 18px;
+
+text-decoration:none;
+
+color:#334155;
+
+font-weight:600;
+
+border-bottom:
+1px solid #f1f5f9;
+
+
+}
+
+.dropdown-item:last-child{
+border-bottom:none;
+}
+
+.dropdown-item:hover{
+
+background:#f8fafc;
+
+color:#2563eb;
+
+
 }
 
 /* =========================================================
-   LARGE DESKTOP
+MOBILE
 ========================================================= */
 
-@media(min-width:1400px){
-
-    .navbar-wrapper{
-
-        gap:36px;
-    }
-
-    .main-nav{
-
-        gap:6px;
-    }
-
-    .main-nav a{
-
-        padding:0 16px;
-
-        font-size:14px;
-    }
-
-    .action-btn{
-
-        padding:0 18px;
-
-        font-size:13px;
-    }
+.mobile-toggle{
+display:none;
 }
 
-/* =========================================================
-   LAPTOP
-========================================================= */
+@media(max-width:991px){
 
-@media(max-width:1200px){
+.navbar-wrapper{
+    flex-wrap:wrap;
+}
 
-    .navbar-wrapper{
+.nav-container{
 
-        gap:14px;
-    }
+    width:100%;
 
-    .brand-logo{
+    flex-direction:column;
+}
 
-        max-width:220px;
-    }
+.main-nav{
 
-    .logo-text h2{
+    flex-wrap:wrap;
 
-        font-size:18px;
-    }
+    justify-content:center;
+}
 
-    .main-nav a{
+.nav-actions{
 
-        padding:0 10px;
+    width:100%;
 
-        font-size:12px;
-    }
+    flex-direction:column;
+}
 
-    .action-btn{
+.action-btn{
+    width:100%;
+}
 
-        padding:0 12px;
+.login-dropdown{
+    width:100%;
+}
 
-        font-size:11px;
-    }
+.login-dropdown-menu{
+
+    position:relative;
+
+    top:10px;
+
+    width:100%;
+
+    opacity:1;
+
+    visibility:visible;
+
+    display:none;
+}
+
+.login-dropdown:hover .login-dropdown-menu{
+    display:block;
+}
+
+
 }

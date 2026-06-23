@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Response;
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ExecutiveLoginController;
+use App\Http\Controllers\DistributorLoginController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\AdmissionController;
 use App\Http\Controllers\NewsController;
@@ -376,5 +377,34 @@ Route::controller(
         '/executive/logout',
         'logout'
     )->name('executive.logout');
+
+});
+
+
+
+/*
+|--------------------------------------------------------------------------
+| DISTRIBUTOR AUTH
+|--------------------------------------------------------------------------
+*/
+
+Route::controller(
+    DistributorLoginController::class
+)->group(function () {
+
+    Route::get(
+        '/distributor/login',
+        'showLogin'
+    )->name('distributor.login');
+
+    Route::post(
+        '/distributor/login',
+        'login'
+    )->name('distributor.login.submit');
+
+    Route::post(
+        '/distributor/logout',
+        'logout'
+    )->name('distributor.logout');
 
 });
