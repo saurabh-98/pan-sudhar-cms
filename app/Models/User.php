@@ -373,4 +373,22 @@ public function retailerModules()
     );
 }
 
+
+/*
+|--------------------------------------------------------------------------
+| DISTRIBUTOR RETAILERS
+|--------------------------------------------------------------------------
+*/
+
+public function retailers()
+{
+    return $this->hasMany(
+
+        Retailer::class,
+
+        'distributor_id'
+
+    );
+}
+
 }

@@ -207,6 +207,8 @@
 
                             <th>District</th>
 
+                            <th>Distributor</th>
+
                             <th>Status</th>
                             
                             <th>Applied On</th>
@@ -528,12 +530,19 @@ $(function () {
                 },
 
                 {
+                    data: 'distributor',
+                    name: 'distributor',
+                    orderable: false,
+                    searchable: true
+                },
+
+                {
                     data: 'status',
                     name: 'status',
                     orderable: false,
                     searchable: false
                 },
-
+                
                 {
                     data: 'created_at',
                     name: 'created_at'

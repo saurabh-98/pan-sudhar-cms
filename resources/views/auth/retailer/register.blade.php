@@ -344,6 +344,45 @@
 
                                 </div>
 
+
+                                <!-- DISTRIBUTOR -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="form-group-modern">
+                                        <label>
+                                            Distributor
+                                        </label>
+
+                                        <div class="input-box">
+                                            <i class="fa-solid fa-user-tie"></i>
+
+                                            <select
+                                                name="distributor_id"
+                                                id="distributor_id"
+                                                class="form-control @error('distributor_id') is-invalid @enderror">
+
+                                                <option value="">Select Distributor</option>
+
+                                                @foreach($distributors as $distributor)
+                                                    <option
+                                                        value="{{ $distributor->id }}"
+                                                        {{ old('distributor_id') == $distributor->id ? 'selected' : '' }}>
+                                                        {{ $distributor->name }} ({{ $distributor->mobile }})
+                                                    </option>
+                                                @endforeach
+
+                                            </select>
+                                        </div>
+
+                                        <small class="validation-error text-danger"></small>
+
+                                        @error('distributor_id')
+                                            <small class="text-danger d-block mt-1">
+                                                {{ $message }}
+                                            </small>
+                                        @enderror
+                                    </div>
+                                </div>
+
                                 <!-- STATE -->
                                 <div class="col-md-6 mb-4">
 

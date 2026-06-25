@@ -2,705 +2,747 @@
 
 namespace App\Repositories;
 
-use App\Models\PanApplication;
+use Carbon\Carbon;
+use App\Models\User;
 use App\Models\ItrFile;
-use App\Models\ServiceDocument;
+use App\Models\Retailer;
+use App\Models\PanApplication;
+use App\Models\AadhaarService;
+use App\Models\BankAccountService;
+use App\Models\CscService;
 use App\Models\WalletTransaction;
+use App\Models\ServiceDocument;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardRepository
 {
-
     /*
     |--------------------------------------------------------------------------
-    | TOTAL PAN APPLICATIONS
+    | USER
     |--------------------------------------------------------------------------
     */
 
-    public function getTotalPanApplications()
+    protected User $user;
+
+    public function __construct()
     {
-
-        return PanApplication::query()
-
-            ->when(
-
-                auth()->user()->hasRole('Executive'),
-
-                function($query){
-
-                    $query->where(
-
-                        'assigned_to',
-
-                        auth()->id()
-
-                    );
-
-                }
-
-            )
-
-            ->count();
-
+        $this->user = Auth::user();
     }
 
-
     /*
     |--------------------------------------------------------------------------
-    | TOTAL ITR APPLICATIONS
+    | ROLE HELPERS
     |--------------------------------------------------------------------------
     */
 
-    public function getTotalItrApplications()
+    protected function isAdmin(): bool
     {
-
-        return ItrFile::query()
-
-            ->when(
-
-                auth()->user()->hasRole('Executive'),
-
-                function($query){
-
-                    $query->where(
-
-                        'assigned_to',
-
-                        auth()->id()
-
-                    );
-
-                }
-
-            )
-
-            ->count();
-
+        return $this->user->hasRole('Admin');
     }
 
+    protected function isDistributor(): bool
+    {
+        return $this->user->hasRole('Distributor');
+    }
+
+    protected function isExecutive(): bool
+    {
+        return $this->user->hasRole('Executive');
+    }
 
     /*
     |--------------------------------------------------------------------------
-    | ASSIGNED APPLICATIONS
+    | DISTRIBUTOR RETAILERS
     |--------------------------------------------------------------------------
     */
 
-    public function getAssignedApplications()
+    protected function distributorRetailerIds()
     {
+        return Retailer::where(
+            'distributor_id',
+            $this->user->id
+        )->pluck('id');
+    }
 
-        $panAssigned = PanApplication::query()
+    /*
+    |--------------------------------------------------------------------------
+    | APPLY PAN FILTER
+    |--------------------------------------------------------------------------
+    */
 
+    protected function panQuery(): Builder
+    {
+        $query = PanApplication::query();
+
+        if ($this->isAdmin()) {
+            return $query;
+        }
+
+        if ($this->isExecutive()) {
+            return $query->where(
+                'assigned_to',
+                $this->user->id
+            );
+        }
+
+        if ($this->isDistributor()) {
+
+            return $query->whereIn(
+                'user_id',
+                $this->distributorRetailerIds()
+            );
+        }
+
+        return $query;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | APPLY ITR FILTER
+    |--------------------------------------------------------------------------
+    */
+
+    protected function itrQuery(): Builder
+    {
+        $query = ItrFile::query();
+
+        if ($this->isAdmin()) {
+            return $query;
+        }
+
+        if ($this->isExecutive()) {
+            return $query->where(
+                'assigned_to',
+                $this->user->id
+            );
+        }
+
+        if ($this->isDistributor()) {
+
+            return $query->whereIn(
+                'user_id',
+                $this->distributorRetailerIds()
+            );
+        }
+
+        return $query;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | COUNT STATUS
+    |--------------------------------------------------------------------------
+    */
+
+    protected function countPanStatus(string $status): int
+    {
+        return $this->panQuery()
+            ->where('status', $status)
+            ->count();
+    }
+
+    protected function countItrStatus(string $status): int
+    {
+        return $this->itrQuery()
+            ->where('status', $status)
+            ->count();
+    }
+
+    /*
+|--------------------------------------------------------------------------
+| TOTAL PAN APPLICATIONS
+|--------------------------------------------------------------------------
+*/
+
+public function getTotalPanApplications(): int
+{
+    return $this->panQuery()->count();
+}
+
+/*
+|--------------------------------------------------------------------------
+| TOTAL ITR APPLICATIONS
+|--------------------------------------------------------------------------
+*/
+
+public function getTotalItrApplications(): int
+{
+    return $this->itrQuery()->count();
+}
+
+/*
+|--------------------------------------------------------------------------
+| ASSIGNED APPLICATIONS
+|--------------------------------------------------------------------------
+*/
+
+public function getAssignedApplications(): int
+{
+    return $this->panQuery()
             ->whereNotNull('assigned_to')
+            ->count()
 
-            ->when(
+        +
 
-                auth()->user()->hasRole('Executive'),
-
-                function($query){
-
-                    $query->where(
-
-                        'assigned_to',
-
-                        auth()->id()
-
-                    );
-
-                }
-
-            )
-
-            ->count();
-
-        $itrAssigned = ItrFile::query()
-
+        $this->itrQuery()
             ->whereNotNull('assigned_to')
-
-            ->when(
-
-                auth()->user()->hasRole('Executive'),
-
-                function($query){
-
-                    $query->where(
-
-                        'assigned_to',
-
-                        auth()->id()
-
-                    );
-
-                }
-
-            )
-
             ->count();
+}
 
-        return $panAssigned + $itrAssigned;
+/*
+|--------------------------------------------------------------------------
+| COMPLETED APPLICATIONS
+|--------------------------------------------------------------------------
+*/
+
+public function getCompletedApplications(): int
+{
+    return
+
+        $this->countPanStatus('Approved')
+
+        +
+
+        $this->countItrStatus('approved');
+}
+
+/*
+|--------------------------------------------------------------------------
+| PENDING APPLICATIONS
+|--------------------------------------------------------------------------
+*/
+
+public function getPendingApplications(): int
+{
+    return
+
+        $this->countPanStatus('Pending')
+
+        +
+
+        $this->countItrStatus('pending');
+}
+
+/*
+|--------------------------------------------------------------------------
+| PROCESSING APPLICATIONS
+|--------------------------------------------------------------------------
+*/
+
+public function getProcessingApplications(): int
+{
+    return
+
+        $this->countPanStatus('Processing')
+
+        +
+
+        $this->countItrStatus('processing');
+}
+
+/*
+|--------------------------------------------------------------------------
+| APPROVED APPLICATIONS
+|--------------------------------------------------------------------------
+*/
+
+public function getApprovedApplications(): int
+{
+    return
+
+        $this->countPanStatus('Approved')
+
+        +
+
+        $this->countItrStatus('approved');
+}
+
+/*
+|--------------------------------------------------------------------------
+| REJECTED APPLICATIONS
+|--------------------------------------------------------------------------
+*/
+
+public function getRejectedApplications(): int
+{
+    return
+
+        $this->countPanStatus('Rejected')
+
+        +
+
+        $this->countItrStatus('rejected');
+}
+
+/*
+|--------------------------------------------------------------------------
+| FRESH APPLICATIONS
+|--------------------------------------------------------------------------
+*/
+
+public function getFreshApplications(): int
+{
+    $pan = $this->panQuery();
+
+    $itr = $this->itrQuery();
+
+    if ($this->isAdmin()) {
+
+        $pan->whereNull('assigned_to');
+
+        $itr->whereNull('assigned_to');
+
+    } else {
+
+        $pan->where('status', 'Pending');
+
+        $itr->where('status', 'pending');
 
     }
 
+    return
 
-    /*
-    |--------------------------------------------------------------------------
-    | COMPLETED APPLICATIONS
-    |--------------------------------------------------------------------------
-    */
+        $pan->count()
 
-    public function getCompletedApplications()
-    {
+        +
 
-        $panCompleted = PanApplication::query()
+        $itr->count();
+}
 
-            ->where('status', 'Approved')
+/*
+|--------------------------------------------------------------------------
+| AADHAAR QUERY
+|--------------------------------------------------------------------------
+*/
 
-            ->when(
+protected function aadhaarQuery(): Builder
+{
+    $query = AadhaarService::query();
 
-                auth()->user()->hasRole('Executive'),
+    if ($this->isAdmin()) {
+        return $query;
+    }
 
-                function($query){
+    if ($this->isExecutive()) {
+        return $query->where(
+            'assigned_to',
+            $this->user->id
+        );
+    }
 
-                    $query->where(
+    if ($this->isDistributor()) {
 
-                        'assigned_to',
+        return $query->whereIn(
+            'user_id',
+            $this->distributorRetailerIds()
+        );
+    }
 
-                        auth()->id()
+    return $query;
+}
 
-                    );
+/*
+|--------------------------------------------------------------------------
+| BANK ACCOUNT QUERY
+|--------------------------------------------------------------------------
+*/
 
-                }
+protected function bankAccountQuery(): Builder
+{
+    $query = BankAccountService::query();
 
-            )
+    if ($this->isAdmin()) {
+        return $query;
+    }
 
-            ->count();
+    if ($this->isExecutive()) {
+        return $query->where(
+            'assigned_to',
+            $this->user->id
+        );
+    }
 
-        $itrCompleted = ItrFile::query()
+    if ($this->isDistributor()) {
 
-            ->where('status', 'Approved')
+        return $query->whereIn(
+            'user_id',
+            $this->distributorRetailerIds()
+        );
+    }
 
-            ->when(
+    return $query;
+}
 
-                auth()->user()->hasRole('Executive'),
+/*
+|--------------------------------------------------------------------------
+| CSC QUERY
+|--------------------------------------------------------------------------
+*/
 
-                function($query){
+protected function cscQuery(): Builder
+{
+    $query = CscService::query();
 
-                    $query->where(
+    if ($this->isAdmin()) {
+        return $query;
+    }
 
-                        'assigned_to',
+    if ($this->isExecutive()) {
+        return $query->where(
+            'assigned_to',
+            $this->user->id
+        );
+    }
 
-                        auth()->id()
+    if ($this->isDistributor()) {
 
-                    );
+        return $query->whereIn(
+            'user_id',
+            $this->distributorRetailerIds()
+        );
+    }
 
-                }
+    return $query;
+}
 
-            )
+/*
+|--------------------------------------------------------------------------
+| TOTAL AADHAAR SERVICES
+|--------------------------------------------------------------------------
+*/
 
-            ->count();
+public function getTotalAadhaarServices(): int
+{
+    return $this->aadhaarQuery()->count();
+}
 
-        return $panCompleted + $itrCompleted;
+/*
+|--------------------------------------------------------------------------
+| TOTAL BANK ACCOUNT SERVICES
+|--------------------------------------------------------------------------
+*/
+
+public function getTotalBankAccountServices(): int
+{
+    return $this->bankAccountQuery()->count();
+}
+
+/*
+|--------------------------------------------------------------------------
+| TOTAL CSC SERVICES
+|--------------------------------------------------------------------------
+*/
+
+public function getTotalCscServices(): int
+{
+    return $this->cscQuery()->count();
+}
+
+/*
+|--------------------------------------------------------------------------
+| WALLET TRANSACTIONS
+|--------------------------------------------------------------------------
+*/
+
+public function getWalletTransactions(): int
+{
+    $query = WalletTransaction::query();
+
+    if (!$this->isAdmin()) {
+        $query->where(
+            'user_id',
+            $this->user->id
+        );
+    }
+
+    return $query->count();
+}
+
+/*
+|--------------------------------------------------------------------------
+| TODAY UPLOADS
+|--------------------------------------------------------------------------
+*/
+
+public function getTodayUploads(): int
+{
+    return ServiceDocument::query()
+
+        ->whereDate(
+            'created_at',
+            today()
+        )
+
+        ->when(
+
+            !$this->isAdmin(),
+
+            function ($query) {
+
+                $query->where(
+                    'user_id',
+                    $this->user->id
+                );
+
+            }
+
+        )
+
+        ->count();
+}
+
+/*
+|--------------------------------------------------------------------------
+| TOTAL REVENUE
+|--------------------------------------------------------------------------
+*/
+
+public function getTotalRevenue()
+{
+    $query = WalletTransaction::query()
+        ->where('type', 'credit');
+
+    if (!$this->isAdmin()) {
+
+        $query->where(
+            'user_id',
+            $this->user->id
+        );
 
     }
 
+    return $query->sum('amount');
+}
 
-    /*
-    |--------------------------------------------------------------------------
-    | FRESH APPLICATIONS
-    |--------------------------------------------------------------------------
-    */
+/*
+|--------------------------------------------------------------------------
+| MONTH LABELS
+|--------------------------------------------------------------------------
+*/
 
-    public function getFreshApplications()
-    {
+public function getMonths(): array
+{
+    return [
 
-        if(auth()->user()->hasRole('Executive'))
-        {
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
 
-            return PanApplication::query()
+    ];
+}
 
-                ->where(
+/*
+|--------------------------------------------------------------------------
+| MONTHLY APPLICATIONS
+|--------------------------------------------------------------------------
+*/
 
-                    'assigned_to',
+public function getMonthlyApplications()
+{
+    return collect(range(1, 12))
 
-                    auth()->id()
+        ->map(function ($month) {
 
+            $pan = $this->panQuery()
+
+                ->whereYear(
+                    'created_at',
+                    now()->year
                 )
 
-                ->where('status', 'Pending')
-
-                ->count()
-
-                +
-
-                ItrFile::query()
-
-                ->where(
-
-                    'assigned_to',
-
-                    auth()->id()
-
+                ->whereMonth(
+                    'created_at',
+                    $month
                 )
-
-                ->where('status', 'pending')
 
                 ->count();
 
-        }
+            $itr = $this->itrQuery()
 
-        return PanApplication::query()
+                ->whereYear(
+                    'created_at',
+                    now()->year
+                )
 
-            ->whereNull('assigned_to')
+                ->whereMonth(
+                    'created_at',
+                    $month
+                )
 
-            ->count()
+                ->count();
 
-            +
+            return $pan + $itr;
 
-            ItrFile::query()
+        })
 
-            ->whereNull('assigned_to')
+        ->toArray();
+}
 
-            ->count();
+/*
+|--------------------------------------------------------------------------
+| MONTHLY PAN
+|--------------------------------------------------------------------------
+*/
 
-    }
+public function getMonthlyPanApplications()
+{
+    return collect(range(1, 12))
 
+        ->map(function ($month) {
 
-    /*
-    |--------------------------------------------------------------------------
-    | PROCESSING APPLICATIONS
-    |--------------------------------------------------------------------------
-    */
+            return $this->panQuery()
 
-    public function getProcessingApplications()
-    {
+                ->whereYear(
+                    'created_at',
+                    now()->year
+                )
 
-        return PanApplication::query()
+                ->whereMonth(
+                    'created_at',
+                    $month
+                )
 
-            ->where('status', 'Processing')
+                ->count();
 
-            ->when(
+        })
 
-                auth()->user()->hasRole('Executive'),
+        ->toArray();
+}
 
-                function($query){
+/*
+|--------------------------------------------------------------------------
+| MONTHLY ITR
+|--------------------------------------------------------------------------
+*/
 
-                    $query->where(
+public function getMonthlyItrApplications()
+{
+    return collect(range(1, 12))
 
-                        'assigned_to',
+        ->map(function ($month) {
 
-                        auth()->id()
+            return $this->itrQuery()
 
-                    );
+                ->whereYear(
+                    'created_at',
+                    now()->year
+                )
 
-                }
+                ->whereMonth(
+                    'created_at',
+                    $month
+                )
 
-            )
+                ->count();
 
-            ->count()
+        })
 
-            +
+        ->toArray();
+}
 
-            ItrFile::query()
+/*
+|--------------------------------------------------------------------------
+| MONTHLY REVENUE
+|--------------------------------------------------------------------------
+*/
 
-            ->where('status', 'processing')
+public function getMonthlyRevenue()
+{
+    return collect(range(1, 12))
 
-            ->when(
+        ->map(function ($month) {
 
-                auth()->user()->hasRole('Executive'),
+            $query = WalletTransaction::query()
 
-                function($query){
+                ->where('type', 'credit')
 
-                    $query->where(
+                ->whereYear(
+                    'created_at',
+                    now()->year
+                )
 
-                        'assigned_to',
+                ->whereMonth(
+                    'created_at',
+                    $month
+                );
 
-                        auth()->id()
+            if (!$this->isAdmin()) {
 
-                    );
+                $query->where(
+                    'user_id',
+                    $this->user->id
+                );
 
-                }
+            }
 
-            )
+            return (float) $query->sum('amount');
 
-            ->count();
+        })
 
-    }
+        ->toArray();
+}
 
+/*
+|--------------------------------------------------------------------------
+| DASHBOARD SUMMARY
+|--------------------------------------------------------------------------
+*/
 
-    /*
-    |--------------------------------------------------------------------------
-    | PENDING APPLICATIONS
-    |--------------------------------------------------------------------------
-    */
+public function getDashboardSummary(): array
+{
+    return [
 
-    public function getPendingApplications()
-    {
+        'totalPanApplications'      => $this->getTotalPanApplications(),
 
-        return PanApplication::query()
+        'totalItrApplications'      => $this->getTotalItrApplications(),
 
-            ->where('status', 'Pending')
+        'totalAadhaarServices'      => $this->getTotalAadhaarServices(),
 
-            ->when(
+        'totalBankAccounts'         => $this->getTotalBankAccountServices(),
 
-                auth()->user()->hasRole('Executive'),
+        'totalCscServices'          => $this->getTotalCscServices(),
 
-                function($query){
+        'assignedApplications'      => $this->getAssignedApplications(),
 
-                    $query->where(
+        'completedApplications'     => $this->getCompletedApplications(),
 
-                        'assigned_to',
+        'freshApplications'         => $this->getFreshApplications(),
 
-                        auth()->id()
+        'processingApplications'    => $this->getProcessingApplications(),
 
-                    );
+        'pendingApplications'       => $this->getPendingApplications(),
 
-                }
+        'approvedApplications'      => $this->getApprovedApplications(),
 
-            )
+        'rejectedApplications'      => $this->getRejectedApplications(),
 
-            ->count()
+        'todayUploads'              => $this->getTodayUploads(),
 
-            +
+        'walletTransactions'        => $this->getWalletTransactions(),
 
-            ItrFile::query()
+        'totalRevenue'              => $this->getTotalRevenue(),
 
-            ->where('status', 'pending')
+        'months'                    => $this->getMonths(),
 
-            ->when(
+        'chartData'                 => $this->getMonthlyApplications(),
 
-                auth()->user()->hasRole('Executive'),
+        'panChartData'              => $this->getMonthlyPanApplications(),
 
-                function($query){
+        'itrChartData'              => $this->getMonthlyItrApplications(),
 
-                    $query->where(
+        'revenueChartData'          => $this->getMonthlyRevenue(),
 
-                        'assigned_to',
-
-                        auth()->id()
-
-                    );
-
-                }
-
-            )
-
-            ->count();
-
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | APPROVED APPLICATIONS
-    |--------------------------------------------------------------------------
-    */
-
-    public function getApprovedApplications()
-    {
-
-        return PanApplication::query()
-
-            ->where('status', 'Approved')
-
-            ->when(
-
-                auth()->user()->hasRole('Executive'),
-
-                function($query){
-
-                    $query->where(
-
-                        'assigned_to',
-
-                        auth()->id()
-
-                    );
-
-                }
-
-            )
-
-            ->count()
-
-            +
-
-            ItrFile::query()
-
-            ->where('status', 'approved')
-
-            ->when(
-
-                auth()->user()->hasRole('Executive'),
-
-                function($query){
-
-                    $query->where(
-
-                        'assigned_to',
-
-                        auth()->id()
-
-                    );
-
-                }
-
-            )
-
-            ->count();
-
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | REJECTED APPLICATIONS
-    |--------------------------------------------------------------------------
-    */
-
-    public function getRejectedApplications()
-    {
-
-        return PanApplication::query()
-
-            ->where('status', 'Rejected')
-
-            ->when(
-
-                auth()->user()->hasRole('Executive'),
-
-                function($query){
-
-                    $query->where(
-
-                        'assigned_to',
-
-                        auth()->id()
-
-                    );
-
-                }
-
-            )
-
-            ->count()
-
-            +
-
-            ItrFile::query()
-
-            ->where('status', 'rejected')
-
-            ->when(
-
-                auth()->user()->hasRole('Executive'),
-
-                function($query){
-
-                    $query->where(
-
-                        'assigned_to',
-
-                        auth()->id()
-
-                    );
-
-                }
-
-            )
-
-            ->count();
-
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | TODAY UPLOADS
-    |--------------------------------------------------------------------------
-    */
-
-    public function getTodayUploads()
-    {
-
-        return ServiceDocument::query()
-
-            ->when(
-
-                auth()->user()->hasRole('Executive'),
-
-                function($query){
-
-                    $query->where(
-
-                        'user_id',
-
-                        auth()->id()
-
-                    );
-
-                }
-
-            )
-
-            ->whereDate(
-
-                'created_at',
-
-                today()
-
-            )
-
-            ->count();
-
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | TOTAL REVENUE
-    |--------------------------------------------------------------------------
-    */
-
-    public function getTotalRevenue()
-    {
-
-        return WalletTransaction::query()
-
-            ->when(
-
-                auth()->user()->hasRole('Executive'),
-
-                function($query){
-
-                    $query->where(
-
-                        'user_id',
-
-                        auth()->id()
-
-                    )
-
-                    ->where(
-
-                        'type',
-
-                        'credit'
-
-                    );
-
-                }
-
-            )
-
-            ->sum('amount');
-
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | MONTHS
-    |--------------------------------------------------------------------------
-    */
-
-    public function getMonths()
-    {
-
-        return [
-
-            'Jan',
-            'Feb',
-            'Mar',
-            'Apr',
-            'May',
-            'Jun',
-            'Jul',
-            'Aug',
-            'Sep',
-            'Oct',
-            'Nov',
-            'Dec'
-
-        ];
-
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | MONTHLY APPLICATIONS
-    |--------------------------------------------------------------------------
-    */
-
-    public function getMonthlyApplications()
-    {
-
-        return collect(range(1, 12))
-
-            ->map(function ($month) {
-
-                $panCount = PanApplication::query()
-
-                    ->whereMonth(
-
-                        'created_at',
-
-                        $month
-
-                    )
-
-                    ->when(
-
-                        auth()->user()->hasRole('Executive'),
-
-                        function($query){
-
-                            $query->where(
-
-                                'assigned_to',
-
-                                auth()->id()
-
-                            );
-
-                        }
-
-                    )
-
-                    ->count();
-
-                $itrCount = ItrFile::query()
-
-                    ->whereMonth(
-
-                        'created_at',
-
-                        $month
-
-                    )
-
-                    ->when(
-
-                        auth()->user()->hasRole('Executive'),
-
-                        function($query){
-
-                            $query->where(
-
-                                'assigned_to',
-
-                                auth()->id()
-
-                            );
-
-                        }
-
-                    )
-
-                    ->count();
-
-                return $panCount + $itrCount;
-
-            });
-
-    }
+    ];
+}
 
 }

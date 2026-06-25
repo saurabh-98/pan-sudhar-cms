@@ -28,31 +28,49 @@ if ($request->ajax())
 
     $retailers = DB::table('retailers')
 
-        ->leftJoin(
-            'states',
-            'states.id',
-            '=',
-            'retailers.state_id'
-        )
+    ->leftJoin(
+        'states',
+        'states.id',
+        '=',
+        'retailers.state_id'
+    )
 
-        ->leftJoin(
-            'districts',
-            'districts.id',
-            '=',
-            'retailers.district_id'
-        )
+    ->leftJoin(
+        'districts',
+        'districts.id',
+        '=',
+        'retailers.district_id'
+    )
 
-        ->select(
+    ->leftJoin(
+        'users',
+        'users.id',
+        '=',
+        'retailers.distributor_id'
+    )
 
-            'retailers.*',
+    ->select(
 
-            'states.name as state_name',
+        'retailers.*',
 
-            'districts.name as district_name'
+        'states.name as state_name',
 
-        )
+        'districts.name as district_name',
 
-        ->latest('retailers.id');
+        'users.name as distributor_name'
+
+    );
+
+if (auth()->user()->hasRole('Distributor')) {
+
+    $retailers->where(
+        'retailers.distributor_id',
+        auth()->id()
+    );
+
+}
+
+$retailers->latest('retailers.id');
 
     return DataTables::of($retailers)
 
@@ -134,6 +152,12 @@ if ($request->ajax())
         ->addColumn('district', function ($row) {
 
             return $row->district_name ?? 'N/A';
+        })
+
+        ->addColumn('distributor', function ($row) {
+
+            return $row->distributor_name ?? 'N/A';
+
         })
 
         ->addColumn('status', function ($row) {

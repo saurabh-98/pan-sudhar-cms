@@ -15,8 +15,7 @@ class Retailer extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $table =
-        'retailers';
+    protected $table = 'retailers';
 
     /*
     |--------------------------------------------------------------------------
@@ -45,6 +44,7 @@ class Retailer extends Model
 
         'state_id',
         'district_id',
+        'distributor_id',
 
         /*
         |--------------------------------------------------------------------------
@@ -111,14 +111,11 @@ class Retailer extends Model
 
     protected $casts = [
 
-        'email_verified_at' =>
-            'datetime',
+        'email_verified_at' => 'datetime',
 
-        'last_login_at' =>
-            'datetime',
+        'last_login_at' => 'datetime',
 
-        'is_verified' =>
-            'boolean',
+        'is_verified' => 'boolean',
 
     ];
 
@@ -131,10 +128,8 @@ class Retailer extends Model
     public function state()
     {
         return $this->belongsTo(
-
             State::class,
             'state_id'
-
         );
     }
 
@@ -147,10 +142,22 @@ class Retailer extends Model
     public function district()
     {
         return $this->belongsTo(
-
             District::class,
             'district_id'
+        );
+    }
 
+    /*
+    |--------------------------------------------------------------------------
+    | DISTRIBUTOR RELATION
+    |--------------------------------------------------------------------------
+    */
+
+    public function distributor()
+    {
+        return $this->belongsTo(
+            User::class,
+            'distributor_id'
         );
     }
 
@@ -178,7 +185,6 @@ class Retailer extends Model
 
             default =>
                 '<span class="badge bg-dark">Unknown</span>',
-
         };
     }
 
@@ -190,9 +196,7 @@ class Retailer extends Model
 
     public function getFullAddressAttribute()
     {
-        return
-
-            optional($this->district)->name
+        return optional($this->district)->name
             . ', ' .
             optional($this->state)->name;
     }

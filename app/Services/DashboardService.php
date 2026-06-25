@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Repositories\DashboardRepository;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class DashboardService
 {
@@ -22,9 +22,8 @@ class DashboardService
     |--------------------------------------------------------------------------
     */
 
-    public function __construct(
-        DashboardRepository $repo
-    ) {
+    public function __construct(DashboardRepository $repo)
+    {
         $this->repo = $repo;
     }
 
@@ -38,19 +37,7 @@ class DashboardService
     {
         $user = Auth::user();
 
-        /*
-        |--------------------------------------------------------------------------
-        | UNIQUE CACHE KEY
-        |--------------------------------------------------------------------------
-        */
-
         $cacheKey = 'dashboard_stats_' . $user->id;
-
-        /*
-        |--------------------------------------------------------------------------
-        | CACHE FOR 5 MINUTES
-        |--------------------------------------------------------------------------
-        */
 
         return Cache::remember(
 
@@ -60,133 +47,8 @@ class DashboardService
 
             function () {
 
-                return [
+                return $this->repo->getDashboardSummary();
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | PAN
-                    |--------------------------------------------------------------------------
-                    */
-
-                    'totalPanApplications' =>
-
-                        $this->repo->getTotalPanApplications(),
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | ITR
-                    |--------------------------------------------------------------------------
-                    */
-
-                    'totalItrApplications' =>
-
-                        $this->repo->getTotalItrApplications(),
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | ASSIGNED
-                    |--------------------------------------------------------------------------
-                    */
-
-                    'assignedApplications' =>
-
-                        $this->repo->getAssignedApplications(),
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | COMPLETED
-                    |--------------------------------------------------------------------------
-                    */
-
-                    'completedApplications' =>
-
-                        $this->repo->getCompletedApplications(),
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | FRESH
-                    |--------------------------------------------------------------------------
-                    */
-
-                    'freshApplications' =>
-
-                        $this->repo->getFreshApplications(),
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | PROCESSING
-                    |--------------------------------------------------------------------------
-                    */
-
-                    'processingApplications' =>
-
-                        $this->repo->getProcessingApplications(),
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | PENDING
-                    |--------------------------------------------------------------------------
-                    */
-
-                    'pendingApplications' =>
-
-                        $this->repo->getPendingApplications(),
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | APPROVED
-                    |--------------------------------------------------------------------------
-                    */
-
-                    'approvedApplications' =>
-
-                        $this->repo->getApprovedApplications(),
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | REJECTED
-                    |--------------------------------------------------------------------------
-                    */
-
-                    'rejectedApplications' =>
-
-                        $this->repo->getRejectedApplications(),
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | TODAY UPLOADS
-                    |--------------------------------------------------------------------------
-                    */
-
-                    'todayUploads' =>
-
-                        $this->repo->getTodayUploads(),
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | REVENUE
-                    |--------------------------------------------------------------------------
-                    */
-
-                    'totalRevenue' =>
-
-                        $this->repo->getTotalRevenue(),
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | CHART
-                    |--------------------------------------------------------------------------
-                    */
-
-                    'months' =>
-
-                        $this->repo->getMonths(),
-
-                    'chartData' =>
-
-                        $this->repo->getMonthlyApplications(),
-
-                ];
             }
 
         );
@@ -194,14 +56,12 @@ class DashboardService
 
     /*
     |--------------------------------------------------------------------------
-    | CLEAR DASHBOARD CACHE
+    | CLEAR CACHE
     |--------------------------------------------------------------------------
     */
 
-    public function clearDashboardCache(
-        int $userId
-    ): void {
-
+    public function clearDashboardCache(int $userId): void
+    {
         Cache::forget(
             'dashboard_stats_' . $userId
         );

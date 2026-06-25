@@ -21,14 +21,19 @@ class RegisterController extends Controller
 
     public function showRegistrationForm()
     {
-        $states = State::orderBy('name')
-                       ->get();
+        $states = State::orderBy('name')->get();
+
+        $distributors = User::role('Distributor')
+            ->orderBy('name')
+            ->get(['id', 'name', 'mobile']);
+           
 
         return view(
-
             'auth.retailer.register',
-
-            compact('states')
+            compact(
+                'states',
+                'distributors'
+            )
         );
     }
 
@@ -39,241 +44,259 @@ class RegisterController extends Controller
     */
 
     public function register(Request $request)
-{
-    /*
-    |--------------------------------------------------------------------------
-    | VALIDATION
-    |--------------------------------------------------------------------------
-    */
-
-    $validator = Validator::make(
-
-        $request->all(),
-
-        [
-
-            'shop_name' => [
-
-                'required',
-                'string',
-                'min:3',
-                'max:255',
-                'regex:/^[A-Za-z0-9\s&.,-]+$/'
-            ],
-
-            'name' => [
-
-                'required',
-                'string',
-                'min:3',
-                'max:255',
-                'regex:/^[A-Za-z\s]+$/'
-            ],
-
-            'mobile' => [
-
-                'required',
-                'digits:10',
-                'regex:/^[6-9][0-9]{9}$/',
-                'unique:users,mobile',
-                'unique:retailers,mobile'
-            ],
-
-            'email' => [
-
-                'required',
-                'email:rfc,dns',
-                'max:255',
-                'unique:users,email',
-                'unique:retailers,email'
-            ],
-
-            'state_id' => [
-
-                'required',
-                'exists:states,id'
-            ],
-
-            'district_id' => [
-
-                'required',
-                'exists:districts,id'
-            ],
-
-            'g-recaptcha-response' => [
-
-                'required'
-            ]
-
-        ],
-
-        [
-
-            'shop_name.required' =>
-                'Shop name is required',
-
-            'name.required' =>
-                'Name is required',
-
-            'mobile.required' =>
-                'Mobile number is required',
-
-            'mobile.digits' =>
-                'Mobile number must be 10 digits',
-
-            'mobile.unique' =>
-                'Mobile number already exists',
-
-            'email.required' =>
-                'Email is required',
-
-            'email.email' =>
-                'Enter valid email address',
-
-            'email.unique' =>
-                'Email already exists',
-
-            'state_id.required' =>
-                'Please select state',
-
-            'district_id.required' =>
-                'Please select district',
-
-            'g-recaptcha-response.required' =>
-                'Please verify captcha'
-
-        ]
-
-    );
-
-    /*
-    |--------------------------------------------------------------------------
-    | VALIDATION FAILED
-    |--------------------------------------------------------------------------
-    */
-
-    if ($validator->fails()) {
-
-        return response()->json([
-
-            'success' => false,
-
-            'errors' =>
-
-                $validator->errors()
-
-        ], 422);
-
-    }
-
-    DB::beginTransaction();
-
-    try {
-
+    {
         /*
         |--------------------------------------------------------------------------
-        | CREATE RETAILER REQUEST
+        | VALIDATION
         |--------------------------------------------------------------------------
         */
 
-        DB::table('retailers')->insert([
+        $validator = Validator::make(
 
-            'shop_name' =>
+            $request->all(),
 
-                trim($request->shop_name),
+            [
 
-            'name' =>
+                'shop_name' => [
 
-                trim($request->name),
+                    'required',
+                    'string',
+                    'min:3',
+                    'max:255',
+                    'regex:/^[A-Za-z0-9\s&.,-]+$/'
+                ],
 
-            'mobile' =>
+                'name' => [
 
-                trim($request->mobile),
+                    'required',
+                    'string',
+                    'min:3',
+                    'max:255',
+                    'regex:/^[A-Za-z\s]+$/'
+                ],
 
-            'email' =>
+                'mobile' => [
 
-                strtolower(
-                    trim($request->email)
-                ),
+                    'required',
+                    'digits:10',
+                    'regex:/^[6-9][0-9]{9}$/',
+                    'unique:users,mobile',
+                    'unique:retailers,mobile'
+                ],
 
-            'state_id' =>
+                'email' => [
 
-                $request->state_id,
+                    'required',
+                    'email:rfc,dns',
+                    'max:255',
+                    'unique:users,email',
+                    'unique:retailers,email'
+                ],
 
-            'district_id' =>
+                'state_id' => [
 
-                $request->district_id,
+                    'required',
+                    'exists:states,id'
+                ],
+
+                'district_id' => [
+
+                    'required',
+                    'exists:districts,id'
+                ],
+
+                'distributor_id' => [
+
+                    'required',
+
+                    'exists:users,id'
+
+                ],
+
+                'g-recaptcha-response' => [
+
+                    'required'
+                ]
+
+            ],
+
+            [
+
+                'shop_name.required' =>
+                    'Shop name is required',
+
+                'name.required' =>
+                    'Name is required',
+
+                'mobile.required' =>
+                    'Mobile number is required',
+
+                'mobile.digits' =>
+                    'Mobile number must be 10 digits',
+
+                'mobile.unique' =>
+                    'Mobile number already exists',
+
+                'email.required' =>
+                    'Email is required',
+
+                'email.email' =>
+                    'Enter valid email address',
+
+                'email.unique' =>
+                    'Email already exists',
+
+                'state_id.required' =>
+                    'Please select state',
+
+                'district_id.required' =>
+                    'Please select district',
+
+                'distributor_id.required' =>
+                    'Please select distributor',
+
+                'distributor_id.exists' =>
+                    'Selected distributor is invalid',
+
+                'g-recaptcha-response.required' =>
+                    'Please verify captcha'
+
+            ]
+
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDATION FAILED
+        |--------------------------------------------------------------------------
+        */
+
+        if ($validator->fails()) {
+
+            return response()->json([
+
+                'success' => false,
+
+                'errors' =>
+
+                    $validator->errors()
+
+            ], 422);
+
+        }
+
+        DB::beginTransaction();
+
+        try {
 
             /*
             |--------------------------------------------------------------------------
-            | PENDING APPROVAL
+            | CREATE RETAILER REQUEST
             |--------------------------------------------------------------------------
             */
 
-            'status' =>
+            DB::table('retailers')->insert([
 
-                'pending',
+                'shop_name' =>
 
-            'is_verified' =>
+                    trim($request->shop_name),
 
-                0,
+                'name' =>
 
-            'registered_ip' =>
+                    trim($request->name),
 
-                $request->ip(),
+                'mobile' =>
 
-            'created_at' =>
+                    trim($request->mobile),
 
-                now(),
+                'email' =>
 
-            'updated_at' =>
+                    strtolower(
+                        trim($request->email)
+                    ),
 
-                now(),
+                'state_id' =>
 
-        ]);
+                    $request->state_id,
 
-        DB::commit();
+                'district_id' =>
 
-        /*
-        |--------------------------------------------------------------------------
-        | SUCCESS RESPONSE
-        |--------------------------------------------------------------------------
-        */
+                    $request->district_id,
 
-        return response()->json([
+                'distributor_id' =>
 
-            'success' => true,
+                    $request->distributor_id,
 
-            'message' =>
+                /*
+                |--------------------------------------------------------------------------
+                | PENDING APPROVAL
+                |--------------------------------------------------------------------------
+                */
 
-                'Registration submitted successfully. Your account is pending department approval. Login credentials will be generated after approval.',
+                'status' =>
 
-            'redirect' =>
+                    'pending',
 
-                route('home')
+                'is_verified' =>
 
-        ]);
+                    0,
 
-    } catch (\Exception $e) {
+                'registered_ip' =>
 
-        DB::rollBack();
+                    $request->ip(),
 
-        return response()->json([
+                'created_at' =>
 
-            'success' => false,
+                    now(),
 
-            'message' =>
+                'updated_at' =>
 
-                'Something went wrong.',
+                    now(),
 
-            'error' =>
+            ]);
 
-                $e->getMessage()
+            DB::commit();
 
-        ], 500);
+            /*
+            |--------------------------------------------------------------------------
+            | SUCCESS RESPONSE
+            |--------------------------------------------------------------------------
+            */
 
+            return response()->json([
+
+                'success' => true,
+
+                'message' =>
+
+                    'Registration submitted successfully. Your account is pending department approval. Login credentials will be generated after approval.',
+
+                'redirect' =>
+
+                    route('home')
+
+            ]);
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return response()->json([
+
+                'success' => false,
+
+                'message' =>
+
+                    'Something went wrong.',
+
+                'error' =>
+
+                    $e->getMessage()
+
+            ], 500);
+
+        }
     }
-}
 
 
 

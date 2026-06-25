@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Services\DashboardService;
 use Illuminate\View\View;
 use App\Models\User;
+use App\Models\AadhaarService;
+use App\Models\BankAccountService;
+use App\Models\CscService;
+use App\Models\WalletTransaction;
 use Spatie\Permission\Models\Role;
 
 class DashboardController extends Controller
@@ -37,9 +41,21 @@ class DashboardController extends Controller
 
     public function index(): View
     {
+        $user = auth()->user();
+
         /*
         |--------------------------------------------------------------------------
-        | GET DASHBOARD DATA
+        | ROLE FLAGS
+        |--------------------------------------------------------------------------
+        */
+
+        $isAdmin = $user->hasRole('admin');
+        $isDistributor = $user->hasRole('Distributor');
+        $isExecutive = $user->hasRole('Executive');
+
+        /*
+        |--------------------------------------------------------------------------
+        | DASHBOARD DATA
         |--------------------------------------------------------------------------
         */
 
@@ -51,17 +67,39 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $totalRetailers = Role::where('name', 'Retailer')
-            ->where('guard_name', 'web')
-            ->exists()
-                ? User::role('Retailer')->count()
-                : 0;
+        $totalRetailers = $isAdmin
+            ? User::role('Retailer')->count()
+            : ($data['totalRetailers'] ?? 0);
 
-        $totalDistributors = Role::where('name', 'Distributor')
-            ->where('guard_name', 'web')
-            ->exists()
-                ? User::role('Distributor')->count()
-                : 0;
+        $totalDistributors = $isAdmin
+            ? User::role('Distributor')->count()
+            : 0;
+
+        $totalExecutives = $isAdmin
+            ? User::role('Executive')->count()
+            : 0;
+
+        $totalUsers = $isAdmin
+            ? User::count()
+            : $totalRetailers;
+
+        /*
+        |--------------------------------------------------------------------------
+        | SERVICE COUNTS
+        |--------------------------------------------------------------------------
+        */
+
+        $totalAadhaarServices = $data['totalAadhaarServices']
+            ?? AadhaarService::count();
+
+        $totalBankAccounts = $data['totalBankAccounts']
+            ?? BankAccountService::count();
+
+        $totalCscServices = $data['totalCscServices']
+            ?? CscService::count();
+
+        $walletTransactions = $data['walletTransactions']
+            ?? WalletTransaction::count();
 
         /*
         |--------------------------------------------------------------------------
@@ -71,134 +109,41 @@ class DashboardController extends Controller
 
         return view('admin.dashboard', [
 
-            /*
-            |--------------------------------------------------------------------------
-            | PAN
-            |--------------------------------------------------------------------------
-            */
+            'isAdmin' => $isAdmin,
+            'isDistributor' => $isDistributor,
+            'isExecutive' => $isExecutive,
 
-            'totalPanApplications' =>
-                $data['totalPanApplications'] ?? 0,
+            'totalPanApplications' => $data['totalPanApplications'] ?? 0,
+            'totalItrApplications' => $data['totalItrApplications'] ?? 0,
 
-            /*
-            |--------------------------------------------------------------------------
-            | ITR
-            |--------------------------------------------------------------------------
-            */
+            'totalRetailers' => $totalRetailers,
+            'totalDistributors' => $totalDistributors,
+            'totalExecutives' => $totalExecutives,
+            'totalUsers' => $totalUsers,
 
-            'totalItrApplications' =>
-                $data['totalItrApplications'] ?? 0,
+            'totalAadhaarServices' => $totalAadhaarServices,
+            'totalBankAccounts' => $totalBankAccounts,
+            'totalCscServices' => $totalCscServices,
 
-            /*
-            |--------------------------------------------------------------------------
-            | RETAILERS
-            |--------------------------------------------------------------------------
-            */
+            'walletTransactions' => $walletTransactions,
 
-            'totalRetailers' =>
-                $totalRetailers,
+            'assignedApplications' => $data['assignedApplications'] ?? 0,
+            'completedApplications' => $data['completedApplications'] ?? 0,
+            'freshApplications' => $data['freshApplications'] ?? 0,
+            'processingApplications' => $data['processingApplications'] ?? 0,
+            'pendingApplications' => $data['pendingApplications'] ?? 0,
+            'approvedApplications' => $data['approvedApplications'] ?? 0,
+            'rejectedApplications' => $data['rejectedApplications'] ?? 0,
 
-            /*
-            |--------------------------------------------------------------------------
-            | DISTRIBUTORS
-            |--------------------------------------------------------------------------
-            */
+            'todayUploads' => $data['todayUploads'] ?? 0,
+            'totalRevenue' => $data['totalRevenue'] ?? 0,
 
-            'totalDistributors' =>
-                $totalDistributors,
+            'months' => $data['months'] ?? [],
+            'chartData' => $data['chartData'] ?? [],
 
-            /*
-            |--------------------------------------------------------------------------
-            | ASSIGNED
-            |--------------------------------------------------------------------------
-            */
-
-            'assignedApplications' =>
-                $data['assignedApplications'] ?? 0,
-
-            /*
-            |--------------------------------------------------------------------------
-            | COMPLETED
-            |--------------------------------------------------------------------------
-            */
-
-            'completedApplications' =>
-                $data['completedApplications'] ?? 0,
-
-            /*
-            |--------------------------------------------------------------------------
-            | FRESH
-            |--------------------------------------------------------------------------
-            */
-
-            'freshApplications' =>
-                $data['freshApplications'] ?? 0,
-
-            /*
-            |--------------------------------------------------------------------------
-            | PROCESSING
-            |--------------------------------------------------------------------------
-            */
-
-            'processingApplications' =>
-                $data['processingApplications'] ?? 0,
-
-            /*
-            |--------------------------------------------------------------------------
-            | PENDING
-            |--------------------------------------------------------------------------
-            */
-
-            'pendingApplications' =>
-                $data['pendingApplications'] ?? 0,
-
-            /*
-            |--------------------------------------------------------------------------
-            | APPROVED
-            |--------------------------------------------------------------------------
-            */
-
-            'approvedApplications' =>
-                $data['approvedApplications'] ?? 0,
-
-            /*
-            |--------------------------------------------------------------------------
-            | REJECTED
-            |--------------------------------------------------------------------------
-            */
-
-            'rejectedApplications' =>
-                $data['rejectedApplications'] ?? 0,
-
-            /*
-            |--------------------------------------------------------------------------
-            | TODAY UPLOADS
-            |--------------------------------------------------------------------------
-            */
-
-            'todayUploads' =>
-                $data['todayUploads'] ?? 0,
-
-            /*
-            |--------------------------------------------------------------------------
-            | REVENUE
-            |--------------------------------------------------------------------------
-            */
-
-            'totalRevenue' =>
-                $data['totalRevenue'] ?? 0,
-
-            /*
-            |--------------------------------------------------------------------------
-            | CHART
-            |--------------------------------------------------------------------------
-            */
-
-            'months' =>
-                $data['months'] ?? [],
-
-            'chartData' =>
-                $data['chartData'] ?? [],
+            'panChartData' => $data['panChartData'] ?? [],
+            'itrChartData' => $data['itrChartData'] ?? [],
+            'revenueChartData' => $data['revenueChartData'] ?? [],
         ]);
     }
 }
