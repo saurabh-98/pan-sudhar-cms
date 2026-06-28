@@ -177,12 +177,7 @@ return [
     |
     */
 
-    'secure' => env(
-
-        'APP_ENV'
-
-    ) === 'production',
-
+    'secure' => env('SESSION_SECURE_COOKIE', false),
     /*
     |--------------------------------------------------------------------------
     | HTTP Access Only

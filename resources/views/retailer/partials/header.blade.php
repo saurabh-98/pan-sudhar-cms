@@ -278,21 +278,7 @@
 
                 </li>
 
-                <!-- CUSTOMERS -->
-                <li>
-
-                    <a
-                        class="dropdown-item py-2"
-                        href="{{ route('retailer.customers') }}"
-                    >
-
-                        <i class="fa fa-users me-2"></i>
-
-                        Customers
-
-                    </a>
-
-                </li>
+             
 
                 <!-- PAN SERVICES -->
                 <li>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pan Sudhar Portal</title>
+    <title>Digital Services</title>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
     

@@ -47,58 +47,7 @@
 
     </div>
 
-    {{-- =====================================================
-    | PROFILE CARD
-    ====================================================== --}}
-    <div class="stf-profile">
-
-        <div class="stf-profile-image-wrap">
-
-            <div class="stf-avatar">
-
-                {{ strtoupper(substr(auth()->user()->name,0,1)) }}
-
-            </div>
-
-            <span class="stf-status-dot"></span>
-
-        </div>
-
-        <h5 class="stf-profile-name">
-
-            {{ auth()->user()->name }}
-
-        </h5>
-
-
-        {{-- WALLET --}}
-        <div class="stf-wallet-card">
-
-            <div>
-
-                <small>
-
-                    Wallet Balance
-
-                </small>
-
-                <h4>
-
-                    ₹{{ number_format(auth()->user()->wallet_balance ?? 0,2) }}
-
-                </h4>
-
-            </div>
-
-            <div class="stf-wallet-icon">
-
-                <i class="fa fa-wallet"></i>
-
-            </div>
-
-        </div>
-
-    </div>
+   
 
    <div class="stf-menu-wrapper">
 

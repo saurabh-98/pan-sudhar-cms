@@ -366,7 +366,7 @@
                                                     <option
                                                         value="{{ $distributor->id }}"
                                                         {{ old('distributor_id') == $distributor->id ? 'selected' : '' }}>
-                                                        {{ $distributor->name }} ({{ $distributor->mobile }})
+                                                        {{ $distributor->name }} 
                                                     </option>
                                                 @endforeach
 
@@ -499,7 +499,7 @@
                                 </label>
 
                                 <div class="g-recaptcha"
-                                    data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}">
+                                    data-sitekey="{{ config('services.recaptcha.site_key') }}">
                                 </div>
 
                                 <small class="captcha-validation text-danger d-block mt-2"></small>

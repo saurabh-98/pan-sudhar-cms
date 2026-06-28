@@ -27,7 +27,7 @@ use App\Http\Controllers\Admin\LeaveController;
 use App\Http\Controllers\Admin\SalaryStructureController;
 use App\Http\Controllers\Admin\PayrollController;
 use App\Http\Controllers\Admin\PayslipController;
-use App\Http\Controllers\Admin\NoticeController;
+
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\UpiController;
@@ -35,7 +35,6 @@ use App\Http\Controllers\Admin\WalletController;
 use App\Http\Controllers\Admin\AdminNewPanController;
 use App\Http\Controllers\Admin\AdminPanCorrectionController;
 use App\Http\Controllers\Admin\AdminItrController as ItrFileController;
-use App\Http\Controllers\Admin\AdminWalletController ;
 use App\Http\Controllers\Admin\RetailerApprovalController;
 use App\Http\Controllers\Admin\ModuleController;
 use App\Http\Controllers\Admin\ChargeController;
@@ -527,16 +526,7 @@ Route::prefix('pages')
     |--------------------------------------------------------------------------
     */
 
-    Route::resource(
-        'notice',
-        NoticeController::class
-    );
-
-    Route::resource(
-        'messages',
-        MessageController::class
-    );
-
+   
   
 
     /*
@@ -1363,107 +1353,6 @@ Route::prefix('pages')
 
 
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | ADMIN WALLET MODULE
-    |--------------------------------------------------------------------------
-    |
-    | URL:
-    | /admin/admin-wallet
-    |
-    | NAME:
-    | admin.admin-wallet.*
-    |
-    */
-
-    Route::prefix('admin-wallet')
-        ->name('admin-wallet.')
-        ->middleware([
-
-            'auth',
-            'permission:admin.wallet.view'
-
-        ])
-        ->group(function () {
-
-        /*
-        |--------------------------------------------------------------------------
-        | WALLET DASHBOARD
-        |--------------------------------------------------------------------------
-        */
-
-        Route::get(
-            '/',
-            [AdminWalletController::class, 'index']
-        )->name('index');
-
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | WALLET HISTORY
-        |--------------------------------------------------------------------------
-        */
-
-        Route::get(
-            '/history',
-            [AdminWalletController::class, 'history']
-        )->name('history');
-
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | TRANSACTION DETAILS
-        |--------------------------------------------------------------------------
-        */
-
-        Route::get(
-            '/show/{id}',
-            [AdminWalletController::class, 'show']
-        )->name('show');
-
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADD BALANCE
-        |--------------------------------------------------------------------------
-        */
-
-        Route::post(
-            '/add-balance',
-            [AdminWalletController::class, 'addBalance']
-        )->name('add-balance');
-
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | WITHDRAW BALANCE
-        |--------------------------------------------------------------------------
-        */
-
-        Route::post(
-            '/withdraw-balance',
-            [AdminWalletController::class, 'withdrawBalance']
-        )->name('withdraw-balance');
-
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | DELETE TRANSACTION
-        |--------------------------------------------------------------------------
-        */
-
-        Route::delete(
-            '/delete/{id}',
-            [AdminWalletController::class, 'delete']
-        )->name('delete');
-
-    });
 
 
         Route::prefix('retailer-approvals')

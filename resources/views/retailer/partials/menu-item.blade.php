@@ -110,7 +110,7 @@ if (
 
 <li class="{{ $hasChildren ? 'stf-dropdown' : '' }}">
 
-```
+
 <a
     href="{{ $url }}"
     class="stf-link {{ $isActive ? 'stf-active' : '' }}"

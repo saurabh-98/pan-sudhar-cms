@@ -1,0 +1,313 @@
+/*==========================================================
+    RESPONSIVE
+==========================================================*/
+
+/* Overlay */
+
+.stf-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.45);
+
+    backdrop-filter:blur(2px);
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition:.3s ease;
+
+    z-index:998;
+}
+
+.stf-overlay.show{
+
+    opacity:1;
+
+    visibility:visible;
+}
+
+/*==========================================================
+    DESKTOP
+==========================================================*/
+
+@media (min-width:1200px){
+
+    .stf-sidebar{
+
+        width:265px;
+    }
+
+    .stf-link{
+
+        height:38px;
+    }
+
+    .stf-submenu .stf-link{
+
+        height:34px;
+    }
+
+}
+
+/*==========================================================
+    LAPTOP
+==========================================================*/
+
+@media (max-width:1199px){
+
+    .stf-sidebar{
+
+        width:250px;
+    }
+
+    .stf-link{
+
+        height:36px;
+    }
+
+}
+
+/*==========================================================
+    TABLET
+==========================================================*/
+
+@media (max-width:991px){
+
+    .stf-sidebar{
+
+        left:-100%;
+
+        width:270px;
+
+        transition:left .30s ease;
+    }
+
+    .stf-sidebar.show{
+
+        left:0;
+    }
+
+    .stf-top{
+
+        padding:14px;
+    }
+
+    .stf-brand-icon{
+
+        width:42px;
+
+        height:42px;
+    }
+
+    .stf-title{
+
+        font-size:14px;
+    }
+
+    .stf-subtitle{
+
+        font-size:9px;
+    }
+
+    .stf-menu-wrapper{
+
+        padding:8px;
+    }
+
+    .stf-link{
+
+        height:38px;
+
+        padding:0 10px;
+    }
+
+    .stf-link-left span{
+
+        font-size:12px;
+    }
+
+    .stf-link-left i{
+
+        width:24px;
+
+        height:24px;
+    }
+
+}
+
+/*==========================================================
+    MOBILE
+==========================================================*/
+
+@media (max-width:768px){
+
+    .stf-sidebar{
+
+        width:280px;
+    }
+
+    .stf-top{
+
+        padding:12px;
+    }
+
+    .stf-brand{
+
+        gap:10px;
+    }
+
+    .stf-brand-icon{
+
+        width:40px;
+
+        height:40px;
+
+        font-size:16px;
+    }
+
+    .stf-title{
+
+        font-size:13px;
+    }
+
+    .stf-subtitle{
+
+        display:none;
+    }
+
+    .stf-menu-title{
+
+        margin:10px 8px 6px;
+
+        font-size:8px;
+    }
+
+    .stf-link{
+
+        height:36px;
+
+        border-radius:8px;
+    }
+
+    .stf-link-left{
+
+        gap:8px;
+    }
+
+    .stf-link-left i{
+
+        width:22px;
+
+        height:22px;
+
+        font-size:10px;
+    }
+
+    .stf-link-left span{
+
+        font-size:11px;
+    }
+
+    .stf-submenu{
+
+        padding-left:16px;
+    }
+
+}
+
+/*==========================================================
+    SMALL MOBILE
+==========================================================*/
+
+@media (max-width:576px){
+
+    .stf-sidebar{
+
+        width:100%;
+    }
+
+    .stf-menu-wrapper{
+
+        padding:6px;
+    }
+
+    .stf-link{
+
+        height:36px;
+
+        padding:0 8px;
+    }
+
+    .stf-submenu .stf-link{
+
+        height:32px;
+    }
+
+}
+
+/*==========================================================
+    VERY SMALL DEVICES
+==========================================================*/
+
+@media (max-width:380px){
+
+    .stf-brand-icon{
+
+        width:36px;
+
+        height:36px;
+
+        font-size:15px;
+    }
+
+    .stf-title{
+
+        font-size:12px;
+    }
+
+    .stf-link{
+
+        height:34px;
+    }
+
+    .stf-link-left span{
+
+        font-size:10px;
+    }
+
+}
+
+/*==========================================================
+    TOUCH DEVICES
+==========================================================*/
+
+@media (hover:none){
+
+    .stf-link:hover{
+
+        transform:none;
+    }
+
+    .stf-link:hover i{
+
+        transform:none;
+    }
+
+}
+
+/*==========================================================
+    PRINT
+==========================================================*/
+
+@media print{
+
+    .stf-sidebar{
+
+        display:none !important;
+    }
+
+}

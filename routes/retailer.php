@@ -4,8 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Retailer\DashboardController;
-use App\Http\Controllers\Retailer\ProfileController;
-use App\Http\Controllers\Retailer\CustomerController;
+use App\Http\Controllers\ProfileController;
+
 use App\Http\Controllers\Retailer\WalletController;
 
 /*
@@ -190,14 +190,7 @@ Route::middleware([
     |--------------------------------------------------------------------------
     */
 
-    Route::get(
-
-        '/customers',
-
-        [CustomerController::class,
-        'index']
-
-    )->name('customers');
+   
 
     /*
 |--------------------------------------------------------------------------

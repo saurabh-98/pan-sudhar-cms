@@ -77,11 +77,7 @@
         href="{{ asset('assets/css/retailer-layout.css') }}"
     >
 
-    <link
-        rel="stylesheet"
-        href="{{ asset('assets/css/retailer-sidebar.css') }}"
-    >
-
+    
     <link
         rel="stylesheet"
         href="{{ asset('assets/css/retailer-header.css') }}"
@@ -144,7 +140,26 @@
         rel="stylesheet"
         href="{{ asset('assets/css/aadhaar-create.css') }}"
     >
+    <link
+        rel="stylesheet"
+        href="{{ asset('assets/css/sidebar-menu.css') }}"
+    >
 
+    <link
+        rel="stylesheet"
+        href="{{ asset('assets/css/sidebar-base.css') }}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ asset('assets/css/sidebar-animation.css') }}"
+    >
+    <link
+        rel="stylesheet"
+        href="{{ asset('assets/css/sidebar-responsive.css') }}"
+    >
+
+   
 
 </head>
 
