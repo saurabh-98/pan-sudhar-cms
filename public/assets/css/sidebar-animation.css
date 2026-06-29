@@ -21,7 +21,11 @@
 
 .stf-link{
 
+    position:relative;
+
     overflow:hidden;
+
+    isolation:isolate;
 }
 
 .stf-link::after{
@@ -30,22 +34,21 @@
 
     position:absolute;
 
-    top:0;
+    inset:0;
+
     left:-120%;
 
-    width:100%;
-
-    height:100%;
-
     background:
-    linear-gradient(
-        120deg,
-        transparent,
-        rgba(255,255,255,.08),
-        transparent
-    );
+        linear-gradient(
+            120deg,
+            transparent,
+            rgba(255,255,255,.08),
+            transparent
+        );
 
     transition:left .6s ease;
+
+    pointer-events:none;
 }
 
 .stf-link:hover::after{
@@ -117,7 +120,8 @@
     transition:
         max-height .35s ease,
         opacity .25s ease,
-        transform .25s ease;
+        transform .25s ease,
+        visibility .25s ease;
 }
 
 .stf-dropdown.open>.stf-submenu{
@@ -137,6 +141,17 @@
 
 .stf-submenu li{
 
+    opacity:1;
+
+    transform:translateX(0);
+
+    transition:
+        opacity .25s ease,
+        transform .25s ease;
+}
+
+.stf-dropdown:not(.open)>.stf-submenu>li{
+
     opacity:0;
 
     transform:translateX(-10px);
@@ -144,43 +159,16 @@
 
 .stf-dropdown.open>.stf-submenu>li{
 
-    animation:submenuItem .30s forwards;
+    animation:submenuItem .35s forwards;
 }
 
-.stf-dropdown.open>.stf-submenu>li:nth-child(1){
-
-    animation-delay:.05s;
-}
-
-.stf-dropdown.open>.stf-submenu>li:nth-child(2){
-
-    animation-delay:.08s;
-}
-
-.stf-dropdown.open>.stf-submenu>li:nth-child(3){
-
-    animation-delay:.11s;
-}
-
-.stf-dropdown.open>.stf-submenu>li:nth-child(4){
-
-    animation-delay:.14s;
-}
-
-.stf-dropdown.open>.stf-submenu>li:nth-child(5){
-
-    animation-delay:.17s;
-}
-
-.stf-dropdown.open>.stf-submenu>li:nth-child(6){
-
-    animation-delay:.20s;
-}
-
-.stf-dropdown.open>.stf-submenu>li:nth-child(7){
-
-    animation-delay:.23s;
-}
+.stf-dropdown.open>.stf-submenu>li:nth-child(1){animation-delay:.05s;}
+.stf-dropdown.open>.stf-submenu>li:nth-child(2){animation-delay:.08s;}
+.stf-dropdown.open>.stf-submenu>li:nth-child(3){animation-delay:.11s;}
+.stf-dropdown.open>.stf-submenu>li:nth-child(4){animation-delay:.14s;}
+.stf-dropdown.open>.stf-submenu>li:nth-child(5){animation-delay:.17s;}
+.stf-dropdown.open>.stf-submenu>li:nth-child(6){animation-delay:.20s;}
+.stf-dropdown.open>.stf-submenu>li:nth-child(7){animation-delay:.23s;}
 
 @keyframes submenuItem{
 
@@ -216,13 +204,22 @@
 
     inset:0;
 
-    border-radius:10px;
+    border-radius:12px;
 
     box-shadow:
-        0 0 20px
-        rgba(37,99,235,.20);
+        0 0 18px rgba(37,99,235,.20);
 
     pointer-events:none;
+}
+
+/*==========================================================
+    OPEN MENU GLOW
+==========================================================*/
+
+.stf-dropdown.open>.stf-link{
+
+    box-shadow:
+        0 0 15px rgba(37,99,235,.12);
 }
 
 /*==========================================================
@@ -273,11 +270,11 @@
 .stf-sidebar::-webkit-scrollbar-thumb:hover{
 
     background:
-    linear-gradient(
-        180deg,
-        #3b82f6,
-        #10b981
-    );
+        linear-gradient(
+            180deg,
+            #3b82f6,
+            #10b981
+        );
 }
 
 /*==========================================================
@@ -304,4 +301,40 @@
 
         transform:translateX(0);
     }
+}
+
+/*==========================================================
+    FORCE SIDEBAR COLORS
+==========================================================*/
+
+.stf-sidebar .stf-link,
+.stf-sidebar .stf-link span{
+
+    color:#dbe7f5 !important;
+}
+
+.stf-sidebar .stf-link i{
+
+    color:#ffffff !important;
+}
+
+.stf-sidebar .stf-arrow{
+
+    color:#cbd5e1 !important;
+}
+
+.stf-sidebar .stf-link:hover,
+.stf-sidebar .stf-link:hover span,
+.stf-sidebar .stf-link:hover i,
+.stf-sidebar .stf-link:hover .stf-arrow{
+
+    color:#ffffff !important;
+}
+
+.stf-sidebar .stf-active,
+.stf-sidebar .stf-active span,
+.stf-sidebar .stf-active i,
+.stf-sidebar .stf-active .stf-arrow{
+
+    color:#ffffff !important;
 }
