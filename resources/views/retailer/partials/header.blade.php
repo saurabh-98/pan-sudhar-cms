@@ -54,34 +54,51 @@
     <div class="stfh-right">
 
         <!-- =====================================================
-        | WALLET BALANCE
-        ====================================================== -->
+        | WALLET CARD
+        ===================================================== -->
         <div class="stfh-wallet d-none d-lg-flex">
 
-            <div class="stfh-wallet-icon">
+            <div class="stfh-wallet-left">
 
-                <i class="fa fa-wallet"></i>
+                <div class="stfh-wallet-icon">
+                    <i class="fa fa-wallet"></i>
+                </div>
+
+                <div>
+
+                    <div class="stfh-wallet-label">
+                        Wallet Balance
+                    </div>
+
+                    <div class="stfh-wallet-balance">
+                        ₹{{ number_format(auth()->user()->wallet_balance ?? 0,2) }}
+                    </div>
+
+                </div>
 
             </div>
 
-            <div>
+            <div class="stfh-wallet-actions">
 
-                <div class="stfh-wallet-label">
+                <a href="{{ route('retailer.wallet.recharge') }}"
+                class="stfh-wallet-btn">
 
-                    Wallet Balance
+                    <i class="fa fa-plus"></i>
 
-                </div>
+                    Recharge
 
-                <div class="stfh-wallet-balance">
+                </a>
 
-                   ₹{{ number_format(auth()->user()->wallet_balance ?? 0,2) }}
+                <a href="{{ route('retailer.wallet.recharge-history') }}"
+                class="stfh-wallet-history">
 
-                </div>
+                    <i class="fa fa-history"></i>
+
+                </a>
 
             </div>
 
         </div>
-
 
 
 

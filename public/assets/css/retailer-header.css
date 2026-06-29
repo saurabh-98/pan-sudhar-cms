@@ -113,7 +113,7 @@
 }
 
 /* ==========================================================
-   WALLET
+   WALLET CARD
 ========================================================== */
 
 .stfh-wallet{
@@ -126,23 +126,21 @@
 
     align-items:center;
 
-    gap:10px;
+    justify-content:space-between;
 
-    padding:8px 14px;
+    gap:18px;
 
-    border-radius:16px;
+    min-width:360px;
 
-    background:
-    linear-gradient(
-        135deg,
-        #10b981,
-        #14b8a6
-    );
+    padding:12px 18px;
+
+    border-radius:18px;
+
+    background:linear-gradient(135deg,#10b981,#14b8a6);
 
     color:#fff;
 
-    box-shadow:
-    0 10px 25px rgba(16,185,129,.18);
+    box-shadow:0 12px 30px rgba(16,185,129,.22);
 }
 
 .stfh-wallet::before{
@@ -151,52 +149,182 @@
 
     position:absolute;
 
-    width:80px;
-    height:80px;
+    right:-35px;
 
-    right:-20px;
-    top:-20px;
+    top:-35px;
+
+    width:110px;
+
+    height:110px;
 
     border-radius:50%;
 
-    background:
-    rgba(255,255,255,.12);
+    background:rgba(255,255,255,.10);
+
+    pointer-events:none;
 }
 
-.stfh-wallet-icon{
+.stfh-wallet::after{
 
-    width:38px;
-    height:38px;
+    content:"";
 
-    border-radius:12px;
+    position:absolute;
+
+    left:-25px;
+
+    bottom:-35px;
+
+    width:90px;
+
+    height:90px;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.06);
+
+    pointer-events:none;
+}
+
+.stfh-wallet-left{
 
     display:flex;
 
     align-items:center;
+
+    gap:14px;
+
+    z-index:2;
+}
+
+.stfh-wallet-icon{
+
+    width:48px;
+
+    height:48px;
+
+    display:flex;
+
+    align-items:center;
+
     justify-content:center;
 
-    background:
-    rgba(255,255,255,.16);
+    border-radius:14px;
 
-    font-size:15px;
+    background:rgba(255,255,255,.18);
+
+    font-size:18px;
+
+    color:#fff;
+
+    backdrop-filter:blur(10px);
 }
 
 .stfh-wallet-label{
 
-    font-size:9px;
-
-    letter-spacing:1px;
+    font-size:11px;
 
     text-transform:uppercase;
+
+    letter-spacing:1.2px;
+
+    font-weight:700;
 
     opacity:.85;
 }
 
 .stfh-wallet-balance{
 
-    font-size:15px;
+    margin-top:2px;
+
+    font-size:28px;
 
     font-weight:800;
+
+    line-height:1;
+}
+
+.stfh-wallet-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    z-index:2;
+}
+
+.stfh-wallet-btn{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:10px 18px;
+
+    border-radius:30px;
+
+    background:#fff;
+
+    color:#10b981;
+
+    text-decoration:none;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    transition:.3s;
+}
+
+.stfh-wallet-btn i{
+
+    font-size:12px;
+}
+
+.stfh-wallet-btn:hover{
+
+    background:#f8fafc;
+
+    color:#059669;
+
+    transform:translateY(-2px);
+
+    box-shadow:0 10px 20px rgba(0,0,0,.15);
+}
+
+.stfh-wallet-history{
+
+    width:42px;
+
+    height:42px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.16);
+
+    color:#fff;
+
+    text-decoration:none;
+
+    transition:.3s;
+}
+
+.stfh-wallet-history:hover{
+
+    background:#fff;
+
+    color:#10b981;
+
+    transform:translateY(-2px);
 }
 
 /* ==========================================================
