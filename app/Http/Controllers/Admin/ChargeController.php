@@ -19,75 +19,91 @@ class ChargeController extends Controller
         );
     }
 
-    /**
-     * DataTable Listing
-     */
+  
    
-public function list(Request $request)
-{
-    if ($request->ajax()) {
+    public function list(Request $request)
+    {
+        if ($request->ajax()) {
 
-        $charges = Charge::select([
-            'id',
-            'name',
-            'code',
-            'type',
-            'value',
-            'is_active',
-            'created_at'
-        ])->latest();
+            $charges = Charge::with('commissions')
+                ->select([
+                    'id',
+                    'name',
+                    'code',
+                    'type',
+                    'value',
+                    'is_active',
+                    'created_at'
+                ])
+                ->latest();
 
-        return DataTables::of($charges)
+            return DataTables::of($charges)
 
-            ->addIndexColumn()
+                ->addIndexColumn()
 
-            ->editColumn(
-                'type',
-                function ($row) {
+                ->editColumn('type', function ($row) {
 
-                    return ucfirst(
-                        $row->type
-                    );
-                }
-            )
+                    return ucfirst($row->type);
 
-            ->editColumn(
-                'value',
-                function ($row) {
+                })
 
-                    if (
-                        $row->type === 'percentage'
-                    ) {
+                ->editColumn('value', function ($row) {
 
+                    if ($row->type === 'percentage') {
                         return $row->value . '%';
                     }
 
-                    return number_format(
-                        $row->value,
-                        2
-                    );
-                }
-            )
+                    return number_format($row->value, 2);
 
-            ->addColumn(
-                'status',
-                function ($row) {
+                })
+
+                ->addColumn('distributor_commission', function ($row) {
+
+                    $commission = $row->commissions
+                        ->where('role', 'Distributor')
+                        ->first();
+
+                    if (!$commission) {
+                        return '0.00';
+                    }
+
+                    return $commission->type === 'percentage'
+                        ? $commission->value . '%'
+                        : number_format($commission->value, 2);
+
+                })
+
+                ->addColumn('executive_commission', function ($row) {
+
+                    $commission = $row->commissions
+                        ->where('role', 'Executive')
+                        ->first();
+
+                    if (!$commission) {
+                        return '0.00';
+                    }
+
+                    return $commission->type === 'percentage'
+                        ? $commission->value . '%'
+                        : number_format($commission->value, 2);
+
+                })
+
+                ->addColumn('status', function ($row) {
 
                     return $row->is_active
 
                         ? '<span class="chx-status chx-active">
                                 Active
-                           </span>'
+                        </span>'
 
                         : '<span class="chx-status chx-inactive">
                                 Inactive
-                           </span>';
-                }
-            )
+                        </span>';
 
-            ->addColumn(
-                'action',
-                function ($row) {
+                })
+
+                ->addColumn('action', function ($row) {
 
                     return '
 
@@ -99,9 +115,7 @@ public function list(Request $request)
                                 data-id="'.$row->id.'"
                                 title="Edit Charge"
                             >
-
                                 <i class="fa fa-edit"></i>
-
                             </button>
 
                             <button
@@ -110,32 +124,27 @@ public function list(Request $request)
                                 data-id="'.$row->id.'"
                                 title="Delete Charge"
                             >
-
                                 <i class="fa fa-trash"></i>
-
                             </button>
 
                         </div>
 
                     ';
-                }
-            )
 
-            ->rawColumns([
-                'status',
-                'action'
-            ])
+                })
 
-            ->make(true);
+                ->rawColumns([
+                    'status',
+                    'action'
+                ])
+
+                ->make(true);
+        }
+
+        abort(404);
     }
 
-    abort(404);
-}
-
-
-    /**
-     * Store Charge
-     */
+   
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -162,6 +171,28 @@ public function list(Request $request)
                 'min:0'
             ],
 
+            'distributor_commission' => [
+                'nullable',
+                'numeric',
+                'min:0'
+            ],
+
+            'distributor_type' => [
+                'required',
+                'in:fixed,percentage'
+            ],
+
+            'executive_commission' => [
+                'nullable',
+                'numeric',
+                'min:0'
+            ],
+
+            'executive_type' => [
+                'required',
+                'in:fixed,percentage'
+            ],
+
             'description' => [
                 'nullable'
             ],
@@ -174,17 +205,30 @@ public function list(Request $request)
 
         $charge = Charge::create([
 
-            'name' => $request->name,
-
-            'code' => $request->code,
-
-            'type' => $request->type,
-
-            'value' => $request->amount,
-
+            'name'        => $request->name,
+            'code'        => $request->code,
+            'type'        => $request->type,
+            'value'       => $request->amount,
             'description' => $request->description,
+            'is_active'   => $request->status,
 
-            'is_active' => $request->status,
+        ]);
+
+        $charge->commissions()->create([
+
+            'role'      => 'Distributor',
+            'type'      => $request->distributor_type,
+            'value'     => $request->distributor_commission ?? 0,
+            'is_active' => true,
+
+        ]);
+
+        $charge->commissions()->create([
+
+            'role'      => 'Executive',
+            'type'      => $request->executive_type,
+            'value'     => $request->executive_commission ?? 0,
+            'is_active' => true,
 
         ]);
 
@@ -194,19 +238,23 @@ public function list(Request $request)
 
             'message' => 'Charge created successfully.',
 
-            'data' => $charge
+            'data' => $charge->load('commissions')
 
         ]);
     }
 
-    /**
-     * Edit Charge
-     */
+    
     public function edit($id)
     {
-        $charge = Charge::findOrFail(
-            $id
-        );
+        $charge = Charge::with('commissions')->findOrFail($id);
+
+        $distributor = $charge->commissions
+            ->where('role', 'Distributor')
+            ->first();
+
+        $executive = $charge->commissions
+            ->where('role', 'Executive')
+            ->first();
 
         return response()->json([
 
@@ -224,20 +272,22 @@ public function list(Request $request)
 
             'status' => $charge->is_active,
 
+            'distributor_commission' => $distributor?->value ?? 0,
+
+            'distributor_type' => $distributor?->type ?? 'fixed',
+
+            'executive_commission' => $executive?->value ?? 0,
+
+            'executive_type' => $executive?->type ?? 'fixed',
+
         ]);
     }
 
-    /**
-     * Update Charge
-     */
-    public function update(
-        Request $request,
-        $id
-    ) {
 
-        $charge = Charge::findOrFail(
-            $id
-        );
+   
+    public function update(Request $request, $id)
+    {
+        $charge = Charge::findOrFail($id);
 
         $validated = $request->validate([
 
@@ -263,6 +313,28 @@ public function list(Request $request)
                 'min:0'
             ],
 
+            'distributor_commission' => [
+                'nullable',
+                'numeric',
+                'min:0'
+            ],
+
+            'distributor_type' => [
+                'required',
+                'in:fixed,percentage'
+            ],
+
+            'executive_commission' => [
+                'nullable',
+                'numeric',
+                'min:0'
+            ],
+
+            'executive_type' => [
+                'required',
+                'in:fixed,percentage'
+            ],
+
             'description' => [
                 'nullable'
             ],
@@ -271,23 +343,49 @@ public function list(Request $request)
                 'required',
                 'in:0,1'
             ]
+
         ]);
 
         $charge->update([
 
-            'name' => $request->name,
-
-            'code' => $request->code,
-
-            'type' => $request->type,
-
-            'value' => $request->amount,
-
+            'name'        => $request->name,
+            'code'        => $request->code,
+            'type'        => $request->type,
+            'value'       => $request->amount,
             'description' => $request->description,
-
-            'is_active' => $request->status,
+            'is_active'   => $request->status,
 
         ]);
+
+        // Distributor Commission
+        $charge->commissions()->updateOrCreate(
+
+            [
+                'role' => 'Distributor'
+            ],
+
+            [
+                'type'      => $request->distributor_type,
+                'value'     => $request->distributor_commission ?? 0,
+                'is_active' => true,
+            ]
+
+        );
+
+        // Executive Commission
+        $charge->commissions()->updateOrCreate(
+
+            [
+                'role' => 'Executive'
+            ],
+
+            [
+                'type'      => $request->executive_type,
+                'value'     => $request->executive_commission ?? 0,
+                'is_active' => true,
+            ]
+
+        );
 
         return response()->json([
 
@@ -295,37 +393,61 @@ public function list(Request $request)
 
             'message' => 'Charge updated successfully.',
 
-            'data' => $charge
+            'data' => $charge->load('commissions')
 
         ]);
     }
 
-    /**
-     * Show Single Charge
-     */
+   
     public function show($id)
     {
-        $charge = Charge::findOrFail(
-            $id
-        );
+        $charge = Charge::with('commissions')->findOrFail($id);
+
+        $distributor = $charge->commissions
+            ->where('role', 'Distributor')
+            ->first();
+
+        $executive = $charge->commissions
+            ->where('role', 'Executive')
+            ->first();
 
         return response()->json([
 
             'success' => true,
 
-            'data' => $charge
+            'data' => [
+
+                'id' => $charge->id,
+
+                'name' => $charge->name,
+
+                'code' => $charge->code,
+
+                'type' => $charge->type,
+
+                'amount' => $charge->value,
+
+                'description' => $charge->description,
+
+                'status' => $charge->is_active,
+
+                'distributor_commission' => $distributor?->value ?? 0,
+
+                'distributor_type' => $distributor?->type ?? 'fixed',
+
+                'executive_commission' => $executive?->value ?? 0,
+
+                'executive_type' => $executive?->type ?? 'fixed',
+
+            ]
 
         ]);
     }
 
-    /**
-     * Delete Charge
-     */
+  
     public function destroy($id)
     {
-        $charge = Charge::findOrFail(
-            $id
-        );
+        $charge = Charge::findOrFail($id);
 
         $charge->delete();
 

@@ -1,0 +1,386 @@
+/*=====================================================
+    Recharge History
+======================================================*/
+
+:root{
+
+    --primary:#2563eb;
+    --primary-light:#dbeafe;
+    --success:#16a34a;
+    --warning:#f59e0b;
+    --danger:#dc2626;
+    --dark:#1f2937;
+    --border:#e5e7eb;
+    --bg:#f8fafc;
+
+}
+
+/*=====================================================
+Container
+======================================================*/
+
+.recharge-history-card{
+
+    border:none;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    background:#fff;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.08);
+
+    animation:fadeIn .5s ease;
+
+}
+
+/*=====================================================
+Header
+======================================================*/
+
+.recharge-history-card .card-header{
+
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+
+    color:#fff;
+
+    border:none;
+
+    padding:22px 30px;
+
+}
+
+.recharge-history-title{
+
+    font-size:24px;
+
+    font-weight:700;
+
+    margin:0;
+
+}
+
+.recharge-history-title i{
+
+    margin-right:10px;
+
+}
+
+/*=====================================================
+Button
+======================================================*/
+
+.recharge-btn{
+
+    border-radius:50px;
+
+    padding:12px 24px;
+
+    font-weight:600;
+
+    background:#fff;
+
+    color:#2563eb;
+
+    border:none;
+
+    transition:.3s;
+
+}
+
+.recharge-btn:hover{
+
+    background:#2563eb;
+
+    color:#fff;
+
+    transform:translateY(-2px);
+
+}
+
+/*=====================================================
+Body
+======================================================*/
+
+.recharge-history-card .card-body{
+
+    padding:30px;
+
+    background:#fff;
+
+}
+
+/*=====================================================
+Datatable
+======================================================*/
+
+#rechargeTable{
+
+    width:100%!important;
+
+    border-collapse:separate;
+
+    border-spacing:0 10px;
+
+}
+
+#rechargeTable thead th{
+
+    background:#eff6ff;
+
+    color:#374151;
+
+    border:none;
+
+    padding:15px;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    text-transform:uppercase;
+
+    letter-spacing:.4px;
+
+}
+
+#rechargeTable tbody tr{
+
+    background:#fff;
+
+    transition:.3s;
+
+    box-shadow:0 4px 12px rgba(0,0,0,.05);
+
+}
+
+#rechargeTable tbody tr:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 10px 25px rgba(37,99,235,.12);
+
+}
+
+#rechargeTable tbody td{
+
+    border:none;
+
+    padding:18px 15px;
+
+    vertical-align:middle;
+
+}
+
+/*=====================================================
+Amount
+======================================================*/
+
+.amount{
+
+    color:#16a34a;
+
+    font-weight:700;
+
+    font-size:16px;
+
+}
+
+/*=====================================================
+Badges
+======================================================*/
+
+.status{
+
+    display:inline-block;
+
+    padding:8px 18px;
+
+    border-radius:50px;
+
+    color:#fff;
+
+    font-size:13px;
+
+    font-weight:700;
+
+}
+
+.status-approved{
+
+    background:#16a34a;
+
+}
+
+.status-pending{
+
+    background:#f59e0b;
+
+    color:#fff;
+
+}
+
+.status-rejected{
+
+    background:#dc2626;
+
+}
+
+/*=====================================================
+Buttons
+======================================================*/
+
+.btn-view{
+
+    background:#2563eb;
+
+    color:#fff;
+
+    border-radius:8px;
+
+    padding:8px 14px;
+
+    transition:.3s;
+
+}
+
+.btn-view:hover{
+
+    background:#1d4ed8;
+
+    color:#fff;
+
+}
+
+/*=====================================================
+Search
+======================================================*/
+
+.dataTables_filter input{
+
+    border-radius:30px;
+
+    border:1px solid #d1d5db;
+
+    padding:8px 16px;
+
+}
+
+.dataTables_filter input:focus{
+
+    outline:none;
+
+    border-color:#2563eb;
+
+    box-shadow:0 0 0 .2rem rgba(37,99,235,.15);
+
+}
+
+/*=====================================================
+Length
+======================================================*/
+
+.dataTables_length select{
+
+    border-radius:10px;
+
+}
+
+/*=====================================================
+Pagination
+======================================================*/
+
+.dataTables_paginate .paginate_button{
+
+    border-radius:8px!important;
+
+    margin:0 3px;
+
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current{
+
+    background:#2563eb!important;
+
+    color:#fff!important;
+
+    border:none!important;
+
+}
+
+/*=====================================================
+Processing
+======================================================*/
+
+.dataTables_processing{
+
+    border-radius:12px;
+
+}
+
+/*=====================================================
+Animation
+======================================================*/
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(25px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/*=====================================================
+Responsive
+======================================================*/
+
+@media(max-width:991px){
+
+    .recharge-history-card .card-header{
+
+        flex-direction:column;
+
+        gap:15px;
+
+        text-align:center;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .recharge-history-card .card-body{
+
+        padding:15px;
+
+    }
+
+    .recharge-btn{
+
+        width:100%;
+
+    }
+
+    #rechargeTable thead th,
+
+    #rechargeTable tbody td{
+
+        white-space:nowrap;
+
+    }
+
+}

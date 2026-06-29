@@ -153,6 +153,100 @@
 
                         </div>
 
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="chx-label">
+                                    Distributor Commission
+                                </label>
+
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    name="distributor_commission"
+                                    class="form-control chx-input"
+                                    placeholder="0.00"
+                                >
+
+                                <small class="text-danger error-distributor_commission"></small>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="chx-label">
+                                    Distributor Type
+                                </label>
+
+                                <select
+                                    name="distributor_type"
+                                    class="form-control chx-input"
+                                >
+
+                                    <option value="fixed">
+                                        Fixed
+                                    </option>
+
+                                    <option value="percentage">
+                                        Percentage
+                                    </option>
+
+                                </select>
+
+                                <small class="text-danger error-distributor_type"></small>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="chx-label">
+                                    Executive Commission
+                                </label>
+
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    name="executive_commission"
+                                    class="form-control chx-input"
+                                    placeholder="0.00"
+                                >
+
+                                <small class="text-danger error-executive_commission"></small>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="chx-label">
+                                    Executive Type
+                                </label>
+
+                                <select
+                                    name="executive_type"
+                                    class="form-control chx-input"
+                                >
+
+                                    <option value="fixed">
+                                        Fixed
+                                    </option>
+
+                                    <option value="percentage">
+                                        Percentage
+                                    </option>
+
+                                </select>
+
+                                <small class="text-danger error-executive_type"></small>
+
+                            </div>
+
+                        </div>
+
                         <div class="mb-3">
 
                             <label class="chx-label">
@@ -245,26 +339,16 @@
 
                         <thead>
 
-                            <tr>
-
+                           <tr>
                                 <th>ID</th>
-
                                 <th>Name</th>
-
                                 <th>Code</th>
-
                                 <th>Type</th>
-
                                 <th>Value</th>
-
+                                <th>Distributor Commission</th>
+                                <th>Executive Commission</th>
                                 <th>Status</th>
-
-                                <th width="150">
-
-                                    Action
-
-                                </th>
-
+                                <th>Action</th>
                             </tr>
 
                         </thead>
@@ -351,6 +435,20 @@ $(function () {
             {
                 data: 'value',
                 name: 'value'
+            },
+
+            {
+                data: 'distributor_commission',
+                name: 'distributor_commission',
+                orderable: false,
+                searchable: false
+            },
+
+            {
+                data: 'executive_commission',
+                name: 'executive_commission',
+                orderable: false,
+                searchable: false
             },
 
             {
@@ -517,32 +615,39 @@ $(function () {
 
         function () {
 
-            let id =
-                $(this).data('id');
+            let id = $(this).data('id');
 
             $.ajax({
 
-                url:
-                    "{{ url('admin/charges/edit') }}/" + id,
+                url: "{{ url('admin/charges/edit') }}/" + id,
 
                 type: 'GET',
 
                 success: function (res) {
 
-                    $('#charge_id')
-                        .val(res.id);
+                    $('#charge_id').val(res.id);
 
-                    $('[name="name"]')
-                        .val(res.name);
+                    $('[name="name"]').val(res.name);
 
-                    $('[name="code"]')
-                        .val(res.code);
+                    $('[name="code"]').val(res.code);
 
-                    $('[name="type"]')
-                        .val(res.type);
+                    $('[name="type"]').val(res.type);
 
-                    $('[name="amount"]')
-                        .val(res.amount);
+                    $('[name="amount"]').val(res.amount);
+
+                    // Distributor Commission
+                    $('[name="distributor_commission"]')
+                        .val(res.distributor_commission);
+
+                    $('[name="distributor_type"]')
+                        .val(res.distributor_type);
+
+                    // Executive Commission
+                    $('[name="executive_commission"]')
+                        .val(res.executive_commission);
+
+                    $('[name="executive_type"]')
+                        .val(res.executive_type);
 
                     $('[name="description"]')
                         .val(res.description);
@@ -551,17 +656,27 @@ $(function () {
                         .val(res.status);
 
                     $('#saveBtn')
-                        .html(
-                            'Update Charge'
-                        );
+                        .html('Update Charge');
 
-                    $('html, body')
+                    $('html, body').animate({
 
-                        .animate({
+                        scrollTop: 0
 
-                            scrollTop: 0
+                    }, 400);
 
-                        }, 400);
+                },
+
+                error: function () {
+
+                    Swal.fire({
+
+                        icon: 'error',
+
+                        title: 'Error',
+
+                        text: 'Unable to load charge details.'
+
+                    });
 
                 }
 
@@ -570,7 +685,7 @@ $(function () {
         }
 
     );
-
+    
     /*
     |--------------------------------------------------------------------------
     | DELETE

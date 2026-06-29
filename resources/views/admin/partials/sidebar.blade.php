@@ -1,5 +1,10 @@
 @php
 
+    $paymentRequestCount = \App\Models\PaymentRequest::where(
+        'status',
+        'pending'
+    )->count();
+
     /*
     |--------------------------------------------------------------------------
     | PAN COUNT
@@ -253,8 +258,13 @@
             | WALLET MANAGEMENT
             ====================================================== --}}
             @if(
+
                 auth()->user()->can('wallet.view') ||
-                auth()->user()->can('wallet.transactions')
+
+                auth()->user()->can('wallet.transactions') ||
+
+                auth()->user()->can('payment.requests.view')
+
             )
 
             <li class="sbx-section">
@@ -312,6 +322,42 @@
                         </a>
 
                     </li>
+
+                    {{-- PAYMENT REQUESTS --}}
+                        @can('payment.requests.view')
+
+                        <li>
+
+                            <a href="{{ route('admin.wallet.payment-requests') }}"
+                            class="sbx-link
+                            {{ request()->routeIs('admin.wallet.payment-request*') ||
+                                request()->routeIs('admin.wallet.payment-requests')
+                                    ? 'sbx-active'
+                                    : '' }}">
+
+                                <i class="fas fa-qrcode"></i>
+
+                                <span>
+
+                                    Payment Requests
+
+                                </span>
+
+                                @if($paymentRequestCount > 0)
+
+                                    <span class="sbx-count-badge">
+
+                                        {{ $paymentRequestCount }}
+
+                                    </span>
+
+                                @endif
+
+                            </a>
+
+                        </li>
+
+                        @endcan
 
                     @endcan
 

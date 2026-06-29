@@ -166,14 +166,23 @@ class PermissionSeeder extends Seeder
 
 
             /*
+           /*
             |--------------------------------------------------------------------------
             | WALLET MANAGEMENT
             |--------------------------------------------------------------------------
             */
 
             'wallet.view',
+
             'wallet.add',
+
             'wallet.transactions',
+
+            'payment.requests.view',
+
+            'payment.requests.approve',
+
+            'payment.requests.reject',
 
             /*
             |--------------------------------------------------------------------------
@@ -248,11 +257,11 @@ class PermissionSeeder extends Seeder
             'csc.delete',
             'csc.document.upload',
 
-            'voter.view',
-            'voter.assign',
-            'voter.status',
-            'voter.delete',
-            'voter.document.upload',
+            'voter-id.view',
+            'voter-id.assign',
+            'voter-id.status',
+            'voter-id.delete',
+            'voter-id.document.upload',
 
             'bank-account.view',
             'bank-account.assign',

@@ -61,14 +61,47 @@ class ModuleSeeder extends Seeder
             |--------------------------------------------------------------------------
             */
 
-            Module::create([
-                'name'       => 'Wallet History',
-                'slug'       => 'wallet-history',
-                'icon'       => 'fa fa-wallet',
-                'route_name' => 'retailer.wallet.history',
-                'parent_id'  => null,
-                'sort_order' => 4,
-                'status'     => 1,
+           
+
+                $wallet = Module::create([
+                    'name'       => 'Wallet',
+                    'slug'       => 'wallet',
+                    'icon'       => 'fa fa-wallet',
+                    'route_name' => null,
+                    'parent_id'  => null,
+                    'sort_order' => 4,
+                    'status'     => 1,
+                ]);
+
+            Module::insert([
+
+                [
+                    'name'       => 'Recharge Wallet',
+                    'slug'       => 'wallet-recharge',
+                    'route_name' => 'retailer.wallet.recharge',
+                    'parent_id'  => $wallet->id,
+                    'sort_order' => 1,
+                    'status'     => 1,
+                ],
+
+                [
+                    'name'       => 'Recharge History',
+                    'slug'       => 'wallet-recharge-history',
+                    'route_name' => 'retailer.wallet.recharge-history',
+                    'parent_id'  => $wallet->id,
+                    'sort_order' => 2,
+                    'status'     => 1,
+                ],
+
+                [
+                    'name'       => 'Wallet History',
+                    'slug'       => 'wallet-history',
+                    'route_name' => 'retailer.wallet.history',
+                    'parent_id'  => $wallet->id,
+                    'sort_order' => 3,
+                    'status'     => 1,
+                ],
+
             ]);
 
             /*

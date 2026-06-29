@@ -146,21 +146,34 @@
     >
 
     <link
-        rel="stylesheet"
-        href="{{ asset('assets/css/sidebar-base.css') }}"
-    >
+    rel="stylesheet"
+    href="{{ asset('assets/css/sidebar-base.css') }}"
+>
 
-    <link
-        rel="stylesheet"
-        href="{{ asset('assets/css/sidebar-animation.css') }}"
-    >
-    <link
-        rel="stylesheet"
-        href="{{ asset('assets/css/sidebar-responsive.css') }}"
-    >
+<link
+    rel="stylesheet"
+    href="{{ asset('assets/css/sidebar-animation.css') }}"
+>
 
-   
+<link
+    rel="stylesheet"
+    href="{{ asset('assets/css/sidebar-responsive.css') }}"
+>
 
+<link
+    rel="stylesheet"
+    href="{{ asset('assets/css/wallet-recharge-show.css') }}"
+>
+
+<link
+    rel="stylesheet"
+    href="{{ asset('assets/css/recharge-history.css') }}"
+>
+
+<link
+    rel="stylesheet"
+    href="{{ asset('assets/css/recharge-wallet.css') }}"
+>
 </head>
 
 <body>

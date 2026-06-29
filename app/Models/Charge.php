@@ -100,4 +100,9 @@ class Charge extends Model
             ? 'Active'
             : 'Inactive';
     }
+
+    public function commissions()
+    {
+        return $this->hasMany(ChargeCommission::class);
+    }
 }

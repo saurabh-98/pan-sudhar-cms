@@ -278,55 +278,6 @@
 
                 </li>
 
-             
-
-                <!-- PAN SERVICES -->
-                <li>
-
-                    <a
-                        class="dropdown-item py-2"
-                        href="{{ route('retailer.pan.apply') }}"
-                    >
-
-                        <i class="fa fa-id-card me-2"></i>
-
-                        PAN Services
-
-                    </a>
-
-                </li>
-
-                <!-- AADHAAR -->
-                <li>
-
-                    <a
-                        class="dropdown-item py-2"
-                        href=""
-                    >
-
-                        <i class="fa fa-fingerprint me-2"></i>
-
-                        Aadhaar Services
-
-                    </a>
-
-                </li>
-
-                <!-- WALLET -->
-                <li>
-
-                    <a
-                        class="dropdown-item py-2"
-                        href=""
-                    >
-
-                        <i class="fa fa-wallet me-2"></i>
-
-                        Wallet
-
-                    </a>
-
-                </li>
 
                 <!-- WALLET BALANCE -->
                 <li class="px-3 py-3 border-top">

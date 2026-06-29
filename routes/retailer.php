@@ -159,14 +159,36 @@ Route::middleware([
     
     /*
     |--------------------------------------------------------------------------
-    | WALLET HISTORY
+    | WALLET RECHARGE
     |--------------------------------------------------------------------------
     */
 
-    Route::get(
-        '/wallet/history',
-        [WalletController::class, 'history']
-    )->name('wallet.history');
+    Route::prefix('wallet')
+        ->name('wallet.')
+        ->controller(WalletController::class)
+        ->group(function () {
+
+            Route::get('/recharge', 'recharge')
+                ->name('recharge');
+
+            Route::post('/generate-qr', 'generateQr')
+                ->name('generate-qr');
+
+            Route::post('/submit-payment', 'submitPayment')
+                ->name('submit-payment');
+
+            Route::get('/recharge-history', 'rechargeHistory')
+                ->name('recharge-history');
+
+            Route::get('/recharge/{id}', 'showRecharge')
+                ->name('recharge.show');
+
+             Route::get(
+                '/wallet/history',
+                [WalletController::class, 'history']
+            )->name('wallet.history');
+
+        });
 
 
     /*
@@ -184,13 +206,8 @@ Route::middleware([
 
     )->name('profile');
 
-    /*
-    |--------------------------------------------------------------------------
-    | CUSTOMERS
-    |--------------------------------------------------------------------------
-    */
+  
 
-   
 
     /*
 |--------------------------------------------------------------------------

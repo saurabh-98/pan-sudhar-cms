@@ -578,43 +578,90 @@ Route::prefix('pages')
         ->middleware('permission:wallet.view')
         ->group(function () {
 
-        /*
-        |--------------------------------------------------------------------------
-        | WALLET LIST
-        |--------------------------------------------------------------------------
-        */
+            /*
+            |--------------------------------------------------------------------------
+            | Wallet List
+            |--------------------------------------------------------------------------
+            */
 
-        Route::get(
-            '/',
-            [WalletController::class, 'index']
-        )->name('index');
+            Route::get(
+                '/',
+                [WalletController::class,'index']
+            )->name('index');
 
-        /*
-        |--------------------------------------------------------------------------
-        | ADD WALLET BALANCE
-        |--------------------------------------------------------------------------
-        */
+            /*
+            |--------------------------------------------------------------------------
+            | Add Balance
+            |--------------------------------------------------------------------------
+            */
 
-        Route::post(
-            '/add/{id}',
-            [WalletController::class, 'addBalance']
-        )->name('add')
-        ->middleware('permission:wallet.add');
+            Route::post(
+                '/add/{id}',
+                [WalletController::class,'addBalance']
+            )->name('add')
+            ->middleware('permission:wallet.add');
 
-        /*
-        |--------------------------------------------------------------------------
-        | TRANSACTIONS
-        |--------------------------------------------------------------------------
-        */
+            /*
+            |--------------------------------------------------------------------------
+            | Wallet Transactions
+            |--------------------------------------------------------------------------
+            */
 
-        Route::get(
-            '/transactions',
-            [WalletController::class, 'transactions']
-        )->name('transactions')
-        ->middleware('permission:wallet.transactions');
+            Route::get(
+                '/transactions',
+                [WalletController::class,'transactions']
+            )->name('transactions')
+            ->middleware('permission:wallet.transactions');
 
-    });
+            /*
+            |--------------------------------------------------------------------------
+            | Payment Requests
+            |--------------------------------------------------------------------------
+            */
 
+            Route::get(
+                '/payment-requests',
+                [WalletController::class,'paymentRequests']
+            )->name('payment-requests')
+            ->middleware('permission:payment.requests.view');
+
+            /*
+            |--------------------------------------------------------------------------
+            | Payment Request Details
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/payment-request/{id}',
+                [WalletController::class,'showPaymentRequest']
+            )->name('payment-request.show')
+            ->middleware('permission:payment.requests.view');
+
+            /*
+            |--------------------------------------------------------------------------
+            | Approve Payment
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/payment-request/{id}/approve',
+                [WalletController::class,'approvePayment']
+            )->name('payment-request.approve')
+            ->middleware('permission:payment.requests.approve');
+
+            /*
+            |--------------------------------------------------------------------------
+            | Reject Payment
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/payment-request/{id}/reject',
+                [WalletController::class,'rejectPayment']
+            )->name('payment-request.reject')
+            ->middleware('permission:payment.requests.reject');
+
+        });
 
     /*
     |--------------------------------------------------------------------------
