@@ -545,27 +545,7 @@ Route::prefix('pages')
         [SettingController::class, 'saveLogo']
     )->name('logo.save');
 
-    /*
-    |--------------------------------------------------------------------------
-    | UPI
-    |--------------------------------------------------------------------------
-    */
-
-    Route::prefix('upi')
-        ->name('upi.')
-        ->group(function () {
-
-        Route::get(
-            '/',
-            [UpiController::class, 'index']
-        )->name('index');
-
-        Route::post(
-            '/store',
-            [UpiController::class, 'store']
-        )->name('store');
-
-    });
+    
 
     /*
     |--------------------------------------------------------------------------
