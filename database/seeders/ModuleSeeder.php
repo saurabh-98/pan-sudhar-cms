@@ -188,9 +188,19 @@ class ModuleSeeder extends Seeder
                 [
                     'name'       => 'PAN Find/Aadhar To PAN',
                     'slug'       => 'pan-find',
-                    'route_name' => 'retailer.pan.find',
+                    'route_name' => 'retailer.pan-find.apply',
                     'parent_id'  => $pan->id,
                     'sort_order' => 8,
+                    'status'     => 1,
+                ],
+
+
+                [
+                    'name'       => 'PAN Find/Aadhar To PAN History',
+                    'slug'       => 'pan-find-history',
+                    'route_name' => 'retailer.pan-find.history',
+                    'parent_id'  => $pan->id,
+                    'sort_order' => 9,
                     'status'     => 1,
                 ],
 

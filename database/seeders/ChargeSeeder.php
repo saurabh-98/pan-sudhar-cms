@@ -58,8 +58,8 @@ class ChargeSeeder extends Seeder
             ],
 
             [
-                'name'        => 'Aadhaar To PAN',
-                'code'        => 'aadhaar_to_pan',
+                'name'        => 'Pan Find',
+                'code'        => 'pan_find',
                 'type'        => 'fixed',
                 'value'       => 25,
                 'description' => 'PAN verification charge',

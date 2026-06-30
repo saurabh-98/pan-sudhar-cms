@@ -1,0 +1,357 @@
+/*=========================================================
+PAN FIND SERVICE
+=========================================================*/
+
+body{
+
+    background:#f4f7fb;
+
+}
+
+/*=========================================================
+CARD
+=========================================================*/
+
+.card{
+
+    border:none;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+}
+
+.card-header{
+
+    background:linear-gradient(135deg,#2563eb,#0d6efd);
+
+    color:#fff;
+
+}
+
+.card-header h3{
+
+    font-weight:700;
+
+    margin-bottom:5px;
+
+}
+
+.card-header p{
+
+    margin:0;
+
+    font-size:15px;
+
+    opacity:.9;
+
+}
+
+/*=========================================================
+ICON
+=========================================================*/
+
+.service-icon{
+
+    width:70px;
+
+    height:70px;
+
+    background:rgba(255,255,255,.18);
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:28px;
+
+    color:#fff;
+
+    border:2px solid rgba(255,255,255,.3);
+
+}
+
+/*=========================================================
+CHARGE CARD
+=========================================================*/
+
+.charge-card{
+
+    background:linear-gradient(135deg,#2563eb,#4f8cff);
+
+    color:#fff;
+
+    padding:25px;
+
+    border-radius:15px;
+
+    text-align:center;
+
+    box-shadow:0 10px 30px rgba(37,99,235,.20);
+
+}
+
+.charge-card small{
+
+    display:block;
+
+    font-size:15px;
+
+    opacity:.9;
+
+    margin-bottom:10px;
+
+}
+
+.charge-card h2{
+
+    margin:0;
+
+    font-size:34px;
+
+    font-weight:700;
+
+}
+
+/*=========================================================
+WALLET CARD
+=========================================================*/
+
+.wallet-card{
+
+    background:linear-gradient(135deg,#10b981,#0f9d75);
+
+    color:#fff;
+
+    padding:25px;
+
+    border-radius:15px;
+
+    text-align:center;
+
+    box-shadow:0 10px 30px rgba(16,185,129,.18);
+
+}
+
+.wallet-card small{
+
+    display:block;
+
+    font-size:15px;
+
+    opacity:.9;
+
+    margin-bottom:10px;
+
+}
+
+.wallet-card h2{
+
+    margin:0;
+
+    font-size:34px;
+
+    font-weight:700;
+
+}
+
+/*=========================================================
+FORM
+=========================================================*/
+
+.form-label{
+
+    color:#1f2937;
+
+    font-size:15px;
+
+    font-weight:600;
+
+}
+
+.form-control{
+
+    height:56px;
+
+    border-radius:12px;
+
+    border:1px solid #d8dee8;
+
+    font-size:16px;
+
+    transition:.3s;
+
+    box-shadow:none;
+
+}
+
+.form-control:focus{
+
+    border-color:#2563eb;
+
+    box-shadow:0 0 0 .25rem rgba(37,99,235,.15);
+
+}
+
+.invalid-feedback{
+
+    display:block;
+
+    font-size:13px;
+
+    margin-top:6px;
+
+}
+
+/*=========================================================
+ALERT
+=========================================================*/
+
+.alert{
+
+    border-radius:12px;
+
+    font-size:15px;
+
+}
+
+/*=========================================================
+BUTTON
+=========================================================*/
+
+.btn{
+
+    border-radius:12px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+.btn-primary{
+
+    background:#2563eb;
+
+    border:none;
+
+}
+
+.btn-primary:hover{
+
+    background:#1d4ed8;
+
+    transform:translateY(-2px);
+
+}
+
+.btn-dark:hover{
+
+    transform:translateY(-2px);
+
+}
+
+.btn-light{
+
+    border:1px solid #ddd;
+
+}
+
+.btn-light:hover{
+
+    background:#f3f4f6;
+
+    transform:translateY(-2px);
+
+}
+
+/*=========================================================
+SPINNER
+=========================================================*/
+
+.spinner-border{
+
+    width:18px;
+
+    height:18px;
+
+}
+
+/*=========================================================
+HOVER EFFECT
+=========================================================*/
+
+.card:hover{
+
+    transform:translateY(-3px);
+
+    transition:.35s;
+
+}
+
+/*=========================================================
+RESPONSIVE
+=========================================================*/
+
+@media(max-width:991px){
+
+    .charge-card,
+
+    .wallet-card{
+
+        margin-bottom:20px;
+
+    }
+
+    .btn{
+
+        width:100%;
+
+        margin-bottom:12px;
+
+    }
+
+}
+
+@media(max-width:576px){
+
+    .card-body{
+
+        padding:25px !important;
+
+    }
+
+    .card-header{
+
+        text-align:center;
+
+    }
+
+    .service-icon{
+
+        margin:auto;
+
+        margin-bottom:15px;
+
+    }
+
+    .card-header .d-flex{
+
+        display:block !important;
+
+    }
+
+    .charge-card h2,
+
+    .wallet-card h2{
+
+        font-size:28px;
+
+    }
+
+}

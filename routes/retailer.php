@@ -664,21 +664,18 @@ Route::prefix('pan-correction')
 
     )->name('pan.training');
 
-    /*
-    |--------------------------------------------------------------------------
-    | PAN FIND
-    |--------------------------------------------------------------------------
-    */
+    Route::prefix('pan-find')
+        ->name('pan-find.')
+        ->controller(PanFindController::class)
+        ->group(function () {
 
-    Route::get(
+            Route::get('/', 'create')->name('apply');
 
-        '/pan/find',
+            Route::post('/store', 'store')->name('store');
 
-        [PanFindController::class,
-        'index']
+            Route::get('/history', 'history')->name('history');
 
-    )->name('pan.find');
-
+        });
     /*
     |--------------------------------------------------------------------------
     | PAN VERIFY

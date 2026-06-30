@@ -118,6 +118,12 @@
 
     <link
         rel="stylesheet"
+        href="{{ asset('assets/css/pan-find.css') }}"
+    >
+
+
+    <link
+        rel="stylesheet"
         href="{{ asset('assets/css/new-pan-show.css') }}"
     >
 
