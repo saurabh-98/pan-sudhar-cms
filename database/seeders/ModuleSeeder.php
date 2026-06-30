@@ -215,7 +215,7 @@ class ModuleSeeder extends Seeder
             Module::insert([
 
                 [
-                    'name'       => 'File ITR(Salary Income)',
+                    'name'       => 'File ITR (Salary Income)',
                     'slug'       => 'file-itr',
                     'route_name' => 'retailer.itr.index',
                     'parent_id'  => $itr->id,
