@@ -20,7 +20,7 @@ class NoticeSeeder extends Seeder
                 'description' => 'Users can now apply for Instant PAN Card through Aadhaar-based eKYC verification.',
                 'publish_date' => Carbon::now()->subDays(3),
                 'expiry_date' => Carbon::now()->addDays(15),
-                'status' => 1,
+                
             ],
 
             [
@@ -28,7 +28,7 @@ class NoticeSeeder extends Seeder
                 'description' => 'Special Aadhaar mobile number and biometric update camp will be conducted this Sunday.',
                 'publish_date' => Carbon::now()->subDays(1),
                 'expiry_date' => Carbon::now()->addDays(7),
-                'status' => 1,
+               
             ],
 
             [
@@ -36,7 +36,7 @@ class NoticeSeeder extends Seeder
                 'description' => 'All users are requested to link PAN with Aadhaar before the government deadline.',
                 'publish_date' => Carbon::now(),
                 'expiry_date' => Carbon::now()->addDays(30),
-                'status' => 1,
+               
             ],
 
             [
@@ -44,7 +44,7 @@ class NoticeSeeder extends Seeder
                 'description' => 'Name, Date of Birth, Address, and Father Name correction services are now available.',
                 'publish_date' => Carbon::now()->subDays(5),
                 'expiry_date' => Carbon::now()->addDays(20),
-                'status' => 1,
+                
             ],
 
             [
@@ -52,7 +52,7 @@ class NoticeSeeder extends Seeder
                 'description' => 'Users can now instantly download e-PAN after successful PAN generation.',
                 'publish_date' => Carbon::now()->subDays(2),
                 'expiry_date' => null,
-                'status' => 1,
+               
             ],
 
             [
@@ -60,7 +60,7 @@ class NoticeSeeder extends Seeder
                 'description' => 'New Aadhaar enrollment service for children and adults is now open.',
                 'publish_date' => Carbon::now(),
                 'expiry_date' => Carbon::now()->addDays(25),
-                'status' => 1,
+                
             ],
 
         ];

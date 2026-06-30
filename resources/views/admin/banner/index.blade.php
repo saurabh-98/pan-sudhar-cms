@@ -100,55 +100,71 @@ $(document).ready(function(){
         renderPreview();
     });
 
-    function renderPreview(){
+        function renderPreview() {
 
-        let container = $('#bannerPreviewContainer');
-        container.html('');
+            let container = $('#bannerPreviewContainer');
+            container.html('');
 
-        // ✅ EXISTING IMAGES (ADDED)
-        existingImages.forEach((img, index) => {
-            container.append(`
-                <div style="position:relative;">
-                    <img src="/storage/${img}" 
-                        style="width:80px;height:60px;object-fit:cover;border-radius:6px;">
+            // Ensure existingImages is always an array
+            if (!Array.isArray(existingImages)) {
+                if (typeof existingImages === 'string') {
+                    try {
+                        existingImages = JSON.parse(existingImages);
+                    } catch (e) {
+                        existingImages = existingImages ? [existingImages] : [];
+                    }
+                } else {
+                    existingImages = [];
+                }
+            }
 
-                    <span onclick="removeExisting(${index})"
-                        style="position:absolute;top:-5px;right:-5px;
-                               background:red;color:#fff;
-                               border-radius:50%;cursor:pointer;
-                               padding:2px 6px;font-size:12px;">
-                        ×
-                    </span>
-                </div>
-            `);
-        });
-
-        // EXISTING CODE (UNCHANGED)
-        selectedFiles.forEach((file, index) => {
-
-            let reader = new FileReader();
-
-            reader.onload = function(e){
+            existingImages.forEach((img, index) => {
 
                 container.append(`
                     <div style="position:relative;">
-                        <img src="${e.target.result}" 
+                        <img src="/storage/${img}"
                             style="width:80px;height:60px;object-fit:cover;border-radius:6px;">
 
-                        <span onclick="removeImage(${index})"
+                        <span onclick="removeExisting(${index})"
                             style="position:absolute;top:-5px;right:-5px;
-                                   background:red;color:#fff;
-                                   border-radius:50%;cursor:pointer;
-                                   padding:2px 6px;font-size:12px;">
+                                background:red;color:#fff;
+                                border-radius:50%;cursor:pointer;
+                                padding:2px 6px;font-size:12px;">
                             ×
                         </span>
                     </div>
                 `);
-            };
 
-            reader.readAsDataURL(file);
-        });
-    }
+            });
+
+            selectedFiles.forEach((file, index) => {
+
+                let reader = new FileReader();
+
+                reader.onload = function(e){
+
+                    container.append(`
+                        <div style="position:relative;">
+                            <img src="${e.target.result}"
+                                style="width:80px;height:60px;object-fit:cover;border-radius:6px;">
+
+                            <span onclick="removeImage(${index})"
+                                style="position:absolute;top:-5px;right:-5px;
+                                    background:red;color:#fff;
+                                    border-radius:50%;cursor:pointer;
+                                    padding:2px 6px;font-size:12px;">
+                                ×
+                            </span>
+                        </div>
+                    `);
+
+                };
+
+                reader.readAsDataURL(file);
+
+            });
+
+        }
 
     window.removeImage = function(index){
         selectedFiles.splice(index, 1);
@@ -181,7 +197,17 @@ $(document).ready(function(){
 
                     if(!d) return '';
 
-                    let images = Array.isArray(d) ? d : [];
+                   let images = [];
+
+                    if (Array.isArray(d)) {
+                        images = d;
+                    } else if (typeof d === 'string') {
+                        try {
+                            images = JSON.parse(d);
+                        } catch (e) {
+                            images = d ? [d] : [];
+                        }
+                    }
 
                     return images.map(img => 
                         `<img src="/storage/${img}" 
@@ -226,8 +252,25 @@ $(document).ready(function(){
 
         selectedFiles = [];
 
-        // ✅ FIX: store existing images
-        existingImages = btn.data('image') || [];
+       let images = btn.attr('data-image');
+
+            try {
+
+                existingImages = images ? JSON.parse(images) : [];
+
+            } catch (e) {
+
+                existingImages = images ? [images] : [];
+
+            }
+
+            if (!Array.isArray(existingImages)) {
+                existingImages = [];
+            }
+
+            console.log(existingImages);
+
+          renderPreview();
 
         renderPreview(); // ✅ important
 

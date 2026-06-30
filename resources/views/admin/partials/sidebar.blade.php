@@ -769,6 +769,40 @@
 
 
 
+        {{-- ================= COMMUNICATION ================= --}}
+        @if(
+            auth()->user()->can('notice.view')
+            
+        )
+
+        <li class="sbx-section">
+            NOTICE
+        </li>
+
+        <li class="sbx-group">
+
+            <ul class="sbx-submenu">
+
+                @can('notice.view')
+                <li>
+                    <a href="{{ route('admin.notice.index') }}"
+                    class="sbx-link">
+
+                        <i class="fa fa-bullhorn"></i>
+
+                        <span>Notice Board</span>
+
+                    </a>
+                </li>
+                @endcan
+
+
+            </ul>
+
+        </li>
+
+        @endif
+
         
 
 

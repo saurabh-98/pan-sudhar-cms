@@ -62,7 +62,7 @@ class HomeRepository
 
     public function getNotices()
     {
-        return 0;
+        return Notice::latest()->take(5)->get();
     }
 
     

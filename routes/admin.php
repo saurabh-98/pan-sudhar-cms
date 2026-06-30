@@ -1,13 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| ADMIN CONTROLLERS
-|--------------------------------------------------------------------------
-*/
-
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
@@ -15,6 +8,7 @@ use App\Http\Controllers\Admin\StateController;
 use App\Http\Controllers\Admin\DistrictController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\NavigationMenuController;
+use App\Http\Controllers\Admin\NoticeController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\FooterController;
 use App\Http\Controllers\Admin\SettingController;
@@ -382,6 +376,40 @@ Route::middleware([
         ->middleware('permission:navigation.delete');
 
     });
+
+
+    /* ================= NOTICE ================= */
+
+    Route::prefix('notice')
+        ->name('notice.')
+        ->middleware('permission:notice.view')
+        ->group(function () {
+
+        Route::get(
+            '/',
+            [NoticeController::class, 'index']
+        )->name('index');
+
+        Route::post(
+            '/store',
+            [NoticeController::class, 'store']
+        )->name('store')
+        ->middleware('permission:notice.create');
+
+        Route::post(
+            '/update/{id}',
+            [NoticeController::class, 'update']
+        )->name('update')
+        ->middleware('permission:notice.edit');
+
+        Route::delete(
+            '/delete/{id}',
+            [NoticeController::class, 'delete']
+        )->name('delete')
+        ->middleware('permission:notice.delete');
+
+    });
+
 
     /* ================= UPI ================= */
 

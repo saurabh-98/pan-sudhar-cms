@@ -65,43 +65,70 @@ class BannerService
             return false;
         }
 
-        // ✅ 🔥 IMPORTANT FIX (existing images from request)
+        // Existing images from request
         $existingImages = request()->input('existing_images', []);
 
-        $oldImages = !empty($existingImages)
-            ? $existingImages
-            : ($banner->image ?? []);
+        // Convert to array if needed
+        if (is_string($existingImages)) {
 
+            $decoded = json_decode($existingImages, true);
+
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $existingImages = $decoded;
+            } else {
+                $existingImages = [$existingImages];
+            }
+        }
+
+        if (!is_array($existingImages)) {
+            $existingImages = [];
+        }
+
+        // Images from database
+        $oldImages = $banner->image ?? [];
+
+        if (is_string($oldImages)) {
+
+            $decoded = json_decode($oldImages, true);
+
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $oldImages = $decoded;
+            } else {
+                $oldImages = [$oldImages];
+            }
+        }
+
+        if (!is_array($oldImages)) {
+            $oldImages = [];
+        }
+
+        // Keep existing images if user didn't remove them
+        $images = !empty($existingImages) ? $existingImages : $oldImages;
+
+        // Upload new images
         $newImages = [];
 
-        if (!empty($files)) {
+        foreach ($files ?? [] as $file) {
 
-            foreach ($files as $file) {
+            if ($file && $file->isValid()) {
 
-                if ($file && $file->isValid()) {
+                $filename = time().'_'.Str::random(10).'.'.$file->getClientOriginalExtension();
 
-                    $filename = time().'_'.Str::random(10).'.'.$file->getClientOriginalExtension();
+                Storage::disk('public')->putFileAs(
+                    'banners',
+                    $file,
+                    $filename
+                );
 
-                    Storage::disk('public')->putFileAs(
-                        'banners',
-                        $file,
-                        $filename
-                    );
-
-                    $newImages[] = str_replace('\\', '/', 'banners/'.$filename);
-                }
+                $newImages[] = 'banners/'.$filename;
             }
-
-            // ✅ merge old + new
-            $dto->image = array_merge($oldImages, $newImages);
-
-        } else {
-            $dto->image = $oldImages;
         }
+
+        // Merge arrays safely
+        $dto->image = array_merge($images, $newImages);
 
         $result = $this->repo->update($banner, $dto->toArray());
 
-        // ✅ CLEAR CACHE
         Cache::forget('home_page_data');
 
         return $result;

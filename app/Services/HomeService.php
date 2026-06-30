@@ -27,8 +27,8 @@ class HomeService
 
           
 
-            // 📰 NEWS (optional)
-            // 'news'     => $this->homeRepository->getNews(),
+           // 📢 NOTICES
+            'notices'  => $this->homeRepository->getNotices(),
 
            
         ];
