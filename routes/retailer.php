@@ -16,7 +16,7 @@ use App\Http\Controllers\Retailer\WalletController;
 
 use App\Http\Controllers\Retailer\Pan\NewPanApplicationController;
 use App\Http\Controllers\Retailer\Pan\PanCorrectionController;
-use App\Http\Controllers\Retailer\Pan\CompanyPanController;
+use App\Http\Controllers\Retailer\Pan\PanApplyWithoutDocumentController;
 use App\Http\Controllers\Retailer\Pan\PanTrainingController;
 use App\Http\Controllers\Retailer\Pan\PanFindController;
 use App\Http\Controllers\Retailer\Pan\PanVerifyController;
@@ -537,20 +537,117 @@ Route::prefix('pan-correction')
     });
 
     
-    /*
-    |--------------------------------------------------------------------------
-    | COMPANY PAN
-    |--------------------------------------------------------------------------
-    */
+    Route::prefix('pan-apply-without-document')
 
-    Route::get(
+    ->name('pan-apply-without-document.')
 
-        '/pan/company',
+    ->controller(PanApplyWithoutDocumentController::class)
 
-        [CompanyPanController::class,
-        'index']
+    ->group(function () {
 
-    )->name('pan.company');
+        /*
+        |--------------------------------------------------------------------------
+        | APPLY
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+
+            '/apply',
+
+            'create'
+
+        )->name('apply');
+
+        /*
+        |--------------------------------------------------------------------------
+        | PREVIEW
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post(
+
+            '/preview',
+
+            'preview'
+
+        )->name('preview');
+
+        /*
+        |--------------------------------------------------------------------------
+        | PREVIEW PAGE
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+
+            '/preview-page',
+
+            'previewPage'
+
+        )->name('preview-page');
+
+        /*
+        |--------------------------------------------------------------------------
+        | STORE
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post(
+
+            '/store',
+
+            'finalSubmit'
+
+        )->name('store');
+
+        /*
+        |--------------------------------------------------------------------------
+        | HISTORY
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+
+            '/history',
+
+            'index'
+
+        )->name('history');
+
+        /*
+        |--------------------------------------------------------------------------
+        | SHOW
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+
+            '/show/{id}',
+
+            'show'
+
+        )->name('show');
+
+
+        Route::get(
+            '/receiving/{id}',
+            'acknowledgement'
+        )->name('receiving');
+
+        /*
+        |--------------------------------------------------------------------------
+        | PRINT
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/print/{id}',
+            'print'
+        )->name('print');
+
+    });
+
 
     /*
     |--------------------------------------------------------------------------

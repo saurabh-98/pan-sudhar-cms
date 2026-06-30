@@ -47,8 +47,8 @@ class ChargeSeeder extends Seeder
             ],
 
             [
-                'name'        => 'Company PAN',
-                'code'        => 'company_pan',
+                'name'        => 'PAN Without Document',
+                'code'        => 'without_document_pan',
                 'type'        => 'fixed',
                 'value'       => 150,
                 'description' => 'Company PAN service charge',
@@ -58,10 +58,10 @@ class ChargeSeeder extends Seeder
             ],
 
             [
-                'name'        => 'PAN Verify',
-                'code'        => 'pan_verify',
+                'name'        => 'Aadhaar To PAN',
+                'code'        => 'aadhaar_to_pan',
                 'type'        => 'fixed',
-                'value'       => 20,
+                'value'       => 25,
                 'description' => 'PAN verification charge',
                 'is_active'   => 1,
                 'created_at'  => now(),

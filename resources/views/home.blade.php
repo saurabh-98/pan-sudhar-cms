@@ -142,8 +142,8 @@
 
             <h2 class="notice-title">
 
-                Latest Notices &
-                <span>Service Announcements</span>
+                
+                <span>Latest Announcements</span>
 
             </h2>
 

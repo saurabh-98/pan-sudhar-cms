@@ -158,21 +158,30 @@ class ModuleSeeder extends Seeder
                     'status'     => 1,
                 ],
 
-               [
-                'name'       => 'PAN Apply Without Docs',
-                'slug'       => 'pan-without-docs',
-                'route_name' => 'retailer.pan.company',
-                'parent_id'  => $pan->id,
-                'sort_order' => 4,
-                'status'     => 1,
-            ],
+                [
+                    'name'       => 'PAN Apply Without Docs',
+                    'slug'       => 'pan-without-docs',
+                    'route_name' => 'retailer.pan-apply-without-document.apply',
+                    'parent_id'  => $pan->id,
+                    'sort_order' => 5,
+                    'status'     => 1,
+                ],
+
+                [
+                    'name'       => 'PAN Without Docs History',
+                    'slug'       => 'pan-without-docs-history',
+                    'route_name' => 'retailer.pan-apply-without-document.history',
+                    'parent_id'  => $pan->id,
+                    'sort_order' => 6,
+                    'status'     => 1,
+                ],
 
                 [
                     'name'       => 'PAN Training',
                     'slug'       => 'pan-training',
                     'route_name' => 'retailer.pan.training',
                     'parent_id'  => $pan->id,
-                    'sort_order' => 5,
+                    'sort_order' => 7,
                     'status'     => 1,
                 ],
 
@@ -181,18 +190,11 @@ class ModuleSeeder extends Seeder
                     'slug'       => 'pan-find',
                     'route_name' => 'retailer.pan.find',
                     'parent_id'  => $pan->id,
-                    'sort_order' => 6,
+                    'sort_order' => 8,
                     'status'     => 1,
                 ],
 
-                [
-                    'name'       => 'PAN Without Docs History',
-                    'slug'       => 'pan-without-docs-history',
-                    'route_name' => 'retailer.pan.verify',
-                    'parent_id'  => $pan->id,
-                    'sort_order' => 7,
-                    'status'     => 1,
-                ],
+              
 
             ]);
 

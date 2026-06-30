@@ -42,6 +42,7 @@
             "app/Helpers/FileHelper.php",
             "app/Helpers/PanSessionHelper.php",
             "app/Helpers/PanCorrectionSessionHelper.php",
+            "app/Helpers/PanApplyWithoutDocumentSessionHelper.php",
             "app/Helpers/ItrSessionHelper.php",
             "app/Helpers/AadharSessionHelper.php",
             "app/Helpers/AadhaarFormHelper.php",
