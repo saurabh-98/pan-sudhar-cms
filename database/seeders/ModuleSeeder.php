@@ -224,11 +224,20 @@ class ModuleSeeder extends Seeder
                 ],
 
                 [
+                    'name'       => 'ITR Filing & TDS Refund',
+                    'slug'       => 'itr-file-tds-refund',
+                    'route_name' => 'retailer.itr.index',
+                    'parent_id'  => $itr->id,
+                    'sort_order' => 2,
+                    'status'     => 1,
+                ],
+
+                [
                     'name'       => 'ITR History',
                     'slug'       => 'itr-history',
                     'route_name' => 'retailer.itr.history',
                     'parent_id'  => $itr->id,
-                    'sort_order' => 2,
+                    'sort_order' => 3,
                     'status'     => 1,
                 ],
 
