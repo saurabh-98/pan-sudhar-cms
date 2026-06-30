@@ -159,8 +159,8 @@ class ModuleSeeder extends Seeder
                 ],
 
                [
-                'name'       => 'PAN Apply Without Documents',
-                'slug'       => 'pan-without-documents',
+                'name'       => 'PAN Apply Without Docs',
+                'slug'       => 'pan-without-docs',
                 'route_name' => 'retailer.pan.company',
                 'parent_id'  => $pan->id,
                 'sort_order' => 4,
@@ -186,8 +186,8 @@ class ModuleSeeder extends Seeder
                 ],
 
                 [
-                    'name'       => 'Aadhar To Pan',
-                    'slug'       => 'aadhar-to-pan',
+                    'name'       => 'PAN Without Docs History',
+                    'slug'       => 'pan-without-docs-history',
                     'route_name' => 'retailer.pan.verify',
                     'parent_id'  => $pan->id,
                     'sort_order' => 7,
@@ -745,7 +745,7 @@ class ModuleSeeder extends Seeder
             ],
 
             [
-                'name'       => 'Import Export Certificate',
+                'name'       => 'Import Export Certificate(IEC)',
                 'slug'       => 'import-export-certificate',
                 'route_name' => 'retailer.other-service.service',
                 'parent_id'  => $otherService->id,
