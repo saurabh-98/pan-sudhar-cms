@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
-
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\DTO\AadhaarServiceDTO;
 
 use App\Http\Requests\StoreAadhaarServiceRequest;
@@ -867,32 +867,32 @@ class AadhaarServiceController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function print(
-        int $id
-    ) {
 
-        return view(
-
-            'retailer.aadhaar.print',
-
-            [
-
-                'application' =>
-
-                    $this->aadhaarServiceService
-                        ->find(
-
-                            $id,
-
-                            auth()->id()
-
-                        )
-
-            ]
-
+    public function print(int $id)
+    {
+        $application = $this->aadhaarServiceService->find(
+            $id,
+            auth()->id()
         );
-    }
 
+        if (!$application) {
+            abort(404);
+        }
+
+        $pdf = Pdf::loadView(
+            'retailer.aadhaar.pdf',
+            compact('application')
+        );
+
+        $pdf->setPaper('a4', 'portrait');
+
+        return $pdf->stream(
+            'AADHAAR-RECEIPT-'.$application->application_no.'.pdf'
+        );
+
+        // To download instead of opening:
+        // return $pdf->download('AADHAAR-RECEIPT-'.$application->application_no.'.pdf');
+    }
     /*
     |--------------------------------------------------------------------------
     | DELETE

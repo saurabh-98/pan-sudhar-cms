@@ -158,14 +158,14 @@ class ModuleSeeder extends Seeder
                     'status'     => 1,
                 ],
 
-                [
-                    'name'       => 'Company PAN',
-                    'slug'       => 'company-pan',
-                    'route_name' => 'retailer.pan.company',
-                    'parent_id'  => $pan->id,
-                    'sort_order' => 4,
-                    'status'     => 1,
-                ],
+               [
+                'name'       => 'PAN Apply Without Documents',
+                'slug'       => 'pan-without-documents',
+                'route_name' => 'retailer.pan.company',
+                'parent_id'  => $pan->id,
+                'sort_order' => 4,
+                'status'     => 1,
+            ],
 
                 [
                     'name'       => 'PAN Training',
@@ -177,7 +177,7 @@ class ModuleSeeder extends Seeder
                 ],
 
                 [
-                    'name'       => 'PAN Find',
+                    'name'       => 'PAN Find/Aadhar To PAN',
                     'slug'       => 'pan-find',
                     'route_name' => 'retailer.pan.find',
                     'parent_id'  => $pan->id,
@@ -186,8 +186,8 @@ class ModuleSeeder extends Seeder
                 ],
 
                 [
-                    'name'       => 'PAN Verify',
-                    'slug'       => 'pan-verify',
+                    'name'       => 'Aadhar To Pan',
+                    'slug'       => 'aadhar-to-pan',
                     'route_name' => 'retailer.pan.verify',
                     'parent_id'  => $pan->id,
                     'sort_order' => 7,
@@ -215,7 +215,7 @@ class ModuleSeeder extends Seeder
             Module::insert([
 
                 [
-                    'name'       => 'File ITR',
+                    'name'       => 'File ITR(Salary Income)',
                     'slug'       => 'file-itr',
                     'route_name' => 'retailer.itr.index',
                     'parent_id'  => $itr->id,
@@ -317,7 +317,7 @@ class ModuleSeeder extends Seeder
                 ],
 
                 [
-                    'name'       => 'Email Update',
+                    'name'       => 'Email/Misc Update',
                     'slug'       => 'email-update',
                     'route_name' => 'retailer.aadhaar.service',
                     'parent_id'  => $aadhaar->id,
@@ -420,8 +420,8 @@ class ModuleSeeder extends Seeder
             ],
 
             [
-                'name'       => 'Residence Certificate',
-                'slug'       => 'residence-certificate',
+                'name'       => 'Domicile/Niwas Certificate',
+                'slug'       => 'domicile-certificate',
                 'route_name' => 'retailer.csc.service',
                 'parent_id'  => $csc->id,
                 'sort_order' => 4,
@@ -591,8 +591,8 @@ class ModuleSeeder extends Seeder
         Module::insert([
 
             [
-                'name'       => 'New Bank Account Opening',
-                'slug'       => 'new-bank-account',
+                'name'       => 'Airtel Bank Account Opening',
+                'slug'       => 'airtel-bank-account',
                 'route_name' => 'retailer.bank-account.service',
                 'parent_id'  => $bankAccount->id,
                 'sort_order' => 1,
@@ -600,8 +600,8 @@ class ModuleSeeder extends Seeder
             ],
 
             [
-                'name'       => 'Account Closure',
-                'slug'       => 'account-closure',
+                'name'       => 'Indian Bank',
+                'slug'       => 'indian-bank',
                 'route_name' => 'retailer.bank-account.service',
                 'parent_id'  => $bankAccount->id,
                 'sort_order' => 2,
@@ -609,17 +609,16 @@ class ModuleSeeder extends Seeder
             ],
 
             [
-                'name'       => 'Mobile Number Update',
-                'slug'       => 'bank-mobile-update',
+                'name'       => 'Indian Overseas Bank',
+                'slug'       => 'indian-overseas-bank',
                 'route_name' => 'retailer.bank-account.service',
                 'parent_id'  => $bankAccount->id,
                 'sort_order' => 3,
                 'status'     => 1,
             ],
-
             [
-                'name'       => 'Address Update',
-                'slug'       => 'bank-address-update',
+                'name'       => 'NSDL Payment Bank',
+                'slug'       => 'nsdl-payment-bank',
                 'route_name' => 'retailer.bank-account.service',
                 'parent_id'  => $bankAccount->id,
                 'sort_order' => 4,
@@ -627,8 +626,8 @@ class ModuleSeeder extends Seeder
             ],
 
             [
-                'name'       => 'KYC Update',
-                'slug'       => 'kyc-update',
+                'name'       => 'Jio Payment Bank',
+                'slug'       => 'jio-payment-bank',
                 'route_name' => 'retailer.bank-account.service',
                 'parent_id'  => $bankAccount->id,
                 'sort_order' => 5,
@@ -636,8 +635,8 @@ class ModuleSeeder extends Seeder
             ],
 
             [
-                'name'       => 'Nominee Update',
-                'slug'       => 'nominee-update',
+                'name'       => 'Bank of Baroda',
+                'slug'       => 'bank-of-baroda',
                 'route_name' => 'retailer.bank-account.service',
                 'parent_id'  => $bankAccount->id,
                 'sort_order' => 6,
@@ -645,11 +644,29 @@ class ModuleSeeder extends Seeder
             ],
 
             [
+                'name'       => 'Kotak Bank Account',
+                'slug'       => 'kotak-bank-account',
+                'route_name' => 'retailer.bank-account.service',
+                'parent_id'  => $bankAccount->id,
+                'sort_order' => 7,
+                'status'     => 1,
+            ],
+
+            [
+                'name'       => 'SBI/PNB Bank Account',
+                'slug'       => 'sbi-pnb-bank-account',
+                'route_name' => 'retailer.bank-account.service',
+                'parent_id'  => $bankAccount->id,
+                'sort_order' => 8,
+                'status'     => 1,
+            ],
+
+             [
                 'name'       => 'Bank Account History',
                 'slug'       => 'bank-account-history',
                 'route_name' => 'retailer.bank-account.history',
                 'parent_id'  => $bankAccount->id,
-                'sort_order' => 7,
+                'sort_order' => 9,
                 'status'     => 1,
             ],
 
@@ -701,8 +718,8 @@ class ModuleSeeder extends Seeder
             ],
 
             [
-                'name'       => 'ITR Filing / TDS Refund',
-                'slug'       => 'itr-filing-tds-refund',
+                'name'       => 'NPCI Aadhaar Seeding',
+                'slug'       => 'npci-aadhaar-seeding',
                 'route_name' => 'retailer.other-service.service',
                 'parent_id'  => $otherService->id,
                 'sort_order' => 4,
