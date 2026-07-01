@@ -17,7 +17,7 @@ if (! function_exists('other_service_fields')) {
 
             [
                 'name' => 'mobile',
-                'label' => 'Mobile Number',
+                'label' => 'Customer Mobile Number',
                 'type' => 'text',
                 'required' => true,
             ],
@@ -34,18 +34,7 @@ if (! function_exists('other_service_fields')) {
                 'type' => 'text',
             ],
 
-            [
-                'name' => 'address',
-                'label' => 'Address',
-                'type' => 'textarea',
-            ],
-
-            [
-                'name' => 'remarks',
-                'label' => 'Remarks',
-                'type' => 'textarea',
-            ],
-
+          
             [
                 'name' => 'document',
                 'label' => 'Supporting Document',
