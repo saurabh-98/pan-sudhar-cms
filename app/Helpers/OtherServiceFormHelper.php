@@ -41,6 +41,8 @@ if (! function_exists('other_service_fields')) {
                 'type' => 'file',
             ],
 
+
+
         ];
 
         return [
@@ -64,6 +66,13 @@ if (! function_exists('other_service_fields')) {
             'gst-registration-filing' => array_merge(
                 $commonFields,
                 [
+
+                    [
+                        'name' => 'document',
+                        'label' => 'Rent Agreement',
+                        'type' => 'file',
+                    ],
+
                     [
                         'name' => 'business_name',
                         'label' => 'Business Name',
@@ -84,6 +93,8 @@ if (! function_exists('other_service_fields')) {
                         'type' => 'textarea',
                         'required' => true,
                     ],
+
+
                 ]
             ),
 
