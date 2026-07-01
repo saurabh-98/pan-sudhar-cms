@@ -792,12 +792,39 @@ class ModuleSeeder extends Seeder
                 'status'     => 1,
             ],
 
+             [
+                'name'       => 'Driving Learning License',
+                'slug'       => 'driving-learning-license',
+                'route_name' => 'retailer.other-service.service',
+                'parent_id'  => $otherService->id,
+                'sort_order' => 10,
+                'status'     => 1,
+            ],
+
+               [
+                'name'       => 'Vehicle Chalan Payment',
+                'slug'       => 'vehicle-chalan-payment',
+                'route_name' => 'retailer.other-service.service',
+                'parent_id'  => $otherService->id,
+                'sort_order' => 11,
+                'status'     => 1,
+            ],
+
+             [
+                'name'       => 'RTO Sevice',
+                'slug'       => 'rto-service',
+                'route_name' => 'retailer.other-service.service',
+                'parent_id'  => $otherService->id,
+                'sort_order' => 12,
+                'status'     => 1,
+            ],
+
             [
                 'name'       => 'Other Service History',
                 'slug'       => 'other-service-history',
                 'route_name' => 'retailer.other-service.history',
                 'parent_id'  => $otherService->id,
-                'sort_order' => 10,
+                'sort_order' => 13,
                 'status'     => 1,
             ],
 

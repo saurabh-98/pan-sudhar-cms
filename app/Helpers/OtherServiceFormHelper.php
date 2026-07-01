@@ -359,6 +359,127 @@ if (! function_exists('other_service_fields')) {
                 ]
             ),
 
+
+              'driving-learning-license' => array_merge(
+                
+                [
+
+                    [
+                        'name' => 'customer_name',
+                        'label' => 'Customer Name',
+                        'type' => 'text',
+                        'required' => true,
+                    ],
+
+                    [
+                        'name' => 'mobile',
+                        'label' => 'Customer Mobile Number',
+                        'type' => 'text',
+                        'required' => true,
+                    ],
+
+                    [
+                        'name' => 'document',
+                        'label' => 'Aadhaar Card',
+                        'type' => 'file',
+                    ],
+                
+                    [
+                        'name' => 'document',
+                        'label' => 'Signature',
+                        'type' => 'file',
+                    ],
+
+                    [
+                        'name' => 'document',
+                        'label' => 'Photo',
+                        'type' => 'file',
+                    ],
+
+                   
+                ]
+            ),
+
+             'vehicle-chalan-payment' => array_merge(
+                
+                [
+
+                    [
+                        'name' => 'customer_name',
+                        'label' => 'Customer Name',
+                        'type' => 'text',
+                        'required' => true,
+                    ],
+
+                    [
+                        'name' => 'mobile',
+                        'label' => 'Customer Mobile Number',
+                        'type' => 'text',
+                        'required' => true,
+                    ],
+
+                    [
+                        'name' => 'document',
+                        'label' => 'Aadhaar Card',
+                        'type' => 'file',
+                    ],
+                
+                    [
+                        'name' => 'document',
+                        'label' => 'Signature',
+                        'type' => 'file',
+                    ],
+
+                    [
+                        'name' => 'document',
+                        'label' => 'Photo',
+                        'type' => 'file',
+                    ],
+
+                   
+                ]
+            ),
+
+             'rto-service' => array_merge(
+                
+                [
+
+                    [
+                        'name' => 'customer_name',
+                        'label' => 'Customer Name',
+                        'type' => 'text',
+                        'required' => true,
+                    ],
+
+                    [
+                        'name' => 'mobile',
+                        'label' => 'Customer Mobile Number',
+                        'type' => 'text',
+                        'required' => true,
+                    ],
+
+                    [
+                        'name' => 'document',
+                        'label' => 'Aadhaar Card',
+                        'type' => 'file',
+                    ],
+                
+                    [
+                        'name' => 'document',
+                        'label' => 'Signature',
+                        'type' => 'file',
+                    ],
+
+                    [
+                        'name' => 'document',
+                        'label' => 'Photo',
+                        'type' => 'file',
+                    ],
+
+                   
+                ]
+            ),
+
         ][$serviceSlug] ?? [];
     }
 }
