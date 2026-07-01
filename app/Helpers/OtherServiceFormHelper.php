@@ -229,6 +229,26 @@ if (! function_exists('other_service_fields')) {
             ),
 
 
+             'import-export-certificate' => array_merge(
+            
+                [
+                    [
+                        'name' => 'customer_name',
+                        'label' => 'Customer name',
+                        'type' => 'text',
+                        'required' => true,
+                    ],
+
+                    [
+                        'name' => 'number',
+                        'label' => 'Customer Mobile Number',
+                        'type' => 'text',
+                        'required' => true,
+                    ],
+                ]
+            ),
+
+
              'rent-agreement' => array_merge(
                 $commonFields,
                 [
