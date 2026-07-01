@@ -424,15 +424,10 @@ if (! function_exists('other_service_fields')) {
                         'type' => 'file',
                     ],
                 
+                   
                     [
                         'name' => 'document',
-                        'label' => 'Signature',
-                        'type' => 'file',
-                    ],
-
-                    [
-                        'name' => 'document',
-                        'label' => 'Photo',
+                        'label' => 'Upload Chalan Copy',
                         'type' => 'file',
                     ],
 
