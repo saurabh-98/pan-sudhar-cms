@@ -113,7 +113,7 @@ if (! function_exists('other_service_fields')) {
                         'label' => 'Rent Agreement',
                         'type' => 'file',
                     ],
-                    
+
                     [
                         'name' => 'shop_name',
                         'label' => 'Shop Name',
@@ -209,20 +209,47 @@ if (! function_exists('other_service_fields')) {
             |--------------------------------------------------------------------------
             */
 
-            'import-export-certificate' => array_merge(
+            'npci-aadhaar-seeding' => array_merge(
                 $commonFields,
                 [
                     [
-                        'name' => 'firm_name',
-                        'label' => 'Firm Name',
+                        'name' => 'customer_name',
+                        'label' => 'Customer name',
                         'type' => 'text',
                         'required' => true,
                     ],
 
                     [
-                        'name' => 'pan_number',
-                        'label' => 'PAN Number',
+                        'name' => 'number',
+                        'label' => 'Customer Mobile Number',
                         'type' => 'text',
+                        'required' => true,
+                    ],
+                ]
+            ),
+
+
+             'rent-agreement' => array_merge(
+                $commonFields,
+                [
+                    [
+                        'name' => 'owner_name',
+                        'label' => 'Owner Name',
+                        'type' => 'text',
+                        'required' => true,
+                    ],
+
+                    [
+                        'name' => 'tenant_name',
+                        'label' => 'Tenant Name',
+                        'type' => 'text',
+                        'required' => true,
+                    ],
+
+                    [
+                        'name' => 'property_address',
+                        'label' => 'Property Address',
+                        'type' => 'textarea',
                         'required' => true,
                     ],
                 ]
