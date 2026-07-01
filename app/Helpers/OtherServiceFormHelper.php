@@ -107,6 +107,13 @@ if (! function_exists('other_service_fields')) {
             'food-licence' => array_merge(
                 $commonFields,
                 [
+
+                     [
+                        'name' => 'document',
+                        'label' => 'Rent Agreement',
+                        'type' => 'file',
+                    ],
+                    
                     [
                         'name' => 'shop_name',
                         'label' => 'Shop Name',
