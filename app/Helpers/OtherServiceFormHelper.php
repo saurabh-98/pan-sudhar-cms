@@ -17,7 +17,7 @@ if (! function_exists('other_service_fields')) {
 
             [
                 'name' => 'mobile',
-                'label' => 'Customer Mobile Number',
+                'label' => 'Mobile Number',
                 'type' => 'text',
                 'required' => true,
             ],
@@ -63,8 +63,8 @@ if (! function_exists('other_service_fields')) {
             */
 
             'raj-patra' => array_merge(
-                
-            ),
+                $commonFields
+                           ),
 
             /*
             |--------------------------------------------------------------------------
