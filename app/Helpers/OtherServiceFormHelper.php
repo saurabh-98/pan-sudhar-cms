@@ -210,7 +210,7 @@ if (! function_exists('other_service_fields')) {
             */
 
             'npci-aadhaar-seeding' => array_merge(
-                $commonFields,
+            
                 [
                     [
                         'name' => 'customer_name',
