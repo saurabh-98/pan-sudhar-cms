@@ -312,8 +312,37 @@ if (! function_exists('other_service_fields')) {
             */
 
             'police-verification' => array_merge(
-                $commonFields,
+                
                 [
+
+                    [
+                        'name' => 'customer_name',
+                        'label' => 'Customer Name',
+                        'type' => 'text',
+                        'required' => true,
+                    ],
+
+                    [
+                        'name' => 'mobile',
+                        'label' => 'Customer Mobile Number',
+                        'type' => 'text',
+                        'required' => true,
+                    ],
+
+                    
+                
+                    [
+                        'name' => 'document',
+                        'label' => 'Supporting Document',
+                        'type' => 'file',
+                    ],
+
+                    [
+                        'name' => 'document',
+                        'label' => 'Passpot Size Photo',
+                        'type' => 'file',
+                    ],
+
                     [
                         'name' => 'purpose',
                         'label' => 'Purpose',
