@@ -250,8 +250,30 @@ if (! function_exists('other_service_fields')) {
 
 
              'rent-agreement' => array_merge(
-                $commonFields,
+                
                 [
+
+                     [
+                        'name' => 'customer_name',
+                        'label' => 'Customer Name',
+                        'type' => 'text',
+                        'required' => true,
+                    ],
+
+                    [
+                        'name' => 'mobile',
+                        'label' => 'Customer Mobile Number',
+                        'type' => 'text',
+                        'required' => true,
+                    ],
+
+                    
+                
+                    [
+                        'name' => 'document',
+                        'label' => 'Supporting Document',
+                        'type' => 'file',
+                    ],
                     [
                         'name' => 'owner_name',
                         'label' => 'Owner Name',
