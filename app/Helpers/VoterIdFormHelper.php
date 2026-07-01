@@ -123,7 +123,14 @@ if (! function_exists('voter_id_fields')) {
 
                 [
                     'name' => 'applicant_name',
-                    'label' => 'Applicant Name',
+                    'label' => 'Customer Name',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                 [
+                    'name' => 'mobile',
+                    'label' => 'Customer Mobile Number',
                     'type' => 'text',
                     'required' => true,
                 ],
@@ -199,6 +206,13 @@ if (! function_exists('voter_id_fields')) {
                     'required' => true,
                 ],
 
+                 [
+                    'name' => 'mobile',
+                    'label' => 'Customer Mobile Number',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
                 [
                     'name' => 'new_address',
                     'label' => 'New Address',
@@ -243,6 +257,13 @@ if (! function_exists('voter_id_fields')) {
                 [
                     'name' => 'epic_number',
                     'label' => 'EPIC Number',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                 [
+                    'name' => 'mobile',
+                    'label' => 'Customer Mobile Number',
                     'type' => 'text',
                     'required' => true,
                 ],

@@ -1,224 +1,195 @@
 /* ==========================================================
    PAN SUDHAR PORTAL
-   PREMIUM RECEIPT CSS
+   RECEIPT CSS — matched to plain black & white
+   PAN/Protean invoice-style layout
+   Path in project: public/assets/css/aadhaar-receipt.css
 ========================================================== */
 
 @page{
-    margin:20px;
+    margin:12px;
 }
 
 body{
-    font-family:DejaVu Sans,sans-serif;
-    font-size:13px;
-    color:#2d3748;
-    background:#f3f6fb;
-    line-height:1.5;
+    font-family:Arial, "DejaVu Sans", sans-serif;
+    font-size:11px;
+    color:#000;
+    background:#fff;
+    line-height:1.25;
 }
 
 .receipt{
-
-width:100%;
-
-background:#fff;
-
-padding:20px;
-
-border:2px solid #0b5394;
-
+    width:100%;
+    background:#fff;
+    padding:6px;
+    border:1px solid #000;
 }
 
 .receipt-border{
+    border:1px solid #000;
+    padding:6px;
+}
 
-border:3px double #0b5394;
-
-padding:12px;
-
+.receipt-top{
+    margin-bottom:3px;
 }
 
 .header-table{
+    width:100%;
+    border-collapse:collapse;
+    border-bottom:1px solid #000;
+    padding-bottom:3px;
+    margin-bottom:3px;
+}
 
-width:100%;
-
-border-collapse:collapse;
-
+.logo-area{
+    text-align:left;
+    vertical-align:middle;
 }
 
 .logo{
-
-width:75px;
-
+    width:48px;
 }
 
 .title-area{
-
-text-align:center;
-
+    text-align:center;
+    vertical-align:middle;
 }
 
 .title-area h1{
-
-margin:0;
-
-font-size:26px;
-
-color:#0b5394;
-
+    margin:0;
+    font-size:16px;
+    font-weight:bold;
+    color:#000;
 }
 
 .title-area h2{
-
-margin:6px 0;
-
-font-size:17px;
-
+    margin:2px 0;
+    font-size:12px;
+    font-weight:bold;
+    color:#000;
 }
 
 .title-area p{
+    margin:0;
+    font-size:10px;
+    color:#000;
+}
 
-margin:0;
-
-font-size:12px;
-
-color:#666;
-
+.receipt-copy{
+    text-align:right;
+    vertical-align:top;
 }
 
 .copy-box{
-
-border:2px solid #0b5394;
-
-padding:10px;
-
-font-weight:bold;
-
-text-align:center;
-
+    border:none;
+    padding:2px;
+    font-weight:normal;
+    font-size:10px;
+    font-style:italic;
+    text-align:right;
+    color:#000;
 }
 
 .acknowledge-table{
-
-margin-top:10px;
-
-width:100%;
-
-border-collapse:collapse;
-
+    margin-top:0;
+    width:100%;
+    border-collapse:collapse;
+    border:1px solid #000;
 }
 
 .acknowledge-table td{
+    border:1px solid #000;
+    padding:4px 8px;
+    background:#fff;
+    font-size:10px;
+}
 
-border:1px solid #666;
-
-padding:8px;
-
-background:#f8fbff;
-
+.acknowledge-table strong{
+    font-size:10px;
 }
 
 .barcode-table{
+    margin-top:0;
+    width:100%;
+    border-left:1px solid #000;
+    border-right:1px solid #000;
+    border-bottom:1px solid #000;
+}
 
-margin-top:8px;
-
-width:100%;
-
+.barcode-box{
+    text-align:left;
+    padding:4px 8px;
 }
 
 .barcode{
-
-width:240px;
-
-height:45px;
-
+    width:190px;
+    height:32px;
 }
 
 .section-heading{
-
-margin-top:15px;
-
-background:#0b5394;
-
-color:#fff;
-
-padding:8px;
-
-font-size:14px;
-
-font-weight:bold;
-
+    margin-top:6px;
+    margin-bottom:0;
+    background:#fff;
+    color:#000;
+    padding:3px 2px;
+    font-size:11px;
+    font-weight:bold;
+    border-bottom:1px solid #000;
+    text-transform:uppercase;
 }
 
 .info-table{
-
-width:100%;
-
-border-collapse:collapse;
-
+    width:100%;
+    border-collapse:collapse;
+    border:1px solid #000;
 }
 
 .info-table th{
-
-background:#eef4ff;
-
-border:1px solid #777;
-
-padding:8px;
-
-text-align:left;
-
+    background:#fff;
+    border:1px solid #000;
+    padding:4px 8px;
+    text-align:left;
+    font-weight:bold;
+    font-size:10px;
 }
 
 .info-table td{
-
-border:1px solid #777;
-
-padding:8px;
-
+    border:1px solid #000;
+    padding:4px 8px;
+    font-size:10px;
 }
 
 /*======================================================
-APPLICANT TABLE
+APPLICANT / ADDRESS / IDENTITY TABLES
 ======================================================*/
 
 .applicant-table,
 .address-table,
 .identity-table{
-
     width:100%;
-
     border-collapse:collapse;
-
-    margin-bottom:12px;
-
+    border:1px solid #000;
+    margin-bottom:6px;
 }
 
 .applicant-table th,
 .address-table th,
 .identity-table th{
-
-    background:#eef5ff;
-
-    color:#0b5394;
-
-    border:1px solid #777;
-
-    padding:8px;
-
+    background:#fff;
+    color:#000;
+    border:1px solid #000;
+    padding:4px 8px;
     text-align:left;
-
-    font-size:12px;
-
+    font-size:10px;
+    font-weight:bold;
 }
 
 .applicant-table td,
 .address-table td,
 .identity-table td{
-
-    border:1px solid #777;
-
-    padding:8px;
-
-    font-size:12px;
-
+    border:1px solid #000;
+    padding:4px 8px;
+    font-size:10px;
 }
 
 /*======================================================
@@ -226,43 +197,26 @@ PHOTO
 ======================================================*/
 
 .photo-column{
-
     text-align:center;
-
     vertical-align:middle;
-
 }
 
 .passport-photo{
-
-    width:130px;
-
-    height:155px;
-
-    border:2px solid #999;
-
-    padding:3px;
-
+    width:90px;
+    height:105px;
+    border:1px solid #000;
+    padding:2px;
     background:#fff;
-
 }
 
 .photo-placeholder{
-
-    width:130px;
-
-    height:155px;
-
-    border:2px dashed #999;
-
-    line-height:155px;
-
+    width:90px;
+    height:105px;
+    border:1px solid #000;
+    line-height:105px;
     text-align:center;
-
-    color:#666;
-
-    font-size:11px;
-
+    color:#000;
+    font-size:9px;
 }
 
 /*======================================================
@@ -270,19 +224,11 @@ DECLARATION
 ======================================================*/
 
 .declaration-box{
-
-    border:1px solid #777;
-
-    background:#fafcff;
-
-    padding:15px;
-
-    font-size:12px;
-
-    line-height:1.7;
-
+    border:1px solid #000;
+    background:#fff;
+    padding:7px;
+    font-size:10px;
+    line-height:1.4;
     text-align:justify;
-
-    margin-bottom:15px;
-
+    margin-bottom:6px;
 }

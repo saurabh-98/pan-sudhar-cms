@@ -8,6 +8,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+use Barryvdh\DomPDF\Facade\Pdf;
+
 use App\DTO\PanApplicationDTO;
 
 use App\Http\Requests\StorePanApplicationRequest;
@@ -1254,22 +1256,28 @@ class NewPanApplicationController extends Controller
 
     public function print(int $id)
     {
-        return view(
-
-            'retailer.pan-correction.print',
-
-            [
-
-                'application' =>
-
-                    $this->panService->find(
-                        $id,
-                        auth()->id()
-                    )
-
-            ]
-
+        $application = $this->panService->find(
+            $id,
+            auth()->id()
         );
+
+        if (!$application) {
+            abort(404);
+        }
+
+        $pdf = Pdf::loadView(
+            'retailer.pan.print',
+            compact('application')
+        );
+
+        $pdf->setPaper('a4', 'portrait');
+
+        return $pdf->stream(
+            'PAN-RECEIPT-'.$application->application_no.'.pdf'
+        );
+
+        // To download instead of opening:
+        // return $pdf->download('PAN-RECEIPT-'.$application->application_no.'.pdf');
     }
 
     /*

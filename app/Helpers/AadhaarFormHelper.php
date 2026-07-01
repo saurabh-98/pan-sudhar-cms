@@ -59,7 +59,24 @@ if (! function_exists('aadhaar_service_fields')) {
                     'required' => true,
                 ],
 
-            ], $kycFields),
+               
+
+            [
+                'name' => 'aadhaar_number',
+                'label' => 'Aadhaar Number',
+                'type' => 'text',
+                'required' => true,
+            ],
+
+            [
+                'name' => 'aadhaar_card',
+                'label' => 'Aadhaar Front & Back',
+                'type' => 'file',
+                'required' => true,
+            ],
+
+
+            ], ),
 
             'name-correction' => array_merge([
 

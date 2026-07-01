@@ -875,6 +875,8 @@ class AadhaarServiceController extends Controller
             auth()->id()
         );
 
+       
+
         if (!$application) {
             abort(404);
         }
