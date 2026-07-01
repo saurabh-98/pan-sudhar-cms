@@ -17,7 +17,7 @@ if (! function_exists('other_service_fields')) {
 
             [
                 'name' => 'mobile',
-                'label' => 'Mobile Number',
+                'label' => 'Customer Mobile Number',
                 'type' => 'text',
                 'required' => true,
             ],
@@ -63,27 +63,7 @@ if (! function_exists('other_service_fields')) {
             */
 
             'raj-patra' => array_merge(
-                $commonFields,
-                [
-                    [
-                        'name' => 'village_name',
-                        'label' => 'Village Name',
-                        'type' => 'text',
-                        'required' => true,
-                    ],
-
-                    [
-                        'name' => 'khata_number',
-                        'label' => 'Khata Number',
-                        'type' => 'text',
-                    ],
-
-                    [
-                        'name' => 'plot_number',
-                        'label' => 'Plot Number',
-                        'type' => 'text',
-                    ],
-                ]
+                
             ),
 
             /*
