@@ -249,8 +249,15 @@ if (! function_exists('other_service_fields')) {
             ),
 
 
-             'rent-agreement' => array_merge(
-                
+             
+
+            /*
+            |--------------------------------------------------------------------------
+            | RENT AGREEMENT
+            |--------------------------------------------------------------------------
+            */
+
+            'rent-agreement' => array_merge(
                 [
 
                      [
@@ -274,38 +281,7 @@ if (! function_exists('other_service_fields')) {
                         'label' => 'Supporting Document',
                         'type' => 'file',
                     ],
-                    [
-                        'name' => 'owner_name',
-                        'label' => 'Owner Name',
-                        'type' => 'text',
-                        'required' => true,
-                    ],
 
-                    [
-                        'name' => 'tenant_name',
-                        'label' => 'Tenant Name',
-                        'type' => 'text',
-                        'required' => true,
-                    ],
-
-                    [
-                        'name' => 'property_address',
-                        'label' => 'Property Address',
-                        'type' => 'textarea',
-                        'required' => true,
-                    ],
-                ]
-            ),
-
-            /*
-            |--------------------------------------------------------------------------
-            | RENT AGREEMENT
-            |--------------------------------------------------------------------------
-            */
-
-            'rent-agreement' => array_merge(
-                $commonFields,
-                [
                     [
                         'name' => 'owner_name',
                         'label' => 'Owner Name',
