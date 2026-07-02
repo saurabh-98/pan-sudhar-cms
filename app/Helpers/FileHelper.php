@@ -59,151 +59,32 @@ if (!function_exists('normalize_file_path')) {
 
 if (!function_exists('store_uploaded_file')) {
 
-    function store_uploaded_file(
-        $file,
-        string $folder
-    ): ?string {
-
-        if (!$file || !$file->isValid()) {
-            return null;
-        }
-
-        $allowed = [
-            'jpg',
-            'jpeg',
-            'png',
-            'webp',
-            'pdf'
-        ];
-
-        $extension = strtolower(
-            $file->getClientOriginalExtension()
-        );
-
-        if (!in_array($extension, $allowed)) {
-            return null;
-        }
-
-        $fileName =
-            uniqid()
-            . '_'
-            . time()
-            . '_'
-            . rand(1000, 9999);
-
-        /*
-        |--------------------------------------------------------------------------
-        | CLOUDINARY ON VERCEL
-        |--------------------------------------------------------------------------
-        */
-
-        if (is_vercel()) {
-
-            try {
-
-                $realPath = $file->getRealPath();
-
-                if (
-                    !$realPath ||
-                    !file_exists($realPath)
-                ) {
-                    return null;
-                }
-
-                $cloudinary = new Cloudinary(
-                    env('CLOUDINARY_URL')
-                );
-
-                /*
-                |--------------------------------------------------------------------------
-                | CLOUDINARY PUBLIC ID
-                |--------------------------------------------------------------------------
-                */
-
-                $publicId = $fileName;
-
-                $upload = $cloudinary
-                    ->uploadApi()
-                    ->upload(
-                        $realPath,
-                        [
-
-                            'folder' => str_replace(
-                                '/',
-                                '_',
-                                $folder
-                            ),
-
-                            'public_id' => $publicId,
-
-                            /*
-                            |--------------------------------------------------------------------------
-                            | AUTO DETECT TYPE
-                            |--------------------------------------------------------------------------
-                            */
-
-                            'resource_type' => 'auto',
-
-                            'use_filename' => true,
-
-                            'unique_filename' => false,
-
-                            'overwrite' => true,
-
-                        ]
-                    );
-
-                return $upload['secure_url'] ?? null;
-
-            } catch (\Throwable $e) {
-
-                logger()->error(
-                    'Cloudinary upload failed',
-                    [
-                        'error' => $e->getMessage()
-                    ]
-                );
-
-                return null;
-            }
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | LOCAL STORAGE
-        |--------------------------------------------------------------------------
-        */
-
-        $localName =
-            $fileName
-            . '.'
-            . $extension;
-
-        $destination =
-            public_path(
-                'uploads/' . $folder
-            );
-
-        if (!File::exists($destination)) {
-
-            File::makeDirectory(
-                $destination,
-                0775,
-                true
-            );
-        }
-
-        $file->move(
-            $destination,
-            $localName
-        );
-
-        return
-            'uploads/'
-            . $folder
-            . '/'
-            . $localName;
+    function store_uploaded_file($file, string $folder): ?string
+{
+    if (!$file || !$file->isValid()) {
+        return null;
     }
+
+    $allowed = ['jpg', 'jpeg', 'png', 'webp', 'pdf'];
+
+    $extension = strtolower($file->getClientOriginalExtension());
+
+    if (!in_array($extension, $allowed)) {
+        return null;
+    }
+
+    $fileName = uniqid().'_'.time().'_'.rand(1000,9999).'.'.$extension;
+
+    $destination = public_path('uploads/'.$folder);
+
+    if (!File::exists($destination)) {
+        File::makeDirectory($destination, 0775, true);
+    }
+
+    $file->move($destination, $fileName);
+
+    return 'uploads/'.$folder.'/'.$fileName;
+}
 }
 
 /*
