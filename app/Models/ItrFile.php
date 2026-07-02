@@ -45,42 +45,45 @@ class ItrFile extends Model
 
     protected $fillable = [
 
-        'user_id',
+    'user_id',
 
-        'application_no',
+    'application_no',
 
-        'name',
+    'name',
 
-        'mobile',
+    'mobile',
 
-        'email',
+    'email',
 
-        'remarks',
+    'remarks',
 
-        'admin_remarks',
+    'admin_remarks',
 
-        'aadhaar_front',
+    'assigned_to',
 
-        'aadhaar_back',
+    'assigned_at',
 
-        'pan_card',
+    'aadhaar_front',
 
-        'charge',
+    'aadhaar_back',
 
-        'payment_status',
+    'pan_card',
 
-        'status',
+    'charge',
 
-        'wallet_deducted',
+    'payment_status',
 
-        'wallet_deducted_at',
+    'status',
 
-        'ip_address',
+    'wallet_deducted',
 
-        'browser',
+    'wallet_deducted_at',
 
-    ];
+    'ip_address',
 
+    'browser',
+
+];
     /*
     |--------------------------------------------------------------------------
     | APPENDS
@@ -89,15 +92,17 @@ class ItrFile extends Model
 
     protected $appends = [
 
-        'status_badge',
+    'status_badge',
 
-        'applicant_name',
+    'applicant_name',
 
-        'aadhaar_front_url',
+    'aadhaar_front_url',
 
-        'aadhaar_back_url',
+    'aadhaar_back_url',
 
-        'pan_card_url'
+    'pan_card_url',
+
+    'assigned_employee_name',
 
     ];
 
@@ -107,22 +112,19 @@ class ItrFile extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $casts = [
+        protected $casts = [
 
-        'charge' =>
-            'decimal:2',
+        'charge' => 'decimal:2',
 
-        'wallet_deducted' =>
-            'boolean',
+        'wallet_deducted' => 'boolean',
 
-        'wallet_deducted_at' =>
-            'datetime',
+        'wallet_deducted_at' => 'datetime',
 
-        'created_at' =>
-            'datetime',
+        'assigned_at' => 'datetime',
 
-        'updated_at' =>
-            'datetime',
+        'created_at' => 'datetime',
+
+        'updated_at' => 'datetime',
 
     ];
 
@@ -233,6 +235,13 @@ class ItrFile extends Model
         };
     }
 
+
+
+    public function getAssignedEmployeeNameAttribute(): ?string
+    {
+        return optional($this->assignedEmployee)->name;
+    }
+    
     /*
     |--------------------------------------------------------------------------
     | AADHAAR FRONT URL

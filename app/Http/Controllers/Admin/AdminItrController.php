@@ -145,7 +145,7 @@ class AdminItrController extends Controller
 
                         ';
                     }
-                    elseif($row->status == 'approved')
+                    elseif($row->status == 'Approved')
                     {
                         return '
 
@@ -403,6 +403,7 @@ class AdminItrController extends Controller
         int $id
 
     ) {
+        
 
         $validator = validator(
 
@@ -452,6 +453,7 @@ class AdminItrController extends Controller
         $assignedUser = User::findOrFail(
             $request->assigned_to
         );
+        
 
         if(!$assignedUser->hasRole('Executive'))
         {
@@ -465,45 +467,25 @@ class AdminItrController extends Controller
         }
 
         $application->update([
-
-            'assigned_to' =>
-
-                $request->assigned_to,
-
-            'remarks' =>
-
-                $request->remarks,
-
-            'assigned_at' =>
-
-                now(),
-
-            'status' =>
-
-                'approved'
-
+            'assigned_to'   => $request->assigned_to,
+            'assigned_at'   => now(),
+            'admin_remarks' => $request->remarks,
+            'status'        => 'Processing',
         ]);
 
+        $application->refresh();
+
         return response()->json([
-
-            'status' => true,
-
+            'status'  => true,
             'message' => 'ITR Assigned Successfully.',
-
-            'data' => [
-
+            'data'    => [
                 'application_id' => $application->id,
-
-                'assigned_to' => $assignedUser->name,
-
-                'remarks' => $application->remarks,
-
-                'status' => $application->status
-
+                'assigned_to'    => optional($application->assignedEmployee)->name,
+                'assigned_at'    => optional($application->assigned_at)?->format('d M Y h:i A'),
+                'admin_remarks'  => $application->admin_remarks,
+                'status'         => $application->status,
             ]
-
         ], 200);
-
     }
 
 
