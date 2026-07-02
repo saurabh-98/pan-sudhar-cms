@@ -484,46 +484,40 @@ class FileItrController extends Controller
     */
 
     public function history()
-    {
-        if (request()->ajax()) {
+{
+    if (request()->ajax()) {
 
-            $records =
+        $records = $this->itrFileService
+            ->history(auth()->id());
 
-                $this->itrFileService
-                    ->history(
-                        auth()->id()
-                    );
+        $records->getCollection()->transform(function ($item) {
 
-            return response()->json([
+            $document = $item->documents->first();
 
-                'status' => true,
+            $item->service_document = (
+                $document &&
+                file_exists_custom($document->file_path)
+            )
+                ? file_url($document->file_path)
+                : null;
 
-                'data' => $records->items(),
+            return $item;
+        });
 
-                'pagination' => [
-
-                    'current_page' =>
-                        $records->currentPage(),
-
-                    'last_page' =>
-                        $records->lastPage(),
-
-                    'per_page' =>
-                        $records->perPage(),
-
-                    'total' =>
-                        $records->total(),
-
-                ]
-
-            ]);
-        }
-
-        return view(
-            'retailer.itr.history'
-        );
+        return response()->json([
+            'status' => true,
+            'data' => $records->items(),
+            'pagination' => [
+                'current_page' => $records->currentPage(),
+                'last_page'    => $records->lastPage(),
+                'per_page'     => $records->perPage(),
+                'total'        => $records->total(),
+            ]
+        ]);
     }
 
+    return view('retailer.itr.history');
+}
     /*
     |--------------------------------------------------------------------------
     | SHOW

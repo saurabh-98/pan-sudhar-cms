@@ -593,10 +593,6 @@ class AdminAadhaarController extends Controller
 
                 now(),
 
-            'status' =>
-
-                'approved'
-
         ]);
 
         return response()->json([

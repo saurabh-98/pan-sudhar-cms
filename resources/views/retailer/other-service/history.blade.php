@@ -61,6 +61,8 @@
 
                         <th>Date</th>
 
+                        <th>Receipt</th>
+
                         <th>Action</th>
 
                     </tr>
@@ -152,6 +154,14 @@ $(function(){
                 data:'created_at',
                 name:'created_at'
             },
+
+             {
+                data: 'document_status',
+                name: 'document_status',
+                searchable: false,
+                orderable: false
+            },
+
 
             {
                 data:'action',

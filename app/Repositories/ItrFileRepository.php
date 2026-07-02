@@ -30,20 +30,22 @@ class ItrFileRepository
     */
 
     public function history(
-        int $userId
-    ): LengthAwarePaginator {
+    int $userId
+): LengthAwarePaginator {
 
-        return ItrFile::query()
+    return ItrFile::query()
 
-            ->where(
-                'user_id',
-                $userId
-            )
+        ->with('documents')
 
-            ->latest()
+        ->where(
+            'user_id',
+            $userId
+        )
 
-            ->paginate(10);
-    }
+        ->latest()
+
+        ->paginate(10);
+}
 
     /*
     |--------------------------------------------------------------------------

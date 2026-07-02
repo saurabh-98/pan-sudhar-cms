@@ -589,7 +589,8 @@ class BankAccountServiceController extends Controller
 
             $applications = BankAccountService::query()
 
-                ->with('user.retailer')
+                ->with('user.retailer',
+                'serviceDocument')
 
                 ->where(
                     'user_id',
@@ -675,6 +676,63 @@ class BankAccountServiceController extends Controller
                     ';
                 })
 
+                  ->addColumn('document_status', function ($row) {
+
+                    $document = $row->serviceDocuments->first();
+
+                    if (
+                        $document &&
+                        file_exists_custom($document->file_path) &&
+                        in_array(
+                            strtolower($row->status),
+                            ['approved', 'completed']
+                        )
+                    ) {
+
+                        return '
+                            <div class="d-flex gap-2 flex-wrap">
+
+                                <a
+                                    href="' . file_url($document->file_path) . '"
+                                    target="_blank"
+                                    class="btn btn-sm btn-success"
+                                >
+                                    <i class="fa fa-eye me-1"></i>
+                                    View
+                                </a>
+
+                                <a
+                                    href="' . file_url($document->file_path) . '"
+                                    download
+                                    class="btn btn-sm btn-primary"
+                                >
+                                    <i class="fa fa-download me-1"></i>
+                                    Download
+                                </a>
+
+                            </div>
+                        ';
+                    }
+
+                    if (
+                        $document &&
+                        file_exists_custom($document->file_path)
+                    ) {
+
+                        return '
+                            <span class="badge bg-info">
+                                Uploaded
+                            </span>
+                        ';
+                    }
+
+                    return '
+                        <span class="badge bg-warning text-dark">
+                            Pending
+                        </span>
+                    ';
+                })
+
                 ->addColumn('action', function ($row) {
 
                     return '
@@ -705,6 +763,8 @@ class BankAccountServiceController extends Controller
                     'status',
 
                     'created_at',
+                    
+                    'document_status',
 
                     'action',
 

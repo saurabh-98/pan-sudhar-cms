@@ -104,8 +104,9 @@ class ItrFile extends Model
 
     'assigned_employee_name',
 
-    ];
+    'service_document_url',
 
+];
     /*
     |--------------------------------------------------------------------------
     | CASTS
@@ -204,43 +205,62 @@ class ItrFile extends Model
     */
 
     public function getStatusBadgeAttribute(): string
-    {
-        return match (
-            strtolower($this->status)
-        ) {
+{
+    return match ($this->status) {
 
-            'approved' =>
+        'Approved' => '
+            <span class="badge bg-success">
+                Approved
+            </span>',
 
-                '<span class="badge bg-success">
-                    Approved
-                </span>',
+        'Rejected' => '
+            <span class="badge bg-danger">
+                Rejected
+            </span>',
 
-            'rejected' =>
+        'Processing' => '
+            <span class="badge bg-warning text-dark">
+                Processing
+            </span>',
 
-                '<span class="badge bg-danger">
-                    Rejected
-                </span>',
+        'Pending' => '
+            <span class="badge bg-secondary">
+                Pending
+            </span>',
 
-            'processing' =>
-
-                '<span class="badge bg-warning text-dark">
-                    Processing
-                </span>',
-
-            default =>
-
-                '<span class="badge bg-secondary">
-                    Pending
-                </span>',
-        };
-    }
-
+        default => '
+            <span class="badge bg-secondary">
+                Pending
+            </span>',
+    };
+}
 
 
     public function getAssignedEmployeeNameAttribute(): ?string
     {
         return optional($this->assignedEmployee)->name;
     }
+
+    /*
+|--------------------------------------------------------------------------
+| SERVICE DOCUMENT URL
+|--------------------------------------------------------------------------
+*/
+
+public function getServiceDocumentUrlAttribute(): ?string
+{
+    $document = $this->documents()->first();
+
+    if (!$document) {
+        return null;
+    }
+
+    if (!file_exists_custom($document->file_path)) {
+        return null;
+    }
+
+    return file_url($document->file_path);
+}
     
     /*
     |--------------------------------------------------------------------------

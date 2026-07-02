@@ -72,6 +72,7 @@
                             <th>Aadhaar Front</th>
                             <th>Aadhaar Back</th>
                             <th>PAN Card</th>
+                            <th>Receipt</th>
 
                         </tr>
 
@@ -182,7 +183,7 @@
 
                         let statusBadge = '';
 
-                        if (itr.status === 'approved') {
+                        if (itr.status === 'Approved') {
 
                             statusBadge =
                                 `<span class="badge-status badge-approved">
@@ -307,6 +308,21 @@
 
                                 </td>
 
+                                <td>
+                                        ${
+                                            itr.service_document
+                                                ? `
+                                                    <a href="${itr.service_document}" target="_blank" class="btn btn-success btn-sm">
+                                                        <i class="fa fa-eye"></i> View
+                                                    </a>
+
+                                                    <a href="${itr.service_document}" download class="btn btn-primary btn-sm">
+                                                        <i class="fa fa-download"></i> Download
+                                                    </a>
+                                                `
+                                                : '<span class="badge bg-warning">Pending</span>'
+                                        }
+                                    </td>
                             </tr>
 
                         `;

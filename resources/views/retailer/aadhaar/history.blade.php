@@ -68,6 +68,8 @@
                         <th>Amount</th>
 
                         <th>Status</th>
+                        
+                         <th>Receipt</th>
 
                         <th>Date</th>
 
@@ -156,6 +158,13 @@ $(function(){
             {
                 data:'status',
                 name:'status'
+            },
+
+             {
+                data: 'document_status',
+                name: 'document_status',
+                searchable: false,
+                orderable: false
             },
 
             {

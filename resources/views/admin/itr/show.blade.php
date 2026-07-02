@@ -99,7 +99,7 @@
 
                                 <div>
 
-                                    @if($application->status == 'approved')
+                                    @if($application->status == 'Approved')
 
                                         <span class="badge bg-success">
 
@@ -866,19 +866,14 @@
                                     </div>
 
                                     <div>
-
                                         <a
-                                            href="{{ asset('storage/' . $doc->file_path) }}"
+                                            href="{{ file_url($doc->file_path) }}"
                                             target="_blank"
                                             class="btn btn-sm btn-primary"
                                         >
-
                                             <i class="fa fa-eye me-1"></i>
-
                                             View
-
                                         </a>
-
                                     </div>
 
                                 </div>
