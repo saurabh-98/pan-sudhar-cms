@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\DTO\VoterIdServiceDTO;
 use App\Http\Requests\StoreVoterIdServiceRequest;
 use App\Services\VoterIdServiceService;
+use App\Services\ServiceGuidelineService;
 
 use App\Models\VoterIdService;
 use App\Models\Charge;
@@ -23,7 +24,8 @@ use Yajra\DataTables\Facades\DataTables;
 class VoterIdServiceController extends Controller
 {
     public function __construct(
-        protected VoterIdServiceService $voterIdService
+        protected VoterIdServiceService $voterIdService,
+        protected ServiceGuidelineService $serviceGuidelineService
     ) {}
 
 
@@ -85,6 +87,12 @@ class VoterIdServiceController extends Controller
                 'data' => $session['data'] ?? [],
 
                 'files' => $session['files'] ?? [],
+                
+                  'guideline' =>
+
+                    $this->serviceGuidelineService
+                        ->getActiveGuideline($service),
+
             ]
         );
     }

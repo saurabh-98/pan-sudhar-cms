@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\DTO\BankAccountServiceDTO;
 use App\Http\Requests\StoreBankAccountServiceRequest;
 use App\Services\BankAccountServiceService;
+use App\Services\ServiceGuidelineService;
 
 use App\Models\BankAccountService;
 use App\Models\Charge;
@@ -23,7 +24,8 @@ use Yajra\DataTables\Facades\DataTables;
 class BankAccountServiceController extends Controller
 {
     public function __construct(
-        protected BankAccountServiceService $bankAccountService
+        protected BankAccountServiceService $bankAccountService,
+        protected ServiceGuidelineService $serviceGuidelineService,
     ) {}
 
 
@@ -86,6 +88,12 @@ class BankAccountServiceController extends Controller
                 'data' => $session['data'] ?? [],
 
                 'files' => $session['files'] ?? [],
+                
+                'guideline' =>
+
+                    $this->serviceGuidelineService
+                        ->getActiveGuideline($service),
+
             ]
         );
     }

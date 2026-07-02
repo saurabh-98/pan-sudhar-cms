@@ -25,12 +25,13 @@ use Carbon\Carbon;
 use App\Services\DistrictService;
 use App\Services\PanApplicationService;
 use App\Services\StateService;
+use App\Services\ServiceGuidelineService;
 
 use Yajra\DataTables\Facades\DataTables;
 
 class NewPanApplicationController extends Controller
 {
-    
+
 
     public function __construct(
 
@@ -38,11 +39,13 @@ class NewPanApplicationController extends Controller
 
         protected StateService $stateService,
 
-        protected DistrictService $districtService
+        protected DistrictService $districtService,
+
+        protected ServiceGuidelineService $serviceGuidelineService
 
     ) {}
 
-   
+
 
     private function getPanCharge(): float
     {
@@ -293,7 +296,7 @@ class NewPanApplicationController extends Controller
 
                             <div class="d-flex gap-2 flex-wrap">
 
-                                <a
+                                
                                     href="'
 
                                     . file_url(
@@ -314,7 +317,7 @@ class NewPanApplicationController extends Controller
 
                                 </a>
 
-                                <a
+                                
                                     href="'
 
                                     . file_url(
@@ -380,7 +383,7 @@ class NewPanApplicationController extends Controller
 
                         <div class="d-flex gap-2">
 
-                            <a
+                            
                                 href="'
 
                                 . route(
@@ -441,7 +444,7 @@ class NewPanApplicationController extends Controller
     |--------------------------------------------------------------------------
     */
 
-   
+
 
     public function create()
     {
@@ -494,13 +497,18 @@ class NewPanApplicationController extends Controller
                     $preview['data'] ?? [],
 
                 'files' =>
-                    $preview['files'] ?? []
+                    $preview['files'] ?? [],
+
+                'guideline' =>
+
+                    $this->serviceGuidelineService
+                        ->getActiveGuideline('new-pan-apply')
 
             ]
 
         );
     }
-  
+
 
     public function preview(
         StorePanApplicationRequest $request
@@ -647,9 +655,8 @@ class NewPanApplicationController extends Controller
         }
 
     }
-   
 
-  
+
 
     public function previewPage()
     {
@@ -1073,7 +1080,7 @@ class NewPanApplicationController extends Controller
             ], 500);
         }
     }
-    
+
     /*
     |--------------------------------------------------------------------------
     | SHOW

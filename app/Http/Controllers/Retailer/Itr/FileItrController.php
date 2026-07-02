@@ -6,6 +6,7 @@ use App\DTO\FileItrDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FileItrPreviewRequest;
 use App\Services\ItrFileService;
+use App\Services\ServiceGuidelineService;
 use Illuminate\Http\JsonResponse;
 use App\Models\Charge;
 use App\Models\User;
@@ -15,7 +16,8 @@ use Illuminate\Support\Facades\DB;
 class FileItrController extends Controller
 {
     public function __construct(
-        protected ItrFileService $itrFileService
+        protected ItrFileService $itrFileService,
+        protected ServiceGuidelineService $serviceGuidelineService
     ) {}
 
 
@@ -63,7 +65,13 @@ class FileItrController extends Controller
             [
                 'data'      => $data,
                 'files'     => $files,
-                'itrCharge' => $this->getItrCharge()
+                'itrCharge' => $this->getItrCharge(),
+
+                  'guideline' =>
+
+                    $this->serviceGuidelineService
+                        ->getActiveGuideline('file-itr'),
+
             ]
         );
     }

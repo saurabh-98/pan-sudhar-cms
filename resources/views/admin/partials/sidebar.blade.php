@@ -377,7 +377,9 @@
             auth()->user()->can('csc.view') ||
             auth()->user()->can('itr.view') ||
             auth()->user()->can('voter-id.view') ||
-            auth()->user()->can('bank-account.view')
+            auth()->user()->can('bank-account.view') ||
+            auth()->user()->can('other-service.view') ||
+            auth()->user()->can('service-guidelines.view')
         )
 
         <li class="sbx-section">
@@ -520,6 +522,22 @@
                     </a>
                 </li>
                 @endcan
+
+                {{-- SERVICE GUIDELINES --}}
+                    @can('service-guidelines.view')
+                    <li>
+                        <a href="{{ route('admin.service-guidelines.index') }}"
+                        class="sbx-link {{ request()->routeIs('admin.service-guidelines.*') ? 'sbx-active' : '' }}">
+
+                            <i class="fa fa-file-pdf text-danger"></i>
+
+                            <span>
+                                Service Guidelines
+                            </span>
+
+                        </a>
+                    </li>
+                    @endcan
 
             </ul>
 

@@ -22,7 +22,9 @@ use App\Models\Charge;
 
 use App\Services\DistrictService;
 use App\Services\PanCorrectionService;
+use App\Services\ServiceGuidelineService;
 use App\Services\StateService;
+
 
 use Yajra\DataTables\Facades\DataTables;
 
@@ -36,7 +38,9 @@ class PanCorrectionController extends Controller
 
         protected StateService $stateService,
 
-        protected DistrictService $districtService
+        protected DistrictService $districtService,
+
+        protected ServiceGuidelineService $serviceGuidelineService
 
     ) {}
 
@@ -498,7 +502,12 @@ class PanCorrectionController extends Controller
 
                 'files' =>
 
-                    $preview['files'] ?? []
+                    $preview['files'] ?? [],
+                
+                'guideline' =>
+
+                    $this->serviceGuidelineService
+                        ->getActiveGuideline('pan-correction')
 
             ]
 

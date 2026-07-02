@@ -13,17 +13,20 @@ use App\Http\Requests\StoreAadhaarServiceRequest;
 
 use App\Services\AadhaarServiceService;
 use App\Models\Charge;
+use App\Models\ServiceGuideline;
 use App\Models\User;
 use App\Models\WalletTransaction;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\AadhaarService;
+use App\Services\ServiceGuidelineService;
 
 
 class AadhaarServiceController extends Controller
 {
     public function __construct(
-        protected AadhaarServiceService $aadhaarServiceService
+        protected AadhaarServiceService $aadhaarServiceService,
+        protected ServiceGuidelineService $serviceGuidelineService
     ) {}
 
 
@@ -61,34 +64,45 @@ class AadhaarServiceController extends Controller
 
     public function create(string $service)
     {
-        $serviceName = collect(
-            explode('-', $service)
-        )
-        ->map(fn ($word) => ucfirst($word))
-        ->implode(' ');
+        
+        $serviceName = str($service)->replace('-', ' ')->title();
 
         $session = get_aadhaar_session();
 
+        $fields = aadhaar_service_fields($service);
+
+        if (!$fields) {
+            abort(404, 'Service not found.');
+        }
+
+        $aadhaarCharge = $this->getAadhaarCharge($service);
+
+        $walletBalance = auth()->user()->wallet_balance;
+
+        $guideline = $this->serviceGuidelineService
+                            ->getActiveGuideline($service);
+       
+      
+
+        $data = $session['data'] ?? [];
+
+        $files = $session['files'] ?? [];
+
         return view(
             'retailer.aadhaar.create',
-            [
-                'serviceSlug'   => $service,
-
-                'serviceName'   => $serviceName,
-
-                'fields'        => aadhaar_service_fields($service),
-
-                'aadhaarCharge' => $this->getAadhaarCharge($service),
-
-                'walletBalance' => auth()->user()->wallet_balance,
-
-                'data'          => $session['data'] ?? [],
-
-                'files'         => $session['files'] ?? [],
-            ]
-        );
+            compact(
+                'service',
+                'serviceName',
+                'fields',
+                'aadhaarCharge',
+                'walletBalance',
+                'data',
+                'files',
+                'guideline'
+            )
+        )->with('serviceSlug', $service);
     }
-    
+
     /*
     |--------------------------------------------------------------------------
     | PREVIEW

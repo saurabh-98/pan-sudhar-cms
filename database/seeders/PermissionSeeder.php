@@ -273,7 +273,12 @@ class PermissionSeeder extends Seeder
             'other-service.assign',
             'other-service.status',
             'other-service.delete',
-            'other-service.upload'
+            'other-service.upload',
+            
+            'service-guidelines.view',
+            'service-guidelines.create',
+            'service-guidelines.edit',
+            'service-guidelines.delete',
 
 
         ];

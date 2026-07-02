@@ -37,23 +37,94 @@
 
         </div>
 
-        <div class="pan-charge-card">
+        <div class="pan-header-right d-flex align-items-center gap-3">
 
-            <span class="pan-charge-label">
+            {{-- SERVICE GUIDELINE BUTTON --}}
+            @if($guideline && $guideline->pdf)
 
-                Service Charge
+                <button
+                    type="button"
+                    class="pan-guideline-btn"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#serviceGuidelineOffcanvas"
+                    aria-controls="serviceGuidelineOffcanvas"
+                >
+                    <i class="fa fa-circle-info me-2"></i>
+                    Service Guidelines
+                </button>
 
-            </span>
+            @endif
 
-            <span class="pan-charge-amount">
+            <div class="pan-charge-card">
 
-                ₹{{ number_format($panCharge, 2) }}
+                <span class="pan-charge-label">
+                    Service Charge
+                </span>
 
-            </span>
+                <span class="pan-charge-amount">
+                    ₹{{ number_format($panCharge, 2) }}
+                </span>
+
+            </div>
 
         </div>
 
     </div>
+
+
+   {{-- SERVICE GUIDELINE OFFCANVAS (HALF-WINDOW PDF VIEWER) --}}
+
+    @if($guideline && $guideline->pdf)
+
+        <div
+            class="offcanvas offcanvas-end pan-guideline-offcanvas"
+            tabindex="-1"
+            id="serviceGuidelineOffcanvas"
+            aria-labelledby="serviceGuidelineLabel"
+        >
+            <div class="offcanvas-header">
+
+                <h5 id="serviceGuidelineLabel">
+                    <i class="fa fa-file-pdf me-2 text-danger"></i>
+                    PAN Correction — Service Guidelines
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="offcanvas"
+                    aria-label="Close"
+                ></button>
+
+            </div>
+
+            <div class="offcanvas-body p-0 d-flex flex-column">
+
+                <div id="pdfLoadingState" class="text-center text-muted py-5">
+                    <i class="fa fa-spinner fa-spin fa-2x mb-3"></i>
+                    <p>Loading guideline document...</p>
+                </div>
+
+                <iframe
+                    id="guidelinePdfFrame"
+                    data-src="{{ file_url($guideline->pdf) }}"
+                    style="display:none;"
+                ></iframe>
+
+                <div class="text-center py-3 border-top">
+
+                    <a href="{{ file_url($guideline->pdf) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                        <i class="fa fa-up-right-from-square me-1"></i>
+                        Open PDF in New Tab
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    @endif
 
     {{-- FORM --}}
 
@@ -1140,7 +1211,7 @@
 
                                                     @if($isPdf)
 
-                                                        <a
+                                                        
                                                             href="{{ file_url($file) }}"
                                                             target="_blank"
                                                         >
@@ -1286,11 +1357,144 @@
 </div>
 
 @endsection
+
+@section('styles')
+
+<style>
+
+    .pan-header-right {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .pan-guideline-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    border: 1px solid #d0d5dd;
+    color: #344054;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 10px 18px;
+    border-radius: 10px;
+    white-space: nowrap;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+    transition:
+        background-color .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease,
+        transform .15s ease;
+}
+
+.pan-guideline-btn:hover {
+    background: #f9fafb;
+    border-color: #98a2b3;
+    box-shadow: 0 2px 6px rgba(16, 24, 40, 0.08);
+}
+
+.pan-guideline-btn:active {
+    transform: scale(0.97);
+    background: #f2f4f7;
+}
+
+.pan-guideline-btn:focus-visible {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
+}
+
+.pan-guideline-btn i {
+    color: #0d6efd;
+    font-size: 15px;
+    transition: transform .2s ease;
+}
+
+.pan-guideline-btn:hover i {
+    transform: scale(1.15);
+}
+
+    /* HALF-WINDOW PANEL */
+    .pan-guideline-offcanvas {
+        width: 50% !important;
+    }
+
+    .pan-guideline-offcanvas .offcanvas-body {
+        padding: 0;
+        height: 100%;
+    }
+
+    #pdfLoadingState {
+        flex: 0 0 auto;
+    }
+
+    #guidelinePdfFrame {
+        flex: 1 1 auto;
+        width: 100%;
+        border: 0;
+    }
+
+    @media (max-width: 991px) {
+
+        .pan-guideline-offcanvas {
+            width: 100% !important;
+        }
+
+    }
+
+    
+
+</style>
+
+@endsection
+
 @section('scripts')
 
 <script>
 
 $(document).ready(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | SERVICE GUIDELINE PDF (LAZY LOAD ON OPEN)
+    |--------------------------------------------------------------------------
+    */
+
+    let guidelineOffcanvasEl =
+    document.getElementById('serviceGuidelineOffcanvas');
+
+    if (guidelineOffcanvasEl) {
+
+        guidelineOffcanvasEl.addEventListener(
+            'show.bs.offcanvas',
+            function () {
+
+                let iframe =
+                    document.getElementById('guidelinePdfFrame');
+
+                if (iframe && !iframe.dataset.loaded) {
+
+                    iframe.addEventListener('load', function () {
+
+                        document.getElementById('pdfLoadingState')
+                            .style.display = 'none';
+
+                        iframe.style.display = 'block';
+
+                    });
+
+                    iframe.src = iframe.dataset.src;
+
+                    iframe.dataset.loaded = 'true';
+
+                }
+
+            }
+        );
+
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -1414,12 +1618,6 @@ $(document).ready(function () {
     |--------------------------------------------------------------------------
     */
 
-     /*
-    |--------------------------------------------------------------------------
-    | TEXT VALIDATION
-    |--------------------------------------------------------------------------
-    */
-
     $('input[type="text"]').on('input', function () {
 
         let fieldName = $(this).attr('name');
@@ -1444,6 +1642,7 @@ $(document).ready(function () {
         }
 
     });
+
     /*
     |--------------------------------------------------------------------------
     | MOBILE VALIDATION

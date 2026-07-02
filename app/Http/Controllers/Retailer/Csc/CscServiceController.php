@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\DTO\CscServiceDTO;
 use App\Http\Requests\StoreCscServiceRequest;
 use App\Services\CscServiceService;
+use App\Services\ServiceGuidelineService;
 
 use App\Models\CscService;
 use App\Models\Charge;
@@ -23,7 +24,8 @@ use Yajra\DataTables\Facades\DataTables;
 class CscServiceController extends Controller
 {
     public function __construct(
-        protected CscServiceService $cscServiceService
+        protected CscServiceService $cscServiceService,
+        protected ServiceGuidelineService $serviceGuidelineService
     ) {}
 
 
@@ -85,6 +87,12 @@ class CscServiceController extends Controller
                 'data'          => $session['data'] ?? [],
 
                 'files'         => $session['files'] ?? [],
+
+                'guideline' =>
+
+                    $this->serviceGuidelineService
+                        ->getActiveGuideline($service),
+
             ]
         );
     }

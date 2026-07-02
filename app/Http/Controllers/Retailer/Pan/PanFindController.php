@@ -9,23 +9,29 @@ use App\Models\User;
 use App\Models\WalletTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Services\ServiceGuidelineService;
 
 class PanFindController extends Controller
 {
-    /**
-     * ==========================================
-     * Apply Page
-     * ==========================================
-     */
+   
+    public function __construct(
+
+        protected ServiceGuidelineService $serviceGuidelineService
+
+    ) {}
+
     public function create()
     {
         $charge = Charge::where('code', 'pan_find')
             ->where('is_active', 1)
             ->first();
 
+        $guideline = $this->serviceGuidelineService
+                        ->getActiveGuideline('pan-find');
+                        
         return view(
             'retailer.pan-find.create',
-            compact('charge')
+            compact('charge','guideline')
         );
     }
 

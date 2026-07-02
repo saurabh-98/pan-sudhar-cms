@@ -180,6 +180,12 @@
     rel="stylesheet"
     href="{{ asset('assets/css/recharge-wallet.css') }}"
 >
+
+    {{-- =====================================================
+    | PAGE-LEVEL STYLES (OPTIONAL PER-PAGE INLINE/CUSTOM CSS)
+    ====================================================== --}}
+    @yield('styles')
+
 </head>
 
 <body>

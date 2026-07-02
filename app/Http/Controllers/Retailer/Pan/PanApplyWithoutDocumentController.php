@@ -23,6 +23,7 @@ use App\Models\Charge;
 
 use App\Services\DistrictService;
 use App\Services\PanApplyWithoutDocumentService;
+use App\Services\ServiceGuidelineService;
 use App\Services\StateService;
 
 use Yajra\DataTables\Facades\DataTables;
@@ -37,7 +38,10 @@ class PanApplyWithoutDocumentController extends Controller
 
     protected StateService $stateService,
 
-    protected DistrictService $districtService
+    protected DistrictService $districtService,
+
+    protected ServiceGuidelineService $serviceGuidelineService
+
 
     ) {}
     
@@ -498,7 +502,12 @@ class PanApplyWithoutDocumentController extends Controller
 
                 'files' =>
 
-                    $preview['files'] ?? []
+                    $preview['files'] ?? [],
+
+                'guideline' =>
+
+                    $this->serviceGuidelineService
+                        ->getActiveGuideline('pan-without-docs')
 
             ]
 

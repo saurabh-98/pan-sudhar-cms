@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use App\DTO\OtherServiceDTO;
 use App\Http\Requests\StoreOtherServiceRequest;
 use App\Services\OtherServiceService;
+use App\Services\ServiceGuidelineService;
 
 use App\Models\OtherService;
 use App\Models\Charge;
@@ -22,7 +23,8 @@ use Yajra\DataTables\Facades\DataTables;
 class OtherServiceController extends Controller
 {
     public function __construct(
-        protected OtherServiceService $otherServiceService
+        protected OtherServiceService $otherServiceService,
+        protected ServiceGuidelineService $serviceGuidelineService,
     ) {}
 
     private function getOtherServiceCharge(
@@ -78,6 +80,12 @@ class OtherServiceController extends Controller
 
                 'files' =>
                     $session['files'] ?? [],
+
+                  'guideline' =>
+
+                    $this->serviceGuidelineService
+                        ->getActiveGuideline($service),
+
             ]
         );
     }

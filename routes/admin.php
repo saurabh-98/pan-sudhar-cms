@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\LeaveController;
 use App\Http\Controllers\Admin\SalaryStructureController;
 use App\Http\Controllers\Admin\PayrollController;
 use App\Http\Controllers\Admin\PayslipController;
+use App\Http\Controllers\Admin\ServiceGuidelineController;
 
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\EventController;
@@ -374,6 +375,89 @@ Route::middleware([
             [NavigationMenuController::class, 'destroy']
         )->name('delete')
         ->middleware('permission:navigation.delete');
+
+    });
+
+    /*
+|--------------------------------------------------------------------------
+| SERVICE GUIDELINES
+|--------------------------------------------------------------------------
+*/
+
+    Route::prefix('service-guidelines')
+        ->name('service-guidelines.')
+        ->middleware('permission:service-guidelines.view')
+        ->group(function () {
+
+            /*
+            |--------------------------------------------------------------------------
+            | INDEX
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/',
+                [ServiceGuidelineController::class, 'index']
+            )->name('index');
+
+            /*
+            |--------------------------------------------------------------------------
+            | LIST (DataTable)
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/list',
+                [ServiceGuidelineController::class, 'list']
+            )->name('list');
+
+            /*
+            |--------------------------------------------------------------------------
+            | STORE
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/store',
+                [ServiceGuidelineController::class, 'store']
+            )->name('store')
+            ->middleware('permission:service-guidelines.create');
+
+            /*
+            |--------------------------------------------------------------------------
+            | EDIT
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/edit/{id}',
+                [ServiceGuidelineController::class, 'edit']
+            )->name('edit')
+            ->middleware('permission:service-guidelines.edit');
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/update/{id}',
+                [ServiceGuidelineController::class, 'update']
+            )->name('update')
+            ->middleware('permission:service-guidelines.edit');
+
+            /*
+            |--------------------------------------------------------------------------
+            | DELETE
+            |--------------------------------------------------------------------------
+            */
+
+            Route::delete(
+                '/delete/{id}',
+                [ServiceGuidelineController::class, 'destroy']
+            )->name('destroy')
+            ->middleware('permission:service-guidelines.delete');
 
     });
 
