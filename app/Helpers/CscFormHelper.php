@@ -110,6 +110,38 @@ if (! function_exists('csc_service_fields')) {
 
             'income-certificate' => array_merge([
 
+                 [
+                    'name' => 'customer_name',
+                    'label' => 'Customer Name',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'mobile',
+                    'label' => 'Customer Mobile Number',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'aadhaar_number',
+                    'label' => 'Aadhaar Number',
+                    'type' => 'text',
+                ],
+
+                [
+                    'name' => 'photo',
+                    'label' => 'Live Passport Size Photo',
+                    'type' => 'file',
+                ],
+
+                [
+                    'name' => 'document',
+                    'label' => 'Aadhaar Card',
+                    'type' => 'file',
+                ],
+                    
                 [
                     'name' => 'occupation',
                     'label' => 'Occupation',
@@ -122,7 +154,7 @@ if (! function_exists('csc_service_fields')) {
                     'type' => 'number',
                 ],
 
-            ], $commonFields),
+            ],),
 
             /*
             |--------------------------------------------------------------------------
