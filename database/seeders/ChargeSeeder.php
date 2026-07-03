@@ -452,69 +452,99 @@ class ChargeSeeder extends Seeder
             'created_at'  => now(),
             'updated_at'  => now(),
         ],
- /*
-            |--------------------------------------------------------------------------
-            | BANK ACCOUNT SERVICES
-            |--------------------------------------------------------------------------
-            */
+        /*
+        |--------------------------------------------------------------------------
+        | BANK ACCOUNT SERVICES
+        |--------------------------------------------------------------------------
+        */
 
-            [
-                'code' => 'airtel-bank-account',
-                'service_name' => 'Airtel Payments Bank Account',
-                'amount' => 50,
-                'status' => 1,
-            ],
+        [
+            'name'        => 'Airtel Payments Bank Account',
+            'code'        => 'airtel-bank-account',
+            'type'        => 'fixed',
+            'value'       => 50,
+            'description' => 'Airtel Payments Bank Account Opening Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ],
 
-            [
-                'code' => 'indian-bank',
-                'service_name' => 'Indian Bank Account',
-                'amount' => 100,
-                'status' => 1,
-            ],
+        [
+            'name'        => 'Indian Bank Account',
+            'code'        => 'indian-bank',
+            'type'        => 'fixed',
+            'value'       => 100,
+            'description' => 'Indian Bank Account Opening Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ],
 
-            [
-                'code' => 'indian-overseas-bank',
-                'service_name' => 'Indian Overseas Bank Account',
-                'amount' => 100,
-                'status' => 1,
-            ],
+        [
+            'name'        => 'Indian Overseas Bank Account',
+            'code'        => 'indian-overseas-bank',
+            'type'        => 'fixed',
+            'value'       => 100,
+            'description' => 'Indian Overseas Bank Account Opening Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ],
 
-            [
-                'code' => 'nsdl-payment-bank',
-                'service_name' => 'NSDL Payment Bank Account',
-                'amount' => 50,
-                'status' => 1,
-            ],
+        [
+            'name'        => 'NSDL Payment Bank Account',
+            'code'        => 'nsdl-payment-bank',
+            'type'        => 'fixed',
+            'value'       => 50,
+            'description' => 'NSDL Payment Bank Account Opening Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ],
 
-            [
-                'code' => 'jio-payment-bank',
-                'service_name' => 'Jio Payment Bank Account',
-                'amount' => 50,
-                'status' => 1,
-            ],
+        [
+            'name'        => 'Jio Payment Bank Account',
+            'code'        => 'jio-payment-bank',
+            'type'        => 'fixed',
+            'value'       => 50,
+            'description' => 'Jio Payment Bank Account Opening Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ],
 
-            [
-                'code' => 'bank-of-baroda',
-                'service_name' => 'Bank of Baroda Account',
-                'amount' => 100,
-                'status' => 1,
-            ],
+        [
+            'name'        => 'Bank of Baroda Account',
+            'code'        => 'bank-of-baroda',
+            'type'        => 'fixed',
+            'value'       => 100,
+            'description' => 'Bank of Baroda Account Opening Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ],
 
-            [
-                'code' => 'kotak-bank-account',
-                'service_name' => 'Kotak Bank Account',
-                'amount' => 100,
-                'status' => 1,
-            ],
+        [
+            'name'        => 'Kotak Bank Account',
+            'code'        => 'kotak-bank-account',
+            'type'        => 'fixed',
+            'value'       => 100,
+            'description' => 'Kotak Bank Account Opening Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ],
 
-            [
-                'code' => 'sbi-pnb-bank-account',
-                'service_name' => 'SBI / PNB Bank Account',
-                'amount' => 100,
-                'status' => 1,
-            ],
-
-        
+        [
+            'name'        => 'SBI / PNB Bank Account',
+            'code'        => 'sbi-pnb-bank-account',
+            'type'        => 'fixed',
+            'value'       => 100,
+            'description' => 'SBI / PNB Bank Account Opening Charge',
+            'is_active'   => 1,
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ],
 
 
         /*
