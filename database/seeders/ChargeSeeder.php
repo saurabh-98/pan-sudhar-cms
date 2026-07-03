@@ -452,78 +452,69 @@ class ChargeSeeder extends Seeder
             'created_at'  => now(),
             'updated_at'  => now(),
         ],
+ /*
+            |--------------------------------------------------------------------------
+            | BANK ACCOUNT SERVICES
+            |--------------------------------------------------------------------------
+            */
 
-        /*
-        |--------------------------------------------------------------------------
-        | BANK ACCOUNT SERVICES
-        |--------------------------------------------------------------------------
-        */
+            [
+                'code' => 'airtel-bank-account',
+                'service_name' => 'Airtel Payments Bank Account',
+                'amount' => 50,
+                'status' => 1,
+            ],
 
-        [
-            'name'        => 'New Bank Account Opening',
-            'code'        => 'new_bank_account',
-            'type'        => 'fixed',
-            'value'       => 200,
-            'description' => 'New Bank Account Opening Charge',
-            'is_active'   => 1,
-            'created_at'  => now(),
-            'updated_at'  => now(),
-        ],
+            [
+                'code' => 'indian-bank',
+                'service_name' => 'Indian Bank Account',
+                'amount' => 100,
+                'status' => 1,
+            ],
 
-        [
-            'name'        => 'Account Closure',
-            'code'        => 'account_closure',
-            'type'        => 'fixed',
-            'value'       => 100,
-            'description' => 'Account Closure Charge',
-            'is_active'   => 1,
-            'created_at'  => now(),
-            'updated_at'  => now(),
-        ],
+            [
+                'code' => 'indian-overseas-bank',
+                'service_name' => 'Indian Overseas Bank Account',
+                'amount' => 100,
+                'status' => 1,
+            ],
 
-        [
-            'name'        => 'Bank Mobile Number Update',
-            'code'        => 'bank_mobile_update',
-            'type'        => 'fixed',
-            'value'       => 100,
-            'description' => 'Bank Mobile Number Update Charge',
-            'is_active'   => 1,
-            'created_at'  => now(),
-            'updated_at'  => now(),
-        ],
+            [
+                'code' => 'nsdl-payment-bank',
+                'service_name' => 'NSDL Payment Bank Account',
+                'amount' => 50,
+                'status' => 1,
+            ],
 
-        [
-            'name'        => 'Bank Address Update',
-            'code'        => 'bank_address_update',
-            'type'        => 'fixed',
-            'value'       => 100,
-            'description' => 'Bank Address Update Charge',
-            'is_active'   => 1,
-            'created_at'  => now(),
-            'updated_at'  => now(),
-        ],
+            [
+                'code' => 'jio-payment-bank',
+                'service_name' => 'Jio Payment Bank Account',
+                'amount' => 50,
+                'status' => 1,
+            ],
 
-        [
-            'name'        => 'KYC Update',
-            'code'        => 'kyc_update',
-            'type'        => 'fixed',
-            'value'       => 150,
-            'description' => 'KYC Update Charge',
-            'is_active'   => 1,
-            'created_at'  => now(),
-            'updated_at'  => now(),
-        ],
+            [
+                'code' => 'bank-of-baroda',
+                'service_name' => 'Bank of Baroda Account',
+                'amount' => 100,
+                'status' => 1,
+            ],
 
-        [
-            'name'        => 'Nominee Update',
-            'code'        => 'nominee_update',
-            'type'        => 'fixed',
-            'value'       => 100,
-            'description' => 'Nominee Update Charge',
-            'is_active'   => 1,
-            'created_at'  => now(),
-            'updated_at'  => now(),
-        ],
+            [
+                'code' => 'kotak-bank-account',
+                'service_name' => 'Kotak Bank Account',
+                'amount' => 100,
+                'status' => 1,
+            ],
+
+            [
+                'code' => 'sbi-pnb-bank-account',
+                'service_name' => 'SBI / PNB Bank Account',
+                'amount' => 100,
+                'status' => 1,
+            ],
+
+        
 
 
         /*
