@@ -328,7 +328,7 @@ if (! function_exists('csc_service_fields')) {
 
                 [
                     'name' => 'father_name',
-                    'label' => 'Father Name',
+                    'label' => "Father's Name",
                     'type' => 'text',
                 ],
 
@@ -417,6 +417,27 @@ if (! function_exists('csc_service_fields')) {
 
             'e-shram-card' => array_merge([
 
+
+                [
+                    'name' => 'customer_name',
+                    'label' => 'Customer Name',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'mobile',
+                    'label' => 'Mobile Number',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'aadhaar_number',
+                    'label' => 'Aadhaar Number',
+                    'type' => 'text',
+                ],
+
                 [
                     'name' => 'occupation',
                     'label' => 'Occupation',
@@ -429,7 +450,27 @@ if (! function_exists('csc_service_fields')) {
                     'type' => 'text',
                 ],
 
-            ], $commonFields),
+                [
+                    'name' => 'bank_passbook',
+                    'label' => 'Bank Passbook',
+                    'type' => 'file',
+                ],
+
+                [
+                    'name' => 'photo',
+                    'label' => 'Passport Size Photo',
+                    'type' => 'file',
+                ],
+
+                [
+                    'name' => 'aadhaar_card',
+                    'label' => 'Aadhaar Card',
+                    'type' => 'file',
+                ],
+
+                
+
+            ],),
 
             /*
             |--------------------------------------------------------------------------
