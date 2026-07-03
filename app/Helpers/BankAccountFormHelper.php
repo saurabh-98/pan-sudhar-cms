@@ -97,6 +97,12 @@ if (! function_exists('bank_account_fields')) {
             'required' => true,
         ];
 
+        $initialDepositField = [
+            'name' => 'initial_deposit_amount',
+            'label' => 'Initial Deposit Amount',
+            'type' => 'number',
+            'required' => false,
+        ];
 
         $nomineeFields = [
 
