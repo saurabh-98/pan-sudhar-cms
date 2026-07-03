@@ -313,6 +313,13 @@ if (! function_exists('csc_service_fields')) {
                     'required' => true,
                 ],
 
+                 [
+                    'name' => 'gender',
+                    'label' => 'Gender',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
                 [
                     'name' => 'dob',
                     'label' => 'Date Of Birth',
@@ -325,11 +332,24 @@ if (! function_exists('csc_service_fields')) {
                     'type' => 'text',
                 ],
 
+                 [
+                    'name' => 'father_aadhaar_number',
+                    'label' => "Father's Aadhaar Number",
+                    'type' => 'number',
+                ],
+
                 [
                     'name' => 'mother_name',
-                    'label' => 'Mother Name',
+                    'label' => "Mother's Name",
                     'type' => 'text',
                 ],
+
+                 [
+                    'name' => 'mother_aadhaar_number',
+                    'label' => "Mother's Aadhaar Number",
+                    'type' => 'number',
+                ],
+
 
                 [
                     'name' => 'hospital_certificate',
