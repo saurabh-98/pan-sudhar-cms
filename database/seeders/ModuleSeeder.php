@@ -215,7 +215,7 @@ class ModuleSeeder extends Seeder
             */
 
             $itr = Module::create([
-                'name'       => 'ITR Services',
+                'name'       => 'Financial Services',
                 'slug'       => 'itr-services',
                 'icon'       => 'fa fa-file-invoice',
                 'route_name' => null,
@@ -242,7 +242,37 @@ class ModuleSeeder extends Seeder
                     'parent_id'  => $itr->id,
                     'sort_order' => 2,
                     'status'     => 1,
+
+                    
                 ],
+
+                 [
+                    'name'       => 'GST Registration / Filing',
+                    'slug'       => 'gst-registration-filing',
+                    'route_name' => 'retailer.itr.index',
+                    'parent_id'  => $itr->id,
+                    'sort_order' => 3,
+                    'status'     => 1,
+                ],
+
+                [
+                     'name' => 'DSC Digital Signature',
+                    'slug'       => 'dsc-digital-signature',
+                     'route_name' => 'retailer.itr.index',
+                    'parent_id'  => $itr->id,
+                    'sort_order' => 4,
+                    'status'     => 1,
+                ],
+
+                [
+                    'name'       => 'MSME Registration',
+                    'slug'       => 'msme-registration',
+                     'route_name' => 'retailer.itr.index',
+                    'parent_id'  => $itr->id,
+                    'sort_order' => 5,
+                    'status'     => 1,
+                ],
+
 
                 [
                     'name'       => 'ITR History',
@@ -720,14 +750,7 @@ class ModuleSeeder extends Seeder
                 'status'     => 1,
             ],
 
-            [
-                'name'       => 'GST Registration / Filing',
-                'slug'       => 'gst-registration-filing',
-                'route_name' => 'retailer.other-service.service',
-                'parent_id'  => $otherService->id,
-                'sort_order' => 2,
-                'status'     => 1,
-            ],
+           
 
             [
                 'name'       => 'Food Licence',
@@ -747,24 +770,7 @@ class ModuleSeeder extends Seeder
                 'status'     => 1,
             ],
 
-            [
-                'name'       => 'DSC Digital Signature',
-                'slug'       => 'dsc-digital-signature',
-                'route_name' => 'retailer.other-service.service',
-                'parent_id'  => $otherService->id,
-                'sort_order' => 5,
-                'status'     => 1,
-            ],
-
-            [
-                'name'       => 'MSME Registration',
-                'slug'       => 'msme-registration',
-                'route_name' => 'retailer.other-service.service',
-                'parent_id'  => $otherService->id,
-                'sort_order' => 6,
-                'status'     => 1,
-            ],
-
+            
             [
                 'name'       => 'Import Export Certificate(IEC)',
                 'slug'       => 'import-export-certificate',
@@ -792,6 +798,7 @@ class ModuleSeeder extends Seeder
                 'status'     => 1,
             ],
 
+             
              [
                 'name'       => 'Driving Learning License',
                 'slug'       => 'driving-learning-license',
@@ -820,11 +827,20 @@ class ModuleSeeder extends Seeder
             ],
 
             [
+                'name'       => 'Passport Service',
+                'slug'       => 'passport-service',
+                'route_name' => 'retailer.other-service.service',
+                'parent_id'  => $otherService->id,
+                'sort_order' => 13,
+                'status'     => 1,
+            ],
+
+            [
                 'name'       => 'Other Service History',
                 'slug'       => 'other-service-history',
                 'route_name' => 'retailer.other-service.history',
                 'parent_id'  => $otherService->id,
-                'sort_order' => 13,
+                'sort_order' => 14,
                 'status'     => 1,
             ],
 

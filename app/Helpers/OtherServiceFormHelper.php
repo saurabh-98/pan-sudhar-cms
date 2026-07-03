@@ -435,6 +435,42 @@ if (! function_exists('other_service_fields')) {
                 ]
             ),
 
+
+                'vehicle-chalan-payment' => array_merge(
+                
+                [
+
+                    [
+                        'name' => 'customer_name',
+                        'label' => 'Customer Name',
+                        'type' => 'text',
+                        'required' => true,
+                    ],
+
+                    [
+                        'name' => 'mobile',
+                        'label' => 'Customer Mobile Number',
+                        'type' => 'text',
+                        'required' => true,
+                    ],
+
+                    [
+                        'name' => 'document',
+                        'label' => 'Aadhaar Card',
+                        'type' => 'file',
+                    ],
+                
+                   
+                    [
+                        'name' => 'document',
+                        'label' => 'Upload Chalan Copy',
+                        'type' => 'file',
+                    ],
+
+                   
+                ]
+            ),
+            
              'rto-service' => array_merge(
                 
                 [
