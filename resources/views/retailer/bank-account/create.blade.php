@@ -29,98 +29,97 @@
 
                 </div>
 
-                  <div class="pan-header-right d-flex align-items-center gap-3">
+                <div class="pan-header-right d-flex align-items-center gap-3">
 
-                        {{-- SERVICE GUIDELINE BUTTON --}}
-                        @if($guideline && $guideline->pdf)
+                    {{-- SERVICE GUIDELINE BUTTON --}}
+                    @if($guideline && $guideline->pdf)
 
-                            <button
-                                type="button"
-                                class="pan-guideline-btn"
-                                data-bs-toggle="offcanvas"
-                                data-bs-target="#serviceGuidelineOffcanvas"
-                                aria-controls="serviceGuidelineOffcanvas"
-                            >
-                                <i class="fa fa-circle-info me-2"></i>
-                                Bank Service Guidelines
-                            </button>
+                        <button
+                            type="button"
+                            class="pan-guideline-btn"
+                            data-bs-toggle="offcanvas"
+                            data-bs-target="#serviceGuidelineOffcanvas"
+                            aria-controls="serviceGuidelineOffcanvas"
+                        >
+                            <i class="fa fa-circle-info me-2"></i>
+                            Bank Service Guidelines
+                        </button>
 
-                        @endif
+                    @endif
 
-                        <div class="pan-charge-card">
+                    <div class="pan-charge-card">
 
-                            <span class="pan-charge-label">
-                                Service Charge
-                            </span>
+                        <span class="pan-charge-label">
+                            Service Charge
+                        </span>
 
-                            <span class="pan-charge-amount">
-                                ₹{{ number_format($bankAccountCharge, 2) }}
-                            </span>
-
-                        </div>
-
-                        {{-- SERVICE GUIDELINE OFFCANVAS (HALF-WINDOW PDF VIEWER) --}}
-
-                @if($guideline && $guideline->pdf)
-
-                    <div
-                        class="offcanvas offcanvas-end pan-guideline-offcanvas"
-                        tabindex="-1"
-                        id="serviceGuidelineOffcanvas"
-                        aria-labelledby="serviceGuidelineLabel"
-                    >
-                        <div class="offcanvas-header">
-
-                            <h5 id="serviceGuidelineLabel">
-                                <i class="fa fa-file-pdf me-2 text-danger"></i>
-                                CSC — Service Guidelines
-                            </h5>
-
-                            <button
-                                type="button"
-                                class="btn-close"
-                                data-bs-dismiss="offcanvas"
-                                aria-label="Close"
-                            ></button>
-
-                        </div>
-
-                        <div class="offcanvas-body p-0 d-flex flex-column">
-
-                            <div id="pdfLoadingState" class="text-center text-muted py-5">
-                                <i class="fa fa-spinner fa-spin fa-2x mb-3"></i>
-                                <p>Loading guideline document...</p>
-                            </div>
-
-                            <iframe
-                                id="guidelinePdfFrame"
-                                data-src="{{ file_url($guideline->pdf) }}"
-                                style="display:none;"
-                            ></iframe>
-
-                            <div class="text-center py-3 border-top">
-
-                                <a href="{{ file_url($guideline->pdf) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                    <i class="fa fa-up-right-from-square me-1"></i>
-                                    Open PDF in New Tab
-                                </a>
-
-                            </div>
-
-                        </div>
+                        <span class="pan-charge-amount">
+                            ₹{{ number_format($bankAccountCharge, 2) }}
+                        </span>
 
                     </div>
 
-                @endif
+                    {{-- SERVICE GUIDELINE OFFCANVAS (HALF-WINDOW PDF VIEWER) --}}
+                    @if($guideline && $guideline->pdf)
 
+                        <div
+                            class="offcanvas offcanvas-end pan-guideline-offcanvas"
+                            tabindex="-1"
+                            id="serviceGuidelineOffcanvas"
+                            aria-labelledby="serviceGuidelineLabel"
+                        >
+                            <div class="offcanvas-header">
+
+                                <h5 id="serviceGuidelineLabel">
+                                    <i class="fa fa-file-pdf me-2 text-danger"></i>
+                                    CSC — Service Guidelines
+                                </h5>
+
+                                <button
+                                    type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="offcanvas"
+                                    aria-label="Close"
+                                ></button>
+
+                            </div>
+
+                            <div class="offcanvas-body p-0 d-flex flex-column">
+
+                                <div id="pdfLoadingState" class="text-center text-muted py-5">
+                                    <i class="fa fa-spinner fa-spin fa-2x mb-3"></i>
+                                    <p>Loading guideline document...</p>
+                                </div>
+
+                                <iframe
+                                    id="guidelinePdfFrame"
+                                    data-src="{{ file_url($guideline->pdf) }}"
+                                    style="display:none;"
+                                ></iframe>
+
+                                <div class="text-center py-3 border-top">
+
+                                    <a href="{{ file_url($guideline->pdf) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="fa fa-up-right-from-square me-1"></i>
+                                        Open PDF in New Tab
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    @endif
 
                 </div>
+                {{-- closes .pan-header-right --}}
 
             </div>
-
-            </div>
+            {{-- closes .d-flex row --}}
 
         </div>
+        {{-- closes .card-header --}}
 
         {{-- BODY --}}
         <div class="card-body aadhaar-form-body">
@@ -333,7 +332,6 @@
 
                 </div>
 
-
                 {{-- ACTION --}}
                 <div class="aadhaar-action-area">
 
@@ -353,13 +351,16 @@
             </form>
 
         </div>
+        {{-- closes .card-body --}}
 
     </div>
+    {{-- closes .card --}}
 
 </div>
+{{-- closes .container-fluid --}}
 
 @endsection
-@section('scripts')
+
 
 @section('styles')
 
@@ -452,10 +453,11 @@
 @endsection
 
 
+@section('scripts')
+
 <script>
 
 $(document).ready(function(){
-
 
     let guidelineOffcanvasEl =
         document.getElementById('serviceGuidelineOffcanvas');
@@ -490,7 +492,6 @@ $(document).ready(function(){
         );
 
     }
-
 
     $('#aadhaarForm').on('submit', function(e){
 

@@ -14,6 +14,211 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 />
 
+<style>
+
+    .pan-header-right {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .pan-guideline-btn {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #fff;
+        border: 1px solid #d0d5dd;
+        color: #344054;
+        font-weight: 600;
+        font-size: 14px;
+        padding: 10px 18px;
+        border-radius: 10px;
+        white-space: nowrap;
+        cursor: pointer;
+        box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+        transition:
+            background-color .2s ease,
+            border-color .2s ease,
+            box-shadow .2s ease,
+            transform .15s ease;
+    }
+
+    .pan-guideline-btn:hover {
+        background: #f9fafb;
+        border-color: #98a2b3;
+        box-shadow: 0 2px 6px rgba(16, 24, 40, 0.08);
+    }
+
+    .pan-guideline-btn:active {
+        transform: scale(0.97);
+        background: #f2f4f7;
+    }
+
+    .pan-guideline-btn:focus-visible {
+        outline: 2px solid #0d6efd;
+        outline-offset: 2px;
+    }
+
+    .pan-guideline-btn i {
+        color: #0d6efd;
+        font-size: 15px;
+        transition: transform .2s ease;
+    }
+
+    .pan-guideline-btn:hover i {
+        transform: scale(1.15);
+    }
+
+    /* ATTENTION PULSE — shown until the guideline is opened once */
+    .pan-guideline-btn-icon {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .pan-guideline-ping {
+        position: absolute;
+        top: -3px;
+        right: -3px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #0d6efd;
+        pointer-events: none;
+    }
+
+    .pan-guideline-btn:not(.viewed) .pan-guideline-ping::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: #0d6efd;
+        animation: pan-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+
+    @keyframes pan-ping {
+        0% {
+            transform: scale(1);
+            opacity: 0.8;
+        }
+        75%, 100% {
+            transform: scale(2.6);
+            opacity: 0;
+        }
+    }
+
+    .pan-guideline-btn.viewed .pan-guideline-ping {
+        display: none;
+    }
+
+    .pan-guideline-btn.viewed {
+        border-color: #b7e4c7;
+        background: #f4fbf7;
+    }
+
+    .pan-guideline-viewed-tick {
+        display: none;
+        color: #12b76a;
+        font-size: 12px !important;
+    }
+
+    .pan-guideline-btn.viewed .pan-guideline-viewed-tick {
+        display: inline-block;
+    }
+
+    .pan-charge-card {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+    }
+
+    /* HALF-WINDOW PANEL */
+    .pan-guideline-offcanvas {
+        width: 50% !important;
+        transition: width .25s ease;
+    }
+
+    .pan-guideline-offcanvas.pan-expanded {
+        width: 90% !important;
+    }
+
+    .pan-guideline-offcanvas .offcanvas-body {
+        padding: 0;
+        height: 100%;
+    }
+
+    .pan-offcanvas-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .pan-expand-btn {
+        border: 1px solid #d0d5dd;
+        background: #fff;
+        border-radius: 8px;
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #344054;
+        transition: background-color .2s ease, border-color .2s ease;
+    }
+
+    .pan-expand-btn:hover {
+        background: #f9fafb;
+        border-color: #98a2b3;
+    }
+
+    #pdfLoadingState {
+        flex: 0 0 auto;
+        padding: 28px;
+    }
+
+    .pan-skeleton-line {
+        height: 14px;
+        border-radius: 6px;
+        margin-bottom: 12px;
+        background: linear-gradient(90deg, #eef0f2 25%, #f7f8f9 37%, #eef0f2 63%);
+        background-size: 400% 100%;
+        animation: pan-shimmer 1.4s ease infinite;
+    }
+
+    .pan-skeleton-line.w-75 { width: 75%; }
+    .pan-skeleton-line.w-50 { width: 50%; }
+    .pan-skeleton-line.w-100 { width: 100%; }
+
+    @keyframes pan-shimmer {
+        0% { background-position: 100% 50%; }
+        100% { background-position: 0 50%; }
+    }
+
+    #pdfErrorState {
+        flex: 0 0 auto;
+    }
+
+    #guidelinePdfFrame {
+        flex: 1 1 auto;
+        width: 100%;
+        border: 0;
+    }
+
+    @media (max-width: 991px) {
+
+        .pan-guideline-offcanvas,
+        .pan-guideline-offcanvas.pan-expanded {
+            width: 100% !important;
+        }
+
+    }
+
+</style>
+
 @endsection
 
 
@@ -64,12 +269,18 @@
                             <button
                                 type="button"
                                 class="pan-guideline-btn"
+                                id="serviceGuidelineBtn"
                                 data-bs-toggle="offcanvas"
                                 data-bs-target="#serviceGuidelineOffcanvas"
                                 aria-controls="serviceGuidelineOffcanvas"
+                                data-guideline-key="guideline-viewed-{{ $guideline->id ?? 'itr' }}"
                             >
-                                <i class="fa fa-circle-info me-2"></i>
+                                <span class="pan-guideline-btn-icon">
+                                    <i class="fa fa-circle-info"></i>
+                                    <span class="pan-guideline-ping"></span>
+                                </span>
                                 Service Guidelines
+                                <i class="fa fa-circle-check pan-guideline-viewed-tick" aria-hidden="true"></i>
                             </button>
 
                         @endif
@@ -100,23 +311,51 @@
 
                             <h5 id="serviceGuidelineLabel">
                                 <i class="fa fa-file-pdf me-2 text-danger"></i>
-                                CSC — Service Guidelines
+                                ITR — Service Guidelines
                             </h5>
 
-                            <button
-                                type="button"
-                                class="btn-close"
-                                data-bs-dismiss="offcanvas"
-                                aria-label="Close"
-                            ></button>
+                            <div class="pan-offcanvas-header-actions">
+
+                                <button
+                                    type="button"
+                                    class="pan-expand-btn"
+                                    id="guidelineExpandBtn"
+                                    title="Expand view"
+                                    aria-label="Expand view"
+                                >
+                                    <i class="fa fa-expand"></i>
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="offcanvas"
+                                    aria-label="Close"
+                                ></button>
+
+                            </div>
 
                         </div>
 
                         <div class="offcanvas-body p-0 d-flex flex-column">
 
-                            <div id="pdfLoadingState" class="text-center text-muted py-5">
-                                <i class="fa fa-spinner fa-spin fa-2x mb-3"></i>
-                                <p>Loading guideline document...</p>
+                            <div id="pdfLoadingState">
+                                <div class="pan-skeleton-line w-75"></div>
+                                <div class="pan-skeleton-line w-100"></div>
+                                <div class="pan-skeleton-line w-100"></div>
+                                <div class="pan-skeleton-line w-50"></div>
+                                <p class="text-muted mt-3 mb-0">
+                                    <i class="fa fa-spinner fa-spin me-2"></i>
+                                    Loading guideline document...
+                                </p>
+                            </div>
+
+                            <div id="pdfErrorState" class="text-center text-muted py-5 d-none">
+                                <i class="fa fa-triangle-exclamation fa-2x mb-3 text-warning"></i>
+                                <p class="mb-3">Couldn't preview the document here.</p>
+                                <a href="{{ file_url($guideline->pdf) }}" target="_blank" class="btn btn-sm btn-primary">
+                                    Open PDF in New Tab
+                                </a>
                             </div>
 
                             <iframe
@@ -156,15 +395,9 @@
 
                     <div class="itr-body">
 
-
-
-                        
-
-
                        @php
 
                         $documents = [
-
 
                         [
                             'title' => 'Aadhaar Front',
@@ -192,7 +425,6 @@
                             'accept'=> '.jpg,.jpeg,.png,.pdf',
                             'max_size' => 5120
                         ]
-                        
 
                         ];
 
@@ -456,98 +688,6 @@
 </div>
 
 @endsection
-
-
-@section('styles')
-
-<style>
-
-    .pan-header-right {
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .pan-guideline-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: #fff;
-        border: 1px solid #d0d5dd;
-        color: #344054;
-        font-weight: 600;
-        font-size: 14px;
-        padding: 10px 18px;
-        border-radius: 10px;
-        white-space: nowrap;
-        cursor: pointer;
-        box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
-        transition:
-            background-color .2s ease,
-            border-color .2s ease,
-            box-shadow .2s ease,
-            transform .15s ease;
-    }
-
-    .pan-guideline-btn:hover {
-        background: #f9fafb;
-        border-color: #98a2b3;
-        box-shadow: 0 2px 6px rgba(16, 24, 40, 0.08);
-    }
-
-    .pan-guideline-btn:active {
-        transform: scale(0.97);
-        background: #f2f4f7;
-    }
-
-    .pan-guideline-btn:focus-visible {
-        outline: 2px solid #0d6efd;
-        outline-offset: 2px;
-    }
-
-    .pan-guideline-btn i {
-        color: #0d6efd;
-        font-size: 15px;
-        transition: transform .2s ease;
-    }
-
-    .pan-guideline-btn:hover i {
-        transform: scale(1.15);
-    }
-
-    /* HALF-WINDOW PANEL */
-    .pan-guideline-offcanvas {
-        width: 50% !important;
-    }
-
-    .pan-guideline-offcanvas .offcanvas-body {
-        padding: 0;
-        height: 100%;
-    }
-
-    #pdfLoadingState {
-        flex: 0 0 auto;
-    }
-
-    #guidelinePdfFrame {
-        flex: 1 1 auto;
-        width: 100%;
-        border: 0;
-    }
-
-    @media (max-width: 991px) {
-
-        .pan-guideline-offcanvas {
-            width: 100% !important;
-        }
-
-    }
-
-</style>
-
-@endsection
-
 
 
 @section('scripts')
@@ -971,9 +1111,30 @@ $(function(){
         }
     );
 
+    /* =========================================================
+    | SERVICE GUIDELINE PANEL
+    | pulse-until-viewed + skeleton loader + timeout fallback
+    | + expand/collapse toggle
+    ========================================================= */
+
+    let guidelineBtn =
+        document.getElementById('serviceGuidelineBtn');
 
     let guidelineOffcanvasEl =
         document.getElementById('serviceGuidelineOffcanvas');
+
+    let expandBtn =
+        document.getElementById('guidelineExpandBtn');
+
+    if (guidelineBtn) {
+
+        let storedKey = guidelineBtn.dataset.guidelineKey;
+
+        if (storedKey && localStorage.getItem(storedKey)) {
+            guidelineBtn.classList.add('viewed');
+        }
+
+    }
 
     if (guidelineOffcanvasEl) {
 
@@ -984,16 +1145,51 @@ $(function(){
                 let iframe =
                     document.getElementById('guidelinePdfFrame');
 
+                let loadingState =
+                    document.getElementById('pdfLoadingState');
+
+                let errorState =
+                    document.getElementById('pdfErrorState');
+
+                if (guidelineBtn) {
+
+                    guidelineBtn.classList.add('viewed');
+
+                    let storedKey = guidelineBtn.dataset.guidelineKey;
+
+                    if (storedKey) {
+                        localStorage.setItem(storedKey, '1');
+                    }
+
+                }
+
                 if (iframe && !iframe.dataset.loaded) {
+
+                    let settled = false;
 
                     iframe.addEventListener('load', function () {
 
-                        document.getElementById('pdfLoadingState')
-                            .style.display = 'none';
+                        settled = true;
+
+                        loadingState.style.display = 'none';
 
                         iframe.style.display = 'block';
 
                     });
+
+                    setTimeout(function () {
+
+                        if (!settled) {
+
+                            loadingState.style.display = 'none';
+
+                            if (errorState) {
+                                errorState.classList.remove('d-none');
+                            }
+
+                        }
+
+                    }, 8000);
 
                     iframe.src = iframe.dataset.src;
 
@@ -1003,6 +1199,45 @@ $(function(){
 
             }
         );
+
+        guidelineOffcanvasEl.addEventListener(
+            'hidden.bs.offcanvas',
+            function () {
+
+                guidelineOffcanvasEl.classList.remove('pan-expanded');
+
+                if (expandBtn) {
+
+                    expandBtn.innerHTML = '<i class="fa fa-expand"></i>';
+
+                    expandBtn.setAttribute('title', 'Expand view');
+
+                }
+
+            }
+        );
+
+    }
+
+    if (expandBtn && guidelineOffcanvasEl) {
+
+        expandBtn.addEventListener('click', function () {
+
+            guidelineOffcanvasEl.classList.toggle('pan-expanded');
+
+            let expanded =
+                guidelineOffcanvasEl.classList.contains('pan-expanded');
+
+            expandBtn.innerHTML = expanded
+                ? '<i class="fa fa-compress"></i>'
+                : '<i class="fa fa-expand"></i>';
+
+            expandBtn.setAttribute(
+                'title',
+                expanded ? 'Collapse view' : 'Expand view'
+            );
+
+        });
 
     }
 
