@@ -222,6 +222,33 @@ if (! function_exists('csc_service_fields')) {
 
             'caste-certificate' => array_merge([
 
+
+                 [
+                    'name' => 'customer_name',
+                    'label' => 'Customer Name',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'mobile',
+                    'label' => 'Customer Mobile Number',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'aadhaar_number',
+                    'label' => 'Aadhaar Number',
+                    'type' => 'text',
+                ],
+
+                 [
+                    'name' => 'aadhaar_card',
+                    'label' => 'Aadhaar Card',
+                    'type' => 'file',
+                ],
+
                 [
                     'name' => 'category',
                     'label' => 'Category',
@@ -236,11 +263,11 @@ if (! function_exists('csc_service_fields')) {
 
                 [
                     'name' => 'caste_proof',
-                    'label' => 'Caste Proof',
+                    'label' => 'Old Caste Certificate',
                     'type' => 'file',
                 ],
 
-            ], $commonFields),
+            ],),
 
             /*
             |--------------------------------------------------------------------------
