@@ -935,6 +935,8 @@ body{
 
     position:relative;
 
+    padding:5px;
+
 }
 
 .input-box input{
@@ -943,7 +945,7 @@ body{
 
     height:62px;
 
-    border:2px solid #e5e7eb;
+    border:5px solid #e5e7eb;
 
     border-radius:18px;
 
@@ -951,7 +953,7 @@ body{
 
     outline:none;
 
-    padding:0 60px 0 60px;
+    padding:0 60px 0 90px;
 
     font-size:15px;
 
@@ -1055,9 +1057,9 @@ body{
 
 .toggle-password{
 
-    position:absolute;
+   position:absolute;
 
-    right:20px;
+    right:18px;
 
     top:50%;
 
@@ -1067,9 +1069,9 @@ body{
 
     background:none;
 
-    color:#94a3b8;
-
     cursor:pointer;
+
+    color:#64748b;
 
     transition:.3s;
 
@@ -1079,7 +1081,7 @@ body{
 
     color:#2563eb;
 
-    transform:translateY(-50%) rotate(180deg);
+   
 
 }
 
