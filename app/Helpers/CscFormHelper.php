@@ -213,16 +213,18 @@ if (! function_exists('csc_service_fields')) {
                 ],
 
                 [
+                    'name' => 'residence_proof',
+                    'label' => 'Address Proof',
+                    'type' => 'file',
+                ],
+
+                [
                     'name' => 'address',
                     'label' => 'Full Address',
                     'type' => 'textarea',
                 ],
 
-                [
-                    'name' => 'residence_proof',
-                    'label' => 'Address Proof',
-                    'type' => 'file',
-                ],
+                
 
                
 
