@@ -130,6 +130,13 @@ if (! function_exists('csc_service_fields')) {
                     'type' => 'text',
                 ],
 
+                 [
+                    'name' => 'mother_name',
+                    'label' => "Mother's Name",
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
                 [
                     'name' => 'occupation',
                     'label' => 'Occupation',
@@ -193,6 +200,13 @@ if (! function_exists('csc_service_fields')) {
                 ],
 
                  [
+                    'name' => 'mother_name',
+                    'label' => "Mother's Name",
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                 [
                     'name' => 'aadhaar_card',
                     'label' => 'Aadhaar Card',
                     'type' => 'file',
@@ -243,9 +257,22 @@ if (! function_exists('csc_service_fields')) {
                     'type' => 'text',
                 ],
 
+                [
+                    'name' => 'mother_name',
+                    'label' => "Mother's Name",
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
                  [
                     'name' => 'aadhaar_card',
                     'label' => 'Aadhaar Card',
+                    'type' => 'file',
+                ],
+
+                  [
+                    'name' => 'photo',
+                    'label' => 'Passport Size Photo',
                     'type' => 'file',
                 ],
 
