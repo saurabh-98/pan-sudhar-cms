@@ -131,18 +131,6 @@ if (! function_exists('csc_service_fields')) {
                 ],
 
                 [
-                    'name' => 'photo',
-                    'label' => 'Live Passport Size Photo',
-                    'type' => 'file',
-                ],
-
-                [
-                    'name' => 'document',
-                    'label' => 'Aadhaar Card',
-                    'type' => 'file',
-                ],
-                    
-                [
                     'name' => 'occupation',
                     'label' => 'Occupation',
                     'type' => 'text',
@@ -154,6 +142,25 @@ if (! function_exists('csc_service_fields')) {
                     'type' => 'number',
                 ],
 
+
+                [
+                    'name' => 'photo',
+                    'label' => 'Live Passport Size Photo',
+                    'type' => 'file',
+                ],
+
+                [
+                    'name' => 'document',
+                    'label' => 'Aadhaar Card',
+                    'type' => 'file',
+                ],
+
+                 [
+                    'name' => 'document',
+                    'label' => 'Govt. Bank Passbook ',
+                    'type' => 'file',
+                ],
+                    
             ],),
 
             /*
