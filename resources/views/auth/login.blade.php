@@ -1,9 +1,9 @@
-@extends('layout.auth')
+@extends('layout.app')
 
 @section('content')
 
 <!-- =========================================================
-| ADVANCED SCHOOL LOGIN
+| ADMIN LOGIN
 ========================================================= -->
 
 <div class="sg-auth-wrapper">
@@ -29,16 +29,16 @@
         | LEFT SIDE
         ===================================================== -->
 
-       <div class="sg-auth-left">
+        <div class="sg-auth-left">
 
             <div class="sg-auth-overlay">
 
                 <!-- BADGE -->
                 <span class="sg-auth-badge">
 
-                    <i class="fa-solid fa-id-card"></i>
+                    <i class="fa-solid fa-user-shield"></i>
 
-                    PAN Sudhar Portal
+                    Administrator Panel
 
                 </span>
 
@@ -46,18 +46,19 @@
                 <h1>
 
                     Welcome To
-                    <span>PAN Sudhar Portal</span>
+
+                    <span>Admin Control Center</span>
 
                 </h1>
 
                 <!-- SUBTITLE -->
                 <p>
 
-                    Manage PAN Correction Applications,
-                    Document Verification, Executive Assignment,
-                    Application Tracking, Approval Workflow,
-                    Department Operations and Status Monitoring
-                    through one secure digital platform.
+                    Securely manage retailers, distributors,
+                    executives, PAN applications, Aadhaar services,
+                    wallet transactions, reports, user permissions,
+                    and system settings from one centralized
+                    administration dashboard.
 
                 </p>
 
@@ -68,7 +69,7 @@
 
                         <h3>
 
-                            10,000+
+                            15K+
 
                         </h3>
 
@@ -84,13 +85,13 @@
 
                         <h3>
 
-                            250+
+                            2K+
 
                         </h3>
 
                         <span>
 
-                            Executives
+                            Retailers
 
                         </span>
 
@@ -100,13 +101,13 @@
 
                         <h3>
 
-                            24×7
+                            99.9%
 
                         </h3>
 
                         <span>
 
-                            Tracking
+                            Uptime
 
                         </span>
 
@@ -115,6 +116,7 @@
                 </div>
 
                 <!-- FEATURES -->
+
                 <div class="mt-4">
 
                     <div class="d-flex align-items-center mb-3">
@@ -123,7 +125,7 @@
 
                         <span>
 
-                            PAN Correction Application Management
+                            User & Role Management
 
                         </span>
 
@@ -135,7 +137,7 @@
 
                         <span>
 
-                            Document Verification & Approval Workflow
+                            Retailer & Distributor Monitoring
 
                         </span>
 
@@ -147,7 +149,19 @@
 
                         <span>
 
-                            Executive Assignment & Tracking
+                            Wallet & Transaction Management
+
+                        </span>
+
+                    </div>
+
+                    <div class="d-flex align-items-center mb-3">
+
+                        <i class="fa-solid fa-circle-check me-2"></i>
+
+                        <span>
+
+                            Reports & Analytics Dashboard
 
                         </span>
 
@@ -159,7 +173,7 @@
 
                         <span>
 
-                            Real-Time Status Monitoring
+                            System Configuration & Security
 
                         </span>
 
@@ -170,7 +184,8 @@
             </div>
 
         </div>
-      <!-- =====================================================
+
+        <!-- =====================================================
         | RIGHT SIDE
         ===================================================== -->
 
@@ -179,35 +194,39 @@
             <div class="sg-login-card">
 
                 <!-- LOGO -->
+
                 <div class="sg-login-logo">
 
-                    🪪
+                    <i class="fa-solid fa-user-shield"></i>
 
                 </div>
 
                 <!-- TITLE -->
+
                 <h2 class="sg-login-title">
 
-                    PAN Correction Department Login
+                    Administrator Login
 
                 </h2>
 
                 <p class="sg-login-subtitle">
 
-                    Access PAN Sudhar Department Dashboard
+                    Sign in to access the Administration Dashboard
 
                 </p>
+                                <!-- =====================================================
+                | LOGIN FORM
+                ===================================================== -->
 
-                <!-- FORM -->
                 <form method="POST"
-                    action="{{ route('login.post') }}">
+                      action="{{ route('login.post') }}">
 
                     @csrf
 
                     <!-- ROLE -->
                     <input type="hidden"
-                        name="role"
-                        value="admin">
+                           name="role"
+                           value="admin">
 
                     <!-- EMAIL -->
                     <div class="sg-input-group">
@@ -219,17 +238,29 @@
                         </span>
 
                         <input type="email"
-                            name="email"
-                            required
-                            class="sg-input-field"
-                            placeholder=" "
-                            autocomplete="username">
+                               name="email"
+                               class="sg-input-field @error('email') is-invalid @enderror"
+                               placeholder=" "
+                               value="{{ old('email') }}"
+                               autocomplete="username"
+                               required
+                               autofocus>
 
                         <label>
 
-                            Department Email Address
+                            Administrator Email Address
 
                         </label>
+
+                        @error('email')
+
+                            <small class="text-danger d-block mt-2">
+
+                                {{ $message }}
+
+                            </small>
+
+                        @enderror
 
                     </div>
 
@@ -243,18 +274,20 @@
                         </span>
 
                         <input type="password"
-                            id="password"
-                            name="password"
-                            required
-                            class="sg-input-field"
-                            placeholder=" "
-                            autocomplete="current-password">
+                               id="password"
+                               name="password"
+                               class="sg-input-field @error('password') is-invalid @enderror"
+                               placeholder=" "
+                               autocomplete="current-password"
+                               required>
 
                         <label>
 
-                            Department Password
+                            Administrator Password
 
                         </label>
+
+                        <!-- PASSWORD TOGGLE -->
 
                         <button type="button"
                                 class="sg-password-toggle">
@@ -263,15 +296,27 @@
 
                         </button>
 
+                        @error('password')
+
+                            <small class="text-danger d-block mt-2">
+
+                                {{ $message }}
+
+                            </small>
+
+                        @enderror
+
                     </div>
 
-                    <!-- OPTIONS -->
+                    <!-- REMEMBER / FORGOT -->
+
                     <div class="sg-login-options">
 
                         <label class="sg-remember">
 
                             <input type="checkbox"
-                                name="remember">
+                                   name="remember"
+                                   {{ old('remember') ? 'checked' : '' }}>
 
                             <span>
 
@@ -281,40 +326,51 @@
 
                         </label>
 
-                        <a href="{{ route('password.request') }}"
-                        class="sg-forgot-link">
+                        @if (Route::has('password.request'))
 
-                            Forgot Password?
+                            <a href="{{ route('password.request') }}"
+                               class="sg-forgot-link">
 
-                        </a>
+                                Forgot Password?
+
+                            </a>
+
+                        @endif
 
                     </div>
 
-                    <!-- BUTTON -->
+                    <!-- LOGIN BUTTON -->
+
                     <button type="submit"
                             class="sg-login-btn">
 
-                        <i class="fa-solid fa-right-to-bracket"></i>
+                        <i class="fa-solid fa-right-to-bracket me-2"></i>
 
-                        Login To Department Panel
+                        Login to Admin Dashboard
 
                     </button>
 
                 </form>
 
-                <!-- FOOTER -->
+                <!-- =====================================================
+                | FOOTER
+                ===================================================== -->
+
                 <div class="sg-login-footer">
 
                     <p>
 
-                        Secure PAN Sudhar Department Portal
+                        <i class="fa-solid fa-shield-halved me-2"></i>
+
+                        Secure Administration Portal
 
                     </p>
 
                     <small>
 
-                        PAN Correction Application Management &
-                        Verification System
+                        Authorized administrators only.
+                        All login activities are monitored for
+                        security and auditing purposes.
 
                     </small>
 
@@ -330,85 +386,253 @@
 
 @endsection
 
-
 @section('scripts')
 
-<!-- PARTICLES -->
+<!-- =========================================================
+| PARTICLES JS
+========================================================= -->
+
 <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+<!-- SWEET ALERT -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 
-/* =========================================================
-| PARTICLES
-========================================================= */
+$(document).ready(function () {
 
-particlesJS("particles-js", {
+    /* =====================================================
+    | PARTICLES
+    ===================================================== */
 
-    particles: {
+    particlesJS("particles-js", {
 
-        number: {
+        particles: {
 
-            value: 45
-        },
+            number: {
+                value: 45
+            },
 
-        size: {
+            color: {
+                value: "#ffffff"
+            },
 
-            value: 3
-        },
+            shape: {
+                type: "circle"
+            },
 
-        move: {
+            opacity: {
+                value: .35
+            },
 
-            speed: 2
-        },
+            size: {
+                value: 3
+            },
 
-        line_linked: {
+            move: {
+                enable: true,
+                speed: 2
+            },
 
-            enable: true
+            line_linked: {
+
+                enable: true,
+
+                color: "#ffffff",
+
+                opacity: .25,
+
+                distance: 150
+
+            }
+
         }
-    }
+
+    });
+
+    /* =====================================================
+    | PASSWORD SHOW/HIDE
+    ===================================================== */
+
+    $(".sg-password-toggle").click(function () {
+
+        let input = $("#password");
+
+        let icon = $(this).find("i");
+
+        if (input.attr("type") === "password") {
+
+            input.attr("type", "text");
+
+            icon.removeClass("fa-eye");
+
+            icon.addClass("fa-eye-slash");
+
+        } else {
+
+            input.attr("type", "password");
+
+            icon.removeClass("fa-eye-slash");
+
+            icon.addClass("fa-eye");
+
+        }
+
+    });
+
+    /* =====================================================
+    | LOGIN BUTTON LOADING
+    ===================================================== */
+
+    $("form").submit(function(e){
+
+        e.preventDefault();
+
+        let form = this;
+
+        Swal.fire({
+
+            title: "Administrator Login",
+
+            text: "Do you want to login to the Admin Dashboard?",
+
+            icon: "question",
+
+            showCancelButton: true,
+
+            confirmButtonText: "Yes, Login",
+
+            cancelButtonText: "Cancel",
+
+            confirmButtonColor: "#0d6efd",
+
+            cancelButtonColor: "#6c757d"
+
+        }).then((result)=>{
+
+            if(result.isConfirmed){
+
+                $(".sg-login-btn")
+                    .prop("disabled", true)
+                    .html('<span class="spinner-border spinner-border-sm me-2"></span>Authenticating...');
+
+                form.submit();
+
+            }
+
+        });
+
+    });
 });
 
-/* =========================================================
-| PASSWORD TOGGLE
-========================================================= */
 
-document
-.querySelector(".sg-password-toggle")
-?.addEventListener("click", function(){
 
-    let input =
-    document.getElementById("password");
+/* =====================================================
+| DARK MODE
+===================================================== */
 
-    const icon =
-    this.querySelector("i");
+function toggleTheme() {
 
-    if(input.type === "password"){
+    document.body.classList.toggle("dark-mode");
 
-        input.type = "text";
+    const icon = document.querySelector(".sg-theme-toggle i");
 
-        icon.classList.remove("fa-eye");
+    if(document.body.classList.contains("dark-mode")){
 
-        icon.classList.add("fa-eye-slash");
+        icon.classList.remove("fa-moon");
+
+        icon.classList.add("fa-sun");
 
     }else{
 
-        input.type = "password";
+        icon.classList.remove("fa-sun");
 
-        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-moon");
 
-        icon.classList.add("fa-eye");
     }
-});
 
-/* =========================================================
-| DARK MODE
-========================================================= */
-
-function toggleTheme(){
-
-    document.body.classList.toggle("dark-mode");
 }
 
 </script>
+
+<!-- =========================================================
+| SWEET ALERT SUCCESS
+========================================================= -->
+
+@if(session('success'))
+
+<script>
+
+Swal.fire({
+
+    icon: 'success',
+
+    title: 'Success',
+
+    text: '{{ session("success") }}',
+
+    confirmButtonColor: '#0d6efd',
+
+    timer: 2500,
+
+    timerProgressBar: true
+
+});
+
+</script>
+
+@endif
+
+<!-- =========================================================
+| SWEET ALERT ERROR
+========================================================= -->
+
+@if(session('error'))
+
+<script>
+
+Swal.fire({
+
+    icon: 'error',
+
+    title: 'Login Failed',
+
+    text: '{{ session("error") }}',
+
+    confirmButtonColor: '#dc3545'
+
+});
+
+</script>
+
+@endif
+
+<!-- =========================================================
+| VALIDATION ERROR
+========================================================= -->
+
+@if($errors->any())
+
+<script>
+
+Swal.fire({
+
+    icon: 'warning',
+
+    title: 'Validation Error',
+
+    html: `
+        @foreach($errors->all() as $error)
+            <div>{{ $error }}</div>
+        @endforeach
+    `,
+
+    confirmButtonColor: '#f39c12'
+
+});
+
+</script>
+
+@endif
 
 @endsection

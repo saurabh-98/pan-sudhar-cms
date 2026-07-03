@@ -1,6 +1,78 @@
-/* =========================================================
-| AUTH WRAPPER
-========================================================= */
+/*=========================================================
+|
+| ADMIN LOGIN CSS
+| Premium UI 2026
+|
+=========================================================*/
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+/*=========================================================
+| ROOT
+=========================================================*/
+
+:root{
+
+    --primary:#2563eb;
+    --primary-dark:#1d4ed8;
+    --secondary:#0ea5e9;
+    --success:#10b981;
+    --danger:#ef4444;
+    --warning:#f59e0b;
+
+    --white:#ffffff;
+
+    --dark:#0f172a;
+    --dark-2:#1e293b;
+
+    --text:#334155;
+    --text-light:#64748b;
+
+    --border:#e2e8f0;
+
+    --shadow-lg:0 25px 60px rgba(0,0,0,.15);
+    --shadow-md:0 10px 35px rgba(0,0,0,.10);
+    --shadow-sm:0 5px 20px rgba(0,0,0,.08);
+
+    --radius:20px;
+
+    --transition:.35s ease;
+
+}
+
+/*=========================================================
+| RESET
+=========================================================*/
+
+*{
+
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+
+}
+
+html{
+
+    scroll-behavior:smooth;
+
+}
+
+body{
+
+    font-family:'Poppins',sans-serif;
+
+    overflow-x:hidden;
+
+    background:#f5f7fb;
+
+    color:var(--text);
+
+}
+
+/*=========================================================
+| WRAPPER
+=========================================================*/
 
 .sg-auth-wrapper{
 
@@ -8,28 +80,26 @@
 
     min-height:100vh;
 
-    overflow:hidden;
-
     display:flex;
 
     align-items:center;
 
     justify-content:center;
 
-    padding:40px 20px;
+    overflow:hidden;
 
     background:
-        linear-gradient(
-            135deg,
-            #020617 0%,
-            #081226 40%,
-            #0f172a 100%
-        );
+    linear-gradient(135deg,
+    #0f172a,
+    #1e3a8a,
+    #2563eb,
+    #0ea5e9);
+
 }
 
-/* =========================================================
+/*=========================================================
 | PARTICLES
-========================================================= */
+=========================================================*/
 
 #particles-js{
 
@@ -38,11 +108,12 @@
     inset:0;
 
     z-index:1;
+
 }
 
-/* =========================================================
-| GLOW EFFECT
-========================================================= */
+/*=========================================================
+| GLOW
+=========================================================*/
 
 .sg-auth-glow{
 
@@ -50,100 +121,65 @@
 
     border-radius:50%;
 
-    filter:blur(60px);
+    filter:blur(120px);
 
-    opacity:.16;
+    animation:floatGlow 12s infinite ease-in-out;
 
-    z-index:1;
 }
 
 .sg-auth-glow-1{
 
-    width:340px;
-    height:340px;
+    width:450px;
+    height:450px;
 
-    top:-100px;
-    left:-100px;
+    background:#2563eb;
 
-    background:
-        radial-gradient(
-            #2563eb,
-            transparent
-        );
+    top:-120px;
+    left:-120px;
+
+    opacity:.40;
+
 }
 
 .sg-auth-glow-2{
 
-    width:320px;
-    height:320px;
+    width:420px;
+    height:420px;
 
-    bottom:-120px;
-    right:-120px;
+    background:#06b6d4;
 
-    background:
-        radial-gradient(
-            #06b6d4,
-            transparent
-        );
+    bottom:-100px;
+    right:-100px;
+
+    opacity:.35;
+
 }
 
-/* =========================================================
-| THEME TOGGLE
-========================================================= */
+@keyframes floatGlow{
 
-.sg-theme-toggle{
+    0%{
 
-    position:absolute;
+        transform:translateY(0) scale(1);
 
-    top:30px;
-    right:30px;
+    }
 
-    width:52px;
-    height:52px;
+    50%{
 
-    border:none;
+        transform:translateY(-40px) scale(1.08);
 
-    outline:none;
+    }
 
-    border-radius:50%;
+    100%{
 
-    cursor:pointer;
+        transform:translateY(0);
 
-    z-index:10;
+    }
 
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    background:
-        rgba(255,255,255,.10);
-
-    border:
-        1px solid rgba(255,255,255,.10);
-
-    backdrop-filter:blur(12px);
-
-    color:#fff;
-
-    font-size:18px;
-
-    transition:.35s ease;
 }
 
-.sg-theme-toggle:hover{
-
-    transform:
-        rotate(180deg)
-        scale(1.06);
-
-    background:#2563eb;
-}
-
-/* =========================================================
+/*=========================================================
 | CONTAINER
-========================================================= */
+=========================================================*/
 
 .sg-auth-container{
 
@@ -151,78 +187,61 @@
 
     z-index:5;
 
-    width:100%;
+    width:95%;
 
-    max-width:1320px;
-
-    display:grid;
-
-    grid-template-columns:
-        1.1fr
-        .9fr;
-
-    border-radius:36px;
-
-    overflow:hidden;
-
-    background:
-        rgba(255,255,255,.06);
-
-    border:
-        1px solid rgba(255,255,255,.08);
-
-    backdrop-filter:blur(16px);
-
-    box-shadow:
-        0 30px 80px rgba(0,0,0,.35);
-}
-
-/* =========================================================
-| LEFT SIDE
-========================================================= */
-
-.sg-auth-left{
-
-    position:relative;
+    max-width:1450px;
 
     min-height:760px;
 
+    display:flex;
+
+    border-radius:30px;
+
     overflow:hidden;
 
-    background:
-        linear-gradient(
-            rgba(2,6,23,.76),
-            rgba(37,99,235,.70)
-        ),
-        url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1400&auto=format&fit=crop')
-        center/cover no-repeat;
+    background:rgba(255,255,255,.08);
+
+    backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,.12);
+
+    box-shadow:0 35px 70px rgba(0,0,0,.30);
+
 }
 
-/* =========================================================
-| OVERLAY
-========================================================= */
+/*=========================================================
+| LEFT
+=========================================================*/
+
+.sg-auth-left{
+
+    width:55%;
+
+    position:relative;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:70px;
+
+    color:#fff;
+
+}
 
 .sg-auth-overlay{
 
     position:relative;
 
-    z-index:5;
+    z-index:2;
 
-    width:100%;
-    height:100%;
-
-    padding:90px 70px;
-
-    display:flex;
-
-    flex-direction:column;
-
-    justify-content:center;
 }
 
-/* =========================================================
+/*=========================================================
 | BADGE
-========================================================= */
+=========================================================*/
 
 .sg-auth-badge{
 
@@ -232,133 +251,180 @@
 
     gap:10px;
 
-    width:max-content;
-
     padding:12px 22px;
 
     border-radius:50px;
 
-    background:
-        rgba(255,255,255,.10);
+    background:rgba(255,255,255,.15);
 
-    border:
-        1px solid rgba(255,255,255,.10);
+    backdrop-filter:blur(15px);
 
-    color:#fff;
+    margin-bottom:35px;
 
-    font-size:13px;
+    font-weight:600;
 
-    font-weight:700;
+    letter-spacing:.5px;
+
+    border:1px solid rgba(255,255,255,.20);
+
+    transition:var(--transition);
+
+}
+
+.sg-auth-badge:hover{
+
+    transform:translateY(-3px);
+
+    background:rgba(255,255,255,.25);
+
+}
+
+/*=========================================================
+| TITLE
+=========================================================*/
+
+.sg-auth-left h1{
+
+    font-size:58px;
+
+    line-height:1.2;
+
+    font-weight:800;
 
     margin-bottom:30px;
+
 }
 
-/* =========================================================
-| TITLE
-========================================================= */
+.sg-auth-left h1 span{
 
-.sg-auth-overlay h1{
+    display:block;
 
-    font-size:72px;
+    color:#facc15;
 
-    line-height:1.05;
-
-    font-weight:900;
-
-    color:#fff;
-
-    margin-bottom:26px;
 }
 
-.sg-auth-overlay h1 span{
-
-    background:
-        linear-gradient(
-            135deg,
-            #60a5fa,
-            #38bdf8,
-            #ffffff
-        );
-
-    -webkit-background-clip:text;
-
-    -webkit-text-fill-color:transparent;
-}
-
-/* =========================================================
-| DESCRIPTION
-========================================================= */
-
-.sg-auth-overlay p{
-
-    max-width:620px;
+.sg-auth-left p{
 
     font-size:18px;
 
     line-height:1.9;
 
-    color:
-        rgba(255,255,255,.82);
+    max-width:650px;
 
-    margin-bottom:50px;
+    opacity:.95;
+
 }
 
-/* =========================================================
+/*=========================================================
+|
+| LEFT PANEL
+|
+=========================================================*/
+
+/*==========================
 | STATS
-========================================================= */
+==========================*/
 
 .sg-auth-stats{
 
     display:flex;
 
-    align-items:center;
+    gap:22px;
 
-    gap:26px;
+    margin-top:50px;
+
+    margin-bottom:45px;
 
     flex-wrap:wrap;
+
 }
 
 .sg-auth-stat{
 
-    min-width:140px;
+    flex:1;
 
-    padding:24px;
+    min-width:150px;
 
-    border-radius:24px;
+    padding:28px 24px;
 
-    background:
-        rgba(255,255,255,.08);
+    border-radius:22px;
 
-    border:
-        1px solid rgba(255,255,255,.10);
+    background:rgba(255,255,255,.12);
 
-    backdrop-filter:blur(10px);
+    backdrop-filter:blur(20px);
+
+    border:1px solid rgba(255,255,255,.15);
+
+    text-align:center;
+
+    transition:.35s;
+
+    cursor:pointer;
+
+}
+
+.sg-auth-stat:hover{
+
+    transform:translateY(-8px);
+
+    background:rgba(255,255,255,.18);
+
+    box-shadow:0 20px 40px rgba(0,0,0,.25);
+
 }
 
 .sg-auth-stat h3{
 
-    margin:0 0 10px;
+    font-size:34px;
 
-    font-size:36px;
-
-    font-weight:900;
+    font-weight:700;
 
     color:#fff;
+
+    margin-bottom:8px;
+
 }
 
 .sg-auth-stat span{
 
-    color:
-        rgba(255,255,255,.72);
+    font-size:15px;
 
-    font-size:14px;
+    color:rgba(255,255,255,.85);
+
 }
 
-/* =========================================================
-| RIGHT SIDE
-========================================================= */
 
-.sg-auth-right{
+/*==========================
+| FEATURES
+==========================*/
+
+.sg-auth-overlay .d-flex{
+
+    padding:16px 22px;
+
+    border-radius:14px;
+
+    transition:.35s;
+
+    background:rgba(255,255,255,.05);
+
+    margin-bottom:14px;
+
+}
+
+.sg-auth-overlay .d-flex:hover{
+
+    transform:translateX(8px);
+
+    background:rgba(255,255,255,.12);
+
+}
+
+.sg-auth-overlay .d-flex i{
+
+    width:42px;
+
+    height:42px;
 
     display:flex;
 
@@ -366,32 +432,148 @@
 
     justify-content:center;
 
-    padding:60px;
+    border-radius:50%;
+
+    background:#22c55e;
+
+    color:#fff;
+
+    margin-right:15px;
+
+    flex-shrink:0;
+
+    font-size:16px;
+
 }
 
-/* =========================================================
+.sg-auth-overlay .d-flex span{
+
+    color:#fff;
+
+    font-size:15px;
+
+    font-weight:500;
+
+}
+
+
+/*=========================================================
+|
+| RIGHT PANEL
+|
+=========================================================*/
+
+.sg-auth-right{
+
+    width:45%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:50px;
+
+}
+
+
+/*=========================================================
+|
 | LOGIN CARD
-========================================================= */
+|
+=========================================================*/
 
 .sg-login-card{
 
     width:100%;
 
-    max-width:460px;
+    max-width:500px;
+
+    background:#fff;
+
+    border-radius:28px;
+
+    padding:55px 45px;
+
+    position:relative;
+
+    overflow:hidden;
+
+    box-shadow:0 35px 70px rgba(15,23,42,.18);
+
+    animation:cardEntry .8s ease;
+
 }
 
-/* =========================================================
+@keyframes cardEntry{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(40px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/*=========================================================
+|
+| TOP BORDER
+|
+=========================================================*/
+
+.sg-login-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    top:0;
+
+    width:100%;
+
+    height:6px;
+
+    background:linear-gradient(
+    90deg,
+    #2563eb,
+    #3b82f6,
+    #06b6d4,
+    #10b981);
+
+}
+
+
+/*=========================================================
+|
 | LOGO
-========================================================= */
+|
+=========================================================*/
 
 .sg-login-logo{
 
-    width:90px;
-    height:90px;
+    width:110px;
 
-    margin:0 auto 26px;
+    height:110px;
 
-    border-radius:28px;
+    margin:auto;
+
+    margin-bottom:30px;
+
+    border-radius:50%;
 
     display:flex;
 
@@ -399,165 +581,337 @@
 
     justify-content:center;
 
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #38bdf8
-        );
+    background:linear-gradient(
+    135deg,
+    #2563eb,
+    #0ea5e9);
 
     color:#fff;
 
     font-size:42px;
 
-    box-shadow:
-        0 20px 45px rgba(37,99,235,.30);
+    box-shadow:0 18px 45px rgba(37,99,235,.35);
+
+    animation:logoFloat 4s infinite;
+
 }
 
-/* =========================================================
-| TITLE
-========================================================= */
+@keyframes logoFloat{
+
+    0%{
+
+        transform:translateY(0);
+
+    }
+
+    50%{
+
+        transform:translateY(-10px);
+
+    }
+
+    100%{
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/*=========================================================
+|
+| TITLES
+|
+=========================================================*/
 
 .sg-login-title{
 
     text-align:center;
 
-    font-size:42px;
+    font-size:34px;
 
-    font-weight:900;
+    font-weight:700;
 
-    color:#fff;
+    color:#0f172a;
 
-    margin-bottom:14px;
+    margin-bottom:12px;
+
 }
 
 .sg-login-subtitle{
 
     text-align:center;
 
-    color:
-        rgba(255,255,255,.70);
-
-    font-size:16px;
+    color:#64748b;
 
     margin-bottom:40px;
+
+    font-size:15px;
+
+    line-height:1.8;
+
 }
 
-/* =========================================================
+
+/*=========================================================
+|
+| DECORATIVE CIRCLES
+|
+=========================================================*/
+
+.sg-login-card::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:220px;
+
+    height:220px;
+
+    border-radius:50%;
+
+    background:rgba(37,99,235,.05);
+
+    right:-80px;
+
+    top:-80px;
+
+}
+
+.sg-login-card .circle{
+
+    position:absolute;
+
+    width:90px;
+
+    height:90px;
+
+    border-radius:50%;
+
+    background:rgba(14,165,233,.08);
+
+    bottom:-30px;
+
+    left:-20px;
+
+}
+
+
+/*=========================================================
+|
+| ANIMATION
+|
+=========================================================*/
+
+.sg-login-card:hover{
+
+    transform:translateY(-5px);
+
+    transition:.35s;
+
+    box-shadow:0 40px 90px rgba(15,23,42,.25);
+
+}
+
+
+/*=========================================================
+|
+| ICON ANIMATION
+|
+=========================================================*/
+
+.sg-login-logo i{
+
+    animation:shieldRotate 6s linear infinite;
+
+}
+
+@keyframes shieldRotate{
+
+    0%{
+
+        transform:rotate(0deg);
+
+    }
+
+    100%{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+
+/*=========================================================
+|
+| SELECTION
+|
+=========================================================*/
+
+::selection{
+
+    background:#2563eb;
+
+    color:#fff;
+
+}
+
+
+/*=========================================================
+|
+| SCROLLBAR
+|
+=========================================================*/
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#f1f5f9;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#2563eb;
+
+    border-radius:50px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:#1d4ed8;
+
+}
+
+/*=========================================================
+|
 | INPUT GROUP
-========================================================= */
+|
+=========================================================*/
 
 .sg-input-group{
 
     position:relative;
 
     margin-bottom:28px;
-}
 
-/* =========================================================
-| INPUT
-========================================================= */
+}
 
 .sg-input-field{
 
     width:100%;
 
-    height:68px;
+    height:60px;
 
-    border:none;
+    border:2px solid #e2e8f0;
+
+    border-radius:16px;
 
     outline:none;
 
-    border-radius:22px;
-
-    padding:
-        0 60px
-        0 60px;
-
-    background:
-        rgba(255,255,255,.08);
-
-    border:
-        1px solid rgba(255,255,255,.08);
-
-    color:#fff;
+    padding:0 55px 0 55px;
 
     font-size:15px;
 
-    transition:.35s ease;
+    background:#fff;
+
+    transition:.35s;
+
+    color:#0f172a;
+
 }
 
 .sg-input-field:focus{
 
     border-color:#2563eb;
 
-    box-shadow:
-        0 0 0 4px rgba(37,99,235,.16);
+    box-shadow:0 0 0 5px rgba(37,99,235,.10);
+
 }
 
-/* =========================================================
-| LABEL
-========================================================= */
+.sg-input-field::placeholder{
+
+    color:transparent;
+
+}
 
 .sg-input-group label{
 
     position:absolute;
 
-    top:50%;
-    left:60px;
+    top:18px;
 
-    transform:translateY(-50%);
+    left:55px;
 
-    color:
-        rgba(255,255,255,.58);
+    background:#fff;
+
+    padding:0 6px;
+
+    color:#64748b;
 
     pointer-events:none;
 
-    transition:.3s ease;
+    transition:.3s;
+
 }
 
-.sg-input-field:focus + label,
-.sg-input-field:not(:placeholder-shown) + label{
+.sg-input-field:focus+label,
+.sg-input-field:not(:placeholder-shown)+label{
 
-    top:12px;
-
-    left:22px;
+    top:-10px;
 
     font-size:12px;
 
-    color:#60a5fa;
-}
+    color:#2563eb;
 
-/* =========================================================
-| ICON
-========================================================= */
+    font-weight:600;
+
+}
 
 .sg-input-icon{
 
     position:absolute;
 
+    left:18px;
+
     top:50%;
-    left:22px;
 
     transform:translateY(-50%);
 
-    color:#60a5fa;
+    color:#64748b;
 
     font-size:18px;
 
     z-index:5;
+
 }
 
-/* =========================================================
+.sg-input-group:focus-within .sg-input-icon{
+
+    color:#2563eb;
+
+}
+
+/*=========================================================
 | PASSWORD TOGGLE
-========================================================= */
+=========================================================*/
 
 .sg-password-toggle{
 
     position:absolute;
 
+    right:18px;
+
     top:50%;
-    right:20px;
 
     transform:translateY(-50%);
 
@@ -565,35 +919,39 @@
 
     background:none;
 
-    color:#94a3b8;
-
     cursor:pointer;
 
-    font-size:18px;
+    color:#64748b;
+
+    transition:.3s;
+
 }
 
-/* =========================================================
-| OPTIONS
-========================================================= */
+.sg-password-toggle:hover{
+
+    color:#2563eb;
+
+}
+
+/*=========================================================
+| LOGIN OPTIONS
+=========================================================*/
 
 .sg-login-options{
 
     display:flex;
 
-    align-items:center;
-
     justify-content:space-between;
 
-    gap:20px;
+    align-items:center;
 
-    margin-bottom:34px;
+    margin-bottom:28px;
 
     flex-wrap:wrap;
-}
 
-/* =========================================================
-| REMEMBER
-========================================================= */
+    gap:10px;
+
+}
 
 .sg-remember{
 
@@ -601,271 +959,389 @@
 
     align-items:center;
 
-    gap:10px;
+    gap:8px;
 
-    color:
-        rgba(255,255,255,.74);
+    cursor:pointer;
 
     font-size:14px;
+
+    color:#475569;
+
 }
 
 .sg-remember input{
 
-    accent-color:#2563eb;
-}
+    width:16px;
 
-/* =========================================================
-| FORGOT
-========================================================= */
+    height:16px;
+
+}
 
 .sg-forgot-link{
 
-    color:#60a5fa;
+    color:#2563eb;
 
     text-decoration:none;
 
     font-size:14px;
 
     font-weight:600;
+
+    transition:.3s;
+
 }
 
 .sg-forgot-link:hover{
 
-    color:#fff;
+    color:#1d4ed8;
+
+    text-decoration:underline;
+
 }
 
-/* =========================================================
-| BUTTON
-========================================================= */
+/*=========================================================
+| LOGIN BUTTON
+=========================================================*/
 
 .sg-login-btn{
 
     width:100%;
 
-    height:64px;
+    height:60px;
 
     border:none;
 
-    outline:none;
+    border-radius:16px;
 
-    cursor:pointer;
-
-    border-radius:22px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    gap:12px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #38bdf8
-        );
+    background:linear-gradient(135deg,#2563eb,#0ea5e9);
 
     color:#fff;
 
     font-size:16px;
 
-    font-weight:800;
+    font-weight:600;
 
-    transition:.35s ease;
+    cursor:pointer;
 
-    box-shadow:
-        0 18px 40px rgba(37,99,235,.30);
+    transition:.35s;
+
+    position:relative;
+
+    overflow:hidden;
+
+    box-shadow:0 15px 30px rgba(37,99,235,.25);
+
 }
 
 .sg-login-btn:hover{
 
-    transform:
-        translateY(-4px);
+    transform:translateY(-3px);
 
-    box-shadow:
-        0 28px 60px rgba(37,99,235,.40);
+    box-shadow:0 20px 35px rgba(37,99,235,.35);
+
 }
 
-/* =========================================================
+.sg-login-btn:active{
+
+    transform:scale(.98);
+
+}
+
+.sg-login-btn::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:0;
+
+    height:100%;
+
+    left:50%;
+
+    top:0;
+
+    background:rgba(255,255,255,.2);
+
+    transition:.5s;
+
+}
+
+.sg-login-btn:hover::before{
+
+    width:300%;
+
+    left:-100%;
+
+}
+
+/*=========================================================
 | FOOTER
-========================================================= */
+=========================================================*/
 
 .sg-login-footer{
 
-    margin-top:28px;
-
     text-align:center;
+
+    margin-top:35px;
+
+    border-top:1px solid #e2e8f0;
+
+    padding-top:25px;
+
 }
 
 .sg-login-footer p{
 
-    color:
-        rgba(255,255,255,.55);
+    font-weight:600;
 
-    font-size:13px;
+    color:#0f172a;
+
+    margin-bottom:8px;
+
 }
 
-/* =========================================================
+.sg-login-footer small{
+
+    color:#64748b;
+
+    line-height:1.7;
+
+    display:block;
+
+}
+
+/*=========================================================
+| THEME TOGGLE
+=========================================================*/
+
+.sg-theme-toggle{
+
+    position:fixed;
+
+    right:25px;
+
+    top:25px;
+
+    width:55px;
+
+    height:55px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#fff;
+
+    color:#2563eb;
+
+    cursor:pointer;
+
+    box-shadow:0 15px 35px rgba(0,0,0,.15);
+
+    z-index:999;
+
+    transition:.35s;
+
+}
+
+.sg-theme-toggle:hover{
+
+    transform:rotate(180deg);
+
+}
+
+/*=========================================================
 | DARK MODE
-========================================================= */
+=========================================================*/
 
 body.dark-mode{
 
-    filter:
-        hue-rotate(180deg)
-        invert(.92);
+    background:#020617;
+
 }
 
-/* =========================================================
+body.dark-mode .sg-login-card{
+
+    background:#1e293b;
+
+}
+
+body.dark-mode .sg-login-title{
+
+    color:#fff;
+
+}
+
+body.dark-mode .sg-login-subtitle{
+
+    color:#cbd5e1;
+
+}
+
+body.dark-mode .sg-input-field{
+
+    background:#0f172a;
+
+    border-color:#334155;
+
+    color:#fff;
+
+}
+
+body.dark-mode .sg-input-group label{
+
+    background:#0f172a;
+
+    color:#cbd5e1;
+
+}
+
+body.dark-mode .sg-login-footer{
+
+    border-color:#334155;
+
+}
+
+body.dark-mode .sg-login-footer p{
+
+    color:#fff;
+
+}
+
+body.dark-mode .sg-login-footer small{
+
+    color:#cbd5e1;
+
+}
+
+body.dark-mode .sg-forgot-link{
+
+    color:#60a5fa;
+
+}
+
+/*=========================================================
 | RESPONSIVE
-========================================================= */
+=========================================================*/
 
 @media(max-width:1200px){
 
-    .sg-auth-overlay h1{
+    .sg-auth-left{
 
-        font-size:56px;
+        padding:50px;
+
     }
+
+    .sg-auth-left h1{
+
+        font-size:46px;
+
+    }
+
 }
 
-@media(max-width:991px){
+@media(max-width:992px){
 
     .sg-auth-container{
 
-        grid-template-columns:1fr;
+        flex-direction:column;
+
+    }
+
+    .sg-auth-left,
+    .sg-auth-right{
+
+        width:100%;
+
     }
 
     .sg-auth-left{
 
-        min-height:500px;
+        padding:50px 35px;
+
+        text-align:center;
+
     }
 
-    .sg-auth-overlay{
+    .sg-auth-stats{
 
-        padding:70px 40px;
+        justify-content:center;
+
     }
 
-    .sg-auth-overlay h1{
-
-        font-size:48px;
-    }
-
-    .sg-auth-right{
-
-        padding:50px 30px;
-    }
 }
 
 @media(max-width:768px){
 
-    .sg-auth-wrapper{
-
-        padding:20px;
-    }
-
-    .sg-auth-overlay{
-
-        padding:60px 28px;
-    }
-
-    .sg-auth-overlay h1{
-
-        font-size:38px;
-    }
-
-    .sg-auth-overlay p{
-
-        font-size:15px;
-    }
-
-    .sg-auth-stats{
-
-        gap:14px;
-    }
-
-    .sg-auth-stat{
-
-        min-width:120px;
-
-        padding:18px;
-    }
-
-    .sg-login-title{
-
-        font-size:34px;
-    }
-
-    .sg-auth-right{
-
-        padding:40px 24px;
-    }
-}
-
-@media(max-width:576px){
-
-    .sg-auth-wrapper{
-
-        padding:14px;
-    }
-
     .sg-auth-container{
 
-        border-radius:26px;
+        width:96%;
+
+        margin:25px 0;
+
+    }
+
+    .sg-login-card{
+
+        padding:35px 25px;
+
     }
 
     .sg-auth-left{
 
-        min-height:420px;
+        padding:40px 25px;
+
     }
 
-    .sg-auth-overlay{
+    .sg-auth-left h1{
 
-        padding:50px 22px;
+        font-size:34px;
+
     }
 
-    .sg-auth-overlay h1{
+    .sg-auth-left p{
 
-        font-size:30px;
-    }
+        font-size:15px;
 
-    .sg-auth-overlay p{
-
-        font-size:14px;
-
-        line-height:1.8;
-    }
-
-    .sg-auth-stats{
-
-        flex-direction:column;
-
-        align-items:flex-start;
     }
 
     .sg-auth-stat{
 
+        min-width:130px;
+
+    }
+
+}
+
+@media(max-width:576px){
+
+    .sg-auth-left{
+
+        display:none;
+
+    }
+
+    .sg-auth-right{
+
         width:100%;
+
+        padding:20px;
+
+    }
+
+    .sg-login-card{
+
+        padding:30px 20px;
+
+        border-radius:20px;
+
     }
 
     .sg-login-title{
 
         font-size:28px;
-    }
 
-    .sg-input-field{
-
-        height:60px;
-
-        border-radius:18px;
-    }
-
-    .sg-login-btn{
-
-        height:58px;
-
-        border-radius:18px;
     }
 
     .sg-login-options{
@@ -873,14 +1349,75 @@ body.dark-mode{
         flex-direction:column;
 
         align-items:flex-start;
+
     }
 
     .sg-theme-toggle{
 
-        width:46px;
-        height:46px;
+        width:48px;
 
-        top:18px;
-        right:18px;
+        height:48px;
+
+        right:15px;
+
+        top:15px;
+
     }
+
+}
+
+/*=========================================================
+| ANIMATIONS
+=========================================================*/
+
+.fade-up{
+
+    animation:fadeUp .8s ease;
+
+}
+
+@keyframes fadeUp{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(40px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+.zoom-in{
+
+    animation:zoomIn .6s ease;
+
+}
+
+@keyframes zoomIn{
+
+    from{
+
+        transform:scale(.9);
+
+        opacity:0;
+
+    }
+
+    to{
+
+        transform:scale(1);
+
+        opacity:1;
+
+    }
+
 }

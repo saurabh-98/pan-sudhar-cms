@@ -3,153 +3,455 @@
 @section('content')
 
 <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
 <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
-<div class="parent-login-wrapper">
+<div class="retailer-login-page">
 
-    <div class="bg-shape shape-1"></div>
-    <div class="bg-shape shape-2"></div>
+    <!--======================================================
+    BACKGROUND
+    =======================================================-->
 
-    <div class="login-card-modern">
+    <div id="particles-js"></div>
 
-        {{-- LOGIN HEADER --}}
-        <div class="login-header">
+    <div class="bg-circle circle-1"></div>
+    <div class="bg-circle circle-2"></div>
+    <div class="bg-circle circle-3"></div>
 
-            <div class="login-logo">
-                🏪
+    <div class="login-container">
+
+        <!--==================================================
+        LEFT PANEL
+        ===================================================-->
+
+        <div class="login-left">
+
+            <div class="left-content">
+
+                <span class="portal-badge">
+
+                    <i class="fa-solid fa-store"></i>
+
+                    Retailer Portal
+
+                </span>
+
+                <h1>
+
+                    Welcome Back,
+
+                    <span>Retailer</span>
+
+                </h1>
+
+                <p>
+
+                    Access your retailer dashboard securely to manage
+                    PAN Services, Aadhaar Services, Wallet Recharge,
+                    Commission Reports, Transactions and Customer
+                    Applications anytime from anywhere.
+
+                </p>
+
+                <!--==========================
+                STATS
+                ==========================-->
+
+                <div class="stats-wrapper">
+
+                    <div class="stat-card">
+
+                        <i class="fa-solid fa-users"></i>
+
+                        <h3>15K+</h3>
+
+                        <span>Retailers</span>
+
+                    </div>
+
+                    <div class="stat-card">
+
+                        <i class="fa-solid fa-wallet"></i>
+
+                        <h3>₹5Cr+</h3>
+
+                        <span>Transactions</span>
+
+                    </div>
+
+                    <div class="stat-card">
+
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                        <h3>99.99%</h3>
+
+                        <span>Secure</span>
+
+                    </div>
+
+                </div>
+
+                <!--==========================
+                FEATURES
+                ==========================-->
+
+                <div class="feature-list">
+
+                    <div class="feature-item">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                        <span>
+
+                            Instant Wallet Recharge
+
+                        </span>
+
+                    </div>
+
+                    <div class="feature-item">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                        <span>
+
+                            PAN & Aadhaar Services
+
+                        </span>
+
+                    </div>
+
+                    <div class="feature-item">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                        <span>
+
+                            Live Application Tracking
+
+                        </span>
+
+                    </div>
+
+                    <div class="feature-item">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                        <span>
+
+                            Daily Commission Reports
+
+                        </span>
+
+                    </div>
+
+                    <div class="feature-item">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                        <span>
+
+                            24×7 Retailer Dashboard
+
+                        </span>
+
+                    </div>
+
+                </div>
+
             </div>
-
-            <h1>Retailer Portal</h1>
-
-            <p>
-                Access your retailer dashboard securely
-            </p>
 
         </div>
 
-        {{-- LOGIN FORM --}}
-        <form id="retailerLoginForm">
+        <!--==================================================
+        RIGHT PANEL
+        ===================================================-->
 
-            @csrf
+        <div class="login-right">
 
-            <div class="form-group-modern">
+            <div class="login-card">
 
-                <label>
-                    Retailer Email / Mobile Number
-                </label>
+                <!--==========================
+                LOGO
+                ==========================-->
 
-                <div class="input-box">
+                <div class="login-logo">
 
-                    <i class="fa-solid fa-user"></i>
+                    <div class="logo-circle">
 
-                    <input
-                        type="text"
-                        id="email"
-                        name="email"
-                        autocomplete="username"
-                        placeholder="Enter Email or Mobile Number"
-                        required
-                    >
+                        <i class="fa-solid fa-store"></i>
+
+                    </div>
 
                 </div>
 
-                <span class="text-danger error-email"></span>
+                <h2>
 
-            </div>
+                    Retailer Login
 
-            <div class="form-group-modern">
+                </h2>
 
-                <label>
-                    Password
-                </label>
+                <p class="login-subtitle">
 
-                <div class="input-box">
+                    Sign in to access your Retailer Dashboard
 
-                    <i class="fa-solid fa-lock"></i>
+                </p>
 
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        autocomplete="current-password"
-                        placeholder="Enter Password"
-                        required
-                    >
+                                <!--=========================================
+                LOGIN FORM
+                ==========================================-->
 
-                    <span class="toggle-password">
+                <form id="retailerLoginForm">
 
-                        <i class="fa-solid fa-eye"></i>
+                    @csrf
 
-                    </span>
+                    <!--=========================
+                    EMAIL / MOBILE
+                    =========================-->
+
+                    <div class="form-group-modern">
+
+                        <div class="input-box">
+
+                            <span class="input-icon">
+
+                                <i class="fa-solid fa-user"></i>
+
+                            </span>
+
+                            <input
+                                type="text"
+                                id="email"
+                                name="email"
+                                placeholder=" "
+                                autocomplete="username"
+                                required
+                            >
+
+                            <label>
+
+                                Email Address / Mobile Number
+
+                            </label>
+
+                        </div>
+
+                        <small class="text-danger error-email"></small>
+
+                    </div>
+
+                    <!--=========================
+                    PASSWORD
+                    =========================-->
+
+                    <div class="form-group-modern">
+
+                        <div class="input-box">
+
+                            <span class="input-icon">
+
+                                <i class="fa-solid fa-lock"></i>
+
+                            </span>
+
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder=" "
+                                autocomplete="current-password"
+                                required
+                            >
+
+                            <label>
+
+                                Password
+
+                            </label>
+
+                            <button
+                                type="button"
+                                class="toggle-password">
+
+                                <i class="fa-solid fa-eye"></i>
+
+                            </button>
+
+                        </div>
+
+                        <small class="text-danger error-password"></small>
+
+                    </div>
+
+                    <!--=========================
+                    OPTIONS
+                    =========================-->
+
+                    <div class="login-options">
+
+                        <label class="remember-box">
+
+                            <input
+                                type="checkbox"
+                                id="remember"
+                                name="remember"
+                            >
+
+                            <span>
+
+                                Remember Me
+
+                            </span>
+
+                        </label>
+
+                        @if(Route::has('password.request'))
+
+                            <a
+                                href="{{ route('password.request') }}"
+                                class="forgot-link">
+
+                                Forgot Password?
+
+                            </a>
+
+                        @endif
+
+                    </div>
+
+                    <!--=========================
+                    GOOGLE CAPTCHA
+                    =========================-->
+
+                    <div class="captcha-area">
+
+                        <label>
+
+                            Security Verification
+
+                            <span class="text-danger">*</span>
+
+                        </label>
+
+                        <div
+                            class="g-recaptcha"
+                            data-sitekey="{{ config('services.recaptcha.site_key') }}">
+                        </div>
+
+                        <small class="text-danger error-captcha"></small>
+
+                    </div>
+
+                    <!--=========================
+                    LOGIN BUTTON
+                    =========================-->
+
+                    <button
+                        type="submit"
+                        class="btn-login"
+                        id="loginBtn">
+
+                        <span class="btn-text">
+
+                            <i class="fa-solid fa-right-to-bracket me-2"></i>
+
+                            Login To Dashboard
+
+                        </span>
+
+                    </button>
+
+                </form>
+
+                <!--=========================================
+                QUICK FEATURES
+                ==========================================-->
+
+                <div class="quick-info">
+
+                    <div class="quick-item">
+
+                        <i class="fa-solid fa-wallet"></i>
+
+                        <span>
+
+                            Wallet
+
+                        </span>
+
+                    </div>
+
+                    <div class="quick-item">
+
+                        <i class="fa-solid fa-id-card"></i>
+
+                        <span>
+
+                            PAN
+
+                        </span>
+
+                    </div>
+
+                    <div class="quick-item">
+
+                        <i class="fa-solid fa-address-card"></i>
+
+                        <span>
+
+                            Aadhaar
+
+                        </span>
+
+                    </div>
+
+                    <div class="quick-item">
+
+                        <i class="fa-solid fa-chart-line"></i>
+
+                        <span>
+
+                            Reports
+
+                        </span>
+
+                    </div>
 
                 </div>
 
-                <span class="text-danger error-password"></span>
+                <!--=========================================
+                FOOTER
+                ==========================================-->
 
-            </div>
+                <div class="login-footer">
 
-            <div class="remember-row">
+                    <div class="footer-security">
 
-                <div class="form-check">
+                        <i class="fa-solid fa-shield-halved"></i>
 
-                    <input
-                        type="checkbox"
-                        class="form-check-input"
-                        id="remember"
-                        name="remember"
-                    >
+                        SSL Secured Login
 
-                    <label
-                        class="form-check-label"
-                        for="remember"
-                    >
-                        Remember Me
-                    </label>
+                    </div>
+
+                    <p>
+
+                        © {{ date('Y') }}
+
+                        PAN & Aadhaar Suvidha Portal
+
+                    </p>
+
+                    <small>
+
+                        Secure • Reliable • Fast
+
+                    </small>
 
                 </div>
 
-
             </div>
-
-            <div class="form-group-modern">
-
-                <label>
-
-                    Verify You Are Human
-
-                    <span class="text-danger">*</span>
-
-                </label>
-
-                <div class="g-recaptcha"
-                    data-sitekey="{{ config('services.recaptcha.site_key') }}">
-                </div>
-
-                <span class="text-danger error-captcha"></span>
-
-            </div>
-
-            <button
-                type="submit"
-                class="btn-login-parent"
-                id="loginBtn"
-            >
-
-                <i class="fa-solid fa-right-to-bracket me-2"></i>
-
-                Login To Dashboard
-
-            </button>
-
-        </form>
-
-        <div class="login-footer">
-
-            © {{ date('Y') }}
-            PAN & Aadhaar Suvidha Portal
 
         </div>
 
@@ -161,136 +463,245 @@
 
 @section('scripts')
 
-{{-- =========================================================
+<!-- =======================================================
 | JQUERY
-========================================================= --}}
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+======================================================= -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<!-- =======================================================
+| PARTICLES
+======================================================= -->
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
-{{-- =========================================================
+<!-- =======================================================
+| SWEET ALERT
+======================================================= -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- =======================================================
 | TOASTR
-========================================================= --}}
+======================================================= -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<!-- =======================================================
+| GOOGLE CAPTCHA
+======================================================= -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <script>
 
-$(document).ready(function () {
+$(function(){
 
-    /*
-    |--------------------------------------------------------------------------
-    | TOASTR SETTINGS
-    |--------------------------------------------------------------------------
-    */
+    /*======================================================
+    | TOASTR
+    ======================================================*/
 
     toastr.options = {
 
-        closeButton: true,
+        closeButton:true,
 
-        progressBar: true,
+        progressBar:true,
 
-        newestOnTop: true,
+        newestOnTop:true,
 
-        positionClass: "toast-top-right",
+        preventDuplicates:true,
 
-        preventDuplicates: true,
+        positionClass:"toast-top-right",
 
-        timeOut: "3000"
+        timeOut:3000
+
     };
 
-    /*
-    |--------------------------------------------------------------------------
+    /*======================================================
+    | PARTICLES
+    ======================================================*/
+
+    particlesJS("particles-js",{
+
+        particles:{
+
+            number:{ value:55 },
+
+            color:{ value:"#ffffff" },
+
+            shape:{ type:"circle" },
+
+            opacity:{ value:.30 },
+
+            size:{ value:3 },
+
+            line_linked:{
+
+                enable:true,
+
+                distance:150,
+
+                color:"#ffffff",
+
+                opacity:.20,
+
+                width:1
+
+            },
+
+            move:{
+
+                enable:true,
+
+                speed:2
+
+            }
+
+        }
+
+    });
+
+    /*======================================================
     | PASSWORD TOGGLE
-    |--------------------------------------------------------------------------
-    */
+    ======================================================*/
 
     $('.toggle-password').click(function(){
 
-        let input = $('#password');
+        let input=$("#password");
 
-        let icon = $(this).find('i');
+        let icon=$(this).find("i");
 
-        if(input.attr('type') === 'password'){
+        if(input.attr("type")=="password"){
 
-            input.attr('type', 'text');
+            input.attr("type","text");
 
-            icon.removeClass('fa-eye')
-                .addClass('fa-eye-slash');
+            icon.removeClass("fa-eye")
+                .addClass("fa-eye-slash");
 
         }else{
 
-            input.attr('type', 'password');
+            input.attr("type","password");
 
-            icon.removeClass('fa-eye-slash')
-                .addClass('fa-eye');
+            icon.removeClass("fa-eye-slash")
+                .addClass("fa-eye");
+
         }
+
     });
 
-    /*
-    |--------------------------------------------------------------------------
-    | FORM SUBMIT
-    |--------------------------------------------------------------------------
-    */
+    /*======================================================
+    | AJAX LOGIN
+    ======================================================*/
 
-    $('#retailerLoginForm').on('submit', function(e){
+    $("#retailerLoginForm").submit(function(e){
 
         e.preventDefault();
 
-        $('.text-danger').html('');
+        $(".text-danger").html("");
 
-        let captcha = grecaptcha.getResponse();
+        let captcha=grecaptcha.getResponse();
 
-        if(captcha.length === 0){
+        if(captcha.length===0){
 
-            $('.error-captcha').html(
-                'Please verify captcha.'
-            );
+            $(".error-captcha").html("Please verify captcha.");
 
-            toastr.error(
-                'Please verify you are human.'
-            );
+            toastr.error("Captcha verification required.");
 
-            return false;
+            return;
+
         }
 
-        toastr.info(
-            'Authenticating your credentials...',
-            'Please Wait'
-        );
+        Swal.fire({
 
-        let btn = $('#loginBtn');
+            title:"Retailer Login",
 
-        btn.prop('disabled', true);
+            text:"Proceed to Retailer Dashboard?",
+
+            icon:"question",
+
+            showCancelButton:true,
+
+            confirmButtonText:"Login",
+
+            cancelButtonText:"Cancel",
+
+            confirmButtonColor:"#2563eb",
+
+            cancelButtonColor:"#ef4444"
+
+        }).then((result)=>{
+
+            if(result.isConfirmed){
+
+                loginRetailer();
+
+            }
+
+        });
+
+    });
+
+    /*======================================================
+    | LOGIN FUNCTION
+    ======================================================*/
+
+    function loginRetailer(){
+
+        let btn=$("#loginBtn");
+
+        btn.prop("disabled",true);
 
         btn.html(`
             <span class="spinner-border spinner-border-sm me-2"></span>
-            Logging in...
+            Authenticating...
         `);
+
+        Swal.fire({
+
+            title:"Please Wait",
+
+            html:"Verifying credentials...",
+
+            allowOutsideClick:false,
+
+            didOpen:()=>{
+
+                Swal.showLoading();
+
+            }
+
+        });
 
         $.ajax({
 
-            url: "{{ route('retailer.login.submit') }}",
+            url:"{{ route('retailer.login.submit') }}",
 
-            type: "POST",
+            method:"POST",
 
-            data: {
+            data:{
 
-                _token: "{{ csrf_token() }}",
+                _token:"{{ csrf_token() }}",
 
-                email: $('#email').val(),
+                email:$("#email").val(),
 
-                password: $('#password').val(),
+                password:$("#password").val(),
 
-                remember: $('#remember').is(':checked') ? 1 : 0,
+                remember:$("#remember").is(":checked")?1:0,
 
-                'g-recaptcha-response': captcha
+                "g-recaptcha-response":grecaptcha.getResponse()
+
             },
 
-            success: function(response){
+            success:function(response){
 
-                toastr.success(
-                    response.message || 'Login Successful'
-                );
+                Swal.fire({
+
+                    icon:"success",
+
+                    title:"Welcome!",
+
+                    text:response.message || "Login Successful",
+
+                    timer:1800,
+
+                    showConfirmButton:false
+
+                });
 
                 btn.html(`
                     <i class="fa-solid fa-check me-2"></i>
@@ -299,16 +710,16 @@ $(document).ready(function () {
 
                 setTimeout(function(){
 
-                    window.location.href =
-                    response.redirect
+                    window.location.href=response.redirect
                     || "{{ route('retailer.dashboard') }}";
 
-                }, 1500);
+                },1800);
+
             },
 
-            error: function(xhr){
+            error:function(xhr){
 
-                btn.prop('disabled', false);
+                btn.prop("disabled",false);
 
                 btn.html(`
                     <i class="fa-solid fa-right-to-bracket me-2"></i>
@@ -317,41 +728,38 @@ $(document).ready(function () {
 
                 grecaptcha.reset();
 
-                if(xhr.status === 422){
+                Swal.close();
 
-                    let errors =
-                    xhr.responseJSON.errors;
+                if(xhr.status==422){
 
-                    $.each(errors, function(key, value){
+                    $.each(xhr.responseJSON.errors,function(key,value){
 
-                        $('.error-' + key)
-                        .html(value[0]);
+                        $(".error-"+key).html(value[0]);
 
                     });
 
-                    toastr.error(
-                        'Please fill all required fields'
-                    );
+                    toastr.error("Please correct the highlighted fields.");
+
                 }
 
-                else if(xhr.status === 401){
+                else if(xhr.status==401){
 
-                    toastr.error(
-                        xhr.responseJSON.message
-                        || 'Invalid credentials'
-                    );
+                    toastr.error(xhr.responseJSON.message);
+
                 }
 
                 else{
 
-                    toastr.error(
-                        'Something went wrong'
-                    );
+                    toastr.error("Unexpected server error.");
+
                 }
+
             }
+
         });
 
-    });
+    }
+
 });
 
 </script>

@@ -26,6 +26,7 @@
      <link rel="stylesheet" href="{{ asset('assets/css/executive-login.css') }}">
      <link rel="stylesheet" href="{{ asset('assets/css/distributor-login.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/retailer-register.css') }}">
+    <link href="{{ asset('assets/css/auth.css') }}" rel="stylesheet">
 
 
 
