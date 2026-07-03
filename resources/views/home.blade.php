@@ -136,7 +136,7 @@
 
                 <i class="fa-solid fa-bell"></i>
 
-                SERVICE UPDATES
+                India's No. 1 Trusted Digital Cyber Cafe Service
 
             </span>
 

@@ -238,30 +238,48 @@
 
                         </button>
 
-                        <div class="login-dropdown-menu">
+                       <div class="login-dropdown-menu">
+
+                            <!-- Super Distributor -->
+
+                            <a href="{{ route('super-distributor.login') }}"
+                            class="dropdown-item">
+
+                                <i class="fa-solid fa-crown text-warning"></i>
+
+                                <span>Super Distributor Login</span>
+
+                            </a>
+
+                            <!-- Distributor -->
 
                             <a href="{{ route('distributor.login') }}"
                             class="dropdown-item">
 
-                                <i class="fa-solid fa-users"></i>
+                                <i class="fa-solid fa-user-group text-primary"></i>
 
                                 <span>Distributor Login</span>
 
                             </a>
 
+                            <!-- Executive -->
+
                             <a href="{{ route('executive.login') }}"
                             class="dropdown-item">
 
-                                <i class="fa-solid fa-briefcase"></i>
+                                <i class="fa-solid fa-briefcase text-success"></i>
 
                                 <span>Executive Login</span>
 
                             </a>
 
+
+                            <!-- Admin -->
+
                             <a href="{{ route('login') }}"
                             class="dropdown-item">
 
-                                <i class="fa-solid fa-user-shield"></i>
+                                <i class="fa-solid fa-user-shield text-danger"></i>
 
                                 <span>Admin Login</span>
 

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ExecutiveLoginController;
 use App\Http\Controllers\DistributorLoginController;
+use App\Http\Controllers\SuperDistributorLoginController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\AdmissionController;
 use App\Http\Controllers\NewsController;
@@ -406,5 +407,32 @@ Route::controller(
         '/distributor/logout',
         'logout'
     )->name('distributor.logout');
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| SUPER DISTRIBUTOR AUTH
+|--------------------------------------------------------------------------
+*/
+
+Route::controller(
+    SuperDistributorLoginController::class
+)->group(function () {
+
+    Route::get(
+        '/super-distributor/login',
+        'showLogin'
+    )->name('super-distributor.login');
+
+    Route::post(
+        '/super-distributor/login',
+        'login'
+    )->name('super-distributor.login.submit');
+
+    Route::post(
+        '/super-distributor/logout',
+        'logout'
+    )->name('super-distributor.logout');
 
 });
