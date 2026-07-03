@@ -50,32 +50,35 @@ if (! function_exists('csc_service_fields')) {
 
             'pm-kisan-registration' => array_merge([
 
+                
                 [
-                    'name' => 'farmer_name',
-                    'label' => 'Farmer Name',
+                    'name' => 'customer_name',
+                    'label' => 'Customer Name',
                     'type' => 'text',
                     'required' => true,
                 ],
 
                 [
-                    'name' => 'land_details',
-                    'label' => 'Land Details',
-                    'type' => 'textarea',
+                    'name' => 'mobile',
+                    'label' => 'Customer Mobile Number',
+                    'type' => 'text',
+                    'required' => true,
                 ],
 
                 [
-                    'name' => 'bank_account',
-                    'label' => 'Bank Account Number',
+                    'name' => 'aadhaar_number',
+                    'label' => 'Aadhaar Number',
                     'type' => 'text',
                 ],
 
+               
                 [
-                    'name' => 'passbook',
-                    'label' => 'Bank Passbook',
+                    'name' => 'khatuni',
+                    'label' => 'Khatuni',
                     'type' => 'file',
                 ],
 
-            ], $commonFields),
+            ],),
 
             /*
             |--------------------------------------------------------------------------
