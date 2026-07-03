@@ -169,7 +169,34 @@ if (! function_exists('csc_service_fields')) {
             |--------------------------------------------------------------------------
             */
 
-            'residence-certificate' => array_merge([
+            'domicile-cerfitcate' => array_merge([
+
+
+                [
+                    'name' => 'customer_name',
+                    'label' => 'Customer Name',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'mobile',
+                    'label' => 'Customer Mobile Number',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'aadhaar_number',
+                    'label' => 'Aadhaar Number',
+                    'type' => 'text',
+                ],
+
+                 [
+                    'name' => 'aadhaar_card',
+                    'label' => 'Aadhaar Card',
+                    'type' => 'file',
+                ],
 
                 [
                     'name' => 'address',
@@ -179,11 +206,13 @@ if (! function_exists('csc_service_fields')) {
 
                 [
                     'name' => 'residence_proof',
-                    'label' => 'Residence Proof',
+                    'label' => 'Address Proof',
                     'type' => 'file',
                 ],
 
-            ], $commonFields),
+               
+
+            ],),
 
             /*
             |--------------------------------------------------------------------------
