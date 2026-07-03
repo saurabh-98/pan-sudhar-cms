@@ -442,7 +442,7 @@ class ModuleSeeder extends Seeder
 
             [
                 'name'       => 'Domicile/Niwas Certificate',
-                'slug'       => 'domicile-certificate',
+                'slug'       => 'domicile-niwas-certificate',
                 'route_name' => 'retailer.csc.service',
                 'parent_id'  => $csc->id,
                 'sort_order' => 4,

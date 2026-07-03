@@ -169,7 +169,7 @@ if (! function_exists('csc_service_fields')) {
             |--------------------------------------------------------------------------
             */
 
-            'domicile-cerfitcate' => array_merge([
+            'domicile-niwas-certificate' => array_merge([
 
 
                 [
