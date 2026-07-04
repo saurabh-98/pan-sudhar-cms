@@ -29,32 +29,14 @@ class BankAccountServiceController extends Controller
     ) {}
 
 
-       private function getBankAccountCharge(
-            string $serviceSlug
-        ): float {
-
-            $code = str_replace(
-                '-',
-                '_',
-                $serviceSlug
-            );
-
-            return (float) Charge::query()
-
-                ->where(
-                    'code',
-                    $code
-                )
-
-                ->where(
-                    'is_active',
-                    1
-                )
-
-                ->value(
-                    'value'
-                );
+       private function getBankAccountCharge(string $serviceSlug): float
+        {
+            return (float) Charge::where('code', $serviceSlug)
+                ->where('is_active', 1)
+                ->value('value');
         }
+
+        
     /*
     |--------------------------------------------------------------------------
     | CREATE
