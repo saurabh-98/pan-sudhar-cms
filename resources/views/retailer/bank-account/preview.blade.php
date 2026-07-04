@@ -228,7 +228,7 @@
 
                     </strong>
 
-                    ₹{{ number_format($voterCharge,2) }}
+                    ₹{{ number_format($bankAccountCharge,2) }}
 
                 </div>
 
@@ -241,7 +241,7 @@
                     </strong>
 
                     ₹{{ number_format(
-                        auth()->user()->wallet_balance - $voterCharge,
+                        auth()->user()->wallet_balance - $bankAccountCharge,
                         2
                     ) }}
 
@@ -257,7 +257,7 @@
 
             <a
                 href="{{ route(
-                    'retailer.voter-id.service',
+                    'retailer.bank-account.service',
                     $data['service_slug'] ?? ''
                 ) }}"
                 class="btn btn-light btn-lg px-5"
@@ -309,7 +309,7 @@ document
 
         fetch(
 
-            "{{ route('retailer.bank-account-submit') }}",
+            "{{ route('retailer.bank-account.final-submit') }}",
 
             {
 

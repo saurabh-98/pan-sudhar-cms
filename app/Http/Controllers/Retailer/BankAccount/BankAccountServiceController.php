@@ -36,7 +36,7 @@ class BankAccountServiceController extends Controller
                 ->value('value');
         }
 
-        
+
     /*
     |--------------------------------------------------------------------------
     | CREATE
@@ -572,7 +572,7 @@ class BankAccountServiceController extends Controller
             $applications = BankAccountService::query()
 
                 ->with('user.retailer',
-                'serviceDocument')
+                'serviceDocuments')
 
                 ->where(
                     'user_id',

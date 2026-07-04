@@ -257,7 +257,7 @@
 
             <a
                 href="{{ route(
-                    'retailer.aadhaar.service',
+                    'retailer.csc.service',
                     $data['service_slug'] ?? ''
                 ) }}"
                 class="btn btn-light btn-lg px-5"

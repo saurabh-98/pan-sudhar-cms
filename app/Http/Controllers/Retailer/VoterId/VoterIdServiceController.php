@@ -587,12 +587,12 @@ class VoterIdServiceController extends Controller
 
             $applications = VoterIdService::query()
 
-                ->with('user.retailer')
+                ->with([
+                    'user.retailer',
+                    'serviceDocuments',
+                ])
 
-                ->where(
-                    'user_id',
-                    auth()->id()
-                )
+                ->where('user_id', auth()->id())
 
                 ->latest();
 
@@ -676,6 +676,27 @@ class VoterIdServiceController extends Controller
                     ';
                 })
 
+
+                ->addColumn('document_status', function ($row) {
+
+                    if ($row->serviceDocuments->isNotEmpty()) {
+
+                        return '
+                            <span class="badge bg-success">
+                                <i class="fa fa-check-circle"></i>
+                                Available
+                            </span>
+                        ';
+                    }
+
+                    return '
+                        <span class="badge bg-warning text-dark">
+                            <i class="fa fa-clock"></i>
+                            Pending
+                        </span>
+                    ';
+                })
+
                 ->addColumn('action', function ($row) {
 
                     return '
@@ -706,6 +727,8 @@ class VoterIdServiceController extends Controller
                     'status',
 
                     'created_at',
+
+                    'document_status',
 
                     'action',
 

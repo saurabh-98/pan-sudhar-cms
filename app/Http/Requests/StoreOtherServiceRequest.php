@@ -34,248 +34,149 @@ class StoreOtherServiceRequest extends FormRequest
 
         switch ($service) {
 
-            /*
-            |--------------------------------------------------------------------------
-            | RAJ PATRA
-            |--------------------------------------------------------------------------
-            */
-
             case 'raj-patra':
 
                 $rules += [
-
-                    'customer_name' => 'required|string|max:255',
-
-                    'mobile' => 'required|digits:10',
-
-                    'village_name' => 'required|string|max:255',
-
-                    'khata_number' => 'nullable|string|max:100',
-
-                    'plot_number' => 'nullable|string|max:100',
-
-                    'document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'customer_name'   => 'required|string|max:255',
+                    'mobile'          => 'required|digits:10',
+                    'email'           => 'nullable|email|max:255',
+                    'aadhaar_number'  => 'nullable|digits:12',
+                    'document'        => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
                 ];
-
-            break;
-
-            /*
-            |--------------------------------------------------------------------------
-            | GST REGISTRATION / FILING
-            |--------------------------------------------------------------------------
-            */
+                break;
 
             case 'gst-registration-filing':
 
                 $rules += [
-
-                    'customer_name' => 'required|string|max:255',
-
-                    'mobile' => 'required|digits:10',
-
-                    'business_name' => 'required|string|max:255',
-
-                    'pan_number' => 'required|string|max:20',
-
-                    'business_address' => 'required|string|max:1000',
-
-                    'document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'customer_name'     => 'required|string|max:255',
+                    'mobile'            => 'required|digits:10',
+                    'email'             => 'nullable|email|max:255',
+                    'aadhaar_number'    => 'nullable|digits:12',
+                    'document'          => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'business_name'     => 'required|string|max:255',
+                    'pan_number'        => 'required|string|max:20',
+                    'business_address'  => 'required|string|max:1000',
                 ];
-
-            break;
-
-            /*
-            |--------------------------------------------------------------------------
-            | FOOD LICENCE
-            |--------------------------------------------------------------------------
-            */
+                break;
 
             case 'food-licence':
 
                 $rules += [
-
-                    'customer_name' => 'required|string|max:255',
-
-                    'mobile' => 'required|digits:10',
-
-                    'shop_name' => 'required|string|max:255',
-
-                    'business_type' => 'required|string|max:255',
-
-                    'document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'customer_name'   => 'required|string|max:255',
+                    'mobile'          => 'required|digits:10',
+                    'email'           => 'nullable|email|max:255',
+                    'aadhaar_number'  => 'nullable|digits:12',
+                    'document'        => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'shop_name'       => 'required|string|max:255',
+                    'business_type'   => 'required|string|max:255',
                 ];
-
-            break;
-
-            /*
-            |--------------------------------------------------------------------------
-            | ITR FILING / TDS REFUND
-            |--------------------------------------------------------------------------
-            */
+                break;
 
             case 'itr-filing-tds-refund':
 
                 $rules += [
-
-                    'customer_name' => 'required|string|max:255',
-
-                    'mobile' => 'required|digits:10',
-
-                    'pan_number' => 'required|string|max:20',
-
-                    'assessment_year' => 'required|string|max:20',
-
-                    'document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'customer_name'    => 'required|string|max:255',
+                    'mobile'           => 'required|digits:10',
+                    'email'            => 'nullable|email|max:255',
+                    'aadhaar_number'   => 'nullable|digits:12',
+                    'document'         => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'pan_number'       => 'required|string|max:20',
+                    'assessment_year'  => 'required|string|max:20',
                 ];
-
-            break;
-
-            /*
-            |--------------------------------------------------------------------------
-            | DSC DIGITAL SIGNATURE
-            |--------------------------------------------------------------------------
-            */
+                break;
 
             case 'dsc-digital-signature':
 
                 $rules += [
-
-                    'customer_name' => 'required|string|max:255',
-
-                    'mobile' => 'required|digits:10',
-
-                    'aadhaar_number' => 'required|digits:12',
-
-                    'pan_number' => 'required|string|max:20',
-
-                    'organisation_name' => 'nullable|string|max:255',
-
-                    'document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'customer_name'      => 'required|string|max:255',
+                    'mobile'             => 'required|digits:10',
+                    'email'              => 'nullable|email|max:255',
+                    'aadhaar_number'     => 'nullable|digits:12',
+                    'document'           => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'pan_number'         => 'required|string|max:20',
+                    'organisation_name'  => 'nullable|string|max:255',
                 ];
-
-            break;
-
-            /*
-            |--------------------------------------------------------------------------
-            | MSME REGISTRATION
-            |--------------------------------------------------------------------------
-            */
+                break;
 
             case 'msme-registration':
 
                 $rules += [
-
-                    'customer_name' => 'required|string|max:255',
-
-                    'mobile' => 'required|digits:10',
-
-                    'business_name' => 'required|string|max:255',
-
-                    'business_type' => 'nullable|string|max:255',
-
-                    'document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'customer_name'   => 'required|string|max:255',
+                    'mobile'          => 'required|digits:10',
+                    'email'           => 'nullable|email|max:255',
+                    'aadhaar_number'  => 'nullable|digits:12',
+                    'document'        => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'business_name'   => 'required|string|max:255',
+                    'business_type'   => 'nullable|string|max:255',
                 ];
-
-            break;
-
-            /*
-            |--------------------------------------------------------------------------
-            | IMPORT EXPORT CERTIFICATE
-            |--------------------------------------------------------------------------
-            */
+                break;
 
             case 'import-export-certificate':
 
+            case 'npci-aadhaar-seeding':
+
                 $rules += [
-
                     'customer_name' => 'required|string|max:255',
-
-                    'mobile' => 'required|digits:10',
-
-                    'firm_name' => 'required|string|max:255',
-
-                    'pan_number' => 'required|string|max:20',
-
-                    'document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'number'        => 'required|digits:10',
                 ];
-
-            break;
-
-            /*
-            |--------------------------------------------------------------------------
-            | RENT AGREEMENT
-            |--------------------------------------------------------------------------
-            */
+                break;
 
             case 'rent-agreement':
 
                 $rules += [
-
-                    'customer_name' => 'required|string|max:255',
-
-                    'mobile' => 'required|digits:10',
-
-                    'owner_name' => 'required|string|max:255',
-
-                    'tenant_name' => 'required|string|max:255',
-
+                    'customer_name'    => 'required|string|max:255',
+                    'mobile'           => 'required|digits:10',
+                    'document'         => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'owner_name'       => 'required|string|max:255',
+                    'tenant_name'      => 'required|string|max:255',
                     'property_address' => 'required|string|max:1000',
-
-                    'document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
                 ];
-
-            break;
-
-            /*
-            |--------------------------------------------------------------------------
-            | POLICE VERIFICATION
-            |--------------------------------------------------------------------------
-            */
+                break;
 
             case 'police-verification':
 
                 $rules += [
-
-                    'customer_name' => 'required|string|max:255',
-
-                    'mobile' => 'required|digits:10',
-
-                    'purpose' => 'required|string|max:255',
-
-                    'verification_address' => 'required|string|max:1000',
-
-                    'document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'customer_name'         => 'required|string|max:255',
+                    'mobile'                => 'required|digits:10',
+                    'document'              => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'purpose'               => 'required|string|max:255',
+                    'verification_address'  => 'required|string|max:1000',
                 ];
+                break;
 
-            break;
+            case 'driving-learning-license':
+
+            case 'vehicle-chalan-payment':
+
+            case 'rto-service':
+
+                $rules += [
+                    'customer_name' => 'required|string|max:255',
+                    'mobile'        => 'required|digits:10',
+                    'document'      => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                ];
+                break;
 
             default:
 
                 $rules['service_slug'][] = Rule::in([
-
                     'raj-patra',
-
                     'gst-registration-filing',
-
                     'food-licence',
-
                     'itr-filing-tds-refund',
-
                     'dsc-digital-signature',
-
                     'msme-registration',
-
                     'import-export-certificate',
-
+                    'npci-aadhaar-seeding',
                     'rent-agreement',
-
                     'police-verification',
-
+                    'driving-learning-license',
+                    'vehicle-chalan-payment',
+                    'rto-service',
                 ]);
         }
-
-        return $rules;
-    }
+                return $rules;
+}
 
     public function messages(): array
     {

@@ -34,119 +34,187 @@ class StoreBankAccountServiceRequest extends FormRequest
 
         switch ($service) {
 
-            /*
-            |--------------------------------------------------------------------------
-            | KOTAK BANK ZERO BALANCE
-            |--------------------------------------------------------------------------
-            */
+    /*
+    |--------------------------------------------------------------------------
+    | SIMPLE KYC BANKS
+    |--------------------------------------------------------------------------
+    */
 
-            case 'kotak-bank-zero-balance':
+    case 'airtel-bank-account':
 
-            /*
-            |--------------------------------------------------------------------------
-            | INDIA POST PAYMENT BANK
-            |--------------------------------------------------------------------------
-            */
+        $rules += [
 
-            case 'india-post-payment-bank':
+            'customer_name' => 'required|string|max:255',
+            'mobile' => 'required|digits:10',
+            'aadhaar_number' => 'required|digits:12',
 
-            /*
-            |--------------------------------------------------------------------------
-            | NSDL PAYMENT BANK
-            |--------------------------------------------------------------------------
-            */
+            'is_airtel_number' => 'required|in:Yes,No',
 
-            case 'nsdl-payment-bank':
+            'email' => 'nullable|email|max:255',
 
-            /*
-            |--------------------------------------------------------------------------
-            | AIRTEL PAYMENT BANK
-            |--------------------------------------------------------------------------
-            */
+            'photo' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'aadhaar_front' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'aadhaar_back' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        ];
 
-            case 'airtel-payment-bank':
+        break;
 
-            /*
-            |--------------------------------------------------------------------------
-            | BANK OF INDIA
-            |--------------------------------------------------------------------------
-            */
+    case 'nsdl-payment-bank':
 
-            case 'bank-of-india':
+    case 'jio-payment-bank':
 
-            /*
-            |--------------------------------------------------------------------------
-            | PNB BANK
-            |--------------------------------------------------------------------------
-            */
+        $rules += [
 
-            case 'pnb-bank':
+            'customer_name' => 'required|string|max:255',
+            'mobile' => 'required|digits:10',
+            'aadhaar_number' => 'required|digits:12',
 
-            /*
-            |--------------------------------------------------------------------------
-            | INDIAN BANK
-            |--------------------------------------------------------------------------
-            */
+            'email' => 'nullable|email|max:255',
 
-            case 'indian-bank':
+            'photo' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'aadhaar_front' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'aadhaar_back' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        ];
 
-            /*
-            |--------------------------------------------------------------------------
-            | INDIAN OVERSEAS BANK
-            |--------------------------------------------------------------------------
-            */
+        break;
 
-            case 'indian-overseas-bank':
+    /*
+    |--------------------------------------------------------------------------
+    | FULL KYC BANKS
+    |--------------------------------------------------------------------------
+    */
 
-                $rules += [
+    case 'indian-bank':
 
-                    'customer_name' => 'required|string|max:255',
+    case 'bank-of-baroda':
 
-                    'mobile' => 'required|digits:10',
+        $rules += [
 
-                    'aadhaar_number' => 'required|digits:12',
+            'customer_name' => 'required|string|max:255',
+            'mobile' => 'required|digits:10',
+            'aadhaar_number' => 'required|digits:12',
 
-                    'pan_number' => 'nullable|string|max:20',
+            'pan_number' => 'required|string|max:20',
+            'pan_card' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
 
-                    'email' => 'nullable|email|max:255',
+            'email' => 'nullable|email|max:255',
+            'address' => 'required|string|max:1000',
 
-                    'address' => 'required|string|max:1000',
+            'preferred_branch' => 'required|string|max:255',
 
-                    'photo' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'initial_deposit_amount' => 'nullable|numeric|min:0',
 
-                    'aadhaar_front' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'nominee_name' => 'required|string|max:255',
+            'nominee_relation' => 'required|string|max:255',
 
-                    'aadhaar_back' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'photo' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'aadhaar_front' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'aadhaar_back' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        ];
 
-                    'pan_card' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        break;
 
-                ];
+    case 'indian-overseas-bank':
 
-            break;
+        $rules += [
 
-            default:
+            'customer_name' => 'required|string|max:255',
+            'mobile' => 'required|digits:10',
+            'aadhaar_number' => 'required|digits:12',
 
-                $rules['service_slug'][] = Rule::in([
+            'pan_number' => 'required|string|max:20',
+            'pan_card' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
 
-                    'kotak-bank-zero-balance',
+            'email' => 'nullable|email|max:255',
+            'address' => 'required|string|max:1000',
 
-                    'india-post-payment-bank',
+            'occupation' => 'required|string|max:255',
 
-                    'nsdl-payment-bank',
+            'initial_deposit_amount' => 'nullable|numeric|min:0',
 
-                    'airtel-payment-bank',
+            'nominee_name' => 'required|string|max:255',
+            'nominee_relation' => 'required|string|max:255',
 
-                    'bank-of-india',
+            'photo' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'aadhaar_front' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'aadhaar_back' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        ];
 
-                    'pnb-bank',
+        break;
 
-                    'indian-bank',
+    case 'kotak-bank-account':
 
-                    'indian-overseas-bank',
+        $rules += [
 
-                ]);
-        }
+            'customer_name' => 'required|string|max:255',
+            'mobile' => 'required|digits:10',
+            'aadhaar_number' => 'required|digits:12',
 
+            'pan_number' => 'required|string|max:20',
+            'pan_card' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+
+            'email' => 'nullable|email|max:255',
+            'address' => 'required|string|max:1000',
+
+            'video_kyc_preference' => 'required|in:Yes,No',
+
+            'initial_deposit_amount' => 'nullable|numeric|min:0',
+
+            'nominee_name' => 'required|string|max:255',
+            'nominee_relation' => 'required|string|max:255',
+
+            'photo' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'aadhaar_front' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'aadhaar_back' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        ];
+
+        break;
+
+    case 'sbi-pnb-bank-account':
+
+        $rules += [
+
+            'customer_name' => 'required|string|max:255',
+            'mobile' => 'required|digits:10',
+            'aadhaar_number' => 'required|digits:12',
+
+            'pan_number' => 'required|string|max:20',
+            'pan_card' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+
+            'email' => 'nullable|email|max:255',
+            'address' => 'required|string|max:1000',
+
+            'occupation' => 'required|string|max:255',
+
+            'preferred_branch' => 'required|string|max:255',
+
+            'initial_deposit_amount' => 'nullable|numeric|min:0',
+
+            'nominee_name' => 'required|string|max:255',
+            'nominee_relation' => 'required|string|max:255',
+
+            'photo' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'aadhaar_front' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'aadhaar_back' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        ];
+
+        break;
+
+    default:
+
+        $rules['service_slug'][] = Rule::in([
+
+            'airtel-bank-account',
+            'indian-bank',
+            'indian-overseas-bank',
+            'nsdl-payment-bank',
+            'jio-payment-bank',
+            'bank-of-baroda',
+            'kotak-bank-account',
+            'sbi-pnb-bank-account',
+
+        ]);
+}
         return $rules;
     }
 

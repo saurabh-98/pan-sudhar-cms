@@ -10,8 +10,7 @@
 
         <h2 class="fw-bold mb-1">
 
-            Other Service Preview
-
+           {{ $data['service_name'] }}
         </h2>
 
         <p class="text-muted mb-0">
@@ -257,7 +256,7 @@
 
             <a
                 href="{{ route(
-                    'retailer.voter-id.service',
+                    'retailer.other-service.service',
                     $data['service_slug'] ?? ''
                 ) }}"
                 class="btn btn-light btn-lg px-5"
@@ -309,7 +308,7 @@ document
 
         fetch(
 
-            "{{ route('retailer.other-service-submit') }}",
+            "{{ route('retailer.other-service.final-submit') }}",
 
             {
 

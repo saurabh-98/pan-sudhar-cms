@@ -27,18 +27,12 @@ class OtherServiceController extends Controller
         protected ServiceGuidelineService $serviceGuidelineService,
     ) {}
 
-    private function getOtherServiceCharge(
-        string $serviceSlug
-    ): float {
 
-        $code = str_replace(
-            '-',
-            '_',
-            $serviceSlug
-        );
+     private function getOtherServiceCharge(string $serviceSlug): float
+    {
+        $code = str_replace('-', '_', $serviceSlug);
 
-        return (float) Charge::query()
-            ->where('code', $code)
+        return (float) Charge::where('code', $code)
             ->where('is_active', 1)
             ->value('value');
     }
@@ -56,6 +50,8 @@ class OtherServiceController extends Controller
         )
         ->map(fn ($word) => ucfirst($word))
         ->implode(' ');
+
+    
 
         $session = get_other_service_session();
 
@@ -164,7 +160,7 @@ class OtherServiceController extends Controller
 
             $preview =
 
-                $this->otherService
+                $this->otherServiceService
                     ->preview($dto);
 
             /*
@@ -412,7 +408,7 @@ class OtherServiceController extends Controller
 
         $application =
 
-            $this->otherService
+            $this->otherServiceService
                 ->storeFromSession();
 
         if (! $application) {
@@ -584,15 +580,12 @@ class OtherServiceController extends Controller
     {
         if (request()->ajax()) {
 
-            $applications = OtherService::query()
+          $applications = OtherService::query()
 
-                ->with('user.retailer')
-
-                ->where(
-                    'user_id',
-                    auth()->id()
-                )
-
+                ->with([
+                    'user.retailer',
+                    'serviceDocuments',
+                ])
                 ->latest();
 
             return DataTables::of($applications)
@@ -669,6 +662,26 @@ class OtherServiceController extends Controller
                     ';
                 })
 
+                ->addColumn('document_status', function ($row) {
+
+                    if ($row->serviceDocuments->isNotEmpty()) {
+
+                        return '
+                            <span class="badge bg-success">
+                                <i class="fa fa-check-circle"></i>
+                                Available
+                            </span>
+                        ';
+                    }
+
+                    return '
+                        <span class="badge bg-warning text-dark">
+                            <i class="fa fa-clock"></i>
+                            Pending
+                        </span>
+                    ';
+                })
+
                 ->addColumn('action', function ($row) {
 
                     return '
@@ -699,6 +712,8 @@ class OtherServiceController extends Controller
                     'status',
 
                     'created_at',
+
+                    'document_status',
 
                     'action',
 
@@ -731,7 +746,7 @@ class OtherServiceController extends Controller
 
                 'application' =>
 
-                    $this->otherService
+                    $this->otherServiceService
                         ->find(
 
                             $id,
@@ -763,7 +778,7 @@ class OtherServiceController extends Controller
 
                 'application' =>
 
-                    $this->otherService
+                    $this->otherServiceService
                         ->find(
 
                             $id,
@@ -795,7 +810,7 @@ class OtherServiceController extends Controller
 
                 'application' =>
 
-                    $this->otherService
+                    $this->otherServiceService
                         ->find(
 
                             $id,
@@ -819,7 +834,7 @@ class OtherServiceController extends Controller
         int $id
     ) {
 
-        $this->otherService
+        $this->otherServiceService
             ->delete(
 
                 $id,

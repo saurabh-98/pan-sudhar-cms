@@ -587,12 +587,12 @@ class CscServiceController extends Controller
 
             $applications = CscService::query()
 
-                ->with('user.retailer')
+                ->with([
+                    'user.retailer',
+                    'serviceDocuments',
+                ])
 
-                ->where(
-                    'user_id',
-                    auth()->id()
-                )
+                ->where('user_id', auth()->id())
 
                 ->latest();
 
@@ -676,6 +676,26 @@ class CscServiceController extends Controller
                     ';
                 })
 
+                ->addColumn('document_status', function ($row) {
+
+                    if ($row->serviceDocuments->isNotEmpty()) {
+
+                        return '
+                            <span class="badge bg-success">
+                                <i class="fa fa-check-circle"></i>
+                                Available
+                            </span>
+                        ';
+                    }
+
+                    return '
+                        <span class="badge bg-danger">
+                            <i class="fa fa-times-circle"></i>
+                            Pending
+                        </span>
+                    ';
+                })
+
                 ->addColumn('action', function ($row) {
 
                     return '
@@ -706,6 +726,8 @@ class CscServiceController extends Controller
                     'status',
 
                     'created_at',
+
+                    'document_status',
 
                     'action',
 
