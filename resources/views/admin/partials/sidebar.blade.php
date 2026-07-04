@@ -643,8 +643,23 @@
                     <li>
                         <a href="{{ route('admin.users.index') }}"
                         class="sbx-link {{ request()->routeIs('admin.users.*') ? 'sbx-active' : '' }}">
+
                             <i class="fa fa-user-shield"></i>
-                            <span>Manage User</span>
+
+                            <span>
+
+                                @if(auth()->user()->hasRole('Super Distributor'))
+
+                                    Add Distributor
+
+                                @else
+
+                                    Manage User
+
+                                @endif
+
+                            </span>
+
                         </a>
                     </li>
                     @endcan

@@ -50,6 +50,7 @@ class DashboardController extends Controller
         */
 
         $isAdmin = $user->hasRole('admin');
+        $isSuperDistributor = $user->hasRole('Super Distributor');
         $isDistributor = $user->hasRole('Distributor');
         $isExecutive = $user->hasRole('Executive');
 
@@ -71,9 +72,13 @@ class DashboardController extends Controller
             ? User::role('Retailer')->count()
             : ($data['totalRetailers'] ?? 0);
 
+        // Admin sees every distributor; Super Distributor sees only the
+        // distributors they personally created (via the `created_by` column).
         $totalDistributors = $isAdmin
             ? User::role('Distributor')->count()
-            : 0;
+            : ($isSuperDistributor
+                ? User::role('Distributor')->where('created_by', $user->id)->count()
+                : 0);
 
         $totalExecutives = $isAdmin
             ? User::role('Executive')->count()
@@ -110,6 +115,7 @@ class DashboardController extends Controller
         return view('admin.dashboard', [
 
             'isAdmin' => $isAdmin,
+            'isSuperDistributor' => $isSuperDistributor,
             'isDistributor' => $isDistributor,
             'isExecutive' => $isExecutive,
 

@@ -6,13 +6,108 @@
 
 @php
 
-$isAdmin = auth()->user()->hasRole('admin');
+    $user = auth()->user();
 
-$isDistributor = auth()->user()->hasRole('Distributor');
+    $isAdmin = $user->hasRole('admin');
 
-$isExecutive = auth()->user()->hasRole('Executive');
+    $isSuperDistributor = $user->hasRole('Super Distributor');
+
+    $isDistributor = $user->hasRole('Distributor');
+
+    $isExecutive = $user->hasRole('Executive');
 
 @endphp
+
+{{-- ========================================================= --}}
+{{-- SUPER DISTRIBUTOR DASHBOARD --}}
+{{-- ========================================================= --}}
+
+@if($isSuperDistributor)
+
+<div class="container-fluid">
+
+    <div class="row mb-4">
+
+        <div class="col-lg-12">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <h2 class="fw-bold mb-2">
+
+                            <i class="fa fa-sitemap text-primary me-2"></i>
+
+                            Super Distributor Dashboard
+
+                        </h2>
+
+                        <p class="text-muted mb-0">
+
+                            Welcome,
+
+                            <strong>{{ $user->name }}</strong>
+
+                        </p>
+
+                    </div>
+
+                    <div>
+
+                        <img src="{{ asset('assets/images/dashboard.svg') }}"
+                             alt="Dashboard"
+                             style="max-height:80px;"
+                             onerror="this.style.display='none'">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row justify-content-center">
+
+        <div class="col-xl-4 col-lg-5 col-md-6">
+
+            <div class="dash-card-modern bg-primary">
+
+                <div>
+
+                    <small class="text-white">
+
+                        My Distributors
+
+                    </small>
+
+                    <h2 class="counter text-white">
+
+                        {{ $totalDistributors }}
+
+                    </h2>
+
+                </div>
+
+                <i class="fa fa-network-wired fa-3x text-white"></i>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@else
+
+{{-- ========================================================= --}}
+{{-- ADMIN / DISTRIBUTOR / EXECUTIVE DASHBOARD --}}
+{{-- ========================================================= --}}
 
 <div class="container-fluid">
 
@@ -52,7 +147,7 @@ $isExecutive = auth()->user()->hasRole('Executive');
 
                 Welcome back,
 
-                <strong>{{ auth()->user()->name }}</strong>
+                <strong>{{ $user->name }}</strong>
 
             </p>
 
@@ -61,285 +156,228 @@ $isExecutive = auth()->user()->hasRole('Executive');
     </div>
 
     {{-- ========================================= --}}
-    {{-- SERVICE CARDS --}}
+    {{-- SERVICE CARDS START --}}
     {{-- ========================================= --}}
 
-    <div class="row g-4">
+    {{-- ========================================= --}}
+{{-- SERVICE CARDS --}}
+{{-- ========================================= --}}
 
-        {{-- PAN --}}
+@if($isAdmin)
 
-        <div class="col-xl-2 col-lg-3 col-md-4">
+<div class="row g-4">
 
-            <a href="{{ route('admin.pan.index') }}"
-
-               class="text-decoration-none">
-
-                <div class="dash-card-modern bg-primary">
-
-                    <div>
-
-                        <small>PAN</small>
-
-                        <h2 class="counter">
-
-                            {{ $totalPanApplications }}
-
-                        </h2>
-
-                    </div>
-
-                    <i class="fa fa-id-card fa-2x"></i>
-
+    {{-- PAN --}}
+    <div class="col-xl-2 col-lg-3 col-md-4">
+        <a href="{{ route('admin.pan.index') }}" class="text-decoration-none">
+            <div class="dash-card-modern bg-primary">
+                <div>
+                    <small>PAN</small>
+                    <h2 class="counter">{{ $totalPanApplications }}</h2>
                 </div>
+                <i class="fa fa-id-card fa-2x"></i>
+            </div>
+        </a>
+    </div>
 
-            </a>
-
-        </div>
-
-        {{-- ITR --}}
-
-        <div class="col-xl-2 col-lg-3 col-md-4">
-
-            <a href="{{ route('admin.itr.index') }}"
-
-               class="text-decoration-none">
-
-                <div class="dash-card-modern bg-success">
-
-                    <div>
-
-                        <small>ITR</small>
-
-                        <h2 class="counter">
-
-                            {{ $totalItrApplications }}
-
-                        </h2>
-
-                    </div>
-
-                    <i class="fa fa-file-invoice-dollar fa-2x"></i>
-
+    {{-- ITR --}}
+    <div class="col-xl-2 col-lg-3 col-md-4">
+        <a href="{{ route('admin.itr.index') }}" class="text-decoration-none">
+            <div class="dash-card-modern bg-success">
+                <div>
+                    <small>ITR</small>
+                    <h2 class="counter">{{ $totalItrApplications }}</h2>
                 </div>
+                <i class="fa fa-file-invoice-dollar fa-2x"></i>
+            </div>
+        </a>
+    </div>
 
-            </a>
-
+    {{-- Aadhaar --}}
+    <div class="col-xl-2 col-lg-3 col-md-4">
+        <div class="dash-card-modern bg-danger">
+            <div>
+                <small>Aadhaar</small>
+                <h2 class="counter">{{ $totalAadhaarServices }}</h2>
+            </div>
+            <i class="fa fa-address-card fa-2x"></i>
         </div>
+    </div>
 
-        {{-- Aadhaar --}}
+    {{-- Bank --}}
+    <div class="col-xl-2 col-lg-3 col-md-4">
+        <div class="dash-card-modern bg-dark">
+            <div>
+                <small>Bank Account</small>
+                <h2 class="counter">{{ $totalBankAccounts }}</h2>
+            </div>
+            <i class="fa fa-university fa-2x"></i>
+        </div>
+    </div>
 
-        <div class="col-xl-2 col-lg-3 col-md-4">
+    {{-- CSC --}}
+    <div class="col-xl-2 col-lg-3 col-md-4">
+        <div class="dash-card-modern bg-purple">
+            <div>
+                <small>CSC</small>
+                <h2 class="counter">{{ $totalCscServices }}</h2>
+            </div>
+            <i class="fa fa-cogs fa-2x"></i>
+        </div>
+    </div>
 
-            <div class="dash-card-modern bg-danger">
+    {{-- Revenue --}}
+    <div class="col-xl-2 col-lg-3 col-md-4">
+        <div class="dash-card-modern bg-warning">
+            <div>
+                <small>Revenue</small>
+                <h2>₹{{ number_format($totalRevenue,0) }}</h2>
+            </div>
+            <i class="fa fa-wallet fa-2x"></i>
+        </div>
+    </div>
+
+</div>
+
+@endif
+
+{{-- ========================================= --}}
+{{-- USER CARDS --}}
+{{-- ========================================= --}}
+
+<div class="row g-4 mt-2">
+
+    {{-- ============================= --}}
+    {{-- ADMIN --}}
+    {{-- ============================= --}}
+    @if($isAdmin)
+
+        {{-- Retailers --}}
+        <div class="col-xl-3 col-lg-4 col-md-6">
+
+            <div class="dash-card-modern bg-info">
 
                 <div>
 
-                    <small>Aadhaar</small>
+                    <small>Retailers</small>
 
                     <h2 class="counter">
-
-                        {{ $totalAadhaarServices }}
-
+                        {{ $totalRetailers }}
                     </h2>
 
                 </div>
 
-                <i class="fa fa-address-card fa-2x"></i>
+                <i class="fa fa-store fa-2x"></i>
 
             </div>
 
         </div>
 
-        {{-- Bank --}}
-
-        <div class="col-xl-2 col-lg-3 col-md-4">
-
-            <div class="dash-card-modern bg-dark">
-
-                <div>
-
-                    <small>Bank Account</small>
-
-                    <h2 class="counter">
-
-                        {{ $totalBankAccounts }}
-
-                    </h2>
-
-                </div>
-
-                <i class="fa fa-university fa-2x"></i>
-
-            </div>
-
-        </div>
-
-        {{-- CSC --}}
-
-        <div class="col-xl-2 col-lg-3 col-md-4">
+        {{-- Distributors --}}
+        <div class="col-xl-3 col-lg-4 col-md-6">
 
             <div class="dash-card-modern bg-purple">
 
                 <div>
 
-                    <small>CSC</small>
+                    <small>Distributors</small>
 
                     <h2 class="counter">
-
-                        {{ $totalCscServices }}
-
+                        {{ $totalDistributors }}
                     </h2>
 
                 </div>
 
-                <i class="fa fa-cogs fa-2x"></i>
+                <i class="fa fa-network-wired fa-2x"></i>
 
             </div>
 
         </div>
 
-        {{-- Wallet --}}
+        {{-- Executives --}}
+        <div class="col-xl-3 col-lg-4 col-md-6">
 
-        <div class="col-xl-2 col-lg-3 col-md-4">
-
-            <div class="dash-card-modern bg-warning">
+            <div class="dash-card-modern bg-secondary">
 
                 <div>
 
-                    <small>Revenue</small>
+                    <small>Executives</small>
 
-                    <h2>
-
-                        ₹{{ number_format($totalRevenue,0) }}
-
+                    <h2 class="counter">
+                        {{ $totalExecutives }}
                     </h2>
 
                 </div>
 
-                <i class="fa fa-wallet fa-2x"></i>
+                <i class="fa fa-user-tie fa-2x"></i>
 
             </div>
 
         </div>
 
-    </div>
+        {{-- Total Users --}}
+        <div class="col-xl-3 col-lg-4 col-md-6">
 
-    {{-- ========================================= --}}
-    {{-- USER CARDS --}}
-    {{-- ========================================= --}}
+            <div class="dash-card-modern bg-primary">
 
-    <div class="row g-4 mt-2">
+                <div>
 
-        {{-- ========================================= --}}
-    {{-- USER & APPLICATION CARDS --}}
-    {{-- ========================================= --}}
+                    <small>Total Users</small>
 
-    @if($isAdmin || $isDistributor)
+                    <h2 class="counter">
+                        {{ $totalUsers }}
+                    </h2>
 
-    {{-- Retailers --}}
-    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+                </div>
 
-        <div class="dash-card-modern bg-info">
-
-            <div>
-
-                <small>
-
-                    {{ $isAdmin ? 'Retailers' : 'My Retailers' }}
-
-                </small>
-
-                <h2 class="counter">
-
-                    {{ $totalRetailers }}
-
-                </h2>
+                <i class="fa fa-users fa-2x"></i>
 
             </div>
 
-            <i class="fa fa-store fa-2x"></i>
-
         </div>
-
-    </div>
 
     @endif
 
-    {{-- Admin Only --}}
 
-    @if($isAdmin)
+    {{-- ============================= --}}
+    {{-- DISTRIBUTOR --}}
+    {{-- ============================= --}}
+    @if($isDistributor)
 
-    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+        <div class="col-xl-4 col-lg-5 col-md-6">
 
-        <div class="dash-card-modern bg-purple">
+            <div class="dash-card-modern bg-info">
 
-            <div>
+                <div>
 
-                <small>Distributors</small>
+                    <small>My Retailers</small>
 
-                <h2 class="counter">
+                    <h2 class="counter">
+                        {{ $totalRetailers }}
+                    </h2>
 
-                    {{ $totalDistributors }}
+                </div>
 
-                </h2>
-
-            </div>
-
-            <i class="fa fa-network-wired fa-2x"></i>
-
-        </div>
-
-    </div>
-
-    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-
-        <div class="dash-card-modern bg-secondary">
-
-            <div>
-
-                <small>Executives</small>
-
-                <h2 class="counter">
-
-                    {{ $totalExecutives }}
-
-                </h2>
+                <i class="fa fa-store fa-2x"></i>
 
             </div>
 
-            <i class="fa fa-user-tie fa-2x"></i>
-
         </div>
-
-    </div>
-
-    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-
-        <div class="dash-card-modern bg-primary">
-
-            <div>
-
-                <small>Total Users</small>
-
-                <h2 class="counter">
-
-                    {{ $totalUsers }}
-
-                </h2>
-
-            </div>
-
-            <i class="fa fa-user-friends fa-2x"></i>
-
-        </div>
-
-    </div>
 
     @endif
 
-    {{-- Assigned --}}
+</div>
 
-    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+
+{{-- ========================================= --}}
+{{-- APPLICATION STATUS CARDS --}}
+{{-- ========================================= --}}
+
+@if($isAdmin)
+
+<div class="row g-4 mt-3">
+
+    <div class="col-xl-2 col-lg-3 col-md-4">
 
         <div class="dash-card-modern bg-warning">
 
@@ -348,9 +386,7 @@ $isExecutive = auth()->user()->hasRole('Executive');
                 <small>Assigned</small>
 
                 <h2 class="counter">
-
                     {{ $assignedApplications }}
-
                 </h2>
 
             </div>
@@ -361,9 +397,7 @@ $isExecutive = auth()->user()->hasRole('Executive');
 
     </div>
 
-    {{-- Pending --}}
-
-    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+    <div class="col-xl-2 col-lg-3 col-md-4">
 
         <div class="dash-card-modern bg-danger">
 
@@ -372,9 +406,7 @@ $isExecutive = auth()->user()->hasRole('Executive');
                 <small>Pending</small>
 
                 <h2 class="counter">
-
                     {{ $pendingApplications }}
-
                 </h2>
 
             </div>
@@ -385,9 +417,7 @@ $isExecutive = auth()->user()->hasRole('Executive');
 
     </div>
 
-    {{-- Processing --}}
-
-    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+    <div class="col-xl-2 col-lg-3 col-md-4">
 
         <div class="dash-card-modern bg-secondary">
 
@@ -396,9 +426,7 @@ $isExecutive = auth()->user()->hasRole('Executive');
                 <small>Processing</small>
 
                 <h2 class="counter">
-
                     {{ $processingApplications }}
-
                 </h2>
 
             </div>
@@ -409,9 +437,7 @@ $isExecutive = auth()->user()->hasRole('Executive');
 
     </div>
 
-    {{-- Completed --}}
-
-    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+    <div class="col-xl-2 col-lg-3 col-md-4">
 
         <div class="dash-card-modern bg-success">
 
@@ -420,9 +446,7 @@ $isExecutive = auth()->user()->hasRole('Executive');
                 <small>Completed</small>
 
                 <h2 class="counter">
-
                     {{ $completedApplications }}
-
                 </h2>
 
             </div>
@@ -433,9 +457,7 @@ $isExecutive = auth()->user()->hasRole('Executive');
 
     </div>
 
-    {{-- Rejected --}}
-
-    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+    <div class="col-xl-2 col-lg-3 col-md-4">
 
         <div class="dash-card-modern bg-dark">
 
@@ -444,9 +466,7 @@ $isExecutive = auth()->user()->hasRole('Executive');
                 <small>Rejected</small>
 
                 <h2 class="counter">
-
                     {{ $rejectedApplications }}
-
                 </h2>
 
             </div>
@@ -457,9 +477,7 @@ $isExecutive = auth()->user()->hasRole('Executive');
 
     </div>
 
-    {{-- Fresh Applications --}}
-
-    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+    <div class="col-xl-2 col-lg-3 col-md-4">
 
         <div class="dash-card-modern bg-primary">
 
@@ -468,9 +486,7 @@ $isExecutive = auth()->user()->hasRole('Executive');
                 <small>Fresh</small>
 
                 <h2 class="counter">
-
                     {{ $freshApplications }}
-
                 </h2>
 
             </div>
@@ -481,73 +497,28 @@ $isExecutive = auth()->user()->hasRole('Executive');
 
     </div>
 
-    {{-- Today's Uploads --}}
-
-    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-
-        <div class="dash-card-modern bg-info">
-
-            <div>
-
-                <small>Today's Uploads</small>
-
-                <h2 class="counter">
-
-                    {{ $todayUploads }}
-
-                </h2>
-
-            </div>
-
-            <i class="fa fa-upload fa-2x"></i>
-
-        </div>
-
-    </div>
-
-    {{-- Wallet Transactions --}}
-
-    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-
-        <div class="dash-card-modern bg-success">
-
-            <div>
-
-                <small>Wallet Txns</small>
-
-                <h2 class="counter">
-
-                    {{ $walletTransactions }}
-
-                </h2>
-
-            </div>
-
-            <i class="fa fa-wallet fa-2x"></i>
-
-        </div>
-
-    </div>
-
 </div>
 
+@endif
+
+{{-- ===================================================== --}}
+{{-- ADMIN ONLY CONTENT --}}
+{{-- ===================================================== --}}
+@if($isAdmin)
+
 {{-- ========================================= --}}
-{{-- CHART SECTION START --}}
+{{-- CHART SECTION --}}
 {{-- ========================================= --}}
 
 <div class="row mt-4">
 
-    {{-- ========================================= --}}
-    {{-- SERVICE ANALYTICS --}}
-    {{-- ========================================= --}}
-
-    <div class="col-xl-8 col-lg-7 col-12">
+    <div class="col-xl-8">
 
         <div class="card border-0 shadow-lg h-100">
 
             <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
 
-                <h5 class="mb-0 fw-bold">
+                <h5 class="fw-bold mb-0">
 
                     <i class="fa fa-chart-line text-primary me-2"></i>
 
@@ -565,10 +536,7 @@ $isExecutive = auth()->user()->hasRole('Executive');
 
             <div class="card-body">
 
-                <canvas
-                    id="dashboardChart"
-                    height="120">
-                </canvas>
+                <canvas id="dashboardChart" height="120"></canvas>
 
             </div>
 
@@ -576,15 +544,11 @@ $isExecutive = auth()->user()->hasRole('Executive');
 
     </div>
 
-    {{-- ========================================= --}}
-    {{-- QUICK STATS --}}
-    {{-- ========================================= --}}
-
-    <div class="col-xl-4 col-lg-5 col-12">
+    <div class="col-xl-4">
 
         <div class="card border-0 shadow-lg h-100">
 
-            <div class="card-header bg-white border-0">
+            <div class="card-header bg-white">
 
                 <h5 class="fw-bold mb-0">
 
@@ -598,129 +562,29 @@ $isExecutive = auth()->user()->hasRole('Executive');
 
             <div class="card-body">
 
-                <div class="d-flex justify-content-between mb-3">
-
-                    <span>
-
-                        PAN Services
-
-                    </span>
-
-                    <strong class="text-primary">
-
-                        {{ $totalPanApplications }}
-
-                    </strong>
-
+                <div class="mb-3 d-flex justify-content-between">
+                    <span>PAN Services</span>
+                    <strong>{{ $totalPanApplications }}</strong>
                 </div>
 
-                <div class="progress mb-4">
-
-                    <div
-                        class="progress-bar bg-primary"
-                        style="width:100%">
-                    </div>
-
+                <div class="mb-3 d-flex justify-content-between">
+                    <span>ITR Services</span>
+                    <strong>{{ $totalItrApplications }}</strong>
                 </div>
 
-                <div class="d-flex justify-content-between mb-3">
-
-                    <span>
-
-                        ITR Services
-
-                    </span>
-
-                    <strong class="text-success">
-
-                        {{ $totalItrApplications }}
-
-                    </strong>
-
+                <div class="mb-3 d-flex justify-content-between">
+                    <span>Aadhaar Services</span>
+                    <strong>{{ $totalAadhaarServices }}</strong>
                 </div>
 
-                <div class="progress mb-4">
-
-                    <div
-                        class="progress-bar bg-success"
-                        style="width:85%">
-                    </div>
-
+                <div class="mb-3 d-flex justify-content-between">
+                    <span>Bank Accounts</span>
+                    <strong>{{ $totalBankAccounts }}</strong>
                 </div>
 
-                <div class="d-flex justify-content-between mb-3">
-
-                    <span>
-
-                        Aadhaar Services
-
-                    </span>
-
-                    <strong class="text-danger">
-
-                        {{ $totalAadhaarServices }}
-
-                    </strong>
-
-                </div>
-
-                <div class="progress mb-4">
-
-                    <div
-                        class="progress-bar bg-danger"
-                        style="width:75%">
-                    </div>
-
-                </div>
-
-                <div class="d-flex justify-content-between mb-3">
-
-                    <span>
-
-                        Bank Account
-
-                    </span>
-
-                    <strong class="text-dark">
-
-                        {{ $totalBankAccounts }}
-
-                    </strong>
-
-                </div>
-
-                <div class="progress mb-4">
-
-                    <div
-                        class="progress-bar bg-dark"
-                        style="width:70%">
-                    </div>
-
-                </div>
-
-                <div class="d-flex justify-content-between mb-3">
-
-                    <span>
-
-                        CSC Services
-
-                    </span>
-
-                    <strong class="text-warning">
-
-                        {{ $totalCscServices }}
-
-                    </strong>
-
-                </div>
-
-                <div class="progress">
-
-                    <div
-                        class="progress-bar bg-warning"
-                        style="width:65%">
-                    </div>
-
+                <div class="d-flex justify-content-between">
+                    <span>CSC Services</span>
+                    <strong>{{ $totalCscServices }}</strong>
                 </div>
 
             </div>
@@ -732,20 +596,18 @@ $isExecutive = auth()->user()->hasRole('Executive');
 </div>
 
 {{-- ========================================= --}}
-{{-- REVENUE & WALLET --}}
+{{-- WALLET & REVENUE --}}
 {{-- ========================================= --}}
 
 <div class="row mt-4">
 
-    <div class="col-xl-6">
+    <div class="col-lg-6">
 
         <div class="card border-0 shadow-lg">
 
-            <div class="card-body">
+            <div class="card-body text-center">
 
                 <h5 class="fw-bold">
-
-                    <i class="fa fa-wallet text-success me-2"></i>
 
                     Wallet Summary
 
@@ -753,41 +615,17 @@ $isExecutive = auth()->user()->hasRole('Executive');
 
                 <hr>
 
-                <div class="row text-center">
+                <h3 class="text-success">
 
-                    <div class="col-6">
+                    ₹{{ number_format(auth()->user()->wallet_balance,2) }}
 
-                        <h6>
+                </h3>
 
-                            Wallet Balance
+                <p class="text-muted">
 
-                        </h6>
+                    Wallet Balance
 
-                        <h3 class="text-success">
-
-                            ₹{{ number_format(auth()->user()->wallet_balance,2) }}
-
-                        </h3>
-
-                    </div>
-
-                    <div class="col-6">
-
-                        <h6>
-
-                            Transactions
-
-                        </h6>
-
-                        <h3 class="text-primary">
-
-                            {{ $walletTransactions }}
-
-                        </h3>
-
-                    </div>
-
-                </div>
+                </p>
 
             </div>
 
@@ -795,15 +633,13 @@ $isExecutive = auth()->user()->hasRole('Executive');
 
     </div>
 
-    <div class="col-xl-6">
+    <div class="col-lg-6">
 
         <div class="card border-0 shadow-lg">
 
-            <div class="card-body">
+            <div class="card-body text-center">
 
                 <h5 class="fw-bold">
-
-                    <i class="fa fa-coins text-warning me-2"></i>
 
                     Revenue Summary
 
@@ -811,21 +647,11 @@ $isExecutive = auth()->user()->hasRole('Executive');
 
                 <hr>
 
-                <div class="text-center">
+                <h2 class="text-primary">
 
-                    <h1 class="display-5 fw-bold text-success">
+                    ₹{{ number_format($totalRevenue,2) }}
 
-                        ₹{{ number_format($totalRevenue,2) }}
-
-                    </h1>
-
-                    <small class="text-muted">
-
-                        Total Revenue Generated
-
-                    </small>
-
-                </div>
+                </h2>
 
             </div>
 
@@ -836,174 +662,76 @@ $isExecutive = auth()->user()->hasRole('Executive');
 </div>
 
 {{-- ========================================= --}}
-{{-- RECENT APPLICATIONS START --}}
+{{-- RECENT APPLICATIONS --}}
 {{-- ========================================= --}}
 
 <div class="row mt-4">
-        {{-- ========================================= --}}
-    {{-- RECENT APPLICATIONS --}}
-    {{-- ========================================= --}}
 
-    <div class="col-xl-8">
+    <div class="col-lg-8">
 
         <div class="card border-0 shadow-lg">
 
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <div class="card-header bg-white">
 
-                <h5 class="mb-0 fw-bold">
-
-                    <i class="fa fa-history text-primary me-2"></i>
+                <h5 class="fw-bold">
 
                     Recent Applications
 
                 </h5>
 
-                <a href="{{ route('admin.pan.index') }}"
-                   class="btn btn-primary btn-sm">
-
-                    View All
-
-                </a>
-
             </div>
 
-            <div class="card-body p-0">
+            <div class="card-body">
 
                 <div class="table-responsive">
 
-                    <table class="table table-hover align-middle mb-0">
+                    <table class="table table-hover">
 
-                        <thead class="table-light">
+                        <thead>
 
-                        <tr>
+                            <tr>
 
-                            <th>#</th>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Service</th>
+                                <th>Status</th>
+                                <th>Date</th>
 
-                            <th>Applicant</th>
-
-                            <th>Service</th>
-
-                            <th>Status</th>
-
-                            <th>Date</th>
-
-                        </tr>
+                            </tr>
 
                         </thead>
 
                         <tbody>
 
-                        @forelse($recentApplications ?? [] as $application)
+                            @forelse($recentApplications ?? [] as $application)
 
-                            <tr>
+                                <tr>
 
-                                <td>
+                                    <td>{{ $loop->iteration }}</td>
 
-                                    {{ $loop->iteration }}
+                                    <td>{{ $application->applicant_name }}</td>
 
-                                </td>
+                                    <td>{{ $application->service_name }}</td>
 
-                                <td>
+                                    <td>{{ $application->status }}</td>
 
-                                    <strong>
+                                    <td>{{ $application->created_at->format('d M Y') }}</td>
 
-                                        {{ $application->applicant_name }}
+                                </tr>
 
-                                    </strong>
+                            @empty
 
-                                </td>
+                                <tr>
 
-                                <td>
+                                    <td colspan="5" class="text-center">
 
-                                    <span class="badge bg-primary">
+                                        No Applications Found
 
-                                        {{ $application->service_name }}
+                                    </td>
 
-                                    </span>
+                                </tr>
 
-                                </td>
-
-                                <td>
-
-                                    @switch(strtolower($application->status))
-
-                                        @case('approved')
-
-                                            <span class="badge bg-success">
-
-                                                Approved
-
-                                            </span>
-
-                                            @break
-
-                                        @case('processing')
-
-                                            <span class="badge bg-info">
-
-                                                Processing
-
-                                            </span>
-
-                                            @break
-
-                                        @case('pending')
-
-                                            <span class="badge bg-warning text-dark">
-
-                                                Pending
-
-                                            </span>
-
-                                            @break
-
-                                        @case('rejected')
-
-                                            <span class="badge bg-danger">
-
-                                                Rejected
-
-                                            </span>
-
-                                            @break
-
-                                        @default
-
-                                            <span class="badge bg-secondary">
-
-                                                {{ $application->status }}
-
-                                            </span>
-
-                                    @endswitch
-
-                                </td>
-
-                                <td>
-
-                                    {{ $application->created_at->format('d M Y') }}
-
-                                </td>
-
-                            </tr>
-
-                        @empty
-
-                            <tr>
-
-                                <td colspan="5" class="text-center py-5">
-
-                                    <i class="fa fa-folder-open fa-3x text-muted mb-3"></i>
-
-                                    <br>
-
-                                    No Recent Applications Found
-
-                                </td>
-
-                            </tr>
-
-                        @endforelse
+                            @endforelse
 
                         </tbody>
 
@@ -1017,31 +745,17 @@ $isExecutive = auth()->user()->hasRole('Executive');
 
     </div>
 
-    {{-- ========================================= --}}
-    {{-- RECENT WALLET TRANSACTIONS --}}
-    {{-- ========================================= --}}
+    <div class="col-lg-4">
 
-    <div class="col-xl-4">
+        <div class="card border-0 shadow-lg">
 
-        <div class="card border-0 shadow-lg h-100">
+            <div class="card-header bg-white">
 
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold">
 
-                <h5 class="fw-bold mb-0">
-
-                    <i class="fa fa-wallet text-success me-2"></i>
-
-                    Wallet History
+                    Wallet Transactions
 
                 </h5>
-
-                <a href="{{ route('admin.wallet.transactions') }}"
-
-                   class="btn btn-success btn-sm">
-
-                    View
-
-                </a>
 
             </div>
 
@@ -1049,45 +763,13 @@ $isExecutive = auth()->user()->hasRole('Executive');
 
                 @forelse($recentTransactions ?? [] as $transaction)
 
-                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                    <div class="border-bottom pb-2 mb-2">
+
+                        <strong>{{ ucfirst($transaction->type) }}</strong>
 
                         <div>
 
-                            <strong>
-
-                                {{ ucfirst($transaction->type) }}
-
-                            </strong>
-
-                            <br>
-
-                            <small class="text-muted">
-
-                                {{ $transaction->created_at->diffForHumans() }}
-
-                            </small>
-
-                        </div>
-
-                        <div>
-
-                            @if($transaction->type=='credit')
-
-                                <span class="text-success fw-bold">
-
-                                    + ₹{{ number_format($transaction->amount,2) }}
-
-                                </span>
-
-                            @else
-
-                                <span class="text-danger fw-bold">
-
-                                    - ₹{{ number_format($transaction->amount,2) }}
-
-                                </span>
-
-                            @endif
+                            ₹{{ number_format($transaction->amount,2) }}
 
                         </div>
 
@@ -1095,17 +777,7 @@ $isExecutive = auth()->user()->hasRole('Executive');
 
                 @empty
 
-                    <div class="text-center py-5">
-
-                        <i class="fa fa-wallet fa-3x text-muted"></i>
-
-                        <p class="mt-3">
-
-                            No Wallet Transactions
-
-                        </p>
-
-                    </div>
+                    No Transactions
 
                 @endforelse
 
@@ -1118,23 +790,18 @@ $isExecutive = auth()->user()->hasRole('Executive');
 </div>
 
 {{-- ========================================= --}}
-{{-- QUICK ACTIONS START --}}
+{{-- QUICK ACTIONS --}}
 {{-- ========================================= --}}
 
 <div class="row mt-4">
-        {{-- ========================================= --}}
-    {{-- QUICK ACTIONS --}}
-    {{-- ========================================= --}}
 
-    <div class="col-xl-4">
+    <div class="col-lg-12">
 
         <div class="card border-0 shadow-lg">
 
             <div class="card-header bg-white">
 
-                <h5 class="fw-bold mb-0">
-
-                    <i class="fa fa-bolt text-warning me-2"></i>
+                <h5 class="fw-bold">
 
                     Quick Actions
 
@@ -1144,109 +811,23 @@ $isExecutive = auth()->user()->hasRole('Executive');
 
             <div class="card-body">
 
-                <div class="d-grid gap-3">
+                <a href="{{ route('admin.pan.index') }}" class="btn btn-primary me-2">
 
-                    @if($isAdmin)
+                    PAN
 
-                        <a href="{{ route('admin.pan.index') }}" class="btn btn-primary">
+                </a>
 
-                            <i class="fa fa-id-card me-2"></i>
+                <a href="{{ route('admin.itr.index') }}" class="btn btn-success me-2">
 
-                            PAN Applications
+                    ITR
 
-                        </a>
+                </a>
 
-                        <a href="{{ route('admin.itr.index') }}" class="btn btn-success">
+                <a href="{{ route('admin.wallet.transactions') }}" class="btn btn-warning">
 
-                            <i class="fa fa-file-invoice-dollar me-2"></i>
+                    Wallet
 
-                            ITR Applications
-
-                        </a>
-
-                        <a href="{{ route('admin.retailer-approvals.index') }}" class="btn btn-info">
-
-                            <i class="fa fa-store me-2"></i>
-
-                            Retailers
-
-                        </a>
-
-                        <a href="{{ route('admin.wallet.transactions') }}" class="btn btn-warning">
-
-                            <i class="fa fa-wallet me-2"></i>
-
-                            Wallet
-
-                        </a>
-
-                    @elseif($isDistributor)
-
-                        <a href="{{ route('admin.pan.index') }}" class="btn btn-primary">
-
-                            My PAN Applications
-
-                        </a>
-
-                        <a href="{{ route('admin.itr.index') }}" class="btn btn-success">
-
-                            My ITR Applications
-
-                        </a>
-
-                        <a href="{{ route('admin.wallet.transactions') }}" class="btn btn-warning">
-
-                            Wallet
-
-                        </a>
-
-                    @else
-
-                        <a href="{{ route('admin.pan.index') }}" class="btn btn-primary">
-
-                            Assigned PAN
-
-                        </a>
-
-                        <a href="{{ route('admin.itr.index') }}" class="btn btn-success">
-
-                            Assigned ITR
-
-                        </a>
-
-                    @endif
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    {{-- ========================================= --}}
-    {{-- SERVICE DISTRIBUTION --}}
-    {{-- ========================================= --}}
-
-    <div class="col-xl-8">
-
-        <div class="card border-0 shadow-lg">
-
-            <div class="card-header bg-white">
-
-                <h5 class="fw-bold mb-0">
-
-                    <i class="fa fa-chart-pie text-danger me-2"></i>
-
-                    Service Distribution
-
-                </h5>
-
-            </div>
-
-            <div class="card-body">
-
-                <canvas id="servicePieChart" height="120"></canvas>
+                </a>
 
             </div>
 
@@ -1256,9 +837,13 @@ $isExecutive = auth()->user()->hasRole('Executive');
 
 </div>
 
+@endif
+
 {{-- ========================================= --}}
-{{-- CHART JS --}}
+{{-- ADMIN ONLY CHARTS --}}
 {{-- ========================================= --}}
+
+@if($isAdmin)
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -1266,162 +851,172 @@ $isExecutive = auth()->user()->hasRole('Executive');
 
 const dashboardChart = new Chart(
 
-document.getElementById('dashboardChart'),
+    document.getElementById('dashboardChart'),
 
-{
+    {
 
-type:'bar',
+        type:'bar',
 
-data:{
+        data:{
 
-labels:@json($months),
+            labels:@json($months),
 
-datasets:[{
+            datasets:[{
 
-label:'Applications',
+                label:'Applications',
 
-data:@json($chartData),
+                data:@json($chartData),
 
-backgroundColor:'#0d6efd',
+                backgroundColor:'#0d6efd',
 
-borderRadius:8
+                borderRadius:8
 
-}]
+            }]
 
-},
+        },
 
-options:{
+        options:{
 
-responsive:true,
+            responsive:true,
 
-plugins:{
+            plugins:{
 
-legend:{
+                legend:{
 
-display:false
+                    display:false
 
-}
+                }
 
-}
+            }
 
-}
+        }
 
-});
+    }
+
+);
 
 const servicePieChart = new Chart(
 
-document.getElementById('servicePieChart'),
+    document.getElementById('servicePieChart'),
 
-{
+    {
 
-type:'doughnut',
+        type:'doughnut',
 
-data:{
+        data:{
 
-labels:[
+            labels:[
 
-'PAN',
+                'PAN',
 
-'ITR',
+                'ITR',
 
-'Aadhaar',
+                'Aadhaar',
 
-'Bank',
+                'Bank',
 
-'CSC'
+                'CSC'
 
-],
+            ],
 
-datasets:[{
+            datasets:[{
 
-data:[
+                data:[
 
-{{ $totalPanApplications }},
+                    {{ $totalPanApplications }},
 
-{{ $totalItrApplications }},
+                    {{ $totalItrApplications }},
 
-{{ $totalAadhaarServices }},
+                    {{ $totalAadhaarServices }},
 
-{{ $totalBankAccounts }},
+                    {{ $totalBankAccounts }},
 
-{{ $totalCscServices }}
+                    {{ $totalCscServices }}
 
-],
+                ],
 
-backgroundColor:[
+                backgroundColor:[
 
-'#0d6efd',
+                    '#0d6efd',
 
-'#198754',
+                    '#198754',
 
-'#dc3545',
+                    '#dc3545',
 
-'#212529',
+                    '#212529',
 
-'#ffc107'
+                    '#ffc107'
 
-]
+                ]
 
-}]
+            }]
 
-},
+        },
 
-options:{
+        options:{
 
-responsive:true,
+            responsive:true,
 
-plugins:{
+            plugins:{
 
-legend:{
+                legend:{
 
-position:'bottom'
+                    position:'bottom'
 
-}
+                }
 
-}
+            }
 
-}
+        }
 
-});
+    }
+
+);
 
 </script>
 
+@endif
+
+
 {{-- ========================================= --}}
-{{-- COUNTER ANIMATION --}}
+{{-- COUNTER --}}
 {{-- ========================================= --}}
 
 <script>
 
 document.querySelectorAll('.counter').forEach(function(counter){
 
-let target=parseInt(counter.innerText);
+    let target = parseInt(counter.innerText);
 
-let count=0;
+    let count = 0;
 
-let speed=Math.max(10,Math.floor(target/60));
+    let speed = Math.max(1, Math.floor(target / 50));
 
-counter.innerText='0';
+    counter.innerText = '0';
 
-const timer=setInterval(function(){
+    const timer = setInterval(function(){
 
-count+=speed;
+        count += speed;
 
-if(count>=target){
+        if(count >= target){
 
-counter.innerText=target;
+            counter.innerText = target;
 
-clearInterval(timer);
+            clearInterval(timer);
 
-}else{
+        }else{
 
-counter.innerText=count;
+            counter.innerText = count;
 
-}
+        }
 
-},20);
+    },20);
 
 });
 
 </script>
+
+{{-- Close the @else started in Part 1 --}}
+@endif
 
 @endsection

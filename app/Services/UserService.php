@@ -51,7 +51,10 @@ class UserService
 
             'password' => Hash::make($dto->password),
 
-            'first_login' => true
+            'status' => $dto->status,
+
+            'first_login' => $dto->first_login,
+
         ]);
     }
 
@@ -121,18 +124,18 @@ class UserService
     |--------------------------------------------------------------------------
     */
 
-    public function updateUser(
-        $id,
-        UserDTO $dto
-    ) {
-        $user = $this->userRepository
-            ->findById($id);
+    public function updateUser($id, UserDTO $dto)
+    {
+        $user = $this->userRepository->findById($id);
 
         $data = [
 
             'name' => $dto->name,
 
             'email' => $dto->email,
+
+            'status' => $dto->status,
+
         ];
 
         /*
@@ -141,17 +144,15 @@ class UserService
         |--------------------------------------------------------------------------
         */
 
-        if ($dto->password) {
+        if (!empty($dto->password)) {
 
-            $data['password'] = Hash::make(
-                $dto->password
-            );
+            $data['password'] = Hash::make($dto->password);
+
         }
 
-        return $this->userRepository
-            ->update($user, $data);
+        return $this->userRepository->update($user, $data);
     }
-
+    
     /*
     |--------------------------------------------------------------------------
     | DELETE USER

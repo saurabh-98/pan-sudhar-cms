@@ -4,6 +4,8 @@
 
 @php
     $isEdit = isset($user);
+
+    $isSuperDistributor = auth()->user()->hasRole('Super Distributor');
 @endphp
 
 <div class="container">
@@ -17,7 +19,15 @@
 
                     <h3 class="text-center mb-4">
 
-                        👤 {{ $isEdit ? 'Edit User' : 'Create User' }}
+                        @if($isSuperDistributor)
+
+                            👤 {{ $isEdit ? 'Manage Distributor' : 'Add Distributor' }}
+
+                        @else
+
+                            👤 {{ $isEdit ? 'Edit User' : 'Create User' }}
+
+                        @endif
 
                     </h3>
 
@@ -49,61 +59,90 @@
                     @endif
 
 
-                    <form id="userForm"
-                          method="POST"
-                          action="{{ $isEdit
-                                    ? route('admin.users.update', $user->id)
-                                    : route('admin.users.store') }}"
-                          autocomplete="off">
+                   <form id="userForm"
+                        method="POST"
+                        action="{{ $isEdit ? route('admin.users.update', $user->id) : route('admin.users.store') }}"
+                        autocomplete="off">
 
                         @csrf
+
+                        {{-- Prevent Chrome Autofill --}}
+                        <input type="text"
+                            name="fake_username"
+                            autocomplete="username"
+                            style="display:none">
+
+                        <input type="password"
+                            name="fake_password"
+                            autocomplete="new-password"
+                            style="display:none">
 
                         {{-- NAME --}}
                         <div class="form-floating mb-3">
 
                             <input type="text"
-                                   name="name"
-                                   class="form-control"
-                                   value="{{ old('name', $isEdit ? $user->name : '') }}"
-                                   required>
+                                id="name"
+                                name="name"
+                                class="form-control"
+                                value="{{ old('name', $isEdit ? $user->name : '') }}"
+                                autocomplete="off"
+                                required>
 
                             <label>Name</label>
 
                         </div>
 
-
                         {{-- EMAIL --}}
                         <div class="form-floating mb-3">
 
                             <input type="email"
-                                   name="email"
-                                   class="form-control"
-                                   value="{{ old('email', $isEdit ? $user->email : '') }}"
-                                   required>
+                                id="email"
+                                name="email"
+                                class="form-control"
+                                value="{{ $isEdit ? old('email', $user->email) : '' }}"
+                                autocomplete="new-email"
+                                spellcheck="false"
+                                autocorrect="off"
+                                autocapitalize="off"
+                                required>
 
                             <label>Email</label>
 
                         </div>
 
-
                         {{-- PASSWORD --}}
-                        <div class="form-floating mb-3">
+                        <div class="mb-3">
 
-                            <input type="password"
-                                   name="password"
-                                   class="form-control"
-                                   {{ $isEdit ? '' : 'required' }}>
+                            @if($isEdit)
 
-                            <label>
+                                <small class="text-muted">
 
-                                {{ $isEdit
-                                    ? 'New Password (Optional)'
-                                    : 'Password' }}
+                                 Leave blank if you don't want to change the password.
 
-                            </label>
+                                </small>
+
+                            @endif
+
+                            <div class="input-group">
+
+                                <input type="password"
+                                    id="password"
+                                    name="password"
+                                    class="form-control"
+                        
+                                    {{ $isEdit ? '' : 'required' }}>
+
+                                <button class="btn btn-outline-secondary"
+                                        type="button"
+                                        id="togglePassword">
+
+                                    <i class="fa fa-eye"></i>
+
+                                </button>
+
+                            </div>
 
                         </div>
-
 
                         {{-- ROLE --}}
                         <div class="mb-3">
@@ -127,13 +166,7 @@
                                 @foreach($roles as $role)
 
                                     <option value="{{ $role->name }}"
-
-                                        {{
-                                            $isEdit &&
-                                            $user->hasRole($role->name)
-                                            ? 'selected'
-                                            : ''
-                                        }}>
+                                        {{ $isEdit && $user->hasRole($role->name) ? 'selected' : '' }}>
 
                                         {{ $role->name }}
 
@@ -145,7 +178,6 @@
 
                         </div>
 
-
                         {{-- STATUS --}}
                         <div class="mb-3">
 
@@ -155,28 +187,28 @@
 
                             </label>
 
-                            <select name="status"
-                                    class="form-select">
+                            <select
+                                name="status"
+                                class="form-select"
+                                required>
 
                                 <option value="1"
-                                    {{
-                                        $isEdit &&
-                                        $user->status == 1
-                                        ? 'selected'
-                                        : ''
-                                    }}>
+
+                                    {{ old(
+                                        'status',
+                                        $isEdit ? $user->status : 1
+                                    ) == 1 ? 'selected' : '' }}>
 
                                     Active
 
                                 </option>
 
                                 <option value="0"
-                                    {{
-                                        $isEdit &&
-                                        $user->status == 0
-                                        ? 'selected'
-                                        : ''
-                                    }}>
+
+                                    {{ old(
+                                        'status',
+                                        $isEdit ? $user->status : 1
+                                    ) == 0 ? 'selected' : '' }}>
 
                                     Inactive
 
@@ -186,14 +218,18 @@
 
                         </div>
 
-
-                        {{-- SUBMIT --}}
                         <button type="submit"
                                 class="btn btn-success w-100">
 
-                            {{ $isEdit
-                                ? 'Update User'
-                                : 'Create User' }}
+                            @if($isSuperDistributor)
+
+                                {{ $isEdit ? 'Update Distributor' : 'Create Distributor' }}
+
+                            @else
+
+                                {{ $isEdit ? 'Update User' : 'Create User' }}
+
+                            @endif
 
                         </button>
 
@@ -216,6 +252,32 @@
 <script>
 
 $(document).ready(function(){
+
+    $('#togglePassword').click(function () {
+
+        let password = $('#password');
+
+        let icon = $(this).find('i');
+
+        if (password.attr('type') === 'password') {
+
+            password.attr('type', 'text');
+
+            icon.removeClass('fa-eye');
+
+            icon.addClass('fa-eye-slash');
+
+        } else {
+
+            password.attr('type', 'password');
+
+            icon.removeClass('fa-eye-slash');
+
+            icon.addClass('fa-eye');
+
+        }
+
+    });
 
     $('#userForm').submit(function(e){
 

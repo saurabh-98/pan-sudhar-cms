@@ -41,12 +41,23 @@ class UserController extends Controller
 
     public function create()
     {
-        $roles = Role::all();
+        $user = auth()->user();
 
-        return view(
-            'admin.users.create',
-            compact('roles')
-        );
+        if ($user->hasRole('admin')) {
+
+            $roles = Role::all();
+
+        } elseif ($user->hasRole('Super Distributor')) {
+
+            $roles = Role::where('name', 'Distributor')->get();
+
+        } else {
+
+            abort(403);
+
+        }
+
+        return view('admin.users.create', compact('roles'));
     }
 
     /*
@@ -84,13 +95,11 @@ class UserController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            $user = $this->service->createUser($dto);
+           $user = $this->service->createUser($dto);
 
-            /*
-            |--------------------------------------------------------------------------
-            | ASSIGN ROLE
-            |--------------------------------------------------------------------------
-            */
+            $user->created_by = auth()->id();
+
+            $user->save();
 
             $user->assignRole($request->role);
 
@@ -122,8 +131,21 @@ public function list()
         |--------------------------------------------------------------------------
         */
 
-        $users = $this->service
-            ->getAllUsers();
+       $user = auth()->user();
+
+        $users = $this->service->getAllUsers();
+
+        if ($user->hasRole('Super Distributor')) {
+
+            $users = $users
+                ->where('created_by', $user->id)
+                ->filter(function ($user) {
+
+                    return $user->hasRole('Distributor');
+
+                });
+
+        }
 
         /*
         |--------------------------------------------------------------------------

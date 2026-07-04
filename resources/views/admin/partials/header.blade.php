@@ -3,6 +3,7 @@ $user = auth()->user();
 
 
 $isAdmin = $user->hasRole('admin');
+$isSuperDistributor = $user->hasRole('Super Distributor');
 $isExecutive = $user->hasRole('Executive');
 $isDistributor = $user->hasRole('Distributor');
 
@@ -31,6 +32,10 @@ $isDistributor = $user->hasRole('Distributor');
             @if($isAdmin)
 
                 {{ $pageTitle ?? 'Admin Dashboard' }}
+
+            @elseif($isSuperDistributor)
+
+                {{ $pageTitle ?? 'Super Distributor Dashboard' }}
 
             @elseif($isExecutive)
 
@@ -78,7 +83,7 @@ $isDistributor = $user->hasRole('Distributor');
 <div class="hdrx-right">
 
     {{-- WALLET --}}
-    @if($isAdmin || $isExecutive || $isDistributor)
+    @if($isAdmin || $isSuperDistributor || $isExecutive || $isDistributor)
 
         <div class="admin-wallet-box">
 
@@ -87,6 +92,10 @@ $isDistributor = $user->hasRole('Distributor');
                 @if($isAdmin)
 
                     <i class="fa fa-wallet"></i>
+
+                @elseif($isSuperDistributor)
+
+                    <i class="fa fa-sitemap"></i>
 
                 @elseif($isExecutive)
 
@@ -107,6 +116,10 @@ $isDistributor = $user->hasRole('Distributor');
                     @if($isAdmin)
 
                         Admin Wallet
+
+                    @elseif($isSuperDistributor)
+
+                        Super Distributor Wallet
 
                     @elseif($isExecutive)
 
@@ -172,6 +185,10 @@ $isDistributor = $user->hasRole('Distributor');
 
                         Admin
 
+                    @elseif($isSuperDistributor)
+
+                        Super Distributor
+
                     @elseif($isExecutive)
 
                         Executive
@@ -225,6 +242,26 @@ $isDistributor = $user->hasRole('Distributor');
                         <i class="fa fa-shield-alt"></i>
 
                         Admin Panel
+
+                    </a>
+
+                </li>
+
+            @endif
+
+            {{-- SUPER DISTRIBUTOR --}}
+            @if($isSuperDistributor)
+
+                <li>
+
+                    <a
+                        class="dropdown-item"
+                        href="{{ route('admin.dashboard') }}"
+                    >
+
+                        <i class="fa fa-sitemap"></i>
+
+                        Super Distributor Panel
 
                     </a>
 
