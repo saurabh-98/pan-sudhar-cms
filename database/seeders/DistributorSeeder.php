@@ -40,7 +40,7 @@ class DistributorSeeder extends Seeder
             [
                 'name' => 'Default Distributor',
 
-                'mobile' => '9876543210',
+                'mobile' => '9999999999',
 
                 'password' => Hash::make('password'),
 
