@@ -72,8 +72,6 @@ class DashboardController extends Controller
             ? User::role('Retailer')->count()
             : ($data['totalRetailers'] ?? 0);
 
-        // Admin sees every distributor; Super Distributor sees only the
-        // distributors they personally created (via the `created_by` column).
         $totalDistributors = $isAdmin
             ? User::role('Distributor')->count()
             : ($isSuperDistributor

@@ -307,6 +307,11 @@ class RolePermissionSeeder extends Seeder
             'service-guidelines.edit',
             'service-guidelines.delete',
 
+            'bank-docs.view',
+            'bank-docs.create',
+            'bank-docs.edit',
+            'bank-docs.delete',
+
             
 
             

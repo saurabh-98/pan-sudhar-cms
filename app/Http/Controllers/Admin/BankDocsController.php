@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\DTO\ServiceGuidelineDTO;
+use App\DTO\BankDocsDTO;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ServiceGuidelineRequest;
+use App\Http\Requests\BankDocsRequest;
 use App\Models\Module;
-use App\Services\ServiceGuidelineService;
+use App\Services\BankDocsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
-class ServiceGuidelineController extends Controller
+class BankDocsController extends Controller
 {
     public function __construct(
-        protected ServiceGuidelineService $service
+        protected BankDocsService $service
     ) {}
 
     /**
@@ -29,14 +29,17 @@ class ServiceGuidelineController extends Controller
             ->whereNotNull('parent_id')
             ->where('status', 1)
             ->where('slug', 'not like', '%history%')
+            ->whereHas('parent', function ($query) {
+                $query->where('slug', 'bank-account-services');
+            })
             ->orderBy('sort_order')
             ->get()
             ->groupBy(function ($module) {
-                return $module->parent->name ?? 'Other';
+                return optional($module->parent)->name ?? 'Other';
             });
 
         return view(
-            'admin.service-guidelines.index',
+            'admin.bank-docs.index',
             compact('services')
         );
     }
@@ -119,12 +122,12 @@ class ServiceGuidelineController extends Controller
      * STORE
      * ==========================================================
      */
-    public function store(ServiceGuidelineRequest $request)
+    public function store(BankDocsRequest $request)
     {
         try {
 
             $this->service->store(
-                ServiceGuidelineDTO::fromRequest($request)
+                BankDocsDTO::fromRequest($request)
             );
 
             return response()->json([
@@ -186,7 +189,7 @@ class ServiceGuidelineController extends Controller
      * ==========================================================
      */
     public function update(
-        ServiceGuidelineRequest $request,
+        BankDocsRequest $request,
         int $id
     ) {
         try {
@@ -195,7 +198,7 @@ class ServiceGuidelineController extends Controller
 
                 $id,
 
-                ServiceGuidelineDTO::fromRequest($request)
+                BankDocsDTO::fromRequest($request)
 
             );
 

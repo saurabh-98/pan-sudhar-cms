@@ -539,6 +539,23 @@
                     </li>
                     @endcan
 
+
+                 {{-- BANK FORM DOCUMENT --}}
+                    @can('bank-docs.view')
+                    <li>
+                        <a href="{{ route('admin.bank-docs.index') }}"
+                        class="sbx-link {{ request()->routeIs('admin.bank-docs.*') ? 'sbx-active' : '' }}">
+
+                            <i class="fa fa-file-pdf text-danger"></i>
+
+                            <span>
+                                Bank Docs
+                            </span>
+
+                        </a>
+                    </li>
+                    @endcan
+
             </ul>
 
         </li>

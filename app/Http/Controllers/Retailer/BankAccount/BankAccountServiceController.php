@@ -12,7 +12,7 @@ use App\DTO\BankAccountServiceDTO;
 use App\Http\Requests\StoreBankAccountServiceRequest;
 use App\Services\BankAccountServiceService;
 use App\Services\ServiceGuidelineService;
-
+use App\Models\BankDocs;
 use App\Models\BankAccountService;
 use App\Models\Charge;
 use App\Models\User;
@@ -43,39 +43,31 @@ class BankAccountServiceController extends Controller
     |--------------------------------------------------------------------------
     */
 
+
     public function create(string $service)
     {
-        $serviceName = collect(
-            explode('-', $service)
-        )
-        ->map(fn ($word) => ucfirst($word))
-        ->implode(' ');
-        
+        $serviceName = collect(explode('-', $service))
+            ->map(fn ($word) => ucfirst($word))
+            ->implode(' ');
 
         $session = get_bank_account_session();
-        
+
+        $bankForm = BankDocs::where('service_code', $service)
+            ->where('is_active', 1)
+            ->first();
+
         return view(
             'retailer.bank-account.create',
             [
-                'serviceSlug' => $service,
-
-                'serviceName' => $serviceName,
-
-                'fields' => bank_account_fields($service),
-
-                'bankAccountCharge' => $this->getBankAccountCharge($service),
-
-                'walletBalance' => auth()->user()->wallet_balance,
-
-                'data' => $session['data'] ?? [],
-
-                'files' => $session['files'] ?? [],
-                
-                'guideline' =>
-
-                    $this->serviceGuidelineService
-                        ->getActiveGuideline($service),
-
+                'serviceSlug'        => $service,
+                'serviceName'        => $serviceName,
+                'fields'             => bank_account_fields($service),
+                'bankAccountCharge'  => $this->getBankAccountCharge($service),
+                'walletBalance'      => auth()->user()->wallet_balance,
+                'data'               => $session['data'] ?? [],
+                'files'              => $session['files'] ?? [],
+                'guideline'          => $this->serviceGuidelineService->getActiveGuideline($service),
+                'bankForm'           => $bankForm,
             ]
         );
     }

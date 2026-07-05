@@ -38,6 +38,7 @@ use App\Http\Controllers\Admin\AdminCscController;
 use App\Http\Controllers\Admin\AdminVoterIdController;
 use App\Http\Controllers\Admin\AdminBankAccountController;
 use App\Http\Controllers\Admin\AdminOtherServiceController;
+use App\Http\Controllers\Admin\BankDocsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -458,6 +459,90 @@ Route::middleware([
                 [ServiceGuidelineController::class, 'destroy']
             )->name('destroy')
             ->middleware('permission:service-guidelines.delete');
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | BANK FORM DOCS
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('bank-docs')
+        ->name('bank-docs.')
+        ->middleware('permission:bank-docs.view')
+        ->group(function () {
+
+            /*
+            |--------------------------------------------------------------------------
+            | INDEX
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/',
+                [BankDocsController::class, 'index']
+            )->name('index');
+
+            /*
+            |--------------------------------------------------------------------------
+            | LIST (DataTable)
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/list',
+                [BankDocsController::class, 'list']
+            )->name('list');
+
+            /*
+            |--------------------------------------------------------------------------
+            | STORE
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/store',
+                [BankDocsController::class, 'store']
+            )->name('store')
+            ->middleware('permission:bank-docs.create');
+
+            /*
+            |--------------------------------------------------------------------------
+            | EDIT
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/edit/{id}',
+                [BankDocsController::class, 'edit']
+            )->name('edit')
+            ->middleware('permission:bank-docs.edit');
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/update/{id}',
+                [BankDocsController::class, 'update']
+            )->name('update')
+            ->middleware('permission:bank-docs.edit');
+
+            /*
+            |--------------------------------------------------------------------------
+            | DELETE
+            |--------------------------------------------------------------------------
+            */
+
+            Route::delete(
+                '/delete/{id}',
+                [BankDocsController::class, 'destroy']
+            )->name('destroy')
+            ->middleware('permission:bank-docs.delete');
 
     });
 
