@@ -25,10 +25,12 @@ class AdminItrController extends Controller
     |--------------------------------------------------------------------------
     */
 
+    
+
     public function index(Request $request)
     {
-        if($request->ajax())
-        {
+        if ($request->ajax()) {
+
             $applications = ItrFile::query()
 
                 ->with([
@@ -42,14 +44,61 @@ class AdminItrController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            if(auth()->user()->hasRole('Executive'))
-            {
+            if (auth()->user()->hasRole('Executive')) {
                 $applications
                     ->whereNotNull('assigned_to')
                     ->where(
                         'assigned_to',
                         auth()->id()
                     );
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | STATUS TAB FILTER
+            |--------------------------------------------------------------------------
+            | NOTE: this model's status column mixes casing ('completed',
+            | 'Approved', 'pending', 'Processing'), and the status-badge
+            | column already treats anything outside those four exact
+            | strings as "Rejected". These filters mirror that same
+            | four-value list exactly so tabs match what the badge shows.
+            | If you ever normalize casing on this column, simplify this
+            | block to a case-insensitive check instead.
+            |--------------------------------------------------------------------------
+            */
+
+            if ($request->filled('status_tab')) {
+
+                switch ($request->status_tab) {
+
+                    case 'new':
+
+                        $applications
+                            ->whereNull('assigned_to')
+                            ->whereIn('status', ['pending', 'Processing']);
+
+                        break;
+
+                    case 'assigned':
+
+                        $applications
+                            ->whereNotNull('assigned_to')
+                            ->whereIn('status', ['pending', 'Processing']);
+
+                        break;
+
+                    case 'approved':
+
+                        $applications->whereIn('status', ['completed', 'Approved']);
+
+                        break;
+
+                    case 'rejected':
+
+                        $applications->whereNotIn('status', ['completed', 'Approved', 'pending', 'Processing']);
+
+                        break;
+                }
             }
 
             $applications->latest();
@@ -60,7 +109,7 @@ class AdminItrController extends Controller
 
                 ->addIndexColumn()
 
-                ->addColumn('retailer', function($row){
+                ->addColumn('retailer', function ($row) {
 
                     return '
 
@@ -101,7 +150,7 @@ class AdminItrController extends Controller
                     ';
                 })
 
-                ->addColumn('itr_no', function($row){
+                ->addColumn('itr_no', function ($row) {
 
                     return '
 
@@ -109,7 +158,7 @@ class AdminItrController extends Controller
 
                             <span class="application-id">
 
-                                ITR-'.$row->id.'
+                                ITR-' . $row->id . '
 
                             </span>
 
@@ -118,23 +167,22 @@ class AdminItrController extends Controller
                     ';
                 })
 
-                ->addColumn('applicant', function($row){
+                ->addColumn('applicant', function ($row) {
 
                     return '
 
                         <div class="applicant-box">
 
-                            '.$row->name.'
+                            ' . $row->name . '
 
                         </div>
 
                     ';
                 })
 
-                ->addColumn('status', function($row){
+                ->addColumn('status', function ($row) {
 
-                    if($row->status == 'completed')
-                    {
+                    if ($row->status == 'completed') {
                         return '
 
                             <span class="badge bg-success">
@@ -144,9 +192,7 @@ class AdminItrController extends Controller
                             </span>
 
                         ';
-                    }
-                    elseif($row->status == 'Approved')
-                    {
+                    } elseif ($row->status == 'Approved') {
                         return '
 
                             <span class="badge bg-success">
@@ -156,9 +202,7 @@ class AdminItrController extends Controller
                             </span>
 
                         ';
-                    }
-                    elseif($row->status == 'pending')
-                    {
+                    } elseif ($row->status == 'pending') {
                         return '
 
                             <span class="badge bg-warning text-dark">
@@ -168,9 +212,7 @@ class AdminItrController extends Controller
                             </span>
 
                         ';
-                    }
-                    elseif($row->status == 'Processing')
-                    {
+                    } elseif ($row->status == 'Processing') {
                         return '
 
                             <span class="badge bg-primary">
@@ -193,15 +235,14 @@ class AdminItrController extends Controller
                     ';
                 })
 
-                ->addColumn('assigned_to', function($row){
+                ->addColumn('assigned_to', function ($row) {
 
-                    if($row->assignedEmployee)
-                    {
+                    if ($row->assignedEmployee) {
                         return '
 
                             <span class="assigned-badge">
 
-                                '.$row->assignedEmployee->name.'
+                                ' . $row->assignedEmployee->name . '
 
                             </span>
 
@@ -219,7 +260,7 @@ class AdminItrController extends Controller
                     ';
                 })
 
-                ->addColumn('action', function($row){
+                ->addColumn('action', function ($row) {
 
                     $buttons = '
 
@@ -244,13 +285,13 @@ class AdminItrController extends Controller
 
                     ';
 
-                    if(
+                    if (
                         !in_array(
                             strtolower($row->status),
-                            ['approved','completed','rejected']
+                            ['approved', 'completed', 'rejected']
                         )
-                    )
-                    {
+                    ) {
+
                         $buttons .= '
 
                             <form
@@ -312,7 +353,6 @@ class AdminItrController extends Controller
 
         return view('admin.itr.index');
     }
-
 
     /*
     |--------------------------------------------------------------------------

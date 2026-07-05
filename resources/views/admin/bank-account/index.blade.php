@@ -56,13 +56,43 @@
 
     <div class="card admin-pan-card">
 
+        <div class="card-header p-0 border-0">
+            <ul class="nav nav-tabs admin-pan-tabs" id="bankAccountStatusTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" data-status="" type="button">
+                        All
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-status="new" type="button">
+                        New Application
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-status="assigned" type="button">
+                        Assigned
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-status="approved" type="button">
+                        Approved
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-status="rejected" type="button">
+                        Rejected
+                    </button>
+                </li>
+            </ul>
+        </div>
+
         <div class="card-body">
 
             <div class="table-responsive">
 
                 <table
                     class="table admin-pan-table align-middle"
-                    id="aadhaarApplicationTable"
+                    id="bankAccountApplicationTable"
                     width="100%"
                 >
 
@@ -114,7 +144,9 @@
 
 $(function () {
 
-    $('#aadhaarApplicationTable').DataTable({
+    var currentStatus = '';
+
+    var table = $('#bankAccountApplicationTable').DataTable({
 
         processing: true,
 
@@ -128,7 +160,12 @@ $(function () {
 
         order: [[0, 'desc']],
 
-        ajax: "{{ route('admin.bank-account.index') }}",
+        ajax: {
+            url: "{{ route('admin.bank-account.index') }}",
+            data: function (d) {
+                d.status_tab = currentStatus;
+            }
+        },
 
         columns: [
 
@@ -145,27 +182,29 @@ $(function () {
             {
                 data: 'retailer',
                 name: 'retailer',
-                orderable:false,
-                searchable:false
+                orderable: false,
+                searchable: false
             },
 
             {
                 data: 'applicant',
                 name: 'applicant',
-                orderable:false,
-                searchable:false
+                orderable: false,
+                searchable: false
             },
 
             {
                 data: 'mobile',
                 name: 'mobile',
-                orderable:false,
-                searchable:false
+                orderable: false,
+                searchable: false
             },
 
             {
                 data: 'service',
-                name: 'service_name'
+                name: 'service',
+                orderable: false,
+                searchable: false
             },
 
             {
@@ -177,7 +216,7 @@ $(function () {
 
             {
                 data: 'payment',
-                name: 'payment_status',
+                name: 'payment',
                 orderable: false,
                 searchable: false
             },
@@ -208,12 +247,24 @@ $(function () {
             search: "",
 
             searchPlaceholder:
-                "Search Aadhaar Application...",
+                "Search Bank Account Application...",
 
             lengthMenu:
                 "_MENU_ Records Per Page",
 
         }
+
+    });
+
+    // Tab click handling
+    $('#bankAccountStatusTabs .nav-link').on('click', function () {
+
+        $('#bankAccountStatusTabs .nav-link').removeClass('active');
+        $(this).addClass('active');
+
+        currentStatus = $(this).data('status');
+
+        table.ajax.reload();
 
     });
 

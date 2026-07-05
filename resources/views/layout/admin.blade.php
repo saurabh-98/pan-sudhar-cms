@@ -26,9 +26,10 @@
     <link rel="stylesheet" href="{{ asset('assets/css/sidebar-admin.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/header-admin.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/admin-new-pan.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/admin-new-pan-show.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/charges-admin.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/charges-admin.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/admin-common-service.css') }}">
 
 
 

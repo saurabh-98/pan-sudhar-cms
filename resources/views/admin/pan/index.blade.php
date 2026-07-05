@@ -65,6 +65,39 @@
     ====================================================== --}}
     <div class="card admin-pan-card">
 
+        {{-- =====================================================
+        | STATUS TABS
+        ====================================================== --}}
+        <div class="card-header p-0 border-0">
+            <ul class="nav nav-tabs admin-pan-tabs" id="panStatusTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" data-status="" type="button">
+                        All
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-status="new" type="button">
+                        New Application
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-status="assigned" type="button">
+                        Assigned
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-status="approved" type="button">
+                        Approved
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-status="rejected" type="button">
+                        Rejected
+                    </button>
+                </li>
+            </ul>
+        </div>
+
         <div class="card-body">
 
             {{-- =====================================================
@@ -134,7 +167,9 @@
 
 $(function () {
 
-    $('#panApplicationTable').DataTable({
+    var currentStatus = '';
+
+    var table = $('#panApplicationTable').DataTable({
 
         processing: true,
 
@@ -148,7 +183,12 @@ $(function () {
 
         order: [[0, 'desc']],
 
-        ajax: "{{ route('admin.pan.index') }}",
+        ajax: {
+            url: "{{ route('admin.pan.index') }}",
+            data: function (d) {
+                d.status_tab = currentStatus;
+            }
+        },
 
         columns: [
 
@@ -164,12 +204,16 @@ $(function () {
 
             {
                 data: 'retailer',
-                name: 'retailer'
+                name: 'retailer',
+                orderable: false,
+                searchable: false
             },
 
             {
                 data: 'applicant',
-                name: 'applicant'
+                name: 'applicant',
+                orderable: false,
+                searchable: false
             },
 
             {
@@ -194,11 +238,13 @@ $(function () {
             {
                 data: 'assigned_to',
                 name: 'assigned_to',
-                orderable: false
+                orderable: false,
+                searchable: false
             },
 
             {
                 data: 'created_at',
+                name: 'created_at',
                 render: function(data) {
                     return moment(data).format('DD MMM YYYY hh:mm A');
                 }
@@ -224,6 +270,18 @@ $(function () {
                 "_MENU_ Records Per Page",
 
         }
+
+    });
+
+    // Tab click handling
+    $('#panStatusTabs .nav-link').on('click', function () {
+
+        $('#panStatusTabs .nav-link').removeClass('active');
+        $(this).addClass('active');
+
+        currentStatus = $(this).data('status');
+
+        table.ajax.reload();
 
     });
 

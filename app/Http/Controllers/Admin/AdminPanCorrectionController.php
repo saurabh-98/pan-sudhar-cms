@@ -23,10 +23,12 @@ class AdminPanCorrectionController extends Controller
     |--------------------------------------------------------------------------
     */
 
+    
+
     public function index(Request $request)
     {
-        if($request->ajax())
-        {
+        if ($request->ajax()) {
+
             $applications = PanCorrectionApplication::query()
 
                 ->with([
@@ -40,14 +42,53 @@ class AdminPanCorrectionController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            if(auth()->user()->hasRole('Executive'))
-            {
+            if (auth()->user()->hasRole('Executive')) {
                 $applications
                     ->whereNotNull('assigned_to')
                     ->where(
                         'assigned_to',
                         auth()->id()
                     );
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | STATUS TAB FILTER
+            |--------------------------------------------------------------------------
+            */
+
+            if ($request->filled('status_tab')) {
+
+                switch ($request->status_tab) {
+
+                    case 'new':
+
+                        $applications
+                            ->whereNull('assigned_to')
+                            ->where('status', 'processing');
+
+                        break;
+
+                    case 'assigned':
+
+                        $applications
+                            ->whereNotNull('assigned_to')
+                            ->whereNotIn('status', ['approved', 'completed', 'rejected']);
+
+                        break;
+
+                    case 'approved':
+
+                        $applications->whereIn('status', ['approved', 'completed']);
+
+                        break;
+
+                    case 'rejected':
+
+                        $applications->where('status', 'rejected');
+
+                        break;
+                }
             }
 
             /*
@@ -64,7 +105,7 @@ class AdminPanCorrectionController extends Controller
 
                 ->addIndexColumn()
 
-                ->addColumn('retailer', function($row){
+                ->addColumn('retailer', function ($row) {
 
                     return '
 
@@ -105,7 +146,7 @@ class AdminPanCorrectionController extends Controller
                     ';
                 })
 
-                ->addColumn('application_no', function($row){
+                ->addColumn('application_no', function ($row) {
 
                     return '
 
@@ -126,7 +167,7 @@ class AdminPanCorrectionController extends Controller
                     ';
                 })
 
-                ->addColumn('applicant', function($row){
+                ->addColumn('applicant', function ($row) {
 
                     return '
 
@@ -143,20 +184,19 @@ class AdminPanCorrectionController extends Controller
                     ';
                 })
 
-                ->addColumn('status', function($row){
+                ->addColumn('status', function ($row) {
 
                     return $row->status_badge;
                 })
 
-                ->addColumn('payment', function($row){
+                ->addColumn('payment', function ($row) {
 
                     return $row->payment_badge;
                 })
 
-                ->addColumn('assigned_to', function($row){
+                ->addColumn('assigned_to', function ($row) {
 
-                    if($row->assignedUser)
-                    {
+                    if ($row->assignedUser) {
                         return '
 
                             <span class="assigned-badge">
@@ -183,7 +223,7 @@ class AdminPanCorrectionController extends Controller
                     ';
                 })
 
-                ->addColumn('action', function($row){
+                ->addColumn('action', function ($row) {
 
                     $buttons = '
 
@@ -208,8 +248,8 @@ class AdminPanCorrectionController extends Controller
 
                     ';
 
-                    if($row->status !== 'rejected')
-                    {
+                    if ($row->status !== 'rejected') {
+
                         $buttons .= '
 
                             <form
@@ -272,7 +312,6 @@ class AdminPanCorrectionController extends Controller
 
         return view('admin.pan-correction.index');
     }
-
     /*
     |--------------------------------------------------------------------------
     | SHOW APPLICATION

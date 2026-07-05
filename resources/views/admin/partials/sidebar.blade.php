@@ -523,44 +523,74 @@
                 </li>
                 @endcan
 
-                {{-- SERVICE GUIDELINES --}}
-                    @can('service-guidelines.view')
-                    <li>
-                        <a href="{{ route('admin.service-guidelines.index') }}"
-                        class="sbx-link {{ request()->routeIs('admin.service-guidelines.*') ? 'sbx-active' : '' }}">
-
-                            <i class="fa fa-file-pdf text-danger"></i>
-
-                            <span>
-                                Service Guidelines
-                            </span>
-
-                        </a>
-                    </li>
-                    @endcan
-
-
-                 {{-- BANK FORM DOCUMENT --}}
-                    @can('bank-docs.view')
-                    <li>
-                        <a href="{{ route('admin.bank-docs.index') }}"
-                        class="sbx-link {{ request()->routeIs('admin.bank-docs.*') ? 'sbx-active' : '' }}">
-
-                            <i class="fa fa-file-pdf text-danger"></i>
-
-                            <span>
-                                Bank Docs
-                            </span>
-
-                        </a>
-                    </li>
-                    @endcan
-
+           
             </ul>
 
         </li>
 
         @endif
+
+        {{-- =====================================================
+| DOCUMENT MANAGEMENT
+===================================================== --}}
+@if(
+    auth()->user()->can('service-guidelines.view') ||
+    auth()->user()->can('bank-docs.view')
+)
+
+<li class="sbx-section">
+    Document Management
+</li>
+
+<li class="sbx-group">
+
+    <ul class="sbx-submenu">
+
+        {{-- SERVICE GUIDELINES --}}
+        @can('service-guidelines.view')
+
+        <li>
+
+            <a href="{{ route('admin.service-guidelines.index') }}"
+               class="sbx-link {{ request()->routeIs('admin.service-guidelines.*') ? 'sbx-active' : '' }}">
+
+                <i class="fa-solid fa-book-open"></i>
+
+                <span>
+                    Service Guidelines
+                </span>
+
+            </a>
+
+        </li>
+
+        @endcan
+
+        {{-- BANK DOCUMENTS --}}
+        @can('bank-docs.view')
+
+        <li>
+
+            <a href="{{ route('admin.bank-docs.index') }}"
+               class="sbx-link {{ request()->routeIs('admin.bank-docs.*') ? 'sbx-active' : '' }}">
+
+                <i class="fa-solid fa-file-lines"></i>
+
+                <span>
+                    Bank Documents
+                </span>
+
+            </a>
+
+        </li>
+
+        @endcan
+
+    </ul>
+
+</li>
+
+@endif
 
 
         {{-- =====================================================

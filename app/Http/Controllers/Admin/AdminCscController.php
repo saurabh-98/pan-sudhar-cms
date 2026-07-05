@@ -21,383 +21,160 @@ class AdminCscController extends Controller
     
 
     public function index(Request $request)
-    {
-        if ($request->ajax()) {
-
-            $applications = CscService::query()
-
-                ->with([
-                    'user',
-                    'assignedUser'
-                ]);
-
-            /*
-            |--------------------------------------------------------------------------
-            | EXECUTIVE CAN SEE ONLY ASSIGNED APPLICATIONS
-            |--------------------------------------------------------------------------
-            */
-
-            if (auth()->user()->hasRole('Executive')) {
-
-                $applications
-
-                    ->whereNotNull('assigned_to')
-
-                    ->where(
-                        'assigned_to',
-                        auth()->id()
-                    );
-            }
-
-            $applications->latest();
-
-            return datatables()
-
-                ->of($applications)
-
-                ->addIndexColumn()
-
-                /*
-                |--------------------------------------------------------------------------
-                | RETAILER
-                |--------------------------------------------------------------------------
-                */
-
-                ->addColumn('retailer', function ($row) {
-
-                    return '
-
-                        <div class="retailer-box">
-
-                            <div class="retailer-avatar">
-
-                                ' .
-
-                                strtoupper(
-                                    substr(
-                                        $row->user->name ?? 'N',
-                                        0,
-                                        1
-                                    )
-                                )
-
-                                . '
-
-                            </div>
-
-                            <div>
-
-                                <div class="retailer-name">
-
-                                    ' .
-
-                                    ($row->user->name ?? 'N/A')
-
-                                    . '
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    ';
-                })
-
-                /*
-                |--------------------------------------------------------------------------
-                | APPLICATION NUMBER
-                |--------------------------------------------------------------------------
-                */
-
-                ->addColumn('application_no', function ($row) {
-
-                    return '
-
-                        <div class="application-box">
-
-                            <span class="application-id">
-
-                                ' .
-
-                                $row->application_no .
-
-                                '
-
-                            </span>
-
-                        </div>
-
-                    ';
-                })
-
-                /*
-                |--------------------------------------------------------------------------
-                | CUSTOMER
-                |--------------------------------------------------------------------------
-                */
-
-                ->addColumn('applicant', function ($row) {
-
-                    $customerName =
-
-                        $row->getField(
-                            'customer_name',
-                            $row->getField(
-                                'child_name',
-                                'N/A'
-                            )
-                        );
-
-                    return '
-
-                        <div class="applicant-box">
-
-                            ' . e($customerName) . '
-
-                        </div>
-
-                    ';
-                })
-
-                /*
-                |--------------------------------------------------------------------------
-                | MOBILE
-                |--------------------------------------------------------------------------
-                */
-
-                ->addColumn('mobile', function ($row) {
-
-                    return $row->getField(
-                        'mobile',
-                        '-'
-                    );
-                })
-
-                /*
-                |--------------------------------------------------------------------------
-                | SERVICE
-                |--------------------------------------------------------------------------
-                */
-
-                ->addColumn('service', function ($row) {
-
-                    return '
-
-                        <span class="badge bg-info">
-
-                            '
-
-                            . e($row->service_name) .
-
-                            '
-
-                        </span>
-
-                    ';
-                })
-
-                /*
-                |--------------------------------------------------------------------------
-                | STATUS
-                |--------------------------------------------------------------------------
-                */
-
-                ->addColumn('status', function ($row) {
-
-                    return $row->status_badge;
-                })
-
-                /*
-                |--------------------------------------------------------------------------
-                | PAYMENT
-                |--------------------------------------------------------------------------
-                */
-
-                ->addColumn('payment', function ($row) {
-
-                    return $row->payment_badge;
-                })
-
-                /*
-                |--------------------------------------------------------------------------
-                | ASSIGNED USER
-                |--------------------------------------------------------------------------
-                */
-
-                ->addColumn('assigned_to', function ($row) {
-
-                    if ($row->assignedUser) {
-
-                        return '
-
-                            <span class="assigned-badge">
-
-                                '
-
-                                . $row->assignedUser->name .
-
-                                '
-
-                            </span>
-
-                        ';
-                    }
-
-                    return '
-
-                        <span class="not-assigned-badge">
-
-                            Not Assigned
-
-                        </span>
-
-                    ';
-                })
-
-                /*
-                |--------------------------------------------------------------------------
-                | DATE
-                |--------------------------------------------------------------------------
-                */
-
-                ->addColumn('created_at', function ($row) {
-
-                    return '
-
-                        <div>
-
-                            <div class="fw-semibold">
-
-                                '
-
-                                . $row->created_at->format('d M Y')
-
-                                . '
-
-                            </div>
-
-                            <small class="text-muted">
-
-                                '
-
-                                . $row->created_at->format('h:i A')
-
-                                . '
-
-                            </small>
-
-                        </div>
-
-                    ';
-                })
-
-                /*
-                |--------------------------------------------------------------------------
-                | ACTION
-                |--------------------------------------------------------------------------
-                */
-
-                ->addColumn('action', function ($row) {
-
-                    $buttons = '
-
-                        <div class="d-flex gap-2">
-
-                            <a href="'
-
-                            . route(
-                                'admin.csc.show',
-                                $row->id
-                            )
-
-                            . '"
-
-                            class="btn btn-primary btn-sm">
-
-                                <i class="fa fa-eye"></i>
-
-                                View
-
-                            </a>
-
-                    ';
-
-                    if (
-                        !in_array(
-                            strtolower($row->status),
-                            ['approved', 'completed', 'rejected']
-                        )
-                    ) {
-
-                        $buttons .= '
-
-                            <form
-                                action="'
-
-                                . route(
-                                    'admin.csc.reject',
-                                    $row->id
-                                )
-
-                                . '"
-                                method="POST"
-                                style="display:inline-block"
-                                onsubmit="return confirm(\'Are you sure you want to reject this application?\')"
-                            >
-
-                                '
-
-                                . csrf_field()
-
-                                . '
-
-                                <button
-                                    type="submit"
-                                    class="btn btn-danger btn-sm"
-                                >
-
-                                    <i class="fa fa-times"></i>
-
-                                    Reject
-
-                                </button>
-
-                            </form>
-
-                        ';
-                    }
-
-                    $buttons .= '
-
-                        </div>
-
-                    ';
-
-                    return $buttons;
-                })
-
-                ->rawColumns([
-
-                    'retailer',
-                    'application_no',
-                    'applicant',
-                    'service',
-                    'status',
-                    'payment',
-                    'assigned_to',
-                    'created_at',
-                    'action'
-
-                ])
-
-                ->make(true);
+{
+    if ($request->ajax()) {
+
+        $applications = CscService::query()
+            ->with([
+                'user',
+                'assignedUser'
+            ]);
+
+        if (auth()->user()->hasRole('Executive')) {
+            $applications
+                ->whereNotNull('assigned_to')
+                ->where('assigned_to', auth()->id());
         }
 
-        return view('admin.csc.index');
+        if ($request->filled('status_tab')) {
+            switch ($request->status_tab) {
+
+                case 'new':
+                    $applications
+                        ->whereNull('assigned_to')
+                        ->whereIn('status', ['Processing']);
+                    break;
+
+                case 'assigned':
+                    $applications
+                        ->whereNotNull('assigned_to')
+                        ->whereIn('status', ['Approved', 'Completed', 'Rejected']);
+                    break;
+
+                case 'approved':
+                    $applications->whereIn('status', ['Approved', 'Completed']);
+                    break;
+
+                case 'rejected':
+                    $applications->where('status', 'Rejected');
+                    break;
+            }
+        }
+
+        $applications->latest();
+
+        return datatables()
+            ->of($applications)
+            ->addIndexColumn()
+
+            ->addColumn('retailer', function ($row) {
+                return '
+                    <div class="retailer-box">
+                        <div class="retailer-avatar">' .
+                            strtoupper(substr($row->user->name ?? 'N', 0, 1)) .
+                        '</div>
+                        <div>
+                            <div class="retailer-name">' .
+                                ($row->user->name ?? 'N/A') .
+                            '</div>
+                        </div>
+                    </div>
+                ';
+            })
+
+            ->addColumn('application_no', function ($row) {
+                return '
+                    <div class="application-box">
+                        <span class="application-id">' . $row->application_no . '</span>
+                    </div>
+                ';
+            })
+
+            ->addColumn('applicant', function ($row) {
+                $customerName = $row->getField(
+                    'customer_name',
+                    $row->getField('child_name', 'N/A')
+                );
+
+                return '<div class="applicant-box">' . e($customerName) . '</div>';
+            })
+
+            ->addColumn('mobile', function ($row) {
+                return $row->getField('mobile', '-');
+            })
+
+            ->addColumn('service', function ($row) {
+                return '<span class="badge bg-info">' . e($row->service_name) . '</span>';
+            })
+
+            ->addColumn('status', function ($row) {
+                return $row->status_badge;
+            })
+
+            ->addColumn('payment', function ($row) {
+                return $row->payment_badge;
+            })
+
+            ->addColumn('assigned_to', function ($row) {
+                if ($row->assignedUser) {
+                    return '<span class="assigned-badge">' . $row->assignedUser->name . '</span>';
+                }
+
+                return '<span class="not-assigned-badge">Not Assigned</span>';
+            })
+
+            ->addColumn('created_at', function ($row) {
+                return '
+                    <div>
+                        <div class="fw-semibold">' . $row->created_at->format('d M Y') . '</div>
+                        <small class="text-muted">' . $row->created_at->format('h:i A') . '</small>
+                    </div>
+                ';
+            })
+
+            ->addColumn('action', function ($row) {
+                $buttons = '
+                    <div class="d-flex gap-2">
+                        <a href="' . route('admin.csc.show', $row->id) . '" class="btn btn-primary btn-sm">
+                            <i class="fa fa-eye"></i> View
+                        </a>
+                ';
+
+                if (!in_array(strtolower($row->status), ['approved', 'completed', 'rejected'])) {
+                    $buttons .= '
+                        <form action="' . route('admin.csc.reject', $row->id) . '" method="POST"
+                              style="display:inline-block"
+                              onsubmit="return confirm(\'Are you sure you want to reject this application?\')">
+                            ' . csrf_field() . '
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="fa fa-times"></i> Reject
+                            </button>
+                        </form>
+                    ';
+                }
+
+                $buttons .= '</div>';
+
+                return $buttons;
+            })
+
+            ->rawColumns([
+                'retailer',
+                'application_no',
+                'applicant',
+                'service',
+                'status',
+                'payment',
+                'assigned_to',
+                'created_at',
+                'action'
+            ])
+
+            ->make(true);
     }
 
-
+    return view('admin.csc.index');
+}
     /*
     |--------------------------------------------------------------------------
     | SHOW ITR

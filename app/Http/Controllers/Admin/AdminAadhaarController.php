@@ -20,6 +20,8 @@ class AdminAadhaarController extends Controller
 
     
 
+ 
+
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -47,6 +49,46 @@ class AdminAadhaarController extends Controller
                         'assigned_to',
                         auth()->id()
                     );
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | STATUS TAB FILTER
+            |--------------------------------------------------------------------------
+            */
+
+            if ($request->filled('status_tab')) {
+
+                switch ($request->status_tab) {
+
+                    case 'new':
+
+                        $applications
+                            ->whereNull('assigned_to')
+                            ->whereIn('status', ['Processing']);
+
+                        break;
+
+                    case 'assigned':
+
+                        $applications
+                            ->whereNotNull('assigned_to')
+                            ->whereNotIn('status', ['Approved', 'Completed', 'Rejected']);
+
+                        break;
+
+                    case 'approved':
+
+                        $applications->whereIn('status', ['Approved', 'Completed']);
+
+                        break;
+
+                    case 'rejected':
+
+                        $applications->where('status', 'Rejected');
+
+                        break;
+                }
             }
 
             $applications->latest();
@@ -396,7 +438,6 @@ class AdminAadhaarController extends Controller
 
         return view('admin.aadhaar.index');
     }
-
 
     /*
     |--------------------------------------------------------------------------

@@ -23,256 +23,297 @@ class AdminNewPanController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function index(Request $request)
-    {
-        if($request->ajax())
+    
+
+        public function index(Request $request)
         {
-            $applications = PanApplication::query()
+            if ($request->ajax()) {
 
-                ->with([
-                    'user',
-                    'assignedUser'
-                ]);
+                $applications = PanApplication::query()
 
-            /*
-            |--------------------------------------------------------------------------
-            | EXECUTIVE CAN SEE ONLY ASSIGNED APPLICATIONS
-            |--------------------------------------------------------------------------
-            */
+                    ->with([
+                        'user',
+                        'assignedUser'
+                    ]);
 
-            if(auth()->user()->hasRole('Executive'))
-            {
-                $applications
-                    ->whereNotNull('assigned_to')
-                    ->where(
-                        'assigned_to',
-                        auth()->id()
-                    );
-            }
+                /*
+                |--------------------------------------------------------------------------
+                | EXECUTIVE CAN SEE ONLY ASSIGNED APPLICATIONS
+                |--------------------------------------------------------------------------
+                */
 
-            /*
-            |--------------------------------------------------------------------------
-            | ORDER
-            |--------------------------------------------------------------------------
-            */
+                if (auth()->user()->hasRole('Executive')) {
+                    $applications
+                        ->whereNotNull('assigned_to')
+                        ->where(
+                            'assigned_to',
+                            auth()->id()
+                        );
+                }
 
-            $applications->latest();
+                /*
+                |--------------------------------------------------------------------------
+                | STATUS TAB FILTER
+                |--------------------------------------------------------------------------
+                */
 
-            return datatables()
+                if ($request->filled('status_tab')) {
 
-                ->of($applications)
+                    switch ($request->status_tab) {
 
-                ->addIndexColumn()
+                        case 'new':
 
-                ->addColumn('retailer', function($row){
+                            $applications
+                                ->whereNull('assigned_to')
+                                ->where('status', 'processing');
 
-                    return '
+                            break;
 
-                        <div class="retailer-box">
+                        case 'assigned':
 
-                            <div class="retailer-avatar">
+                            $applications
+                                ->whereNotNull('assigned_to')
+                                ->whereNotIn('status', ['approved', 'completed', 'rejected']);
 
-                                '
+                            break;
 
-                                . strtoupper(
-                                    substr(
-                                        $row->user->name ?? 'N',
-                                        0,
-                                        1
-                                    )
-                                )
+                        case 'approved':
 
-                                . '
+                            $applications->whereIn('status', ['approved', 'completed']);
 
-                            </div>
+                            break;
 
-                            <div>
+                        case 'rejected':
 
-                                <div class="retailer-name">
+                            $applications->where('status', 'rejected');
+
+                            break;
+                    }
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | ORDER
+                |--------------------------------------------------------------------------
+                */
+
+                $applications->latest();
+
+                return datatables()
+
+                    ->of($applications)
+
+                    ->addIndexColumn()
+
+                    ->addColumn('retailer', function ($row) {
+
+                        return '
+
+                            <div class="retailer-box">
+
+                                <div class="retailer-avatar">
 
                                     '
 
-                                    . ($row->user->name ?? 'N/A')
+                                    . strtoupper(
+                                        substr(
+                                            $row->user->name ?? 'N',
+                                            0,
+                                            1
+                                        )
+                                    )
 
                                     . '
 
                                 </div>
 
+                                <div>
+
+                                    <div class="retailer-name">
+
+                                        '
+
+                                        . ($row->user->name ?? 'N/A')
+
+                                        . '
+
+                                    </div>
+
+                                </div>
+
                             </div>
 
-                        </div>
+                        ';
+                    })
 
-                    ';
-                })
+                    ->addColumn('application_no', function ($row) {
 
-                ->addColumn('application_no', function($row){
-
-                    return '
-
-                        <div class="application-box">
-
-                            <span class="application-id">
-
-                                '
-
-                                . $row->application_no .
-
-                                '
-
-                            </span>
-
-                        </div>
-
-                    ';
-                })
-
-                ->addColumn('applicant', function($row){
-
-                    return '
-
-                        <div class="applicant-box">
-
-                            '
-
-                            . $row->applicant_name .
-
-                            '
-
-                        </div>
-
-                    ';
-                })
-
-                ->addColumn('status', function($row){
-
-                    return $row->status_badge;
-                })
-
-                ->addColumn('payment', function($row){
-
-                    return $row->payment_badge;
-                })
-
-                ->addColumn('assigned_to', function($row){
-
-                    if($row->assignedUser)
-                    {
                         return '
 
-                            <span class="assigned-badge">
+                            <div class="application-box">
+
+                                <span class="application-id">
+
+                                    '
+
+                                    . $row->application_no .
+
+                                    '
+
+                                </span>
+
+                            </div>
+
+                        ';
+                    })
+
+                    ->addColumn('applicant', function ($row) {
+
+                        return '
+
+                            <div class="applicant-box">
 
                                 '
 
-                                . $row->assignedUser->name .
+                                . $row->applicant_name .
 
                                 '
+
+                            </div>
+
+                        ';
+                    })
+
+                    ->addColumn('status', function ($row) {
+
+                        return $row->status_badge;
+                    })
+
+                    ->addColumn('payment', function ($row) {
+
+                        return $row->payment_badge;
+                    })
+
+                    ->addColumn('assigned_to', function ($row) {
+
+                        if ($row->assignedUser) {
+                            return '
+
+                                <span class="assigned-badge">
+
+                                    '
+
+                                    . $row->assignedUser->name .
+
+                                    '
+
+                                </span>
+
+                            ';
+                        }
+
+                        return '
+
+                            <span class="not-assigned-badge">
+
+                                Not Assigned
 
                             </span>
 
                         ';
-                    }
+                    })
 
-                    return '
+                    ->addColumn('action', function ($row) {
 
-                        <span class="not-assigned-badge">
+                        $buttons = '
 
-                            Not Assigned
+                            <div class="d-flex gap-1">
 
-                        </span>
-
-                    ';
-                })
-
-                ->addColumn('action', function($row){
-
-                    $buttons = '
-
-                        <div class="d-flex gap-1">
-
-                            <a href="'
-
-                            . route(
-                                'admin.pan.show',
-                                $row->id
-                            )
-
-                            . '"
-
-                            class="btn btn-primary btn-sm">
-
-                                <i class="fa fa-eye"></i>
-
-                                View
-
-                            </a>
-
-                    ';
-
-                    if($row->status !== 'rejected')
-                    {
-                        $buttons .= '
-
-                            <form
-                                action="'
+                                <a href="'
 
                                 . route(
-                                    'admin.pan.reject',
+                                    'admin.pan.show',
                                     $row->id
                                 )
 
                                 . '"
-                                method="POST"
-                                style="display:inline-block;"
-                                onsubmit="return confirm(\'Are you sure you want to reject this application?\')"
-                            >
 
-                                '
+                                class="btn btn-primary btn-sm">
 
-                                . csrf_field()
+                                    <i class="fa fa-eye"></i>
 
-                                . '
+                                    View
 
-                                <button
-                                    type="submit"
-                                    class="btn btn-danger btn-sm"
-                                >
-
-                                    <i class="fa fa-times"></i>
-
-                                    Reject
-
-                                </button>
-
-                            </form>
+                                </a>
 
                         ';
-                    }
 
-                    $buttons .= '
+                        if ($row->status !== 'rejected') {
 
-                        </div>
+                            $buttons .= '
 
-                    ';
+                                <form
+                                    action="'
 
-                    return $buttons;
-                })
+                                    . route(
+                                        'admin.pan.reject',
+                                        $row->id
+                                    )
 
-                ->rawColumns([
-                    'retailer',
-                    'application_no',
-                    'status',
-                    'payment',
-                    'assigned_to',
-                    'action',
-                    'applicant'
-                ])
+                                    . '"
+                                    method="POST"
+                                    style="display:inline-block;"
+                                    onsubmit="return confirm(\'Are you sure you want to reject this application?\')"
+                                >
 
-                ->make(true);
+                                    '
+
+                                    . csrf_field()
+
+                                    . '
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-danger btn-sm"
+                                    >
+
+                                        <i class="fa fa-times"></i>
+
+                                        Reject
+
+                                    </button>
+
+                                </form>
+
+                            ';
+                        }
+
+                        $buttons .= '
+
+                            </div>
+
+                        ';
+
+                        return $buttons;
+                    })
+
+                    ->rawColumns([
+                        'retailer',
+                        'application_no',
+                        'status',
+                        'payment',
+                        'assigned_to',
+                        'action',
+                        'applicant'
+                    ])
+
+                    ->make(true);
+            }
+
+            return view('admin.pan.index');
         }
 
-        return view('admin.pan.index');
-    }
-    /*
+/*
     |--------------------------------------------------------------------------
     | SHOW APPLICATION
     |--------------------------------------------------------------------------

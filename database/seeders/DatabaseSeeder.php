@@ -58,7 +58,6 @@ class DatabaseSeeder extends Seeder
             */
 
             NavigationMenuSeeder::class,
-            BannerSeeder::class,
             PageSeeder::class,
 
             ModuleSeeder::class,

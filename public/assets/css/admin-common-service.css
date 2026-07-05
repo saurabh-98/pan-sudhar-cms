@@ -1,0 +1,619 @@
+/* ==========================================================================
+   Shared Admin Listing Pages — CSC / Aadhaar / PAN
+   Works regardless of page wrapper class (.admin-aadhaar-page,
+   .admin-pan-page, etc.) — variables live on :root, not scoped to one page.
+
+   Palette:
+     --bg           #F4F6FA  page background
+     --surface      #FFFFFF  cards / table
+     --ink          #1B2340  headings, primary text
+     --ink-soft     #5B6478  secondary text / labels
+     --primary      #2955A8  brand blue (tabs, links, buttons)
+     --primary-deep #1B3B75  hover / pressed
+     --teal         #0E9C8F  live indicator
+   Fonts: Sora (headings) / Inter (body & table) / JetBrains Mono (IDs)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap');
+
+:root {
+    --bg: #F4F6FA;
+    --surface: #FFFFFF;
+    --ink: #1B2340;
+    --ink-soft: #5B6478;
+    --border: #E4E8F0;
+    --primary: #2955A8;
+    --primary-deep: #1B3B75;
+    --primary-tint: #EAF1FE;
+    --teal: #0E9C8F;
+
+    --amber: #B9770E;    --amber-bg: #FDF3E1;
+    --blue: #2563EB;     --blue-bg: #EAF1FE;
+    --green: #178A4C;    --green-bg: #E7F7EE;
+    --red: #C0392B;      --red-bg: #FBEAEA;
+    --gray: #6B7280;     --gray-bg: #EEF0F3;
+}
+
+/* -------------------------------------------------------------------- */
+/* Page wrapper — comma list covers every listing page using this sheet */
+/* -------------------------------------------------------------------- */
+
+.admin-aadhaar-page,
+.admin-pan-page,
+.admin-csc-page {
+    background: var(--bg);
+    padding: 28px 32px 48px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--ink);
+    animation: page-in .35s ease both;
+    min-height: 100vh;
+}
+
+@keyframes page-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* -------------------------------------------------------------------- */
+/* Header                                                                */
+/* -------------------------------------------------------------------- */
+
+.admin-pan-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.admin-pan-title {
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin: 0 0 10px;
+    position: relative;
+    display: inline-block;
+}
+
+.admin-pan-title::after {
+    content: '';
+    position: absolute;
+    left: 1px;
+    bottom: -8px;
+    width: 46px;
+    height: 4px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--teal));
+}
+
+.admin-pan-subtitle {
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin: 0;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.live-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--ink-soft);
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: .02em;
+    padding: 7px 14px;
+    border-radius: 999px;
+    box-shadow: 0 1px 2px rgba(27, 35, 64, .04);
+    transition: box-shadow .2s ease, border-color .2s ease;
+}
+
+.live-status:hover {
+    border-color: var(--teal);
+    box-shadow: 0 2px 8px rgba(14, 156, 143, .12);
+}
+
+.live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--teal);
+    position: relative;
+}
+
+.live-dot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--teal);
+    animation: live-pulse 1.8s ease-out infinite;
+}
+
+@keyframes live-pulse {
+    0%   { transform: scale(1);   opacity: .55; }
+    100% { transform: scale(2.8); opacity: 0;   }
+}
+
+/* -------------------------------------------------------------------- */
+/* Alert                                                                 */
+/* -------------------------------------------------------------------- */
+
+.admin-alert {
+    background: var(--green-bg);
+    border: 1px solid #BFE6CD;
+    color: #0F5C34;
+    border-radius: 10px;
+    font-size: 14px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    animation: alert-in .3s ease both;
+}
+
+@keyframes alert-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.admin-alert .btn-close {
+    transition: opacity .15s ease, transform .15s ease;
+}
+
+.admin-alert .btn-close:hover {
+    opacity: .65;
+    transform: rotate(90deg);
+}
+
+/* -------------------------------------------------------------------- */
+/* Card                                                                  */
+/* -------------------------------------------------------------------- */
+
+.admin-pan-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(27, 35, 64, .06);
+    overflow: hidden;
+    transition: box-shadow .25s ease;
+}
+
+.admin-pan-card:hover {
+    box-shadow: 0 8px 24px rgba(27, 35, 64, .08);
+}
+
+/* -------------------------------------------------------------------- */
+/* Status tabs — sliding pill indicator                                 */
+/* -------------------------------------------------------------------- */
+
+.admin-pan-tabs {
+    display: flex;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 12px 16px 0;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(to bottom, #FBFCFE, var(--surface));
+}
+
+.admin-pan-tabs .nav-item { margin: 0; }
+
+.admin-pan-tabs .nav-link {
+    border: none;
+    background: transparent;
+    color: var(--ink-soft);
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13.5px;
+    padding: 11px 18px;
+    border-radius: 9px 9px 0 0;
+    cursor: pointer;
+    position: relative;
+    transition: color .18s ease, background .18s ease, transform .12s ease;
+}
+
+.admin-pan-tabs .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: -1px;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 3px 3px 0 0;
+    transform: scaleX(0);
+    transition: transform .22s cubic-bezier(.4, 0, .2, 1);
+}
+
+.admin-pan-tabs .nav-link:hover {
+    color: var(--primary);
+    background: var(--primary-tint);
+    transform: translateY(-1px);
+}
+
+.admin-pan-tabs .nav-link.active {
+    color: var(--primary);
+    background: var(--primary-tint);
+}
+
+.admin-pan-tabs .nav-link.active::after {
+    transform: scaleX(1);
+}
+
+.admin-pan-tabs .nav-link[data-status="new"].active       { color: var(--amber); background: var(--amber-bg); }
+.admin-pan-tabs .nav-link[data-status="new"].active::after { background: var(--amber); }
+.admin-pan-tabs .nav-link[data-status="assigned"].active       { color: var(--blue); background: var(--blue-bg); }
+.admin-pan-tabs .nav-link[data-status="assigned"].active::after { background: var(--blue); }
+.admin-pan-tabs .nav-link[data-status="approved"].active       { color: var(--green); background: var(--green-bg); }
+.admin-pan-tabs .nav-link[data-status="approved"].active::after { background: var(--green); }
+.admin-pan-tabs .nav-link[data-status="rejected"].active       { color: var(--red); background: var(--red-bg); }
+.admin-pan-tabs .nav-link[data-status="rejected"].active::after { background: var(--red); }
+
+/* -------------------------------------------------------------------- */
+/* Table                                                                 */
+/* -------------------------------------------------------------------- */
+
+.admin-pan-table {
+    width: 100%;
+    font-size: 13.5px;
+    border-collapse: collapse;
+}
+
+.admin-pan-table thead th {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--ink-soft);
+    background: #FAFBFD;
+    border-bottom: 1px solid var(--border);
+    padding: 13px 14px;
+    white-space: nowrap;
+    transition: color .15s ease;
+}
+
+.admin-pan-table thead th.sorting:hover,
+.admin-pan-table thead th.sorting_asc:hover,
+.admin-pan-table thead th.sorting_desc:hover {
+    color: var(--primary);
+    cursor: pointer;
+}
+
+.admin-pan-table tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+    color: var(--ink);
+}
+
+.admin-pan-table tbody tr {
+    transition: background .15s ease, transform .15s ease;
+    animation: row-in .3s ease both;
+}
+
+@keyframes row-in {
+    from { opacity: 0; transform: translateY(3px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.admin-pan-table tbody tr:hover {
+    background: #F7F9FD;
+}
+
+.admin-pan-table tbody tr:hover td:first-child {
+    box-shadow: inset 3px 0 0 var(--primary);
+}
+
+.admin-pan-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* -------------------------------------------------------------------- */
+/* Cell content — retailer / application / applicant                   */
+/* -------------------------------------------------------------------- */
+
+.retailer-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.retailer-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--primary-tint);
+    color: var(--primary-deep);
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform .15s ease;
+}
+
+.admin-pan-table tbody tr:hover .retailer-avatar {
+    transform: scale(1.08);
+}
+
+.retailer-name {
+    font-weight: 500;
+    color: var(--ink);
+}
+
+.application-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: var(--primary-deep);
+    background: var(--primary-tint);
+    padding: 3px 9px;
+    border-radius: 6px;
+    letter-spacing: .01em;
+    transition: background .15s ease;
+}
+
+.admin-pan-table tbody tr:hover .application-id {
+    background: #DCE9FB;
+}
+
+.applicant-box {
+    font-weight: 500;
+}
+
+/* Service badge (bg-info override) */
+.admin-pan-table .badge.bg-info {
+    background: var(--blue-bg) !important;
+    color: #1D4ED8;
+    font-weight: 600;
+    font-size: 11.5px;
+    letter-spacing: .01em;
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+
+/* Assigned / not-assigned badges */
+.assigned-badge,
+.not-assigned-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    transition: transform .15s ease;
+}
+
+.assigned-badge {
+    background: var(--green-bg);
+    color: #0F5C34;
+}
+
+.assigned-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+}
+
+.not-assigned-badge {
+    background: var(--gray-bg);
+    color: var(--gray);
+}
+
+.not-assigned-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gray);
+}
+
+.admin-pan-table tbody tr:hover .assigned-badge,
+.admin-pan-table tbody tr:hover .not-assigned-badge {
+    transform: scale(1.04);
+}
+
+/* Generic status / payment badge — add these classes inside your
+   status_badge / payment_badge accessors for a consistent look:
+   .badge-status-new / .badge-status-assigned / .badge-status-approved /
+   .badge-status-rejected / .badge-pay-paid / .badge-pay-pending      */
+
+.badge-status-new,
+.badge-pay-pending      { background: var(--amber-bg); color: #7A4E09; }
+.badge-status-assigned  { background: var(--blue-bg);  color: #1D4ED8; }
+.badge-status-approved,
+.badge-pay-paid         { background: var(--green-bg); color: #0F5C34; }
+.badge-status-rejected  { background: var(--red-bg);   color: #922B21; }
+
+.badge-status-new,
+.badge-status-assigned,
+.badge-status-approved,
+.badge-status-rejected,
+.badge-pay-paid,
+.badge-pay-pending {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 5px 11px;
+    border-radius: 999px;
+}
+
+.badge-status-new::before,
+.badge-pay-pending::before      { background: var(--amber); }
+.badge-status-assigned::before  { background: var(--blue); }
+.badge-status-approved::before,
+.badge-pay-paid::before         { background: var(--green); }
+.badge-status-rejected::before  { background: var(--red); }
+
+.badge-status-new::before,
+.badge-status-assigned::before,
+.badge-status-approved::before,
+.badge-status-rejected::before,
+.badge-pay-paid::before,
+.badge-pay-pending::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* Left-edge status stripe on each row, colour matches the badge        */
+.admin-pan-table tbody tr:has(.badge-status-new)      td:first-child { box-shadow: inset 3px 0 0 var(--amber); }
+.admin-pan-table tbody tr:has(.badge-status-assigned) td:first-child { box-shadow: inset 3px 0 0 var(--blue); }
+.admin-pan-table tbody tr:has(.badge-status-approved) td:first-child { box-shadow: inset 3px 0 0 var(--green); }
+.admin-pan-table tbody tr:has(.badge-status-rejected) td:first-child { box-shadow: inset 3px 0 0 var(--red); }
+
+/* Date cell */
+.admin-pan-table .fw-semibold { color: var(--ink); font-weight: 600; }
+.admin-pan-table .text-muted  { color: var(--ink-soft) !important; font-size: 11.5px; }
+
+/* -------------------------------------------------------------------- */
+/* Action buttons                                                       */
+/* -------------------------------------------------------------------- */
+
+.admin-pan-table .btn-sm {
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 7px;
+    border: none;
+    transition: transform .12s ease, box-shadow .12s ease, background .15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.admin-pan-table .btn-primary {
+    background: var(--primary);
+    color: #fff;
+}
+
+.admin-pan-table .btn-primary:hover {
+    background: var(--primary-deep);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(41, 85, 168, .25);
+}
+
+.admin-pan-table .btn-danger {
+    background: var(--red-bg);
+    color: #922B21;
+}
+
+.admin-pan-table .btn-danger:hover {
+    background: var(--red);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(192, 57, 43, .3);
+}
+
+.admin-pan-table .btn-sm:active {
+    transform: translateY(0) scale(.97);
+}
+
+/* -------------------------------------------------------------------- */
+/* DataTables chrome — search box, length menu, pagination              */
+/* -------------------------------------------------------------------- */
+
+.admin-pan-card .dataTables_wrapper {
+    padding: 4px 4px 16px;
+}
+
+.admin-pan-card .dataTables_filter input,
+.admin-pan-card .dataTables_length select {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--ink);
+    background: var(--surface);
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.admin-pan-card .dataTables_filter input:hover,
+.admin-pan-card .dataTables_length select:hover {
+    border-color: var(--primary);
+}
+
+.admin-pan-card .dataTables_filter input:focus,
+.admin-pan-card .dataTables_length select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-tint);
+}
+
+.admin-pan-card .dataTables_length,
+.admin-pan-card .dataTables_filter,
+.admin-pan-card .dataTables_info {
+    font-size: 13px;
+    color: var(--ink-soft);
+    padding: 14px 16px 0;
+}
+
+.admin-pan-card .dataTables_paginate {
+    padding: 12px 16px 0;
+}
+
+.admin-pan-card .dataTables_paginate .paginate_button {
+    border-radius: 7px !important;
+    border: 1px solid var(--border) !important;
+    margin-left: 4px !important;
+    padding: 6px 12px !important;
+    color: var(--ink) !important;
+    background: var(--surface) !important;
+    transition: all .15s ease;
+}
+
+.admin-pan-card .dataTables_paginate .paginate_button:hover {
+    background: var(--primary-tint) !important;
+    border-color: var(--primary) !important;
+    color: var(--primary-deep) !important;
+}
+
+.admin-pan-card .dataTables_paginate .paginate_button.current {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #fff !important;
+    box-shadow: 0 2px 6px rgba(41, 85, 168, .3);
+}
+
+.admin-pan-card .dataTables_paginate .paginate_button.disabled {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+/* Loading / processing overlay */
+.admin-pan-card .dataTables_processing {
+    background: rgba(255, 255, 255, .9);
+    color: var(--primary);
+    font-weight: 600;
+    border-radius: 10px;
+}
+
+/* -------------------------------------------------------------------- */
+/* Responsive                                                            */
+/* -------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+    .admin-aadhaar-page,
+    .admin-pan-page,
+    .admin-csc-page { padding: 18px; }
+    .admin-pan-header { flex-direction: column; align-items: flex-start; }
+    .admin-pan-tabs { overflow-x: auto; flex-wrap: nowrap; }
+    .admin-pan-tabs .nav-link { white-space: nowrap; }
+}
