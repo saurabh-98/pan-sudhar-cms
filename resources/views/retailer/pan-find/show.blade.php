@@ -235,7 +235,7 @@
 
                                 <div class="info-value">
 
-                                    {{ $history->faher_name ?: '-' }}
+                                    {{ $history->father_name ?: '-' }}
 
                                 </div>
 
