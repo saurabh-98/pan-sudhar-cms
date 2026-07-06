@@ -113,6 +113,16 @@
                                 </div>
                             </div>
 
+                              <div class="col-md-6 mb-3">
+                                <label class="text-muted small mb-0">
+                                    Full Name
+                                </label>
+
+                                <div class="fw-semibold">
+                                    {{ $application->father_name }}
+                                </div>
+                            </div>
+
                             <div class="col-md-6 mb-3">
                                 <label class="text-muted small mb-0">
                                     PAN Number
@@ -185,6 +195,20 @@
                                     name="full_name"
                                     class="form-control"
                                     placeholder="Enter Full Name"
+                                    required>
+
+                            </div>
+
+                             <div class="col-md-12 mb-3">
+
+                                <label class="form-label">
+                                    Father's Name
+                                </label>
+
+                                <input type="text"
+                                    name="father_name"
+                                    class="form-control"
+                                    placeholder="Enter Father Name"
                                     required>
 
                             </div>

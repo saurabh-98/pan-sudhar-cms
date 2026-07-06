@@ -223,6 +223,33 @@
 
                                 <div class="icon-box">
 
+                                    <i class="fas fa-user"></i>
+
+                                </div>
+
+                                <div class="info-label">
+
+                                    Father's Name
+
+                                </div>
+
+                                <div class="info-value">
+
+                                    {{ $history->faher_name ?: '-' }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-6 mb-4">
+
+                            <div class="info-card">
+
+                                <div class="icon-box">
+
                                     <i class="fas fa-id-badge"></i>
 
                                 </div>

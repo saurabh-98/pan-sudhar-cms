@@ -31,6 +31,7 @@ class PanFindHistory extends Model
         'aadhaar_number',
 
         'full_name',
+        'father_name',
         'pan_number',
         'dob',
         'gender',
@@ -49,7 +50,7 @@ class PanFindHistory extends Model
 
     ];
 
-    
+
     /**
      * =========================================================
      * Casts

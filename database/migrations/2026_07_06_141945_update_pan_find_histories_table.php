@@ -8,67 +8,132 @@ return new class extends Migration
 {
     public function up(): void
     {
+        /*
+        |--------------------------------------------------------------------------
+        | Add New Columns
+        |--------------------------------------------------------------------------
+        */
+
         Schema::table('pan_find_histories', function (Blueprint $table) {
 
-            $table->string('application_no')
-                ->after('id');
+            if (!Schema::hasColumn('pan_find_histories', 'application_no')) {
 
-            $table->string('payment_status')
-                ->default('unpaid')
-                ->after('amount');
+                $table->string('application_no')
+                    ->after('id');
 
-            $table->boolean('wallet_deducted')
-                ->default(false)
-                ->after('payment_status');
+            }
 
-            $table->timestamp('wallet_deducted_at')
-                ->nullable()
-                ->after('wallet_deducted');
+            if (!Schema::hasColumn('pan_find_histories', 'payment_status')) {
 
-            // Change enum to include Approved
-            $table->enum('status', [
-                'Pending',
-                'Approved',
-                'Completed',
-                'Rejected'
-            ])->default('Pending')->change();
+                $table->string('payment_status')
+                    ->default('unpaid')
+                    ->after('amount');
 
-            $table->foreignId('assigned_to')
-                ->nullable()
-                ->after('status')
-                ->constrained('users')
-                ->nullOnDelete();
+            }
 
-            $table->timestamp('assigned_at')
-                ->nullable()
-                ->after('assigned_to');
+            if (!Schema::hasColumn('pan_find_histories', 'wallet_deducted')) {
 
-            $table->text('remarks')
-                ->nullable()
-                ->after('assigned_at');
+                $table->boolean('wallet_deducted')
+                    ->default(false)
+                    ->after('payment_status');
 
-            $table->text('admin_remark')
-                ->nullable()
-                ->after('remarks');
+            }
 
-            $table->json('extra_fields')
-                ->nullable()
-                ->after('admin_remark');
+            if (!Schema::hasColumn('pan_find_histories', 'wallet_deducted_at')) {
 
-            $table->json('documents')
-                ->nullable()
-                ->after('extra_fields');
+                $table->timestamp('wallet_deducted_at')
+                    ->nullable()
+                    ->after('wallet_deducted');
+
+            }
+
+            if (!Schema::hasColumn('pan_find_histories', 'assigned_to')) {
+
+                $table->foreignId('assigned_to')
+                    ->nullable()
+                    ->after('status')
+                    ->constrained('users')
+                    ->nullOnDelete();
+
+            }
+
+            if (!Schema::hasColumn('pan_find_histories', 'assigned_at')) {
+
+                $table->timestamp('assigned_at')
+                    ->nullable()
+                    ->after('assigned_to');
+
+            }
+
+            if (!Schema::hasColumn('pan_find_histories', 'remarks')) {
+
+                $table->text('remarks')
+                    ->nullable()
+                    ->after('assigned_at');
+
+            }
+
+            if (!Schema::hasColumn('pan_find_histories', 'admin_remark')) {
+
+                $table->text('admin_remark')
+                    ->nullable()
+                    ->after('remarks');
+
+            }
+
+            if (!Schema::hasColumn('pan_find_histories', 'extra_fields')) {
+
+                $table->json('extra_fields')
+                    ->nullable()
+                    ->after('admin_remark');
+
+            }
+
+            if (!Schema::hasColumn('pan_find_histories', 'documents')) {
+
+                $table->json('documents')
+                    ->nullable()
+                    ->after('extra_fields');
+
+            }
 
         });
+
+        /*
+        |--------------------------------------------------------------------------
+        | Change Status Enum
+        |--------------------------------------------------------------------------
+        */
+
+        if (Schema::hasColumn('pan_find_histories', 'status')) {
+
+            Schema::table('pan_find_histories', function (Blueprint $table) {
+
+                $table->enum('status', [
+                    'Pending',
+                    'Approved',
+                    'Completed',
+                    'Rejected',
+                ])->default('Pending')->change();
+
+            });
+
+        }
     }
 
     public function down(): void
     {
         Schema::table('pan_find_histories', function (Blueprint $table) {
 
-            $table->dropForeign(['assigned_to']);
+            if (Schema::hasColumn('pan_find_histories', 'assigned_to')) {
 
-            $table->dropColumn([
+                $table->dropForeign(['assigned_to']);
+
+            }
+
+            $columns = [];
+
+            foreach ([
                 'application_no',
                 'payment_status',
                 'wallet_deducted',
@@ -78,8 +143,22 @@ return new class extends Migration
                 'remarks',
                 'admin_remark',
                 'extra_fields',
-                'documents'
-            ]);
+                'documents',
+            ] as $column) {
+
+                if (Schema::hasColumn('pan_find_histories', $column)) {
+
+                    $columns[] = $column;
+
+                }
+
+            }
+
+            if (!empty($columns)) {
+
+                $table->dropColumn($columns);
+
+            }
 
         });
     }

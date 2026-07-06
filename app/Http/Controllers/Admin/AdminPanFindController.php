@@ -628,6 +628,14 @@ class AdminPanFindController extends Controller
 
         ],
 
+         'father_name' => [
+
+            'required',
+            'string',
+            'max:255'
+
+        ],
+
         'pan_number' => [
 
             'required',
@@ -916,6 +924,8 @@ class AdminPanFindController extends Controller
 
             'full_name'    => $request->full_name,
 
+            'father_name'    => $request->father_name,
+
             'pan_number'   => strtoupper($request->pan_number),
 
             'dob'          => $request->dob,
@@ -927,7 +937,7 @@ class AdminPanFindController extends Controller
             'admin_remark' => 'PAN details verified and submitted by Executive.',
 
         ]);
-        
+
               /*
         |--------------------------------------------------------------------------
         | DATABASE COMMIT
