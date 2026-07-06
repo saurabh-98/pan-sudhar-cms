@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\PanFindHistory;
 use App\Models\ServiceDocument;
+use App\Models\Charge;
 use App\Models\WalletTransaction;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -597,46 +598,70 @@ class AdminPanFindController extends Controller
     */
 
     public function uploadDocument(
-        Request $request,
-        int $id
-    )
-    {
-        /*
-        |--------------------------------------------------------------------------
-        | ONLY EXECUTIVE
-        |--------------------------------------------------------------------------
-        */
+    Request $request,
+    int $id
+)
+{
+    /*
+    |--------------------------------------------------------------------------
+    | ONLY EXECUTIVE
+    |--------------------------------------------------------------------------
+    */
 
-        if (!auth()->user()->hasRole('Executive')) {
-            abort(403);
-        }
+    if (!auth()->user()->hasRole('Executive')) {
+        abort(403);
+    }
 
-        /*
-        |--------------------------------------------------------------------------
-        | VALIDATION
-        |--------------------------------------------------------------------------
-        */
+    /*
+    |--------------------------------------------------------------------------
+    | VALIDATION
+    |--------------------------------------------------------------------------
+    */
 
-        $request->validate([
+    $request->validate([
 
-            'support_file' => [
+        'full_name' => [
 
-                'required',
-                'file',
-                'mimes:pdf,jpg,jpeg,png,doc,docx',
-                'max:5120'
+            'required',
+            'string',
+            'max:255'
 
-            ],
+        ],
 
-            'upload_remarks' => [
+        'pan_number' => [
 
-                'nullable',
-                'string',
-                'max:1000'
+            'required',
+            'string',
+            'size:10',
+            'regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/'
 
-            ]
+        ],
 
-        ]);
+        'dob' => [
+
+            'required',
+            'date'
+
+        ],
+
+        'gender' => [
+
+            'required',
+            'in:Male,Female,Other'
+
+        ],
+
+    ]);
+
+    /*
+    |--------------------------------------------------------------------------
+    | DATABASE TRANSACTION
+    |--------------------------------------------------------------------------
+    */
+
+    DB::beginTransaction();
+
+    try {
 
         /*
         |--------------------------------------------------------------------------
@@ -653,124 +678,194 @@ class AdminPanFindController extends Controller
         */
 
         if ($application->assigned_to != auth()->id()) {
+
+            DB::rollBack();
+
             abort(403);
+
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | CHECK EXISTING RECEIPT
-        |--------------------------------------------------------------------------
-        */
+       
 
-        $alreadyUploaded = ServiceDocument::where(
-
-            'service_type',
-            'pan'
-
-        )
-        ->where(
-
-            'service_id',
-            $application->id
-
-        )
-        ->exists();
-
-        if ($alreadyUploaded) {
-
-            return response()->json([
-
-                'status'  => false,
-
-                'message' => 'Receipt already uploaded.'
-
-            ], 422);
-        }
+        
+        
 
         /*
         |--------------------------------------------------------------------------
-        | FILE UPLOAD
-        |--------------------------------------------------------------------------
-        */
-
-        $path = store_uploaded_file(
-
-            $request->file('support_file'),
-
-            'service-documents/pan-find'
-
-        );
-
-        if (!$path) {
-
-            return response()->json([
-
-                'status'  => false,
-
-                'message' => 'File upload failed.'
-
-            ], 422);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | SAVE DOCUMENT
-        |--------------------------------------------------------------------------
-        */
-
-        ServiceDocument::create([
-
-            'service_type'  => 'pan',
-
-            'service_id'    => $application->id,
-
-            'user_id'       => auth()->id(),
-
-            'file_path'     => $path,
-
-            'remarks'       => $request->upload_remarks,
-
-            'document_type' => 'receipt'
-
-        ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | EXECUTIVE
+        | USERS
         |--------------------------------------------------------------------------
         */
 
         $executive = auth()->user();
 
+        $retailer = $application
+            ->user
+            ->retailer;
+
+        $distributor = $retailer?->distributor;
+
+        $admin = User::role('Admin')
+            ->first();
+
         /*
         |--------------------------------------------------------------------------
-        | ADMIN
+        | SERVICE CHARGE
         |--------------------------------------------------------------------------
         */
 
-        $admin = User::role('admin')->first();
+        $charge = Charge::getCharge(
+            'pan_find'
+        );
+
+        if (!$charge) {
+
+            DB::rollBack();
+
+            return response()->json([
+
+                'status' => false,
+
+                'message' => 'Charge configuration not found.'
+
+            ], 422);
+
+        }
 
         /*
         |--------------------------------------------------------------------------
-        | COMMISSION
+        | EXECUTIVE COMMISSION
         |--------------------------------------------------------------------------
         */
 
-        $commissionAmount = 50;
+        $executiveCommission = (float)
+
+            $charge->commissions()
+
+                ->where(
+
+                    'role',
+                    'Executive'
+
+                )
+
+                ->where(
+
+                    'is_active',
+                    true
+
+                )
+
+                ->value('value');
 
         /*
+        |--------------------------------------------------------------------------
+        | DISTRIBUTOR COMMISSION
+        |--------------------------------------------------------------------------
+        */
+
+        $distributorCommission = (float)
+
+            $charge->commissions()
+
+                ->where(
+
+                    'role',
+                    'Distributor'
+
+                )
+
+                ->where(
+
+                    'is_active',
+                    true
+
+                )
+
+                ->value('value');
+
+        /*
+        |--------------------------------------------------------------------------
+        | TOTAL COMMISSION
+        |--------------------------------------------------------------------------
+        */
+
+        $totalCommission =
+
+            $executiveCommission +
+
+            $distributorCommission;
+
+                /*
         |--------------------------------------------------------------------------
         | CREDIT EXECUTIVE
         |--------------------------------------------------------------------------
         */
 
-        $executive->increment(
+        if ($executiveCommission > 0) {
 
-            'wallet_balance',
+            $executive->increment(
 
-            $commissionAmount
+                'wallet_balance',
 
-        );
+                $executiveCommission
+
+            );
+
+            WalletTransaction::create([
+
+                'user_id' => $executive->id,
+
+                'amount' => $executiveCommission,
+
+                'type' => 'credit',
+
+                'remark' =>
+
+                    'Executive Commission - PAN Find #' .
+                    $application->application_no
+
+            ]);
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | CREDIT DISTRIBUTOR
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+
+            $distributor &&
+
+            $distributorCommission > 0
+
+        ) {
+
+            $distributor->increment(
+
+                'wallet_balance',
+
+                $distributorCommission
+
+            );
+
+            WalletTransaction::create([
+
+                'user_id' => $distributor->id,
+
+                'amount' => $distributorCommission,
+
+                'type' => 'credit',
+
+                'remark' =>
+
+                    'Distributor Commission - PAN Find #' .
+                    $application->application_no
+
+            ]);
+
+        }
 
         /*
         |--------------------------------------------------------------------------
@@ -778,73 +873,68 @@ class AdminPanFindController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        if ($admin) {
+        if (
+
+            $admin &&
+
+            $totalCommission > 0
+
+        ) {
 
             $admin->decrement(
 
                 'wallet_balance',
 
-                $commissionAmount
+                $totalCommission
 
             );
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | EXECUTIVE TRANSACTION
-        |--------------------------------------------------------------------------
-        */
-
-        WalletTransaction::create([
-
-            'user_id' => $executive->id,
-
-            'amount'  => $commissionAmount,
-
-            'type'    => 'credit',
-
-            'remark'  =>
-
-                'PAN Find Service Commission #' .
-                $application->application_no
-
-        ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADMIN TRANSACTION
-        |--------------------------------------------------------------------------
-        */
-
-        if ($admin) {
 
             WalletTransaction::create([
 
                 'user_id' => $admin->id,
 
-                'amount'  => $commissionAmount,
+                'amount' => $totalCommission,
 
-                'type'    => 'debit',
+                'type' => 'debit',
 
-                'remark'  =>
+                'remark' =>
 
-                    'Executive PAN Find Commission #' .
+                    'PAN Find Commission #' .
                     $application->application_no
 
             ]);
+
         }
 
         /*
         |--------------------------------------------------------------------------
-        | UPDATE STATUS
+        | UPDATE APPLICATION STATUS
         |--------------------------------------------------------------------------
         */
 
         $application->update([
 
-            'status' => 'Approved'
+            'full_name'    => $request->full_name,
+
+            'pan_number'   => strtoupper($request->pan_number),
+
+            'dob'          => $request->dob,
+
+            'gender'       => $request->gender,
+
+            'status'       => 'Approved',
+
+            'admin_remark' => 'PAN details verified and submitted by Executive.',
 
         ]);
+        
+              /*
+        |--------------------------------------------------------------------------
+        | DATABASE COMMIT
+        |--------------------------------------------------------------------------
+        */
+
+        DB::commit();
 
         /*
         |--------------------------------------------------------------------------
@@ -858,13 +948,55 @@ class AdminPanFindController extends Controller
 
             'message' =>
 
-                'PAN Find Service receipt uploaded successfully.',
-
-            'file_url' => file_url($path)
+                'PAN details submitted successfully. Executive and Distributor commissions have been processed.'
 
         ]);
+
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | EXCEPTION HANDLING
+    |--------------------------------------------------------------------------
+    */
+
+    catch (\Throwable $e) {
+
+        DB::rollBack();
+
+        \Log::error(
+
+            'PAN Find Submission Error',
+
+            [
+
+                'application_id' => $id,
+
+                'executive_id' => auth()->id(),
+
+                'message' => $e->getMessage(),
+
+                'line' => $e->getLine(),
+
+                'file' => $e->getFile(),
+
+                'trace' => $e->getTraceAsString()
+
+            ]
+
+        );
+
+        return response()->json([
+
+            'status' => false,
+
+            'message' => 'Something went wrong while processing the PAN details.'
+
+        ], 500);
+
+    }
+
+}
 
     public function downloadDocuments(int $id)
     {

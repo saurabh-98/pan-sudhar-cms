@@ -159,6 +159,7 @@ class PanFindController extends Controller
                     'amount'          => $amount,
 
                     'status'          => 'Pending',
+                    'payment_status'          => 'paid',
 
                 ]);
 
@@ -275,5 +276,15 @@ class PanFindController extends Controller
             compact('histories')
 
         );
+    }
+
+    public function show($id)
+    {
+        $history = PanFindHistory::where('user_id', auth()->id())
+            ->findOrFail($id);
+
+      
+
+        return view('retailer.pan-find.show', compact('history'));
     }
 }

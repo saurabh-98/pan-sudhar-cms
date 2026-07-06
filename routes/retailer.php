@@ -675,6 +675,8 @@ Route::prefix('pan-correction')
 
             Route::get('/history', 'history')->name('history');
 
+            Route::get('/show-details/{history}','show')->name('show');
+         
         });
     /*
     |--------------------------------------------------------------------------

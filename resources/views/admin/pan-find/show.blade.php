@@ -87,64 +87,194 @@
             </div>
 
 
-            {{-- ================= EXECUTIVE UPLOADED RECEIPT ================= --}}
+         {{-- ================= EXECUTIVE PAN DETAILS ================= --}}
 
-            <div class="card mb-4">
-                <div class="card-header">
-                    <strong>Executive Receipt</strong>
-                </div>
-                <div class="card-body">
+        <div class="card mb-4">
 
-                    @forelse($application->serviceDocuments as $doc)
-                        <div class="d-flex justify-content-between align-items-center border rounded p-2 mb-2">
-                            <div>
-                                <div class="fw-semibold">
-                                    {{ ucfirst($doc->document_type) }}
-                                    <span class="text-muted small">
-                                        uploaded by {{ $doc->user->name ?? 'N/A' }}
-                                    </span>
-                                </div>
-                                @if($doc->remarks)
-                                    <div class="small text-muted">{{ $doc->remarks }}</div>
-                                @endif
-                            </div>
-                            <a href="{{ str_starts_with($doc->file_path, 'http') ? $doc->file_path : asset($doc->file_path) }}"
-                               target="_blank"
-                               class="btn btn-outline-primary btn-sm">
-                                <i class="fa fa-eye"></i> View
-                            </a>
-                        </div>
-                    @empty
-
-                        {{-- Only the assigned Executive can upload the receipt --}}
-                        @if(auth()->user()->hasRole('Executive') && $application->assigned_to == auth()->id())
-                            <form id="upload-document-form" enctype="multipart/form-data">
-                                @csrf
-                                <div class="mb-3">
-                                    <label class="form-label">Support File</label>
-                                    <input type="file"
-                                           name="support_file"
-                                           class="form-control"
-                                           accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-                                           required>
-                                    <div class="form-text">PDF, JPG, PNG, DOC, DOCX up to 5 MB.</div>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Remarks</label>
-                                    <textarea name="upload_remarks" class="form-control" rows="2"></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-success btn-sm">
-                                    <i class="fa fa-upload"></i> Upload Receipt
-                                </button>
-                            </form>
-                        @else
-                            <p class="text-muted mb-0">No receipt uploaded yet.</p>
-                        @endif
-
-                    @endforelse
-
-                </div>
+            <div class="card-header">
+                <strong>PAN Details</strong>
             </div>
+
+            <div class="card-body">
+
+                @if($application->full_name)
+
+                    <div class="border rounded p-3">
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted small mb-0">
+                                    Full Name
+                                </label>
+
+                                <div class="fw-semibold">
+                                    {{ $application->full_name }}
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted small mb-0">
+                                    PAN Number
+                                </label>
+
+                                <div class="fw-semibold">
+                                    {{ strtoupper($application->pan_number) }}
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted small mb-0">
+                                    Date of Birth
+                                </label>
+
+                                <div class="fw-semibold">
+                                    {{ \Carbon\Carbon::parse($application->dob)->format('d M Y') }}
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted small mb-0">
+                                    Gender
+                                </label>
+
+                                <div class="fw-semibold">
+                                    {{ $application->gender }}
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted small mb-0">
+                                    Submitted By
+                                </label>
+
+                                <div class="fw-semibold">
+                                    {{ optional($application->assignedUser)->name ?? 'Executive' }}
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="text-muted small mb-0">
+                                    Submitted On
+                                </label>
+
+                                <div class="fw-semibold">
+                                    {{ optional($application->updated_at)->format('d M Y h:i A') }}
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                @elseif(auth()->user()->hasRole('Executive') && $application->assigned_to == auth()->id())
+
+                    <form id="upload-document-form">
+
+                        @csrf
+
+                        <div class="row">
+
+                            <div class="col-md-12 mb-3">
+
+                                <label class="form-label">
+                                    Full Name
+                                </label>
+
+                                <input type="text"
+                                    name="full_name"
+                                    class="form-control"
+                                    placeholder="Enter Full Name"
+                                    required>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    PAN Number
+                                </label>
+
+                                <input type="text"
+                                    name="pan_number"
+                                    class="form-control text-uppercase"
+                                    maxlength="10"
+                                    placeholder="ABCDE1234F"
+                                    required>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Date of Birth
+                                </label>
+
+                                <input type="date"
+                                    name="dob"
+                                    class="form-control"
+                                    required>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Gender
+                                </label>
+
+                                <select name="gender"
+                                        class="form-select"
+                                        required>
+
+                                    <option value="">
+                                        Select Gender
+                                    </option>
+
+                                    <option value="Male">
+                                        Male
+                                    </option>
+
+                                    <option value="Female">
+                                        Female
+                                    </option>
+
+                                    <option value="Other">
+                                        Other
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-success">
+
+                            <i class="fa fa-save me-2"></i>
+
+                            Save PAN Details
+
+                        </button>
+
+                    </form>
+
+                @else
+
+                    <div class="alert alert-warning mb-0">
+
+                        <i class="fa fa-clock me-2"></i>
+
+                        PAN details have not been submitted yet.
+
+                    </div>
+
+                @endif
+
+            </div>
+
+        </div>
 
         </div>
 
@@ -313,7 +443,7 @@ $(function () {
 
     });
 
-    /* ================= DOCUMENT UPLOAD ================= */
+   /* ================= SAVE PAN DETAILS ================= */
 
     $('#upload-document-form').on('submit', function (e) {
 
@@ -322,20 +452,20 @@ $(function () {
         let formData = new FormData(this);
 
         Swal.fire({
-            title: 'Upload Document?',
-            text: 'Do you want to upload this document?',
+            title: 'Save PAN Details?',
+            text: 'Are you sure you want to submit these PAN details?',
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#28a745',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, Upload'
+            confirmButtonText: 'Yes, Save'
         }).then((result) => {
 
             if (result.isConfirmed) {
 
                 Swal.fire({
-                    title: 'Uploading...',
-                    text: 'Please wait while the document is uploading.',
+                    title: 'Saving...',
+                    text: 'Please wait while PAN details are being saved.',
                     allowOutsideClick: false,
                     didOpen: () => {
                         Swal.showLoading();
@@ -345,7 +475,7 @@ $(function () {
                 $.ajax({
 
                     url: "{{ route('admin.pan-find.document.upload', $application->id) }}",
-                    method: 'POST',
+                    type: 'POST',
                     data: formData,
                     processData: false,
                     contentType: false,
@@ -358,7 +488,7 @@ $(function () {
 
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Upload Successful',
+                                title: 'Saved Successfully',
                                 text: res.message,
                                 confirmButtonColor: '#28a745'
                             }).then(() => {
@@ -369,7 +499,7 @@ $(function () {
 
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Upload Failed',
+                                title: 'Failed',
                                 text: res.message
                             });
 
@@ -381,12 +511,28 @@ $(function () {
 
                         Swal.close();
 
-                        const res = xhr.responseJSON;
+                        let message = 'Something went wrong.';
+
+                        if (xhr.responseJSON) {
+
+                            if (xhr.responseJSON.message) {
+                                message = xhr.responseJSON.message;
+                            }
+
+                            if (xhr.responseJSON.errors) {
+
+                                message = Object.values(xhr.responseJSON.errors)
+                                    .map(error => error[0])
+                                    .join('<br>');
+
+                            }
+
+                        }
 
                         Swal.fire({
                             icon: 'error',
-                            title: 'Error',
-                            text: res?.message || 'Upload failed.'
+                            title: 'Validation Error',
+                            html: message
                         });
 
                     }
@@ -398,7 +544,6 @@ $(function () {
         });
 
     });
-
-});
+    });
 </script>
 @endsection

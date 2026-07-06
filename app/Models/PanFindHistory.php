@@ -27,35 +27,29 @@ class PanFindHistory extends Model
     protected $fillable = [
 
         'user_id',
-
         'application_no',
-
         'aadhaar_number',
 
+        'full_name',
+        'pan_number',
+        'dob',
+        'gender',
+
         'amount',
-
         'status',
-
         'assigned_to',
-
         'assigned_at',
-
         'remarks',
-
         'admin_remark',
-
         'payment_status',
-
         'wallet_deducted',
-
         'wallet_deducted_at',
-
         'extra_fields',
-
         'documents',
 
     ];
 
+    
     /**
      * =========================================================
      * Casts

@@ -325,7 +325,7 @@
                                 name="father_first_name"
                                 class="form-control"
                                 value="{{ old('father_first_name', request('father_first_name')) }}"
-                                required
+                                
                             >
 
                         </div>
@@ -382,7 +382,7 @@
                                 name="mother_first_name"
                                 class="form-control"
                                 value="{{ old('mother_first_name', request('mother_first_name')) }}"
-                                required
+                               
                             >
 
                         </div>

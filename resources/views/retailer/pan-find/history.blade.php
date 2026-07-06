@@ -118,6 +118,10 @@
 
                                     </th>
 
+                                    <th width="120">
+                                        Action
+                                    </th>
+
                                 </tr>
 
                             </thead>
@@ -212,6 +216,13 @@
 
                                             {{ $history->created_at->format('d M Y h:i A') }}
 
+                                        </td>
+
+                                        <td colspan="8" class="text-center py-5">
+                                            <a href="{{ route('retailer.pan-find.show', $history->id) }}"
+                                            class="btn btn-sm btn-primary">
+                                                <i class="fas fa-eye me-1"></i> View
+                                            </a>
                                         </td>
 
                                     </tr>
