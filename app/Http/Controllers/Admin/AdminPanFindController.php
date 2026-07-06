@@ -347,6 +347,7 @@ class AdminPanFindController extends Controller
                     'aadhaar_number',
                     'service',
                     'status',
+                    'payment',
                     'assigned_to',
                     'created_at',
                     'action'

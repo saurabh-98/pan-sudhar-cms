@@ -50,7 +50,12 @@
                             </div>
                         </div>
 
-
+                        <div class="col-md-6">
+                            <label class="text-muted small mb-0">Payment</label>
+                            <div class="fw-semibold">
+                                {!! $application->payment_badge !!}
+                            </div>
+                        </div>
 
                         <div class="col-md-6">
                             <label class="text-muted small mb-0">Applied On</label>

@@ -168,7 +168,12 @@ $(function () {
                 searchable: false
             },
 
-    
+            {
+                data: 'payment',
+                name: 'payment_status',
+                orderable: false,
+                searchable: false
+            },
 
             {
                 data: 'assigned_to',

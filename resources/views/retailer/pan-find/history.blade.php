@@ -84,6 +84,12 @@
 
                                     <th>
 
+                                        Application No
+
+                                    </th>
+
+                                    <th>
+
                                         Aadhaar Number
 
                                     </th>
@@ -91,6 +97,12 @@
                                     <th>
 
                                         Charge
+
+                                    </th>
+
+                                    <th>
+
+                                        Payment Status
 
                                     </th>
 
@@ -124,6 +136,16 @@
 
                                         <td>
 
+                                            <span class="fw-semibold text-primary">
+
+                                                {{ $history->application_no }}
+
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
                                             {{ $history->aadhaar_number }}
 
                                         </td>
@@ -131,6 +153,36 @@
                                         <td>
 
                                             ₹ {{ number_format($history->amount,2) }}
+
+                                        </td>
+
+                                        <td>
+
+                                            @if($history->payment_status=='paid')
+
+                                                <span class="badge bg-success">
+
+                                                    Paid
+
+                                                </span>
+
+                                            @elseif($history->payment_status=='refunded')
+
+                                                <span class="badge bg-secondary">
+
+                                                    Refunded
+
+                                                </span>
+
+                                            @else
+
+                                                <span class="badge bg-warning text-dark">
+
+                                                    Unpaid
+
+                                                </span>
+
+                                            @endif
 
                                         </td>
 
@@ -168,7 +220,7 @@
 
                                     <tr>
 
-                                        <td colspan="5" class="text-center py-5">
+                                        <td colspan="7" class="text-center py-5">
 
                                             <img
 
