@@ -225,58 +225,180 @@
 </div>
 @endsection
 
-@push('scripts')
+@section('scripts')
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-    $(function () {
+$(function () {
 
-        /* ================= ASSIGN ================= */
+    /* ================= ASSIGN ================= */
 
-        $('#assign-form').on('submit', function (e) {
-            e.preventDefault();
+    $('#assign-form').on('submit', function (e) {
+        e.preventDefault();
 
-            $.ajax({
-                url: "{{ route('admin.pan-find.assign', $application->id) }}",
-                method: 'POST',
-                data: $(this).serialize(),
-                success: function (res) {
-                    if (res.status) {
-                        alert(res.message);
-                        location.reload();
+        let form = $(this);
+
+        Swal.fire({
+            title: 'Assign Application?',
+            text: 'Are you sure you want to assign this application?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Assign'
+        }).then((result) => {
+
+            if (result.isConfirmed) {
+
+                Swal.fire({
+                    title: 'Please wait...',
+                    text: 'Assigning application...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
                     }
-                },
-                error: function (xhr) {
-                    const res = xhr.responseJSON;
-                    alert(res?.message || 'Something went wrong.');
-                }
-            });
-        });
+                });
 
-        /* ================= UPLOAD DOCUMENT ================= */
+                $.ajax({
+                    url: "{{ route('admin.pan-find.assign', $application->id) }}",
+                    method: 'POST',
+                    data: form.serialize(),
 
-        $('#upload-document-form').on('submit', function (e) {
-            e.preventDefault();
+                    success: function (res) {
 
-            const formData = new FormData(this);
+                        Swal.close();
 
-            $.ajax({
-                url: "{{ route('admin.pan-find.document.upload', $application->id) }}",
-                method: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (res) {
-                    if (res.status) {
-                        alert(res.message);
-                        location.reload();
+                        if (res.status) {
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: res.message,
+                                confirmButtonColor: '#3085d6'
+                            }).then(() => {
+                                location.reload();
+                            });
+
+                        } else {
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Failed',
+                                text: res.message
+                            });
+
+                        }
+                    },
+
+                    error: function (xhr) {
+
+                        Swal.close();
+
+                        const res = xhr.responseJSON;
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: res?.message || 'Something went wrong.'
+                        });
+
                     }
-                },
-                error: function (xhr) {
-                    const res = xhr.responseJSON;
-                    alert(res?.message || 'Upload failed.');
-                }
-            });
+
+                });
+
+            }
+
         });
 
     });
+
+    /* ================= DOCUMENT UPLOAD ================= */
+
+    $('#upload-document-form').on('submit', function (e) {
+
+        e.preventDefault();
+
+        let formData = new FormData(this);
+
+        Swal.fire({
+            title: 'Upload Document?',
+            text: 'Do you want to upload this document?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Upload'
+        }).then((result) => {
+
+            if (result.isConfirmed) {
+
+                Swal.fire({
+                    title: 'Uploading...',
+                    text: 'Please wait while the document is uploading.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                $.ajax({
+
+                    url: "{{ route('admin.pan-find.document.upload', $application->id) }}",
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+
+                    success: function (res) {
+
+                        Swal.close();
+
+                        if (res.status) {
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Upload Successful',
+                                text: res.message,
+                                confirmButtonColor: '#28a745'
+                            }).then(() => {
+                                location.reload();
+                            });
+
+                        } else {
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Upload Failed',
+                                text: res.message
+                            });
+
+                        }
+
+                    },
+
+                    error: function (xhr) {
+
+                        Swal.close();
+
+                        const res = xhr.responseJSON;
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: res?.message || 'Upload failed.'
+                        });
+
+                    }
+
+                });
+
+            }
+
+        });
+
+    });
+
+});
 </script>
-@endpush
+@endsection
