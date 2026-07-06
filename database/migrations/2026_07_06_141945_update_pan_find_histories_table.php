@@ -11,7 +11,6 @@ return new class extends Migration
         Schema::table('pan_find_histories', function (Blueprint $table) {
 
             $table->string('application_no')
-                ->unique()
                 ->after('id');
 
             $table->string('payment_status')
