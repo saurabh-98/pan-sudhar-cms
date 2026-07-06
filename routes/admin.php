@@ -39,6 +39,7 @@ use App\Http\Controllers\Admin\AdminVoterIdController;
 use App\Http\Controllers\Admin\AdminBankAccountController;
 use App\Http\Controllers\Admin\AdminOtherServiceController;
 use App\Http\Controllers\Admin\BankDocsController;
+use App\Http\Controllers\Admin\AdminPanFindController;
 
 /*
 |--------------------------------------------------------------------------
@@ -973,6 +974,88 @@ Route::prefix('pages')
 
 
     });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PAN FIND MODULE
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('pan-find')
+        ->name('pan-find.')
+        ->middleware('permission:pan-find.view')
+        ->group(function () {
+
+            /*
+            |--------------------------------------------------------------------------
+            | LIST
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/',
+                [AdminPanFindController::class, 'index']
+            )->name('index');
+
+            /*
+            |--------------------------------------------------------------------------
+            | SHOW
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/show/{id}',
+                [AdminPanFindController::class, 'show']
+            )->name('show');
+
+            /*
+            |--------------------------------------------------------------------------
+            | ASSIGN
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/assign/{id}',
+                [AdminPanFindController::class, 'assign']
+            )->name('assign')
+            ->middleware('permission:pan-find.assign');
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPLOAD DOCUMENT
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/document-upload/{id}',
+                [AdminPanFindController::class, 'uploadDocument']
+            )->name('document.upload');
+
+            /*
+            |--------------------------------------------------------------------------
+            | DOWNLOAD DOCUMENTS
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/download-documents/{id}',
+                [AdminPanFindController::class, 'downloadDocuments']
+            )->name('download.documents');
+
+            /*
+            |--------------------------------------------------------------------------
+            | REJECT
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/reject/{id}',
+                [AdminPanFindController::class, 'reject']
+            )->name('reject')
+            ->middleware('permission:pan-find.reject');
+
+        });
 
 
 

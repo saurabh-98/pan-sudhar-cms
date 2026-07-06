@@ -158,7 +158,7 @@ class PanFindController extends Controller
 
                     'amount'          => $amount,
 
-                    'status'          => 'Completed',
+                    'status'          => 'Pending',
 
                 ]);
 

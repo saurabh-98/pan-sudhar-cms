@@ -312,6 +312,12 @@ class RolePermissionSeeder extends Seeder
             'bank-docs.edit',
             'bank-docs.delete',
 
+            'pan-find.view',
+            'pan-find.assign',
+            'pan-find.status',
+            'pan-find.delete',
+            'pan-find.upload',
+
             
 
             

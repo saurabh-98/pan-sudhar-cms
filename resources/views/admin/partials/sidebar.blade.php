@@ -181,6 +181,11 @@
         )
         ->count();
 
+    $panFindCount = \App\Models\PanFindHistory::where(
+        'status',
+        'Pending'
+    )->count();
+
 @endphp
 
 <div id="sbxSidebar" class="sbx-sidebar">
@@ -371,15 +376,15 @@
         {{-- =====================================================
         | CITIZEN SERVICES
         ===================================================== --}}
-        @if(
+       @if(
             auth()->user()->can('pan.view') ||
+            auth()->user()->can('pan-find.view') ||
             auth()->user()->can('aadhaar.view') ||
             auth()->user()->can('csc.view') ||
             auth()->user()->can('itr.view') ||
             auth()->user()->can('voter-id.view') ||
             auth()->user()->can('bank-account.view') ||
-            auth()->user()->can('other-service.view') ||
-            auth()->user()->can('service-guidelines.view')
+            auth()->user()->can('other-service.view')
         )
 
         <li class="sbx-section">
@@ -415,6 +420,23 @@
                         @if($panCorrectionCount > 0)
                             <span class="sbx-count-badge">
                                 {{ $panCorrectionCount }}
+                            </span>
+                        @endif
+                    </a>
+                </li>
+                @endcan
+
+                {{-- PAN FIND --}}
+                @can('pan-find.view')
+                <li>
+                    <a href="{{ route('admin.pan-find.index') }}"
+                    class="sbx-link {{ request()->routeIs('admin.pan-find.*') ? 'sbx-active' : '' }}">
+                        <i class="fa fa-search"></i>
+                        <span>PAN Find</span>
+
+                        @if($panFindCount > 0)
+                            <span class="sbx-count-badge">
+                                {{ $panFindCount }}
                             </span>
                         @endif
                     </a>

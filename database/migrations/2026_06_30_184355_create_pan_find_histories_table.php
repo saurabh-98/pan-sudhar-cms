@@ -19,6 +19,15 @@ return new class extends Migration
 
             /*
             |--------------------------------------------------------------------------
+            | Application Identifier
+            |--------------------------------------------------------------------------
+            */
+
+            $table->string('application_no')
+                ->unique();
+
+            /*
+            |--------------------------------------------------------------------------
             | Retailer
             |--------------------------------------------------------------------------
             */
@@ -50,6 +59,15 @@ return new class extends Migration
                 2
             )->default(0);
 
+            $table->string('payment_status')
+                ->default('unpaid');
+
+            $table->boolean('wallet_deducted')
+                ->default(false);
+
+            $table->timestamp('wallet_deducted_at')
+                ->nullable();
+
             /*
             |--------------------------------------------------------------------------
             | Status
@@ -60,10 +78,49 @@ return new class extends Migration
                 'status',
                 [
                     'Pending',
+                    'Approved',
                     'Completed',
                     'Rejected'
                 ]
-            )->default('Completed');
+            )->default('Pending');
+
+            /*
+            |--------------------------------------------------------------------------
+            | Assignment Workflow
+            |--------------------------------------------------------------------------
+            */
+
+            $table->foreignId('assigned_to')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
+
+            $table->timestamp('assigned_at')
+                ->nullable();
+
+            $table->text('remarks')
+                ->nullable();
+
+            $table->text('admin_remark')
+                ->nullable();
+
+            /*
+            |--------------------------------------------------------------------------
+            | Dynamic Application Fields (customer_name, mobile, etc.)
+            |--------------------------------------------------------------------------
+            */
+
+            $table->json('extra_fields')
+                ->nullable();
+
+            /*
+            |--------------------------------------------------------------------------
+            | Originally Submitted Documents (name => path/url)
+            |--------------------------------------------------------------------------
+            */
+
+            $table->json('documents')
+                ->nullable();
 
             $table->timestamps();
 
