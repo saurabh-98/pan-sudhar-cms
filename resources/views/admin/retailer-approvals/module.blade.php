@@ -132,11 +132,27 @@ width:100%;
 
                 <div class="module-card card mb-4">
 
-                    <div class="module-header">
+                    <div class="module-header d-flex justify-content-between align-items-center">
 
-                        <i class="{{ $parent->icon ?? 'fa fa-folder' }}"></i>
+                        <div>
+                            <i class="{{ $parent->icon ?? 'fa fa-folder' }}"></i>
+                            {{ $parent->name }}
+                        </div>
 
-                        {{ $parent->name }}
+                        <div class="form-check mb-0">
+                            <input
+                                type="checkbox"
+                                class="form-check-input category-select-all"
+                                data-category="{{ $parent->id }}"
+                                id="category_{{ $parent->id }}"
+                            >
+
+                            <label
+                                class="form-check-label text-white"
+                                for="category_{{ $parent->id }}">
+                                Select All
+                            </label>
+                        </div>
 
                     </div>
 
@@ -152,7 +168,8 @@ width:100%;
 
                                         <input
                                             type="checkbox"
-                                            class="form-check-input"
+                                            class="form-check-input module-checkbox"
+                                            data-category="{{ $parent->id }}"
                                             name="modules[]"
                                             value="{{ $child->id }}"
                                             id="module_{{ $child->id }}"
@@ -220,6 +237,44 @@ width:100%;
 <script>
 
 $(document).ready(function () {
+
+
+
+        // Category Select All
+    $(document).on('change', '.category-select-all', function () {
+
+        let category = $(this).data('category');
+
+        $('.module-checkbox[data-category="' + category + '"]')
+            .prop('checked', $(this).is(':checked'));
+
+    });
+
+    // Update Select All automatically
+    $('.module-checkbox').on('change', function () {
+
+        let category = $(this).data('category');
+
+        let total = $('.module-checkbox[data-category="' + category + '"]').length;
+
+        let checked = $('.module-checkbox[data-category="' + category + '"]:checked').length;
+
+        $('#category_' + category).prop('checked', total === checked);
+
+    });
+
+    // Initialize
+    $('.category-select-all').each(function () {
+
+        let category = $(this).data('category');
+
+        let total = $('.module-checkbox[data-category="' + category + '"]').length;
+
+        let checked = $('.module-checkbox[data-category="' + category + '"]:checked').length;
+
+        $(this).prop('checked', total === checked);
+
+    });
 
     $('#moduleForm').on(
         'submit',

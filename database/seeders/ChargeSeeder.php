@@ -598,7 +598,7 @@ class ChargeSeeder extends Seeder
                 'name'        => 'ITR Filing / TDS Refund',
                 'code'        => 'itr_filing_tds_refund',
                 'type'        => 'fixed',
-                'value'       => 399,
+                'value'       => 499,
                 'description' => 'ITR Filing / TDS Refund Charge',
                 'is_active'   => 1,
                 'created_at'  => now(),

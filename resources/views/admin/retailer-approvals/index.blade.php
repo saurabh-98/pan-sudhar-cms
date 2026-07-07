@@ -233,158 +233,6 @@
 
 @endsection
 
-{{-- =====================================================
-| APPROVE RETAILER MODAL
-====================================================== --}}
-
-<div
-    class="modal fade"
-    id="approveRetailerModal"
-    tabindex="-1"
-    aria-hidden="true"
->
-
-    <div class="modal-dialog modal-xl">
-
-        <form
-            method="POST"
-            id="approveRetailerForm"
-        >
-
-            @csrf
-
-            <div class="modal-content">
-
-                <div class="modal-header">
-
-                    <h5 class="modal-title">
-
-                        Assign Modules & Approve Retailer
-
-                    </h5>
-
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                    ></button>
-
-                </div>
-
-                <div class="modal-body">
-
-                    <div class="alert alert-info">
-
-                        Select modules that should be accessible to this retailer.
-
-                    </div>
-
-                    <div class="row">
-
-                        @foreach($modules as $module)
-
-                            <div class="col-md-4 mb-3">
-
-                                <div class="form-check">
-
-                                    <input
-                                        class="form-check-input module-checkbox"
-                                        type="checkbox"
-                                        name="modules[]"
-                                        value="{{ $module->id }}"
-                                        id="module_{{ $module->id }}"
-                                    >
-
-                                    <label
-                                        class="form-check-label"
-                                        for="module_{{ $module->id }}"
-                                    >
-
-                                        {{ $module->name }}
-
-                                    </label>
-
-                                </div>
-
-                            </div>
-
-                        @endforeach
-
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-
-                    <button
-                        type="button"
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                    >
-
-                        Cancel
-
-                    </button>
-
-                    <button
-                        type="submit"
-                        class="btn btn-success"
-                    >
-
-                        <i class="fa fa-check"></i>
-
-                        Approve Retailer
-
-                    </button>
-
-                </div>
-
-            </div>
-
-        </form>
-
-    </div>
-
-</div>
-<div
-    class="modal fade"
-    id="viewModulesModal"
-    tabindex="-1"
->
-
-    <div class="modal-dialog modal-lg">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-
-                <h5 class="modal-title">
-
-                    Assigned Modules
-
-                </h5>
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                ></button>
-
-            </div>
-
-            <div
-                class="modal-body"
-                id="assignedModulesContainer"
-            >
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
 
 @section('scripts')
 
@@ -584,74 +432,33 @@ $(function () {
     |--------------------------------------------------------------------------
     */
 
-    $(document).on(
-        'click',
-        '.approve-btn',
-        function () {
+   $(document).on('click', '.approve-btn', function () {
 
-            let retailerId =
-                $(this).data('id');
+    let form = $(this).closest('form');
 
-            $('.module-checkbox').prop(
-                'checked',
-                false
-            );
+    Swal.fire({
+        title: 'Approve Retailer?',
+        text: 'Are you sure you want to approve this retailer?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#198754',
+        cancelButtonColor: '#dc3545',
+        confirmButtonText: 'Yes, Approve',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
 
-            let approveUrl =
-                "{{ route('admin.retailer-approvals.approve', ['id' => '__ID__']) }}";
+        if (result.isConfirmed) {
 
-            approveUrl =
-                approveUrl.replace(
-                    '__ID__',
-                    retailerId
-                );
+            form.submit();
 
-            $('#approveRetailerForm')
-                .attr(
-                    'action',
-                    approveUrl
-                );
-
-            let modal =
-                new bootstrap.Modal(
-                    document.getElementById(
-                        'approveRetailerModal'
-                    )
-                );
-
-            modal.show();
         }
-    );
 
-    /*
-    |--------------------------------------------------------------------------
-    | VALIDATE MODULE SELECTION
-    |--------------------------------------------------------------------------
-    */
+    });
 
-    $('#approveRetailerForm').on(
-        'submit',
-        function (e) {
+});
 
-            let totalSelected =
-                $('.module-checkbox:checked')
-                .length;
-
-            if (
-                totalSelected === 0
-            ) {
-
-                e.preventDefault();
-
-                alert(
-                    'Please select at least one module before approving retailer.'
-                );
-
-                return false;
-            }
-        }
-    );
-
+   
+    
     /*
     |--------------------------------------------------------------------------
     | AUTO REFRESH TABLE AFTER MODAL CLOSE
