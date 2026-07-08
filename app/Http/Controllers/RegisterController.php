@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Models\State;
 use App\Models\District;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -45,287 +44,260 @@ class RegisterController extends Controller
     */
 
     public function register(Request $request)
-{
-    /*
-    |--------------------------------------------------------------------------
-    | VALIDATION RULES
-    |--------------------------------------------------------------------------
-    */
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDATION
+        |--------------------------------------------------------------------------
+        */
 
-    $rules = [
+        $validator = Validator::make(
 
-        'shop_name' => [
-
-            'required',
-            'string',
-            'min:3',
-            'max:255',
-            'regex:/^[A-Za-z0-9\s&.,-]+$/'
-
-        ],
-
-        'name' => [
-
-            'required',
-            'string',
-            'min:3',
-            'max:255',
-            'regex:/^[A-Za-z\s]+$/'
-
-        ],
-
-        'mobile' => [
-
-            'required',
-            'digits:10',
-            'regex:/^[6-9][0-9]{9}$/',
-            'unique:users,mobile',
-            'unique:retailers,mobile'
-
-        ],
-
-        'email' => [
-
-            'required',
-            'email:rfc,dns',
-            'max:255',
-            'unique:users,email',
-            'unique:retailers,email'
-
-        ],
-
-        'state_id' => [
-
-            'required',
-            'exists:states,id'
-
-        ],
-
-        'district_id' => [
-
-            'required',
-            'exists:districts,id'
-
-        ],
-
-        'distributor_id' => [
-
-            'required',
-            'exists:users,id'
-
-        ]
-
-    ];
-
-    /*
-    |--------------------------------------------------------------------------
-    | TURNSTILE VALIDATION (PRODUCTION ONLY)
-    |--------------------------------------------------------------------------
-    */
-
-    if (app()->environment('production')) {
-
-        $rules['cf-turnstile-response'] = [
-
-            'required'
-
-        ];
-
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | VALIDATOR
-    |--------------------------------------------------------------------------
-    */
-
-    $validator = Validator::make(
-
-        $request->all(),
-
-        $rules,
-
-        [
-
-            'shop_name.required' =>
-                'Shop name is required',
-
-            'name.required' =>
-                'Name is required',
-
-            'mobile.required' =>
-                'Mobile number is required',
-
-            'mobile.digits' =>
-                'Mobile number must be 10 digits',
-
-            'mobile.unique' =>
-                'Mobile number already exists',
-
-            'email.required' =>
-                'Email is required',
-
-            'email.email' =>
-                'Enter valid email address',
-
-            'email.unique' =>
-                'Email already exists',
-
-            'state_id.required' =>
-                'Please select state',
-
-            'district_id.required' =>
-                'Please select district',
-
-            'distributor_id.required' =>
-                'Please select distributor',
-
-            'distributor_id.exists' =>
-                'Selected distributor is invalid',
-
-            'cf-turnstile-response.required' =>
-                'Please complete the security verification.'
-
-        ]
-
-    );
-
-    /*
-    |--------------------------------------------------------------------------
-    | VALIDATION FAILED
-    |--------------------------------------------------------------------------
-    */
-
-    if ($validator->fails()) {
-
-        return response()->json([
-
-            'success' => false,
-
-            'errors' => $validator->errors()
-
-        ], 422);
-
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | VERIFY TURNSTILE (PRODUCTION ONLY)
-    |--------------------------------------------------------------------------
-    */
-
-    if (app()->environment('production')) {
-
-        $response = Http::asForm()->post(
-
-            'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+            $request->all(),
 
             [
 
-                'secret'   => config('services.turnstile.secret_key'),
+                'shop_name' => [
 
-                'response' => $request->input('cf-turnstile-response'),
+                    'required',
+                    'string',
+                    'min:3',
+                    'max:255',
+                    'regex:/^[A-Za-z0-9\s&.,-]+$/'
+                ],
 
-                'remoteip' => $request->ip(),
+                'name' => [
+
+                    'required',
+                    'string',
+                    'min:3',
+                    'max:255',
+                    'regex:/^[A-Za-z\s]+$/'
+                ],
+
+                'mobile' => [
+
+                    'required',
+                    'digits:10',
+                    'regex:/^[6-9][0-9]{9}$/',
+                    'unique:users,mobile',
+                    'unique:retailers,mobile'
+                ],
+
+                'email' => [
+
+                    'required',
+                    'email:rfc,dns',
+                    'max:255',
+                    'unique:users,email',
+                    'unique:retailers,email'
+                ],
+
+                'state_id' => [
+
+                    'required',
+                    'exists:states,id'
+                ],
+
+                'district_id' => [
+
+                    'required',
+                    'exists:districts,id'
+                ],
+
+                'distributor_id' => [
+
+                    'required',
+
+                    'exists:users,id'
+
+                ],
+
+                'g-recaptcha-response' => [
+
+                    'required'
+                ]
+
+            ],
+
+            [
+
+                'shop_name.required' =>
+                    'Shop name is required',
+
+                'name.required' =>
+                    'Name is required',
+
+                'mobile.required' =>
+                    'Mobile number is required',
+
+                'mobile.digits' =>
+                    'Mobile number must be 10 digits',
+
+                'mobile.unique' =>
+                    'Mobile number already exists',
+
+                'email.required' =>
+                    'Email is required',
+
+                'email.email' =>
+                    'Enter valid email address',
+
+                'email.unique' =>
+                    'Email already exists',
+
+                'state_id.required' =>
+                    'Please select state',
+
+                'district_id.required' =>
+                    'Please select district',
+
+                'distributor_id.required' =>
+                    'Please select distributor',
+
+                'distributor_id.exists' =>
+                    'Selected distributor is invalid',
+
+                'g-recaptcha-response.required' =>
+                    'Please verify captcha'
 
             ]
 
         );
 
-        if (! $response->json('success')) {
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDATION FAILED
+        |--------------------------------------------------------------------------
+        */
+
+        if ($validator->fails()) {
 
             return response()->json([
 
                 'success' => false,
 
-                'errors' => [
+                'errors' =>
 
-                    'captcha' => [
-
-                        'Security verification failed.'
-
-                    ]
-
-                ]
+                    $validator->errors()
 
             ], 422);
 
         }
 
-    }
+        DB::beginTransaction();
 
-    DB::beginTransaction();
-
-    try {
-
-        /*
-        |--------------------------------------------------------------------------
-        | CREATE RETAILER REQUEST
-        |--------------------------------------------------------------------------
-        */
-
-        DB::table('retailers')->insert([
-
-            'shop_name' => trim($request->shop_name),
-
-            'name' => trim($request->name),
-
-            'mobile' => trim($request->mobile),
-
-            'email' => strtolower(trim($request->email)),
-
-            'state_id' => $request->state_id,
-
-            'district_id' => $request->district_id,
-
-            'distributor_id' => $request->distributor_id,
+        try {
 
             /*
             |--------------------------------------------------------------------------
-            | PENDING APPROVAL
+            | CREATE RETAILER REQUEST
             |--------------------------------------------------------------------------
             */
 
-            'status' => 'pending',
+            DB::table('retailers')->insert([
 
-            'is_verified' => 0,
+                'shop_name' =>
 
-            'registered_ip' => $request->ip(),
+                    trim($request->shop_name),
 
-            'created_at' => now(),
+                'name' =>
 
-            'updated_at' => now(),
+                    trim($request->name),
 
-        ]);
+                'mobile' =>
 
-        DB::commit();
+                    trim($request->mobile),
 
-        return response()->json([
+                'email' =>
 
-            'success' => true,
+                    strtolower(
+                        trim($request->email)
+                    ),
 
-            'message' => 'Registration submitted successfully. Your account is pending department approval. Login credentials will be generated after approval.',
+                'state_id' =>
 
-            'redirect' => route('home')
+                    $request->state_id,
 
-        ]);
+                'district_id' =>
 
-    } catch (\Exception $e) {
+                    $request->district_id,
 
-        DB::rollBack();
+                'distributor_id' =>
 
-        return response()->json([
+                    $request->distributor_id,
 
-            'success' => false,
+                /*
+                |--------------------------------------------------------------------------
+                | PENDING APPROVAL
+                |--------------------------------------------------------------------------
+                */
 
-            'message' => 'Something went wrong.',
+                'status' =>
 
-            'error' => $e->getMessage()
+                    'pending',
 
-        ], 500);
+                'is_verified' =>
 
+                    0,
+
+                'registered_ip' =>
+
+                    $request->ip(),
+
+                'created_at' =>
+
+                    now(),
+
+                'updated_at' =>
+
+                    now(),
+
+            ]);
+
+            DB::commit();
+
+            /*
+            |--------------------------------------------------------------------------
+            | SUCCESS RESPONSE
+            |--------------------------------------------------------------------------
+            */
+
+            return response()->json([
+
+                'success' => true,
+
+                'message' =>
+
+                    'Registration submitted successfully. Your account is pending department approval. Login credentials will be generated after approval.',
+
+                'redirect' =>
+
+                    route('home')
+
+            ]);
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return response()->json([
+
+                'success' => false,
+
+                'message' =>
+
+                    'Something went wrong.',
+
+                'error' =>
+
+                    $e->getMessage()
+
+            ], 500);
+
+        }
     }
-}
+
 
 
     /*

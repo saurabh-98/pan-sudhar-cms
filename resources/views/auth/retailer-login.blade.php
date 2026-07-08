@@ -199,7 +199,7 @@
 
                 </p>
 
-                <!--=========================================
+                                <!--=========================================
                 LOGIN FORM
                 ==========================================-->
 
@@ -309,7 +309,7 @@
 
                         @if(Route::has('password.request'))
 
-                            
+                            <a
                                 href="{{ route('password.request') }}"
                                 class="forgot-link">
 
@@ -335,14 +335,10 @@
 
                         </label>
 
-                        @if(app()->environment('production'))
-                            <div class="cf-turnstile"
-                                 id="turnstileWidget"
-                                 data-sitekey="{{ config('services.turnstile.site_key') }}"
-                                 data-expired-callback="onTurnstileExpired"
-                                 data-error-callback="onTurnstileError">
-                            </div>
-                        @endif
+                        <div
+                            class="g-recaptcha"
+                            data-sitekey="{{ config('services.recaptcha.site_key') }}">
+                        </div>
 
                         <small class="text-danger error-captcha"></small>
 
@@ -488,29 +484,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <!-- =======================================================
-| CLOUDFLARE TURNSTILE
+| GOOGLE CAPTCHA
 ======================================================= -->
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <script>
-
-/*======================================================
-| TURNSTILE CALLBACKS (must be global, not inside $(function(){...}))
-======================================================*/
-
-function onTurnstileExpired(){
-
-    toastr.warning(
-        "Security check expired, please verify again."
-    );
-}
-
-function onTurnstileError(){
-
-    toastr.error(
-        "Security verification failed to load. Please refresh the page."
-    );
-}
 
 $(function(){
 
@@ -519,12 +497,19 @@ $(function(){
     ======================================================*/
 
     toastr.options = {
+
         closeButton:true,
+
         progressBar:true,
+
         newestOnTop:true,
+
         preventDuplicates:true,
+
         positionClass:"toast-top-right",
+
         timeOut:3000
+
     };
 
     /*======================================================
@@ -609,26 +594,17 @@ $(function(){
 
         $(".text-danger").html("");
 
-        @if(app()->environment('production'))
+        let captcha=grecaptcha.getResponse();
 
-        let captcha=document.querySelector(
-            '[name="cf-turnstile-response"]'
-        )?.value;
+        if(captcha.length===0){
 
-        if(!captcha){
+            $(".error-captcha").html("Please verify captcha.");
 
-            $(".error-captcha").html(
-                "Please complete verification."
-            );
-
-            toastr.error(
-                "Please complete verification."
-            );
+            toastr.error("Captcha verification required.");
 
             return;
-        }
 
-        @endif
+        }
 
         Swal.fire({
 
@@ -668,25 +644,6 @@ $(function(){
 
         let btn=$("#loginBtn");
 
-        let captcha="";
-
-        @if(app()->environment('production'))
-
-        captcha=document.querySelector(
-            '[name="cf-turnstile-response"]'
-        )?.value;
-
-        if(!captcha){
-
-            toastr.error(
-                "Please complete verification."
-            );
-
-            return;
-        }
-
-        @endif
-
         btn.prop("disabled",true);
 
         btn.html(`
@@ -724,9 +681,9 @@ $(function(){
 
                 password:$("#password").val(),
 
-                remember:$("#remember").is(":checked") ? 1 : 0,
+                remember:$("#remember").is(":checked")?1:0,
 
-                "cf-turnstile-response":captcha
+                "g-recaptcha-response":grecaptcha.getResponse()
 
             },
 
@@ -738,9 +695,7 @@ $(function(){
 
                     title:"Welcome!",
 
-                    text:response.message ||
-
-                    "Login Successful",
+                    text:response.message || "Login Successful",
 
                     timer:1800,
 
@@ -755,11 +710,8 @@ $(function(){
 
                 setTimeout(function(){
 
-                    window.location.href=
-
-                        response.redirect ||
-
-                        "{{ route('retailer.dashboard') }}";
+                    window.location.href=response.redirect
+                    || "{{ route('retailer.dashboard') }}";
 
                 },1800);
 
@@ -774,22 +726,9 @@ $(function(){
                     Login To Dashboard
                 `);
 
+                grecaptcha.reset();
+
                 Swal.close();
-
-                /*======================================
-                | RESET TURNSTILE ON ANY FAILED ATTEMPT
-                | Prevents reusing a stale/consumed token
-                ======================================*/
-
-                @if(app()->environment('production'))
-
-                if (typeof turnstile !== "undefined") {
-
-                    turnstile.reset('#turnstileWidget');
-
-                }
-
-                @endif
 
                 if(xhr.status==422){
 
@@ -799,26 +738,19 @@ $(function(){
 
                     });
 
-                    toastr.error(
-                        "Please correct the highlighted fields."
-                    );
+                    toastr.error("Please correct the highlighted fields.");
 
                 }
+
                 else if(xhr.status==401){
 
-                    toastr.error(
-                        xhr.responseJSON.message
-                    );
-
-                    // Wrong password shouldn't force a page reload —
-                    // token reset above already handles retry.
+                    toastr.error(xhr.responseJSON.message);
 
                 }
+
                 else{
 
-                    toastr.error(
-                        "Unexpected server error."
-                    );
+                    toastr.error("Unexpected server error.");
 
                 }
 
@@ -831,4 +763,5 @@ $(function(){
 });
 
 </script>
+
 @endsection

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Http;
 
 class DistributorLoginController extends Controller
 {
@@ -46,279 +45,252 @@ class DistributorLoginController extends Controller
     */
 
     public function login(Request $request)
-{
-    /*
-    |--------------------------------------------------------------------------
-    | VALIDATION RULES
-    |--------------------------------------------------------------------------
-    */
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDATION
+        |--------------------------------------------------------------------------
+        */
 
-    $rules = [
+        $validator = Validator::make(
 
-        'email' => [
-
-            'required',
-            'string'
-
-        ],
-
-        'password' => [
-
-            'required',
-            'string'
-
-        ]
-
-    ];
-
-    /*
-    |--------------------------------------------------------------------------
-    | TURNSTILE VALIDATION (PRODUCTION ONLY)
-    |--------------------------------------------------------------------------
-    */
-
-    if (app()->environment('production')) {
-
-        $rules['cf-turnstile-response'] = [
-
-            'required'
-
-        ];
-
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | VALIDATOR
-    |--------------------------------------------------------------------------
-    */
-
-    $validator = Validator::make(
-
-        $request->all(),
-
-        $rules,
-
-        [
-
-            'email.required' =>
-
-                'Email or mobile number is required.',
-
-            'password.required' =>
-
-                'Password is required.',
-
-            'cf-turnstile-response.required' =>
-
-                'Please complete the security verification.'
-
-        ]
-
-    );
-
-    /*
-    |--------------------------------------------------------------------------
-    | VALIDATION FAILED
-    |--------------------------------------------------------------------------
-    */
-
-    if ($validator->fails()) {
-
-        return response()->json([
-
-            'success' => false,
-
-            'errors' => $validator->errors()
-
-        ], 422);
-
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | VERIFY CLOUDFLARE TURNSTILE
-    |--------------------------------------------------------------------------
-    */
-
-    if (app()->environment('production')) {
-
-        $response = Http::asForm()->post(
-
-            'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+            $request->all(),
 
             [
 
-                'secret'   => config('services.turnstile.secret_key'),
+                'email' => [
 
-                'response' => $request->input('cf-turnstile-response'),
+                    'required',
+                    'string'
 
-                'remoteip' => $request->ip(),
+                ],
+
+                'password' => [
+
+                    'required',
+                    'string'
+
+                ],
+
+                'g-recaptcha-response' => [
+
+                    'required'
+
+                ]
+
+            ],
+
+            [
+
+                'email.required' =>
+
+                    'Email or mobile number is required.',
+
+                'password.required' =>
+
+                    'Password is required.',
+
+                'g-recaptcha-response.required' =>
+
+                    'Captcha verification is required.'
 
             ]
-
         );
 
-        if (! $response->json('success')) {
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDATION FAILED
+        |--------------------------------------------------------------------------
+        */
+
+        if ($validator->fails()) {
 
             return response()->json([
 
                 'success' => false,
 
-                'errors' => [
+                'errors' =>
 
-                    'captcha' => [
-
-                        'Verification failed.'
-
-                    ]
-
-                ]
+                    $validator->errors()
 
             ], 422);
-
         }
 
-    }
+        /*
+        |--------------------------------------------------------------------------
+        | LOGIN FIELD
+        |--------------------------------------------------------------------------
+        */
 
-    /*
-    |--------------------------------------------------------------------------
-    | LOGIN FIELD
-    |--------------------------------------------------------------------------
-    */
+        $loginField = filter_var(
 
-    $loginField = filter_var(
+            trim($request->email),
 
-        trim($request->email),
-
-        FILTER_VALIDATE_EMAIL
-
-    ) ? 'email' : 'mobile';
-
-    /*
-    |--------------------------------------------------------------------------
-    | CREDENTIALS
-    |--------------------------------------------------------------------------
-    */
-
-    $credentials = [
-
-        $loginField => trim($request->email),
-
-        'password' => trim($request->password),
-
-        'status' => 1
-
-    ];
-
-    /*
-    |--------------------------------------------------------------------------
-    | ATTEMPT LOGIN
-    |--------------------------------------------------------------------------
-    */
-
-    if (
-
-        ! Auth::attempt(
-
-            $credentials,
-
-            $request->boolean('remember')
+            FILTER_VALIDATE_EMAIL
 
         )
 
-    ) {
+        ? 'email'
+
+        : 'mobile';
+
+        /*
+        |--------------------------------------------------------------------------
+        | CREDENTIALS
+        |--------------------------------------------------------------------------
+        */
+
+        $credentials = [
+
+            $loginField => trim(
+                $request->email
+            ),
+
+            'password' => trim(
+                $request->password
+            ),
+
+            'status' => 1
+
+        ];
+
+        /*
+        |--------------------------------------------------------------------------
+        | ATTEMPT LOGIN
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+
+            !Auth::attempt(
+
+                $credentials,
+
+                $request->boolean(
+                    'remember'
+                )
+
+            )
+
+        ) {
+
+            return response()->json([
+
+                'success' => false,
+
+                'message' =>
+
+                    'Invalid login credentials.'
+
+            ], 401);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | USER
+        |--------------------------------------------------------------------------
+        */
+
+        $user = Auth::user();
+
+        /*
+        |--------------------------------------------------------------------------
+        | ROLE CHECK
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+
+            !$user->hasRole(
+                'Distributor'
+            )
+
+        ) {
+
+            Auth::logout();
+
+            $request->session()
+                    ->invalidate();
+
+            $request->session()
+                    ->regenerateToken();
+
+            return response()->json([
+
+                'success' => false,
+
+                'message' =>
+
+                    'Only Distributor can login here.'
+
+            ], 403);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | ACCOUNT STATUS CHECK
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+
+            isset($user->status)
+
+            &&
+
+            !$user->status
+
+        ) {
+
+            Auth::logout();
+
+            $request->session()
+                    ->invalidate();
+
+            $request->session()
+                    ->regenerateToken();
+
+            return response()->json([
+
+                'success' => false,
+
+                'message' =>
+
+                    'Your account has been disabled.'
+
+            ], 403);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | SESSION SECURITY
+        |--------------------------------------------------------------------------
+        */
+
+        $request->session()
+                ->regenerate();
+
+        /*
+        |--------------------------------------------------------------------------
+        | SUCCESS RESPONSE
+        |--------------------------------------------------------------------------
+        */
 
         return response()->json([
 
-            'success' => false,
+            'success' => true,
 
-            'message' => 'Invalid login credentials.'
+            'message' =>
 
-        ], 401);
+                'Distributor login successful.',
 
+            'redirect' =>
+
+                route('admin.dashboard')
+
+        ]);
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | USER
-    |--------------------------------------------------------------------------
-    */
-
-    $user = Auth::user();
-
-    /*
-    |--------------------------------------------------------------------------
-    | ROLE CHECK
-    |--------------------------------------------------------------------------
-    */
-
-    if (! $user->hasRole('Distributor')) {
-
-        Auth::logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return response()->json([
-
-            'success' => false,
-
-            'message' => 'Only Distributor can login here.'
-
-        ], 403);
-
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | ACCOUNT STATUS CHECK
-    |--------------------------------------------------------------------------
-    */
-
-    if (isset($user->status) && ! $user->status) {
-
-        Auth::logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return response()->json([
-
-            'success' => false,
-
-            'message' => 'Your account has been disabled.'
-
-        ], 403);
-
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | SESSION SECURITY
-    |--------------------------------------------------------------------------
-    */
-
-    $request->session()->regenerate();
-
-    /*
-    |--------------------------------------------------------------------------
-    | SUCCESS RESPONSE
-    |--------------------------------------------------------------------------
-    */
-
-    return response()->json([
-
-        'success' => true,
-
-        'message' => 'Distributor login successful.',
-
-        'redirect' => route('admin.dashboard')
-
-    ]);
-}
     /*
     |--------------------------------------------------------------------------
     | FORGOT PASSWORD

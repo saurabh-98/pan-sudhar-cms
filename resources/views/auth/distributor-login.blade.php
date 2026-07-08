@@ -190,16 +190,12 @@
                                     Verify You Are Human
                                 </label>
 
-                               @if(app()->environment('production'))
-                                    <div class="cf-turnstile"
-                                        id="turnstileWidget"
-                                        data-sitekey="{{ config('services.turnstile.site_key') }}"
-                                        data-expired-callback="onTurnstileExpired"
-                                        data-error-callback="onTurnstileError">
-                                    </div>
-                                @endif
+                                <div class="g-recaptcha"
+                                     data-sitekey="{{ config('services.recaptcha.site_key') }}">
+                                </div>
 
                                 <span class="dist-error error-captcha"></span>
+
                             </div>
 
                             <button type="submit"
@@ -239,34 +235,11 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script
-src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-async
-defer></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <script>
-
-/*
-|--------------------------------------------------------------------------
-| TURNSTILE CALLBACKS (must be global, called by name from cloudflare script)
-|--------------------------------------------------------------------------
-*/
-
-function onTurnstileExpired() {
-
-    $('.error-captcha').html(
-        'Security check expired, please verify again.'
-    );
-}
-
-function onTurnstileError() {
-
-    $('.error-captcha').html(
-        'Security verification failed to load. Please refresh the page.'
-    );
-}
 
 $(document).ready(function () {
 
@@ -276,7 +249,7 @@ $(document).ready(function () {
         newestOnTop: true,
         positionClass: "toast-top-right",
         preventDuplicates: true,
-        timeOut: 3000
+        timeOut: "3000"
     };
 
     /*
@@ -303,9 +276,7 @@ $(document).ready(function () {
 
             icon.removeClass('fa-eye-slash')
                 .addClass('fa-eye');
-
         }
-
     });
 
     /*
@@ -320,34 +291,21 @@ $(document).ready(function () {
 
         $('.dist-error').html('');
 
-        /*
-        |--------------------------------------------------------------------------
-        | CAPTCHA (declared once, reused below — do NOT redeclare with `let` again)
-        |--------------------------------------------------------------------------
-        */
+        let captcha = grecaptcha.getResponse();
 
-        let captcha = "";
+        if(captcha.length === 0){
 
-        @if(app()->environment('production'))
+            $('.error-captcha').html('Please verify captcha.');
 
-        captcha = document.querySelector(
-            '[name="cf-turnstile-response"]'
-        )?.value;
-
-        if(!captcha){
-
-            $('.error-captcha').html(
-                'Please complete verification.'
-            );
-
-            toastr.error(
-                'Verification required.'
-            );
+            toastr.error('Please verify you are human.');
 
             return false;
         }
 
-        @endif
+        toastr.info(
+            'Authenticating distributor credentials...',
+            'Please Wait'
+        );
 
         let btn = $('#loginBtn');
 
@@ -374,18 +332,14 @@ $(document).ready(function () {
 
                 remember: $('#remember').is(':checked') ? 1 : 0,
 
-                "cf-turnstile-response": captcha
-
+                'g-recaptcha-response': captcha
             },
 
             success: function(response){
 
                 toastr.success(
-
                     response.message ||
-
                     'Distributor Login Successful'
-
                 );
 
                 btn.html(`
@@ -396,12 +350,10 @@ $(document).ready(function () {
                 setTimeout(function(){
 
                     window.location.href =
+                    response.redirect ||
+                    "{{ route('admin.dashboard') }}";
 
-                        response.redirect ||
-
-                        "{{ route('admin.dashboard') }}";
-
-                },1500);
+                }, 1500);
 
             },
 
@@ -414,67 +366,39 @@ $(document).ready(function () {
                     Login To Distributor Panel
                 `);
 
-                /*
-                |--------------------------------------------------------------------------
-                | RESET TURNSTILE SO A STALE TOKEN ISN'T REUSED ON RETRY
-                |--------------------------------------------------------------------------
-                */
-
-                @if(app()->environment('production'))
-
-                if (typeof turnstile !== "undefined") {
-
-                    turnstile.reset('#turnstileWidget');
-
-                }
-
-                @endif
+                grecaptcha.reset();
 
                 if(xhr.status === 422){
 
-                    $.each(xhr.responseJSON.errors,function(key,value){
+                    let errors = xhr.responseJSON.errors;
 
-                        $('.error-'+key).html(value[0]);
+                    $.each(errors, function(key, value){
+
+                        $('.error-' + key)
+                            .html(value[0]);
 
                     });
 
                     toastr.error(
-                        'Please fill all required fields.'
+                        'Please fill all required fields'
                     );
-
                 }
+
                 else if(xhr.status === 401){
 
                     toastr.error(
-
                         xhr.responseJSON.message ||
-
-                        'Invalid distributor credentials.'
-
+                        'Invalid distributor credentials'
                     );
-
                 }
-                else if(xhr.status === 403){
 
-                    toastr.error(
-
-                        xhr.responseJSON.message ||
-
-                        'Unauthorized access.'
-
-                    );
-
-                }
                 else{
 
                     toastr.error(
-                        'Something went wrong.'
+                        'Something went wrong'
                     );
-
                 }
-
             }
-
         });
 
     });
@@ -482,4 +406,5 @@ $(document).ready(function () {
 });
 
 </script>
+
 @endsection

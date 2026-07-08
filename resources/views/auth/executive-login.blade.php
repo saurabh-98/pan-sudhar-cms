@@ -239,14 +239,10 @@
 
                             </label>
 
-                          @if(app()->environment('production'))
-                                <div class="cf-turnstile"
-                                    id="turnstileWidget"
-                                    data-sitekey="{{ config('services.turnstile.site_key') }}"
-                                    data-expired-callback="onTurnstileExpired"
-                                    data-error-callback="onTurnstileError">
-                                </div>
-                            @endif
+                            <div
+                                class="g-recaptcha"
+                                data-sitekey="{{ config('services.recaptcha.site_key') }}">
+                            </div>
 
                             <span class="exl-error error-captcha"></span>
 
@@ -294,11 +290,7 @@
 ========================================================= --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script
-src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-async
-defer></script>
-
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 {{-- =========================================================
 | TOASTR
@@ -306,26 +298,6 @@ defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <script>
-
-/*
-|--------------------------------------------------------------------------
-| TURNSTILE CALLBACKS (must be global, called by name from cloudflare script)
-|--------------------------------------------------------------------------
-*/
-
-function onTurnstileExpired() {
-
-    $('.error-captcha').html(
-        'Security check expired, please verify again.'
-    );
-}
-
-function onTurnstileError() {
-
-    $('.error-captcha').html(
-        'Security verification failed to load. Please refresh the page.'
-    );
-}
 
 $(document).ready(function () {
 
@@ -347,8 +319,7 @@ $(document).ready(function () {
 
         preventDuplicates: true,
 
-        timeOut: 3000
-
+        timeOut: "3000"
     };
 
     /*
@@ -357,7 +328,7 @@ $(document).ready(function () {
     |--------------------------------------------------------------------------
     */
 
-    $('.exl-password-toggle').click(function(){
+    $('.toggle-password').click(function(){
 
         let input = $('#password');
 
@@ -365,67 +336,55 @@ $(document).ready(function () {
 
         if(input.attr('type') === 'password'){
 
-            input.attr('type','text');
+            input.attr('type', 'text');
 
             icon.removeClass('fa-eye')
                 .addClass('fa-eye-slash');
 
         }else{
 
-            input.attr('type','password');
+            input.attr('type', 'password');
 
             icon.removeClass('fa-eye-slash')
                 .addClass('fa-eye');
-
         }
-
     });
 
     /*
     |--------------------------------------------------------------------------
-    | EXECUTIVE LOGIN
+    | EXECUTIVE LOGIN SUBMIT
     |--------------------------------------------------------------------------
     */
 
-    $('#executiveLoginForm').on('submit',function(e){
+    $('#executiveLoginForm').on('submit', function(e){
 
         e.preventDefault();
 
-        $('.exl-error').html('');
+        $('.text-danger').html('');
 
-        /*
-        |--------------------------------------------------------------------------
-        | CAPTCHA (declared once, reused below — do NOT redeclare with `let` again)
-        |--------------------------------------------------------------------------
-        */
+        let captcha = grecaptcha.getResponse();
 
-        let captcha = "";
-
-        @if(app()->environment('production'))
-
-        captcha = document.querySelector(
-            '[name="cf-turnstile-response"]'
-        )?.value;
-
-        if(!captcha){
+        if(captcha.length === 0){
 
             $('.error-captcha').html(
-                'Please complete verification.'
+                'Please verify captcha.'
             );
 
             toastr.error(
-                'Verification required.'
+                'Please verify you are human.'
             );
 
             return false;
-
         }
 
-        @endif
+        toastr.info(
+            'Authenticating executive credentials...',
+            'Please Wait'
+        );
 
         let btn = $('#loginBtn');
 
-        btn.prop('disabled',true);
+        btn.prop('disabled', true);
 
         btn.html(`
             <span class="spinner-border spinner-border-sm me-2"></span>
@@ -434,32 +393,27 @@ $(document).ready(function () {
 
         $.ajax({
 
-            url:"{{ route('executive.login.submit') }}",
+            url: "{{ route('executive.login.submit') }}",
 
-            type:"POST",
+            type: "POST",
 
-            data:{
+            data: {
 
-                _token:"{{ csrf_token() }}",
+                _token: "{{ csrf_token() }}",
 
-                email:$('#email').val(),
+                email: $('#email').val(),
 
-                password:$('#password').val(),
+                password: $('#password').val(),
 
-                remember:$('#remember').is(':checked') ? 1 : 0,
+                remember: $('#remember').is(':checked') ? 1 : 0,
 
-                "cf-turnstile-response":captcha
-
+                'g-recaptcha-response': captcha
             },
 
-            success:function(response){
+            success: function(response){
 
                 toastr.success(
-
-                    response.message ||
-
-                    'Executive Login Successful'
-
+                    response.message || 'Executive Login Successful'
                 );
 
                 btn.html(`
@@ -470,85 +424,55 @@ $(document).ready(function () {
                 setTimeout(function(){
 
                     window.location.href =
+                    response.redirect
+                    || "{{ route('admin.dashboard') }}";
 
-                        response.redirect ||
-
-                        "{{ route('admin.dashboard') }}";
-
-                },1500);
-
+                }, 1500);
             },
 
-            error:function(xhr){
+            error: function(xhr){
 
-                btn.prop('disabled',false);
+                btn.prop('disabled', false);
 
                 btn.html(`
                     <i class="fa-solid fa-right-to-bracket me-2"></i>
                     Login To Executive Panel
                 `);
 
-                /*
-                |--------------------------------------------------------------------------
-                | RESET TURNSTILE SO A STALE TOKEN ISN'T REUSED ON RETRY
-                |--------------------------------------------------------------------------
-                */
+                grecaptcha.reset();
 
-                @if(app()->environment('production'))
+                if(xhr.status === 422){
 
-                if (typeof turnstile !== "undefined") {
+                    let errors =
+                    xhr.responseJSON.errors;
 
-                    turnstile.reset('#turnstileWidget');
+                    $.each(errors, function(key, value){
 
-                }
-
-                @endif
-
-                if(xhr.status===422){
-
-                    $.each(xhr.responseJSON.errors,function(key,value){
-
-                        $('.error-'+key).html(value[0]);
+                        $('.error-' + key)
+                        .html(value[0]);
 
                     });
 
                     toastr.error(
-                        'Please fill all required fields.'
+                        'Please fill all required fields'
                     );
-
                 }
-                else if(xhr.status===401){
+
+                else if(xhr.status === 401){
 
                     toastr.error(
-
-                        xhr.responseJSON.message ||
-
-                        'Invalid executive credentials.'
-
+                        xhr.responseJSON.message
+                        || 'Invalid executive credentials'
                     );
-
                 }
-                else if(xhr.status===403){
 
-                    toastr.error(
-
-                        xhr.responseJSON.message ||
-
-                        'Unauthorized access.'
-
-                    );
-
-                }
                 else{
 
                     toastr.error(
-                        'Something went wrong.'
+                        'Something went wrong'
                     );
-
                 }
-
             }
-
         });
 
     });
