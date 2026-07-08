@@ -311,10 +311,11 @@
 
                                 </label>
 
-                                <div class="g-recaptcha"
-                                     data-sitekey="{{ config('services.recaptcha.site_key') }}">
-
-                                </div>
+                                @if(app()->environment('production'))
+                                    <div class="cf-turnstile"
+                                        data-sitekey="{{ config('services.turnstile.site_key') }}">
+                                    </div>
+                                @endif
 
                                 <span class="dist-error error-captcha"></span>
 
@@ -366,178 +367,219 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script src="https://www.google.com/recaptcha/api.js"
-        async
-        defer></script>
+<script
+src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+async
+defer></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <script>
 
-                            $(document).ready(function () {
+$(document).ready(function () {
 
-        toastr.options = {
-            closeButton: true,
-            progressBar: true,
-            newestOnTop: true,
-            positionClass: "toast-top-right",
-            preventDuplicates: true,
-            timeOut: "3000"
-        };
+    toastr.options = {
+        closeButton: true,
+        progressBar: true,
+        newestOnTop: true,
+        positionClass: "toast-top-right",
+        preventDuplicates: true,
+        timeOut: 3000
+    };
 
-        /*=========================================
-        | PASSWORD SHOW / HIDE
-        =========================================*/
+    /*=========================================
+    | PASSWORD SHOW / HIDE
+    =========================================*/
 
-        $('.toggle-password').click(function () {
+    $('.toggle-password').click(function () {
 
-            let input = $('#password');
-            let icon  = $(this).find('i');
+        let input = $('#password');
+        let icon  = $(this).find('i');
 
-            if (input.attr('type') === 'password') {
+        if (input.attr('type') === 'password') {
 
-                input.attr('type', 'text');
+            input.attr('type', 'text');
 
-                icon.removeClass('fa-eye')
-                    .addClass('fa-eye-slash');
+            icon.removeClass('fa-eye')
+                .addClass('fa-eye-slash');
 
-            } else {
+        } else {
 
-                input.attr('type', 'password');
+            input.attr('type', 'password');
 
-                icon.removeClass('fa-eye-slash')
-                    .addClass('fa-eye');
+            icon.removeClass('fa-eye-slash')
+                .addClass('fa-eye');
 
-            }
+        }
 
-        });
+    });
 
-        /*=========================================
-        | SUPER DISTRIBUTOR LOGIN
-        =========================================*/
+    /*=========================================
+    | SUPER DISTRIBUTOR LOGIN
+    =========================================*/
 
-        $('#superDistributorLoginForm').on('submit', function (e) {
+    $('#superDistributorLoginForm').on('submit', function (e) {
 
-            e.preventDefault();
+        e.preventDefault();
 
-            $('.dist-error').html('');
+        $('.text-danger').html('');
 
-            let captcha = grecaptcha.getResponse();
+        @if(app()->environment('production'))
 
-            if (captcha.length === 0) {
+        let captcha = document.querySelector(
+            '[name="cf-turnstile-response"]'
+        )?.value;
 
-                $('.error-captcha').html('Please verify captcha.');
+        if (!captcha) {
 
-                toastr.error('Please verify you are human.');
-
-                return false;
-
-            }
-
-            toastr.info(
-                'Authenticating Super Distributor...',
-                'Please Wait'
+            $('.error-captcha').html(
+                'Please complete verification.'
             );
 
-            let btn = $('#loginBtn');
+            toastr.error(
+                'Verification required.'
+            );
 
-            btn.prop('disabled', true);
+            return false;
 
-            btn.html(`
-                <span class="spinner-border spinner-border-sm me-2"></span>
-                Logging In...
-            `);
+        }
 
-            $.ajax({
+        @endif
 
-                url: "{{ route('super-distributor.login.submit') }}",
+        toastr.info(
+            'Authenticating Super Distributor...',
+            'Please Wait'
+        );
 
-                type: "POST",
+        let btn = $('#loginBtn');
 
-                data: {
+        btn.prop('disabled', true);
 
-                    _token: "{{ csrf_token() }}",
+        btn.html(`
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Logging In...
+        `);
 
-                    email: $('#email').val(),
+        let captcha = "";
 
-                    password: $('#password').val(),
+        @if(app()->environment('production'))
 
-                    remember: $('#remember').is(':checked') ? 1 : 0,
+        captcha = document.querySelector(
+            '[name="cf-turnstile-response"]'
+        )?.value;
 
-                    'g-recaptcha-response': captcha
+        @endif
 
-                },
+        $.ajax({
 
-                success: function (response) {
+            url: "{{ route('super-distributor.login.submit') }}",
 
-                    toastr.success(
-                        response.message ||
-                        'Super Distributor Login Successful'
+            type: "POST",
+
+            data: {
+
+                _token: "{{ csrf_token() }}",
+
+                email: $('#email').val(),
+
+                password: $('#password').val(),
+
+                remember: $('#remember').is(':checked') ? 1 : 0,
+
+                "cf-turnstile-response": captcha
+
+            },
+
+            success: function (response) {
+
+                toastr.success(
+
+                    response.message ||
+
+                    'Super Distributor Login Successful'
+
+                );
+
+                btn.html(`
+                    <i class="fa-solid fa-circle-check me-2"></i>
+                    Redirecting...
+                `);
+
+                setTimeout(function () {
+
+                    window.location.href =
+
+                        response.redirect ||
+
+                        "{{ route('admin.dashboard') }}";
+
+                }, 1500);
+
+            },
+
+            error: function (xhr) {
+
+                btn.prop('disabled', false);
+
+                btn.html(`
+                    <i class="fa-solid fa-crown me-2"></i>
+                    Login To Super Distributor Panel
+                `);
+
+                if (xhr.status === 422) {
+
+                    $.each(xhr.responseJSON.errors, function (key, value) {
+
+                        $('.error-' + key).html(value[0]);
+
+                    });
+
+                    toastr.error(
+                        'Please fill all required fields.'
                     );
 
-                    btn.html(`
-                        <i class="fa-solid fa-circle-check me-2"></i>
-                        Redirecting...
-                    `);
+                }
+                else if (xhr.status === 401) {
 
-                    setTimeout(function () {
+                    toastr.error(
 
-                        window.location.href =
-                            response.redirect ||
-                            "{{ route('admin.dashboard') }}";
+                        xhr.responseJSON.message ||
 
-                    }, 1500);
+                        'Invalid Super Distributor credentials.'
 
-                },
+                    );
 
-                error: function (xhr) {
+                }
+                else if (xhr.status === 403) {
 
-                    btn.prop('disabled', false);
+                    toastr.error(
 
-                    btn.html(`
-                        <i class="fa-solid fa-crown me-2"></i>
-                        Login To Super Distributor Panel
-                    `);
+                        xhr.responseJSON.message ||
 
-                    grecaptcha.reset();
+                        'Unauthorized access.'
 
-                    if (xhr.status === 422) {
+                    );
 
-                        let errors = xhr.responseJSON.errors;
+                }
+                else {
 
-                        $.each(errors, function (key, value) {
+                    toastr.error(
 
-                            $('.error-' + key).html(value[0]);
+                        xhr.responseJSON.message ||
 
-                        });
+                        'Something went wrong. Please try again.'
 
-                        toastr.error('Please fill all required fields.');
-
-                    }
-                    else if (xhr.status === 401) {
-
-                        toastr.error(
-                            xhr.responseJSON.message ||
-                            'Invalid Super Distributor credentials.'
-                        );
-
-                    }
-                    else {
-
-                        toastr.error(
-                            xhr.responseJSON.message ||
-                            'Something went wrong. Please try again.'
-                        );
-
-                    }
+                    );
 
                 }
 
-            });
+            }
 
         });
 
     });
+
+});
 
 </script>
 

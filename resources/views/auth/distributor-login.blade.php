@@ -190,12 +190,13 @@
                                     Verify You Are Human
                                 </label>
 
-                                <div class="g-recaptcha"
-                                     data-sitekey="{{ config('services.recaptcha.site_key') }}">
-                                </div>
+                               @if(app()->environment('production'))
+                                    <div class="cf-turnstile"
+                                        data-sitekey="{{ config('services.turnstile.site_key') }}">
+                                    </div>
+                                @endif
 
                                 <span class="dist-error error-captcha"></span>
-
                             </div>
 
                             <button type="submit"
@@ -235,7 +236,10 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script
+src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+async
+defer></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
@@ -249,7 +253,7 @@ $(document).ready(function () {
         newestOnTop: true,
         positionClass: "toast-top-right",
         preventDuplicates: true,
-        timeOut: "3000"
+        timeOut: 3000
     };
 
     /*
@@ -276,7 +280,9 @@ $(document).ready(function () {
 
             icon.removeClass('fa-eye-slash')
                 .addClass('fa-eye');
+
         }
+
     });
 
     /*
@@ -291,21 +297,26 @@ $(document).ready(function () {
 
         $('.dist-error').html('');
 
-        let captcha = grecaptcha.getResponse();
+        @if(app()->environment('production'))
 
-        if(captcha.length === 0){
+        let captcha = document.querySelector(
+            '[name="cf-turnstile-response"]'
+        )?.value;
 
-            $('.error-captcha').html('Please verify captcha.');
+        if(!captcha){
 
-            toastr.error('Please verify you are human.');
+            $('.error-captcha').html(
+                'Please complete verification.'
+            );
+
+            toastr.error(
+                'Verification required.'
+            );
 
             return false;
         }
 
-        toastr.info(
-            'Authenticating distributor credentials...',
-            'Please Wait'
-        );
+        @endif
 
         let btn = $('#loginBtn');
 
@@ -315,6 +326,16 @@ $(document).ready(function () {
             <span class="spinner-border spinner-border-sm me-2"></span>
             Logging in...
         `);
+
+        let captcha = "";
+
+        @if(app()->environment('production'))
+
+        captcha = document.querySelector(
+            '[name="cf-turnstile-response"]'
+        )?.value;
+
+        @endif
 
         $.ajax({
 
@@ -332,14 +353,18 @@ $(document).ready(function () {
 
                 remember: $('#remember').is(':checked') ? 1 : 0,
 
-                'g-recaptcha-response': captcha
+                "cf-turnstile-response": captcha
+
             },
 
             success: function(response){
 
                 toastr.success(
+
                     response.message ||
+
                     'Distributor Login Successful'
+
                 );
 
                 btn.html(`
@@ -350,10 +375,12 @@ $(document).ready(function () {
                 setTimeout(function(){
 
                     window.location.href =
-                    response.redirect ||
-                    "{{ route('admin.dashboard') }}";
 
-                }, 1500);
+                        response.redirect ||
+
+                        "{{ route('admin.dashboard') }}";
+
+                },1500);
 
             },
 
@@ -366,39 +393,51 @@ $(document).ready(function () {
                     Login To Distributor Panel
                 `);
 
-                grecaptcha.reset();
-
                 if(xhr.status === 422){
 
-                    let errors = xhr.responseJSON.errors;
+                    $.each(xhr.responseJSON.errors,function(key,value){
 
-                    $.each(errors, function(key, value){
-
-                        $('.error-' + key)
-                            .html(value[0]);
+                        $('.error-'+key).html(value[0]);
 
                     });
 
                     toastr.error(
-                        'Please fill all required fields'
+                        'Please fill all required fields.'
                     );
-                }
 
+                }
                 else if(xhr.status === 401){
 
                     toastr.error(
-                        xhr.responseJSON.message ||
-                        'Invalid distributor credentials'
-                    );
-                }
 
+                        xhr.responseJSON.message ||
+
+                        'Invalid distributor credentials.'
+
+                    );
+
+                }
+                else if(xhr.status === 403){
+
+                    toastr.error(
+
+                        xhr.responseJSON.message ||
+
+                        'Unauthorized access.'
+
+                    );
+
+                }
                 else{
 
                     toastr.error(
-                        'Something went wrong'
+                        'Something went wrong.'
                     );
+
                 }
+
             }
+
         });
 
     });
@@ -406,5 +445,4 @@ $(document).ready(function () {
 });
 
 </script>
-
 @endsection

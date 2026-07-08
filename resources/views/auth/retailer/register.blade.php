@@ -489,7 +489,7 @@
 
                             </div>
 
-                            <!-- CAPTCHA -->
+                           <!-- CAPTCHA -->
                             <div class="form-group-modern mb-4">
 
                                 <label>
@@ -498,21 +498,35 @@
 
                                 </label>
 
-                                <div class="g-recaptcha"
-                                    data-sitekey="{{ config('services.recaptcha.site_key') }}">
-                                </div>
+                                @if(app()->environment('production'))
 
-                                <small class="captcha-validation text-danger d-block mt-2"></small>
+                                    <div class="cf-turnstile"
+                                        data-sitekey="{{ config('services.turnstile.site_key') }}">
+                                    </div>
 
-                                @error('g-recaptcha-response')
+                                    <small class="error-captcha text-danger d-block mt-2"></small>
 
-                                    <small class="text-danger d-block mt-1">
+                                    @error('cf-turnstile-response')
 
-                                        {{ $message }}
+                                        <small class="text-danger d-block mt-1">
 
-                                    </small>
+                                            {{ $message }}
 
-                                @enderror
+                                        </small>
+
+                                    @enderror
+
+                                @else
+
+                                    <div class="alert alert-success mb-0">
+
+                                        <i class="fa-solid fa-circle-check me-2"></i>
+
+                                        Security verification is disabled in the local environment.
+
+                                    </div>
+
+                                @endif
 
                             </div>
 
@@ -576,10 +590,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script src="https://www.google.com/recaptcha/api.js"
-        async
-        defer></script>
-
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script>
 
 $(document).ready(function () {
@@ -956,21 +967,28 @@ $(document).ready(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | CAPTCHA VALIDATION
+    | TURNSTILE VALIDATION
     |--------------------------------------------------------------------------
     */
 
     $('.captcha-validation').text('');
 
-    if (grecaptcha.getResponse() == '') {
+    @if(app()->environment('production'))
+
+    let captcha = document.querySelector(
+        '[name="cf-turnstile-response"]'
+    )?.value;
+
+    if (!captcha) {
 
         $('.captcha-validation')
-            .text('Please verify captcha');
+            .text('Please complete the security verification.');
 
         isValid = false;
 
     }
 
+    @endif
     /*
     |--------------------------------------------------------------------------
     | INVALID CHECK
@@ -1050,7 +1068,20 @@ $(document).ready(function () {
 
                 type: 'POST',
 
-                data: $('#retailerRegisterForm').serialize(),
+                let formData = $('#retailerRegisterForm').serialize();
+
+                    @if(app()->environment('production'))
+
+                    formData += '&cf-turnstile-response=' +
+                    encodeURIComponent(
+                        document.querySelector(
+                            '[name="cf-turnstile-response"]'
+                        )?.value || ''
+                    );
+
+                    @endif
+
+                    data: formData,
 
                 success: function (response) {
 

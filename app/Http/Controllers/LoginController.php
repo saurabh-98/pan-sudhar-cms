@@ -29,194 +29,251 @@ class LoginController extends Controller
     */
 
     public function login(Request $request)
-    {
-        /*
-        |--------------------------------------------------------------------------
-        | VALIDATION
-        |--------------------------------------------------------------------------
-        */
+{
+    /*
+    |--------------------------------------------------------------------------
+    | VALIDATION RULES
+    |--------------------------------------------------------------------------
+    */
 
-        $validator = Validator::make(
+    $rules = [
 
-            $request->all(),
+        'email' => [
 
-            [
+            'required',
+            'string'
 
-                'email' => [
+        ],
 
-                    'required',
-                    'string'
-                ],
+        'password' => [
 
-                'password' => [
+            'required',
+            'string'
 
-                    'required',
-                    'string'
-                ],
+        ]
 
-                'g-recaptcha-response' => [
+    ];
 
-                    'required'
-                ]
-            ],
+    /*
+    |--------------------------------------------------------------------------
+    | TURNSTILE ONLY IN PRODUCTION
+    |--------------------------------------------------------------------------
+    */
 
-            [
+    if (app()->environment('production')) {
 
-                'email.required' =>
+        $rules['cf-turnstile-response'] = [
 
-                    'Email or mobile number is required.',
-
-                'password.required' =>
-
-                    'Password is required.',
-
-                'g-recaptcha-response.required' =>
-
-                    'Captcha verification is required.'
-            ]
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | VALIDATION FAILED
-        |--------------------------------------------------------------------------
-        */
-
-        if ($validator->fails()) {
-
-            return response()->json([
-
-                'success' => false,
-
-                'errors' =>
-
-                    $validator->errors()
-
-            ], 422);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | LOGIN FIELD
-        |--------------------------------------------------------------------------
-        */
-
-        $loginField = filter_var(
-
-            $request->email,
-            FILTER_VALIDATE_EMAIL
-
-        ) ? 'email' : 'mobile';
-
-        /*
-        |--------------------------------------------------------------------------
-        | CREDENTIALS
-        |--------------------------------------------------------------------------
-        */
-
-        $credentials = [
-
-            $loginField => trim($request->email),
-
-            'password' => trim($request->password),
-
-            'status' => 1
+            'required'
 
         ];
 
-        /*
-        |--------------------------------------------------------------------------
-        | ATTEMPT LOGIN
-        |--------------------------------------------------------------------------
-        */
+    }
 
-        if (
+    /*
+    |--------------------------------------------------------------------------
+    | VALIDATOR
+    |--------------------------------------------------------------------------
+    */
 
-            Auth::attempt(
+    $validator = Validator::make(
 
-                $credentials,
+        $request->all(),
 
-                $request->remember
-            )
+        $rules,
 
-        ) {
+        [
 
-            /*
-            |--------------------------------------------------------------------------
-            | USER
-            |--------------------------------------------------------------------------
-            */
+            'email.required' =>
 
-            $user = Auth::user();
+                'Email or mobile number is required.',
 
-            /*
-            |--------------------------------------------------------------------------
-            | CHECK RETAILER ROLE
-            |--------------------------------------------------------------------------
-            */
+            'password.required' =>
 
-            if (!$user->hasRole('retailer')) {
+                'Password is required.',
 
-                Auth::logout();
+            'cf-turnstile-response.required' =>
 
-                return response()->json([
+                'Please complete the security verification.'
 
-                    'success' => false,
+        ]
 
-                    'message' =>
+    );
 
-                        'Unauthorized access.'
+    /*
+    |--------------------------------------------------------------------------
+    | VALIDATION FAILED
+    |--------------------------------------------------------------------------
+    */
 
-                ], 403);
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | REGENERATE SESSION
-            |--------------------------------------------------------------------------
-            */
-
-            $request->session()
-                    ->regenerate();
-
-            /*
-            |--------------------------------------------------------------------------
-            | SUCCESS
-            |--------------------------------------------------------------------------
-            */
-
-            return response()->json([
-
-                'success' => true,
-
-                'message' =>
-
-                    'Retailer login successful.',
-
-                'redirect' =>
-
-                    route('retailer.dashboard')
-
-            ]);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | INVALID LOGIN
-        |--------------------------------------------------------------------------
-        */
+    if ($validator->fails()) {
 
         return response()->json([
 
             'success' => false,
 
-            'message' =>
+            'errors' => $validator->errors()
 
-                'Invalid login credentials.'
+        ], 422);
 
-        ], 401);
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | VERIFY CLOUDFLARE TURNSTILE
+    |--------------------------------------------------------------------------
+    */
+
+    if (app()->environment('production')) {
+
+        $response = Http::asForm()->post(
+
+            'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+
+            [
+
+                'secret' => config('services.turnstile.secret_key'),
+
+                'response' => $request->input('cf-turnstile-response'),
+
+                'remoteip' => $request->ip(),
+
+            ]
+
+        );
+
+        if (! $response->json('success')) {
+
+            return response()->json([
+
+                'success' => false,
+
+                'errors' => [
+
+                    'captcha' => [
+
+                        'Verification failed.'
+
+                    ]
+
+                ]
+
+            ], 422);
+
+        }
+
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | LOGIN FIELD
+    |--------------------------------------------------------------------------
+    */
+
+    $loginField = filter_var(
+
+        trim($request->email),
+
+        FILTER_VALIDATE_EMAIL
+
+    ) ? 'email' : 'mobile';
+
+    /*
+    |--------------------------------------------------------------------------
+    | CREDENTIALS
+    |--------------------------------------------------------------------------
+    */
+
+    $credentials = [
+
+        $loginField => trim($request->email),
+
+        'password' => trim($request->password),
+
+        'status' => 1
+
+    ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | LOGIN ATTEMPT
+    |--------------------------------------------------------------------------
+    */
+
+    if (Auth::attempt(
+
+        $credentials,
+
+        $request->boolean('remember')
+
+    )) {
+
+        $user = Auth::user();
+
+        /*
+        |--------------------------------------------------------------------------
+        | ROLE CHECK
+        |--------------------------------------------------------------------------
+        */
+
+        if (!$user->hasRole('retailer')) {
+
+            Auth::logout();
+
+            $request->session()->invalidate();
+
+            $request->session()->regenerateToken();
+
+            return response()->json([
+
+                'success' => false,
+
+                'message' => 'Unauthorized access.'
+
+            ], 403);
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | SESSION REGENERATE
+        |--------------------------------------------------------------------------
+        */
+
+        $request->session()->regenerate();
+
+        /*
+        |--------------------------------------------------------------------------
+        | SUCCESS
+        |--------------------------------------------------------------------------
+        */
+
+        return response()->json([
+
+            'success' => true,
+
+            'message' => 'Retailer login successful.',
+
+            'redirect' => route('retailer.dashboard')
+
+        ]);
+
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | INVALID LOGIN
+    |--------------------------------------------------------------------------
+    */
+
+    return response()->json([
+
+        'success' => false,
+
+        'message' => 'Invalid login credentials.'
+
+    ], 401);
+}
 
     /*
     |--------------------------------------------------------------------------

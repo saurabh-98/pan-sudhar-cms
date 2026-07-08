@@ -335,10 +335,11 @@
 
                         </label>
 
-                        <div
-                            class="g-recaptcha"
-                            data-sitekey="{{ config('services.recaptcha.site_key') }}">
+                     @if(app()->environment('production'))
+                        <div class="cf-turnstile"
+                            data-sitekey="{{ config('services.turnstile.site_key') }}">
                         </div>
+                    @endif
 
                         <small class="text-danger error-captcha"></small>
 
@@ -486,7 +487,7 @@
 <!-- =======================================================
 | GOOGLE CAPTCHA
 ======================================================= -->
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <script>
 
@@ -497,19 +498,12 @@ $(function(){
     ======================================================*/
 
     toastr.options = {
-
         closeButton:true,
-
         progressBar:true,
-
         newestOnTop:true,
-
         preventDuplicates:true,
-
         positionClass:"toast-top-right",
-
         timeOut:3000
-
     };
 
     /*======================================================
@@ -594,17 +588,26 @@ $(function(){
 
         $(".text-danger").html("");
 
-        let captcha=grecaptcha.getResponse();
+        @if(app()->environment('production'))
 
-        if(captcha.length===0){
+        let captcha=document.querySelector(
+            '[name="cf-turnstile-response"]'
+        )?.value;
 
-            $(".error-captcha").html("Please verify captcha.");
+        if(!captcha){
 
-            toastr.error("Captcha verification required.");
+            $(".error-captcha").html(
+                "Please complete verification."
+            );
+
+            toastr.error(
+                "Please complete verification."
+            );
 
             return;
-
         }
+
+        @endif
 
         Swal.fire({
 
@@ -644,6 +647,25 @@ $(function(){
 
         let btn=$("#loginBtn");
 
+        let captcha="";
+
+        @if(app()->environment('production'))
+
+        captcha=document.querySelector(
+            '[name="cf-turnstile-response"]'
+        )?.value;
+
+        if(!captcha){
+
+            toastr.error(
+                "Please complete verification."
+            );
+
+            return;
+        }
+
+        @endif
+
         btn.prop("disabled",true);
 
         btn.html(`
@@ -681,9 +703,9 @@ $(function(){
 
                 password:$("#password").val(),
 
-                remember:$("#remember").is(":checked")?1:0,
+                remember:$("#remember").is(":checked") ? 1 : 0,
 
-                "g-recaptcha-response":grecaptcha.getResponse()
+                "cf-turnstile-response":captcha
 
             },
 
@@ -695,7 +717,9 @@ $(function(){
 
                     title:"Welcome!",
 
-                    text:response.message || "Login Successful",
+                    text:response.message ||
+
+                    "Login Successful",
 
                     timer:1800,
 
@@ -710,8 +734,11 @@ $(function(){
 
                 setTimeout(function(){
 
-                    window.location.href=response.redirect
-                    || "{{ route('retailer.dashboard') }}";
+                    window.location.href=
+
+                        response.redirect ||
+
+                        "{{ route('retailer.dashboard') }}";
 
                 },1800);
 
@@ -726,8 +753,6 @@ $(function(){
                     Login To Dashboard
                 `);
 
-                grecaptcha.reset();
-
                 Swal.close();
 
                 if(xhr.status==422){
@@ -738,19 +763,23 @@ $(function(){
 
                     });
 
-                    toastr.error("Please correct the highlighted fields.");
+                    toastr.error(
+                        "Please correct the highlighted fields."
+                    );
 
                 }
-
                 else if(xhr.status==401){
 
-                    toastr.error(xhr.responseJSON.message);
+                    toastr.error(
+                        xhr.responseJSON.message
+                    );
 
                 }
-
                 else{
 
-                    toastr.error("Unexpected server error.");
+                    toastr.error(
+                        "Unexpected server error."
+                    );
 
                 }
 
@@ -763,5 +792,4 @@ $(function(){
 });
 
 </script>
-
 @endsection
