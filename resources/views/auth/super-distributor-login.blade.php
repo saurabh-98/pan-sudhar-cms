@@ -202,9 +202,7 @@
 
                             @csrf
 
-                            <!-- Email Starts -->
-
-                                                        <!-- =====================================
+                            <!-- =====================================
                             | EMAIL
                             ====================================== -->
 
@@ -313,7 +311,10 @@
 
                                 @if(app()->environment('production'))
                                     <div class="cf-turnstile"
-                                        data-sitekey="{{ config('services.turnstile.site_key') }}">
+                                        id="turnstileWidget"
+                                        data-sitekey="{{ config('services.turnstile.site_key') }}"
+                                        data-expired-callback="onTurnstileExpired"
+                                        data-error-callback="onTurnstileError">
                                     </div>
                                 @endif
 
@@ -376,6 +377,26 @@ defer></script>
 
 <script>
 
+/*
+|--------------------------------------------------------------------------
+| TURNSTILE CALLBACKS (must be global, called by name from cloudflare script)
+|--------------------------------------------------------------------------
+*/
+
+function onTurnstileExpired() {
+
+    $('.error-captcha').html(
+        'Security check expired, please verify again.'
+    );
+}
+
+function onTurnstileError() {
+
+    $('.error-captcha').html(
+        'Security verification failed to load. Please refresh the page.'
+    );
+}
+
 $(document).ready(function () {
 
     toastr.options = {
@@ -422,11 +443,19 @@ $(document).ready(function () {
 
         e.preventDefault();
 
-        $('.text-danger').html('');
+        $('.dist-error').html('');
+
+        /*
+        |--------------------------------------------------------------------------
+        | CAPTCHA (declared once, reused below — do NOT redeclare with `let` again)
+        |--------------------------------------------------------------------------
+        */
+
+        let captcha = "";
 
         @if(app()->environment('production'))
 
-        let captcha = document.querySelector(
+        captcha = document.querySelector(
             '[name="cf-turnstile-response"]'
         )?.value;
 
@@ -459,16 +488,6 @@ $(document).ready(function () {
             <span class="spinner-border spinner-border-sm me-2"></span>
             Logging In...
         `);
-
-        let captcha = "";
-
-        @if(app()->environment('production'))
-
-        captcha = document.querySelector(
-            '[name="cf-turnstile-response"]'
-        )?.value;
-
-        @endif
 
         $.ajax({
 
@@ -525,6 +544,22 @@ $(document).ready(function () {
                     <i class="fa-solid fa-crown me-2"></i>
                     Login To Super Distributor Panel
                 `);
+
+                /*
+                |--------------------------------------------------------------------------
+                | RESET TURNSTILE SO A STALE TOKEN ISN'T REUSED ON RETRY
+                |--------------------------------------------------------------------------
+                */
+
+                @if(app()->environment('production'))
+
+                if (typeof turnstile !== "undefined") {
+
+                    turnstile.reset('#turnstileWidget');
+
+                }
+
+                @endif
 
                 if (xhr.status === 422) {
 
@@ -605,6 +640,8 @@ $(document).ready(function () {
         /*
         |--------------------------------------------------------------------------
         | ENTER KEY LOGIN
+        | (native form submit already handles Enter; this just avoids the
+        | button appearing unresponsive if focus is somewhere unusual)
         |--------------------------------------------------------------------------
         */
 
@@ -612,7 +649,9 @@ $(document).ready(function () {
 
             if (e.which === 13) {
 
-                $('#loginBtn').trigger('click');
+                e.preventDefault();
+
+                $('#superDistributorLoginForm').trigger('submit');
 
             }
 
@@ -659,19 +698,6 @@ $(document).ready(function () {
             $(this)
                 .closest('.dist-input-wrap')
                 .removeClass('active');
-
-        });
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | DISABLE DOUBLE SUBMIT
-        |--------------------------------------------------------------------------
-        */
-
-        $('#superDistributorLoginForm').on('submit', function () {
-
-            $('#loginBtn').prop('disabled', true);
 
         });
 

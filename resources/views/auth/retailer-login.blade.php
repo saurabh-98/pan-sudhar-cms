@@ -199,7 +199,7 @@
 
                 </p>
 
-                                <!--=========================================
+                <!--=========================================
                 LOGIN FORM
                 ==========================================-->
 
@@ -309,7 +309,7 @@
 
                         @if(Route::has('password.request'))
 
-                            <a
+                            
                                 href="{{ route('password.request') }}"
                                 class="forgot-link">
 
@@ -335,11 +335,14 @@
 
                         </label>
 
-                     @if(app()->environment('production'))
-                        <div class="cf-turnstile"
-                            data-sitekey="{{ config('services.turnstile.site_key') }}">
-                        </div>
-                    @endif
+                        @if(app()->environment('production'))
+                            <div class="cf-turnstile"
+                                 id="turnstileWidget"
+                                 data-sitekey="{{ config('services.turnstile.site_key') }}"
+                                 data-expired-callback="onTurnstileExpired"
+                                 data-error-callback="onTurnstileError">
+                            </div>
+                        @endif
 
                         <small class="text-danger error-captcha"></small>
 
@@ -485,11 +488,29 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <!-- =======================================================
-| GOOGLE CAPTCHA
+| CLOUDFLARE TURNSTILE
 ======================================================= -->
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <script>
+
+/*======================================================
+| TURNSTILE CALLBACKS (must be global, not inside $(function(){...}))
+======================================================*/
+
+function onTurnstileExpired(){
+
+    toastr.warning(
+        "Security check expired, please verify again."
+    );
+}
+
+function onTurnstileError(){
+
+    toastr.error(
+        "Security verification failed to load. Please refresh the page."
+    );
+}
 
 $(function(){
 
@@ -755,6 +776,21 @@ $(function(){
 
                 Swal.close();
 
+                /*======================================
+                | RESET TURNSTILE ON ANY FAILED ATTEMPT
+                | Prevents reusing a stale/consumed token
+                ======================================*/
+
+                @if(app()->environment('production'))
+
+                if (typeof turnstile !== "undefined") {
+
+                    turnstile.reset('#turnstileWidget');
+
+                }
+
+                @endif
+
                 if(xhr.status==422){
 
                     $.each(xhr.responseJSON.errors,function(key,value){
@@ -773,6 +809,9 @@ $(function(){
                     toastr.error(
                         xhr.responseJSON.message
                     );
+
+                    // Wrong password shouldn't force a page reload —
+                    // token reset above already handles retry.
 
                 }
                 else{

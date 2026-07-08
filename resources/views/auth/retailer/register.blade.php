@@ -501,7 +501,10 @@
                                 @if(app()->environment('production'))
 
                                     <div class="cf-turnstile"
-                                        data-sitekey="{{ config('services.turnstile.site_key') }}">
+                                        id="turnstileWidget"
+                                        data-sitekey="{{ config('services.turnstile.site_key') }}"
+                                        data-expired-callback="onTurnstileExpired"
+                                        data-error-callback="onTurnstileError">
                                     </div>
 
                                     <small class="error-captcha text-danger d-block mt-2"></small>
@@ -586,6 +589,26 @@
 
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script>
+
+/*
+|--------------------------------------------------------------------------
+| TURNSTILE CALLBACKS (must be global, called by name from cloudflare script)
+|--------------------------------------------------------------------------
+*/
+
+function onTurnstileExpired() {
+
+    $('.error-captcha').text(
+        'Security check expired, please verify again.'
+    );
+}
+
+function onTurnstileError() {
+
+    $('.error-captcha').text(
+        'Security verification failed to load. Please refresh the page.'
+    );
+}
 
 $(document).ready(function () {
 
@@ -919,271 +942,295 @@ $(document).ready(function () {
 
     $('#retailerRegisterForm').on('submit', function (e) {
 
-    e.preventDefault();
+        e.preventDefault();
 
-    let isValid = true;
+        let isValid = true;
 
-    /*
-    |--------------------------------------------------------------------------
-    | VALIDATE INPUTS
-    |--------------------------------------------------------------------------
-    */
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDATE INPUTS
+        |--------------------------------------------------------------------------
+        */
 
-    $('input').trigger('blur');
+        $('input').trigger('blur');
 
-    /*
-    |--------------------------------------------------------------------------
-    | STATE VALIDATION
-    |--------------------------------------------------------------------------
-    */
+        /*
+        |--------------------------------------------------------------------------
+        | STATE VALIDATION
+        |--------------------------------------------------------------------------
+        */
 
-    if ($('#state_id').val() == '') {
+        if ($('#state_id').val() == '') {
 
-        showError('#state_id', 'Please select state');
+            showError('#state_id', 'Please select state');
 
-        isValid = false;
+            isValid = false;
 
-    }
+        }
 
-    /*
-    |--------------------------------------------------------------------------
-    | DISTRICT VALIDATION
-    |--------------------------------------------------------------------------
-    */
+        /*
+        |--------------------------------------------------------------------------
+        | DISTRICT VALIDATION
+        |--------------------------------------------------------------------------
+        */
 
-    if ($('#district_id').val() == '') {
+        if ($('#district_id').val() == '') {
 
-        showError('#district_id', 'Please select district');
+            showError('#district_id', 'Please select district');
 
-        isValid = false;
+            isValid = false;
 
-    }
+        }
 
-    /*
-    |--------------------------------------------------------------------------
-    | TURNSTILE VALIDATION
-    |--------------------------------------------------------------------------
-    */
+        /*
+        |--------------------------------------------------------------------------
+        | TURNSTILE VALIDATION
+        |--------------------------------------------------------------------------
+        */
 
-    $('.captcha-validation').text('');
+        $('.error-captcha').text('');
 
-    @if(app()->environment('production'))
+        @if(app()->environment('production'))
 
-    let captcha = document.querySelector(
-        '[name="cf-turnstile-response"]'
-    )?.value;
+        let captcha = document.querySelector(
+            '[name="cf-turnstile-response"]'
+        )?.value;
 
-    if (!captcha) {
+        if (!captcha) {
 
-        $('.captcha-validation')
-            .text('Please complete the security verification.');
+            $('.error-captcha')
+                .text('Please complete the security verification.');
 
-        isValid = false;
+            isValid = false;
 
-    }
+        }
 
-    @endif
-    /*
-    |--------------------------------------------------------------------------
-    | INVALID CHECK
-    |--------------------------------------------------------------------------
-    */
+        @endif
 
-    if ($('.is-invalid').length > 0) {
+        /*
+        |--------------------------------------------------------------------------
+        | INVALID CHECK
+        |--------------------------------------------------------------------------
+        */
 
-        isValid = false;
+        if ($('.is-invalid').length > 0) {
 
-    }
+            isValid = false;
 
-    /*
-    |--------------------------------------------------------------------------
-    | STOP IF INVALID
-    |--------------------------------------------------------------------------
-    */
+        }
 
-    if (!isValid) {
+        /*
+        |--------------------------------------------------------------------------
+        | STOP IF INVALID
+        |--------------------------------------------------------------------------
+        */
 
-        $('html, body').animate({
+        if (!isValid) {
 
-            scrollTop:
-            $('.is-invalid:first').offset().top - 100
+            $('html, body').animate({
 
-        }, 500);
+                scrollTop:
+                $('.is-invalid:first').offset().top - 100
 
-        return false;
+            }, 500);
 
-    }
+            return false;
 
-    /*
-    |--------------------------------------------------------------------------
-    | CONFIRM ALERT
-    |--------------------------------------------------------------------------
-    */
+        }
 
-    Swal.fire({
+        /*
+        |--------------------------------------------------------------------------
+        | CONFIRM ALERT
+        |--------------------------------------------------------------------------
+        */
 
-        title: 'Confirm Registration?',
-        text: 'Please verify all details before submit.',
-        icon: 'question',
+        Swal.fire({
 
-        showCancelButton: true,
+            title: 'Confirm Registration?',
+            text: 'Please verify all details before submit.',
+            icon: 'question',
 
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
+            showCancelButton: true,
 
-        confirmButtonText: 'Yes, Submit'
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
 
-    }).then((result) => {
+            confirmButtonText: 'Yes, Submit'
 
-        if (result.isConfirmed) {
+        }).then((result) => {
 
-            /*
-            |--------------------------------------------------------------------------
-            | BUTTON LOADING
-            |--------------------------------------------------------------------------
-            */
+            if (result.isConfirmed) {
 
-            $('.btn-login-parent')
-                .prop('disabled', true)
-                .html(`
-                    <i class="fa fa-spinner fa-spin me-2"></i>
-                    Please Wait...
-                `);
+                /*
+                |--------------------------------------------------------------------------
+                | BUTTON LOADING
+                |--------------------------------------------------------------------------
+                */
 
-            /*
-            |--------------------------------------------------------------------------
-            | AJAX SUBMIT
-            |--------------------------------------------------------------------------
-            */
+                $('.btn-login-parent')
+                    .prop('disabled', true)
+                    .html(`
+                        <i class="fa fa-spinner fa-spin me-2"></i>
+                        Please Wait...
+                    `);
 
-            $.ajax({
-
-                url: $('#retailerRegisterForm').attr('action'),
-
-                type: 'POST',
+                /*
+                |--------------------------------------------------------------------------
+                | BUILD FORM DATA (must happen before the ajax call, not inside it)
+                |--------------------------------------------------------------------------
+                */
 
                 let formData = $('#retailerRegisterForm').serialize();
 
-                    @if(app()->environment('production'))
+                @if(app()->environment('production'))
 
-                    formData += '&cf-turnstile-response=' +
+                formData += '&cf-turnstile-response=' +
                     encodeURIComponent(
                         document.querySelector(
                             '[name="cf-turnstile-response"]'
                         )?.value || ''
                     );
 
-                    @endif
+                @endif
+
+                /*
+                |--------------------------------------------------------------------------
+                | AJAX SUBMIT
+                |--------------------------------------------------------------------------
+                */
+
+                $.ajax({
+
+                    url: $('#retailerRegisterForm').attr('action'),
+
+                    type: 'POST',
 
                     data: formData,
 
-                success: function (response) {
-
-                    Swal.fire({
-
-                        icon: 'success',
-
-                        title: 'Registration Submitted',
-
-                        html: `
-
-                            <div style="text-align:center">
-
-                                <p>
-
-                                    Your retailer registration request has been submitted successfully.
-
-                                </p>
-
-                                <p>
-
-                                    Please wait for department approval.
-
-                                </p>
-
-                                <p>
-
-                                    Login credentials will be generated and shared
-                                    after approval.
-
-                                </p>
-
-                            </div>
-
-                        `,
-
-                        confirmButtonText: 'OK'
-
-                    }).then(() => {
-
-                        window.location.href =
-                            response.redirect;
-
-                    });
-
-                },
-                error: function (xhr) {
-
-                    $('.btn-login-parent')
-                        .prop('disabled', false)
-                        .html(`
-                            <i class="fa-solid fa-user-plus me-2"></i>
-                            Register Now
-                        `);
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | VALIDATION ERRORS
-                    |--------------------------------------------------------------------------
-                    */
-
-                    if (xhr.status === 422) {
-
-                        let errors =
-                            xhr.responseJSON.errors;
-
-                        $.each(errors, function (key, value) {
-
-                            let field =
-                                $('[name="' + key + '"]');
-
-                            showError(field, value[0]);
-
-                        });
+                    success: function (response) {
 
                         Swal.fire({
 
-                            icon: 'error',
+                            icon: 'success',
 
-                            title: 'Validation Error',
+                            title: 'Registration Submitted',
 
-                            text: 'Please fix required fields.'
+                            html: `
+
+                                <div style="text-align:center">
+
+                                    <p>
+
+                                        Your retailer registration request has been submitted successfully.
+
+                                    </p>
+
+                                    <p>
+
+                                        Please wait for department approval.
+
+                                    </p>
+
+                                    <p>
+
+                                        Login credentials will be generated and shared
+                                        after approval.
+
+                                    </p>
+
+                                </div>
+
+                            `,
+
+                            confirmButtonText: 'OK'
+
+                        }).then(() => {
+
+                            window.location.href =
+                                response.redirect;
 
                         });
 
-                    } else {
+                    },
 
-                        Swal.fire({
+                    error: function (xhr) {
 
-                            icon: 'error',
+                        $('.btn-login-parent')
+                            .prop('disabled', false)
+                            .html(`
+                                <i class="fa-solid fa-user-plus me-2"></i>
+                                Register Now
+                            `);
 
-                            title: 'Server Error',
+                        /*
+                        |--------------------------------------------------------------------------
+                        | RESET TURNSTILE SO A STALE TOKEN ISN'T REUSED ON RETRY
+                        |--------------------------------------------------------------------------
+                        */
 
-                            text: 'Something went wrong.'
+                        @if(app()->environment('production'))
 
-                        });
+                        if (typeof turnstile !== "undefined") {
+
+                            turnstile.reset('#turnstileWidget');
+
+                        }
+
+                        @endif
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | VALIDATION ERRORS
+                        |--------------------------------------------------------------------------
+                        */
+
+                        if (xhr.status === 422) {
+
+                            let errors =
+                                xhr.responseJSON.errors;
+
+                            $.each(errors, function (key, value) {
+
+                                let field =
+                                    $('[name="' + key + '"]');
+
+                                showError(field, value[0]);
+
+                            });
+
+                            Swal.fire({
+
+                                icon: 'error',
+
+                                title: 'Validation Error',
+
+                                text: 'Please fix required fields.'
+
+                            });
+
+                        } else {
+
+                            Swal.fire({
+
+                                icon: 'error',
+
+                                title: 'Server Error',
+
+                                text: 'Something went wrong.'
+
+                            });
+
+                        }
 
                     }
 
-                }
+                });
 
-            });
+            }
 
-        }
+        });
 
     });
-
-});
 
 });
 

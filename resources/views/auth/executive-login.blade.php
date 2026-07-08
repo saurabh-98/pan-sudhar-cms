@@ -241,7 +241,10 @@
 
                           @if(app()->environment('production'))
                                 <div class="cf-turnstile"
-                                    data-sitekey="{{ config('services.turnstile.site_key') }}">
+                                    id="turnstileWidget"
+                                    data-sitekey="{{ config('services.turnstile.site_key') }}"
+                                    data-expired-callback="onTurnstileExpired"
+                                    data-error-callback="onTurnstileError">
                                 </div>
                             @endif
 
@@ -304,6 +307,26 @@ defer></script>
 
 <script>
 
+/*
+|--------------------------------------------------------------------------
+| TURNSTILE CALLBACKS (must be global, called by name from cloudflare script)
+|--------------------------------------------------------------------------
+*/
+
+function onTurnstileExpired() {
+
+    $('.error-captcha').html(
+        'Security check expired, please verify again.'
+    );
+}
+
+function onTurnstileError() {
+
+    $('.error-captcha').html(
+        'Security verification failed to load. Please refresh the page.'
+    );
+}
+
 $(document).ready(function () {
 
     /*
@@ -334,7 +357,7 @@ $(document).ready(function () {
     |--------------------------------------------------------------------------
     */
 
-    $('.toggle-password').click(function(){
+    $('.exl-password-toggle').click(function(){
 
         let input = $('#password');
 
@@ -368,11 +391,19 @@ $(document).ready(function () {
 
         e.preventDefault();
 
-        $('.text-danger').html('');
+        $('.exl-error').html('');
+
+        /*
+        |--------------------------------------------------------------------------
+        | CAPTCHA (declared once, reused below — do NOT redeclare with `let` again)
+        |--------------------------------------------------------------------------
+        */
+
+        let captcha = "";
 
         @if(app()->environment('production'))
 
-        let captcha = document.querySelector(
+        captcha = document.querySelector(
             '[name="cf-turnstile-response"]'
         )?.value;
 
@@ -400,16 +431,6 @@ $(document).ready(function () {
             <span class="spinner-border spinner-border-sm me-2"></span>
             Logging in...
         `);
-
-        let captcha = "";
-
-        @if(app()->environment('production'))
-
-        captcha = document.querySelector(
-            '[name="cf-turnstile-response"]'
-        )?.value;
-
-        @endif
 
         $.ajax({
 
@@ -466,6 +487,22 @@ $(document).ready(function () {
                     <i class="fa-solid fa-right-to-bracket me-2"></i>
                     Login To Executive Panel
                 `);
+
+                /*
+                |--------------------------------------------------------------------------
+                | RESET TURNSTILE SO A STALE TOKEN ISN'T REUSED ON RETRY
+                |--------------------------------------------------------------------------
+                */
+
+                @if(app()->environment('production'))
+
+                if (typeof turnstile !== "undefined") {
+
+                    turnstile.reset('#turnstileWidget');
+
+                }
+
+                @endif
 
                 if(xhr.status===422){
 
