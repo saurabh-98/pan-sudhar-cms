@@ -319,7 +319,7 @@ if (! function_exists('bank_account_fields')) {
                     $emailField,
                     $addressField,
                     $occupationField,
-                    $preferredBranchField,
+                   
                     $initialDepositField,
                 ],
                 $nomineeFields
