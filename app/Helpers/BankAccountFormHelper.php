@@ -6,6 +6,9 @@ if (! function_exists('bank_account_fields')) {
         string $serviceSlug
     ): array {
 
+
+    
+
         /*
         |--------------------------------------------------------------------------
         | BASE IDENTITY FIELDS
@@ -137,6 +140,15 @@ if (! function_exists('bank_account_fields')) {
             'type'     => 'number',
             'required' => false,
         ];
+
+
+        $occupationField = [
+            'name'     => 'occupation',
+            'label'    => 'Occupation',
+            'type'     => 'text',
+            'required' => false,
+        ];
+
 
         $nomineeFields = [
             [
