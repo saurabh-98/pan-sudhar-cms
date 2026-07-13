@@ -40,6 +40,8 @@ use App\Http\Controllers\Admin\AdminBankAccountController;
 use App\Http\Controllers\Admin\AdminOtherServiceController;
 use App\Http\Controllers\Admin\BankDocsController;
 use App\Http\Controllers\Admin\AdminPanFindController;
+use App\Http\Controllers\Admin\ConversationController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -1854,6 +1856,60 @@ Route::prefix('pages')
             ->middleware('permission:charges.delete');
 
         });
+
+
+
+
+       
+
+        Route::prefix('chat')
+        ->name('chat.')
+        ->group(function () {
+
+            /*
+            |--------------------------------------------------------------------------
+            | Conversation
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get('/', [ConversationController::class, 'index'])
+                ->name('index');
+
+            Route::get('/{conversation}', [ConversationController::class, 'show'])
+                ->name('show');
+
+            Route::post('/{conversation}/assign', [ConversationController::class, 'assign'])
+                ->name('assign');
+
+            Route::post('/{conversation}/close', [ConversationController::class, 'close'])
+                ->name('close');
+
+            Route::post('/{conversation}/reopen', [ConversationController::class, 'reopen'])
+                ->name('reopen');
+
+            /*
+            |--------------------------------------------------------------------------
+            | Messages
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get('/{conversation}/messages', [MessageController::class, 'index'])
+                ->name('messages');
+
+            Route::post('/{conversation}/send', [MessageController::class, 'store'])
+                ->name('send');
+
+            Route::post('/{conversation}/read', [MessageController::class, 'markAsRead'])
+                ->name('read');
+
+            Route::delete('/messages/{message}', [MessageController::class, 'destroy'])
+                ->name('delete');
+
+        });
+
+        
+
+       
 
 
         Route::get(

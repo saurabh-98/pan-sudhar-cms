@@ -54,10 +54,7 @@ class LoginController extends Controller
                     'string'
                 ],
 
-                'g-recaptcha-response' => [
-
-                    'required'
-                ]
+               
             ],
 
             [
@@ -68,11 +65,9 @@ class LoginController extends Controller
 
                 'password.required' =>
 
-                    'Password is required.',
+                    'Password is required.'
 
-                'g-recaptcha-response.required' =>
-
-                    'Captcha verification is required.'
+               
             ]
         );
 

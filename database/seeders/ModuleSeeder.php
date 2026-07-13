@@ -723,6 +723,31 @@ class ModuleSeeder extends Seeder
 
         ]);
 
+
+        /*
+            |--------------------------------------------------------------------------
+            | SUPPORT CHAT
+            |--------------------------------------------------------------------------
+            */
+
+            Module::create([
+
+                'name'       => 'Support Chat',
+
+                'slug'       => 'support-chat',
+
+                'icon'       => 'fa fa-headset',
+
+                'route_name' => 'retailer.chat.index',
+
+                'parent_id'  => null,
+
+                'sort_order' => 3,
+
+                'status'     => 1,
+
+            ]);
+
         /*
         |--------------------------------------------------------------------------
         | OTHER SERVICES

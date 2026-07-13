@@ -321,28 +321,7 @@
 
                     </div>
 
-                    <!--=========================
-                    GOOGLE CAPTCHA
-                    =========================-->
-
-                    <div class="captcha-area">
-
-                        <label>
-
-                            Security Verification
-
-                            <span class="text-danger">*</span>
-
-                        </label>
-
-                        <div
-                            class="g-recaptcha"
-                            data-sitekey="{{ config('services.recaptcha.site_key') }}">
-                        </div>
-
-                        <small class="text-danger error-captcha"></small>
-
-                    </div>
+                   
 
                     <!--=========================
                     LOGIN BUTTON
@@ -592,19 +571,6 @@ $(function(){
 
         e.preventDefault();
 
-        $(".text-danger").html("");
-
-        let captcha=grecaptcha.getResponse();
-
-        if(captcha.length===0){
-
-            $(".error-captcha").html("Please verify captcha.");
-
-            toastr.error("Captcha verification required.");
-
-            return;
-
-        }
 
         Swal.fire({
 
@@ -681,9 +647,9 @@ $(function(){
 
                 password:$("#password").val(),
 
-                remember:$("#remember").is(":checked")?1:0,
+                remember:$("#remember").is(":checked")?1:0
 
-                "g-recaptcha-response":grecaptcha.getResponse()
+               
 
             },
 
@@ -699,7 +665,7 @@ $(function(){
 
                     timer:1800,
 
-                    showConfirmButton:false
+                    showConfirmButton:true
 
                 });
 
@@ -726,7 +692,7 @@ $(function(){
                     Login To Dashboard
                 `);
 
-                grecaptcha.reset();
+                
 
                 Swal.close();
 

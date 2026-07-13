@@ -291,6 +291,14 @@ class PermissionSeeder extends Seeder
             'pan-find.delete',
             'pan-find.upload',
 
+      
+
+            'chat.view',
+            'chat.reply',
+            'chat.assign',
+            'chat.close',
+            'chat.delete',
+
 
         ];
 
@@ -345,22 +353,7 @@ class PermissionSeeder extends Seeder
 
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | BUSINESS DEVELOPMENT EXECUTIVE
-        |--------------------------------------------------------------------------
-        |
-        | Permissions assigned manually from admin panel.
-        |
-        */
-
-        Role::firstOrCreate([
-
-            'name' => 'business-development-executive',
-
-            'guard_name' => 'web',
-
-        ]);
+      
 
         /*
         |--------------------------------------------------------------------------

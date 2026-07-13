@@ -16,6 +16,7 @@ return Application::configure(
 
 
     commands: __DIR__.'/../routes/console.php',
+        channels: __DIR__.'/../routes/channels.php',
 
     health: '/up',
 

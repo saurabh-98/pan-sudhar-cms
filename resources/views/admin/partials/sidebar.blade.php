@@ -871,40 +871,95 @@
 
 
 
-        {{-- ================= COMMUNICATION ================= --}}
-        @if(
-            auth()->user()->can('notice.view')
-            
-        )
+        @php
 
-        <li class="sbx-section">
-            NOTICE
+    $waitingChatCount = \App\Models\Conversation::where(
+        'status',
+        'waiting'
+    )->count();
+
+@endphp
+
+@if(
+    auth()->user()->can('notice.view') ||
+    auth()->user()->can('chat.view')
+)
+
+<li class="sbx-section">
+
+    Communication
+
+</li>
+
+<li class="sbx-group">
+
+    <ul class="sbx-submenu">
+
+        {{-- Notice Board --}}
+        @can('notice.view')
+
+        <li>
+
+            <a
+                href="{{ route('admin.notice.index') }}"
+                class="sbx-link
+                {{ request()->routeIs('admin.notice.*') ? 'sbx-active' : '' }}"
+            >
+
+                <i class="fa fa-bullhorn"></i>
+
+                <span>
+
+                    Notice Board
+
+                </span>
+
+            </a>
+
         </li>
 
-        <li class="sbx-group">
+        @endcan
 
-            <ul class="sbx-submenu">
+        {{-- Support Chat --}}
+        @can('chat.view')
 
-                @can('notice.view')
-                <li>
-                    <a href="{{ route('admin.notice.index') }}"
-                    class="sbx-link">
+        <li>
 
-                        <i class="fa fa-bullhorn"></i>
+            <a
+                href="{{ route('admin.chat.index') }}"
+                class="sbx-link
+                {{ request()->routeIs('admin.chat.*') ? 'sbx-active' : '' }}"
+            >
 
-                        <span>Notice Board</span>
+                <i class="fa fa-headset"></i>
 
-                    </a>
-                </li>
-                @endcan
+                <span>
 
+                    Support Chat
 
-            </ul>
+                </span>
+
+                @if($waitingChatCount)
+
+                    <span class="sbx-count-badge">
+
+                        {{ $waitingChatCount }}
+
+                    </span>
+
+                @endif
+
+            </a>
 
         </li>
 
-        @endif
+        @endcan
 
+    </ul>
+
+</li>
+
+@endif
         
 
 

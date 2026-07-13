@@ -79,6 +79,9 @@
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+
+<script src="https://unpkg.com/laravel-echo/dist/echo.iife.js"></script>
 
 <!-- CUSTOM JS -->
 <script src="{{ asset('assets/js/admin.js') }}"></script>

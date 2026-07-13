@@ -318,6 +318,14 @@ class RolePermissionSeeder extends Seeder
             'pan-find.delete',
             'pan-find.upload',
 
+          
+
+            'chat.view',
+            'chat.reply',
+            'chat.assign',
+            'chat.close',
+            'chat.delete',
+
             
 
             
@@ -370,14 +378,7 @@ class RolePermissionSeeder extends Seeder
 
             'retailer' => [],
 
-            /*
-            |--------------------------------------------------------------------------
-            | BUSINESS DEVELOPMENT EXECUTIVE
-            |--------------------------------------------------------------------------
-            */
-
-            'business-development-executive' => [],
-
+       
         ];
 
         /*

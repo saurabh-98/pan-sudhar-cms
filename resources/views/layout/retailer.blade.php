@@ -262,6 +262,10 @@
     ====================================================== --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+
+    <script src="https://unpkg.com/laravel-echo/dist/echo.iife.js"></script>
+
     {{-- =====================================================
     | SIDEBAR SCRIPT
     ====================================================== --}}

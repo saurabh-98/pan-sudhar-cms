@@ -20,6 +20,8 @@ use App\Http\Controllers\Retailer\Pan\PanApplyWithoutDocumentController;
 use App\Http\Controllers\Retailer\Pan\PanTrainingController;
 use App\Http\Controllers\Retailer\Pan\PanFindController;
 use App\Http\Controllers\Retailer\Pan\PanVerifyController;
+use App\Http\Controllers\Retailer\ConversationController;
+use App\Http\Controllers\Retailer\MessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -1265,6 +1267,65 @@ Route::prefix('aadhaar')
                 '/delete/{id}',
                 'destroy'
             )->name('delete');
+        });
+
+   
+
+    Route::prefix('chat')
+        ->name('chat.')
+        ->group(function () {
+
+            Route::get(
+                '/',
+                [ConversationController::class, 'index']
+            )->name('index');
+
+            Route::post(
+                '/',
+                [ConversationController::class, 'store']
+            )->name('store');
+
+            Route::get(
+                '/{conversation}',
+                [ConversationController::class, 'show']
+            )->name('show');
+
+            Route::post(
+                '/{conversation}/close',
+                [ConversationController::class, 'close']
+            )->name('close');
+
+            Route::post(
+                '/{conversation}/reopen',
+                [ConversationController::class, 'reopen']
+            )->name('reopen');
+
+            Route::get(
+                '/search',
+                [ConversationController::class, 'search']
+            )->name('search');
+        });
+
+
+    Route::prefix('message')
+        ->name('message.')
+        ->group(function () {
+
+            Route::get(
+                '/{conversation}/messages',
+                [MessageController::class, 'index']
+            )->name('messages');
+
+            Route::post(
+                '/{conversation}/send',
+                [MessageController::class, 'store']
+            )->name('send');
+
+            Route::post(
+                '/{conversation}/read',
+                [MessageController::class, 'markAsRead']
+            )->name('read');
+
         });
 
 
