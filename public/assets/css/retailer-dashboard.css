@@ -388,14 +388,21 @@
 
 .rtd-pill-row{
     display:flex;
-    flex-wrap:wrap;
+    flex-wrap:nowrap;
+    overflow-x:auto;
     gap:8px;
     margin-bottom:14px;
+    padding-bottom:4px; /* room for scrollbar so pills don't feel clipped */
+    scrollbar-width:thin;
+    -webkit-overflow-scrolling:touch;
 }
+.rtd-pill-row::-webkit-scrollbar{ height:6px; }
 
 .rtd-pill{
     --cat: var(--navy);
     display:inline-flex;
+    flex-shrink:0;
+    white-space:nowrap;
     align-items:center;
     gap:6px;
     padding:6px 14px;

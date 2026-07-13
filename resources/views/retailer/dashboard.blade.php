@@ -4,29 +4,7 @@
 
 @php
 
-    $heroButtons = collect();
-
     $trendingServicesCount = 0;
-
-    foreach ($retailerMenus ?? [] as $menu) {
-
-        foreach ($menu->children as $child) {
-
-            if (
-                empty($child->route_name)
-                ||
-                !Route::has($child->route_name)
-            ) {
-                continue;
-            }
-
-            $heroButtons->push($child);
-
-            $trendingServicesCount++;
-        }
-    }
-
-    $heroButtons = $heroButtons->take(2);
 
     // Category accent colors — keyed by parent module slug.
     // Feeds the --cat / --cat-2 custom properties in dashboard.css,
@@ -49,12 +27,42 @@
         return "--cat: {$pair[0]}; --cat-2: {$pair[1]};";
     };
 
+    // A service is eligible for the Trending Services section only if:
+    // - it has a valid, resolvable route
+    // - it isn't a "...History" entry
+    // - its parent isn't Wallet (Wallet is hidden entirely on the dashboard)
+    $rtdIsEligible = function ($child) {
+        if (empty($child->route_name) || !Route::has($child->route_name)) {
+            return false;
+        }
+        if (str_contains(strtolower($child->slug ?? ''), 'history')) {
+            return false;
+        }
+        if (str_contains(strtolower($child->name ?? ''), 'history')) {
+            return false;
+        }
+        return true;
+    };
+
+    foreach ($retailerMenus ?? [] as $menu) {
+
+        if ($menu->slug === 'wallet') {
+            continue;
+        }
+
+        foreach ($menu->children as $child) {
+            if ($rtdIsEligible($child)) {
+                $trendingServicesCount++;
+            }
+        }
+    }
+
 @endphp
 
 
 <div class="container-fluid rtd-custom-dashboard">
 
-    
+
     {{-- =====================================================
        STATS
     ====================================================== --}}
@@ -114,6 +122,7 @@
 
     {{-- =====================================================
        TRENDING SERVICES
+       (Wallet category and any "...History" service are excluded)
     ====================================================== --}}
     @if(($retailerMenus ?? collect())->count())
 
@@ -142,11 +151,12 @@
                 </button>
             </div>
 
-            {{-- Category quick-filter pills --}}
+            {{-- Category quick-filter pills — single scrollable line --}}
             <div class="rtd-pill-row" id="rtdPillRow">
                 @foreach($retailerMenus as $parent)
+                    @continue($parent->slug === 'wallet')
                     @php
-                        $count = $parent->children->filter(fn($c) => !empty($c->route_name) && Route::has($c->route_name))->count();
+                        $count = $parent->children->filter($rtdIsEligible)->count();
                     @endphp
                     @if($count)
                         <button type="button" class="rtd-pill" data-target="cat-{{ $parent->slug }}" style="{{ $rtdColorVars($parent->slug) }}">
@@ -163,10 +173,10 @@
 
             @foreach($retailerMenus as $parent)
 
+                @continue($parent->slug === 'wallet')
+
                 @php
-                    $services = $parent->children->filter(function ($child) {
-                        return !empty($child->route_name) && Route::has($child->route_name);
-                    });
+                    $services = $parent->children->filter($rtdIsEligible);
                 @endphp
 
                 @if($services->count())
