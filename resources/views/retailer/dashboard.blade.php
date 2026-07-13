@@ -51,34 +51,10 @@
 
 @endphp
 
-<link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
 
 <div class="container-fluid rtd-custom-dashboard">
 
-    {{-- =====================================================
-       QUICK LAUNCH — uses $heroButtons (previously computed, never rendered)
-    ====================================================== --}}
-    @if($heroButtons->count())
-        <div class="rtd-quicklaunch">
-            <div class="rtd-quicklaunch-label">
-                <i class="fas fa-bolt"></i> Quick Launch
-            </div>
-            <div class="rtd-quicklaunch-row">
-                @foreach($heroButtons as $qb)
-                    @php $slug = optional($qb->parent)->slug ?? ''; @endphp
-                    <a href="{{ route($qb->route_name) }}" class="rtd-quicklaunch-btn" style="{{ $rtdColorVars($slug) }}">
-                        <span class="rtd-quicklaunch-icon"><i class="{{ $qb->icon ?: 'fa-solid fa-circle' }}"></i></span>
-                        <span class="rtd-quicklaunch-text">
-                            <strong>{{ $qb->name }}</strong>
-                            <small>Jump right back in</small>
-                        </span>
-                        <i class="fas fa-arrow-right rtd-quicklaunch-arrow"></i>
-                    </a>
-                @endforeach
-            </div>
-        </div>
-    @endif
-
+    
     {{-- =====================================================
        STATS
     ====================================================== --}}
