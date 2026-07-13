@@ -14,29 +14,23 @@ class ModuleSeeder extends Seeder
 
         try {
 
-            DB::statement('SET FOREIGN_KEY_CHECKS=0');
-
-            DB::table('retailer_module_access')->delete();
-
-            DB::table('modules')->delete();
-
-            DB::statement('SET FOREIGN_KEY_CHECKS=1');
-
             /*
             |--------------------------------------------------------------------------
             | DASHBOARD
             |--------------------------------------------------------------------------
             */
 
-            Module::create([
-                'name'       => 'Dashboard',
-                'slug'       => 'dashboard',
-                'icon'       => 'fa fa-home',
-                'route_name' => 'retailer.dashboard',
-                'parent_id'  => null,
-                'sort_order' => 1,
-                'status'     => 1,
-            ]);
+            Module::updateOrCreate(
+                ['slug' => 'dashboard'],
+                [
+                    'name'       => 'Dashboard',
+                    'icon'       => 'fa-solid fa-house',
+                    'route_name' => 'retailer.dashboard',
+                    'parent_id'  => null,
+                    'sort_order' => 1,
+                    'status'     => 1,
+                ]
+            );
 
             /*
             |--------------------------------------------------------------------------
@@ -44,65 +38,77 @@ class ModuleSeeder extends Seeder
             |--------------------------------------------------------------------------
             */
 
-            Module::create([
-                'name'       => 'Profile',
-                'slug'       => 'profile',
-                'icon'       => 'fa fa-user',
-                'route_name' => 'retailer.profile',
-                'parent_id'  => null,
-                'sort_order' => 2,
-                'status'     => 1,
-            ]);
+            Module::updateOrCreate(
+                ['slug' => 'profile'],
+                [
+                    'name'       => 'Profile',
+                    'icon'       => 'fa-solid fa-user-circle',
+                    'route_name' => 'retailer.profile',
+                    'parent_id'  => null,
+                    'sort_order' => 2,
+                    'status'     => 1,
+                ]
+            );
 
-          
+            /*
+            |--------------------------------------------------------------------------
+            | SUPPORT CHAT
+            |--------------------------------------------------------------------------
+            */
+
+            Module::updateOrCreate(
+                ['slug' => 'support-chat'],
+                [
+                    'name'       => 'Support Chat',
+                    'icon'       => 'fa-solid fa-headset',
+                    'route_name' => 'retailer.chat.index',
+                    'parent_id'  => null,
+                    'sort_order' => 3,
+                    'status'     => 1,
+                ]
+            );
+
             /*
             |--------------------------------------------------------------------------
             | WALLET
             |--------------------------------------------------------------------------
             */
 
-           
-
-                $wallet = Module::create([
+            $wallet = Module::updateOrCreate(
+                ['slug' => 'wallet'],
+                [
                     'name'       => 'Wallet',
-                    'slug'       => 'wallet',
-                    'icon'       => 'fa fa-wallet',
+                    'icon'       => 'fa-solid fa-wallet',
                     'route_name' => null,
                     'parent_id'  => null,
                     'sort_order' => 4,
                     'status'     => 1,
-                ]);
+                ]
+            );
 
-            Module::insert([
-
+            Module::updateOrCreate(
+                ['slug' => 'wallet-recharge'],
                 [
                     'name'       => 'Recharge Wallet',
-                    'slug'       => 'wallet-recharge',
+                    'icon'       => 'fa-solid fa-money-bill-transfer',
                     'route_name' => 'retailer.wallet.recharge',
                     'parent_id'  => $wallet->id,
                     'sort_order' => 1,
                     'status'     => 1,
-                ],
+                ]
+            );
 
+            Module::updateOrCreate(
+                ['slug' => 'wallet-recharge-history'],
                 [
                     'name'       => 'Recharge History',
-                    'slug'       => 'wallet-recharge-history',
+                    'icon'       => 'fa-solid fa-clock-rotate-left',
                     'route_name' => 'retailer.wallet.recharge-history',
                     'parent_id'  => $wallet->id,
                     'sort_order' => 2,
                     'status'     => 1,
-                ],
-
-                [
-                    'name'       => 'Wallet History',
-                    'slug'       => 'wallet-history',
-                    'route_name' => 'retailer.wallet.history',
-                    'parent_id'  => $wallet->id,
-                    'sort_order' => 3,
-                    'status'     => 1,
-                ],
-
-            ]);
+                ]
+            );
 
             /*
             |--------------------------------------------------------------------------
@@ -110,444 +116,412 @@ class ModuleSeeder extends Seeder
             |--------------------------------------------------------------------------
             */
 
-            $pan = Module::create([
-                'name'       => 'PAN Services',
-                'slug'       => 'pan-services',
-                'icon'       => 'fa fa-id-card',
-                'route_name' => null,
-                'parent_id'  => null,
-                'sort_order' => 10,
-                'status'     => 1,
-            ]);
-
-            Module::insert([
-
+            $pan = Module::updateOrCreate(
+                ['slug' => 'pan-services'],
                 [
-                    'name'       => 'New PAN Apply',
+                    'name'       => 'PAN Services',
+                    'icon'       => 'fa-solid fa-id-card',
+                    'route_name' => null,
+                    'parent_id'  => null,
+                    'sort_order' => 10,
+                    'status'     => 1,
+                ]
+            );
+
+            $panChildren = [
+                [
                     'slug'       => 'new-pan-apply',
+                    'name'       => 'New PAN Apply',
+                    'icon'       => 'fa-solid fa-file-circle-plus',
                     'route_name' => 'retailer.pan.apply',
-                    'parent_id'  => $pan->id,
                     'sort_order' => 1,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'PAN History',
                     'slug'       => 'pan-history',
+                    'name'       => 'PAN History',
+                    'icon'       => 'fa-solid fa-clock-rotate-left',
                     'route_name' => 'retailer.pan.history',
-                    'parent_id'  => $pan->id,
                     'sort_order' => 2,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'PAN Correction',
                     'slug'       => 'pan-correction',
+                    'name'       => 'PAN Correction',
+                    'icon'       => 'fa-solid fa-pen-to-square',
                     'route_name' => 'retailer.pan-correction.apply',
-                    'parent_id'  => $pan->id,
                     'sort_order' => 3,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'PAN Correction History',
                     'slug'       => 'pan-correction-history',
+                    'name'       => 'PAN Correction History',
+                    'icon'       => 'fa-solid fa-clock-rotate-left',
                     'route_name' => 'retailer.pan-correction.history',
-                    'parent_id'  => $pan->id,
                     'sort_order' => 4,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'PAN Apply Without Docs',
                     'slug'       => 'pan-without-docs',
+                    'name'       => 'PAN Apply Without Docs',
+                    'icon'       => 'fa-solid fa-file-circle-question',
                     'route_name' => 'retailer.pan-apply-without-document.apply',
-                    'parent_id'  => $pan->id,
                     'sort_order' => 5,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'PAN Without Docs History',
                     'slug'       => 'pan-without-docs-history',
+                    'name'       => 'PAN Without Docs History',
+                    'icon'       => 'fa-solid fa-clock-rotate-left',
                     'route_name' => 'retailer.pan-apply-without-document.history',
-                    'parent_id'  => $pan->id,
                     'sort_order' => 6,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'PAN Training',
                     'slug'       => 'pan-training',
+                    'name'       => 'PAN Training',
+                    'icon'       => 'fa-solid fa-chalkboard-user',
                     'route_name' => 'retailer.pan.training',
-                    'parent_id'  => $pan->id,
                     'sort_order' => 7,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'PAN Find/Aadhar To PAN',
                     'slug'       => 'pan-find',
+                    'name'       => 'PAN Find/Aadhar To PAN',
+                    'icon'       => 'fa-solid fa-magnifying-glass',
                     'route_name' => 'retailer.pan-find.apply',
-                    'parent_id'  => $pan->id,
                     'sort_order' => 8,
-                    'status'     => 1,
                 ],
-
-
                 [
-                    'name'       => 'PAN Find/Aadhar To PAN History',
                     'slug'       => 'pan-find-history',
+                    'name'       => 'PAN Find/Aadhar To PAN History',
+                    'icon'       => 'fa-solid fa-clock-rotate-left',
                     'route_name' => 'retailer.pan-find.history',
-                    'parent_id'  => $pan->id,
                     'sort_order' => 9,
-                    'status'     => 1,
                 ],
+            ];
 
-              
-
-            ]);
+            foreach ($panChildren as $child) {
+                Module::updateOrCreate(
+                    ['slug' => $child['slug']],
+                    [
+                        'name'       => $child['name'],
+                        'icon'       => $child['icon'],
+                        'route_name' => $child['route_name'],
+                        'parent_id'  => $pan->id,
+                        'sort_order' => $child['sort_order'],
+                        'status'     => 1,
+                    ]
+                );
+            }
 
             /*
             |--------------------------------------------------------------------------
-            | ITR SERVICES
+            | ITR / FINANCIAL SERVICES
             |--------------------------------------------------------------------------
             */
 
-            $itr = Module::create([
-                'name'       => 'Financial Services',
-                'slug'       => 'itr-services',
-                'icon'       => 'fa fa-file-invoice',
-                'route_name' => null,
-                'parent_id'  => null,
-                'sort_order' => 20,
-                'status'     => 1,
-            ]);
-
-            Module::insert([
-
+            $itr = Module::updateOrCreate(
+                ['slug' => 'itr-services'],
                 [
-                    'name'       => 'File ITR (Salary Income)',
+                    'name'       => 'Financial Services',
+                    'icon'       => 'fa-solid fa-file-invoice',
+                    'route_name' => null,
+                    'parent_id'  => null,
+                    'sort_order' => 20,
+                    'status'     => 1,
+                ]
+            );
+
+            $itrChildren = [
+                [
                     'slug'       => 'file-itr',
+                    'name'       => 'File ITR (Salary Income)',
+                    'icon'       => 'fa-solid fa-file-invoice-dollar',
                     'route_name' => 'retailer.itr.index',
-                    'parent_id'  => $itr->id,
                     'sort_order' => 1,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'ITR Filing & TDS Refund',
                     'slug'       => 'itr-file-tds-refund',
+                    'name'       => 'ITR Filing & TDS Refund',
+                    'icon'       => 'fa-solid fa-hand-holding-dollar',
                     'route_name' => 'retailer.itr.index',
-                    'parent_id'  => $itr->id,
                     'sort_order' => 2,
-                    'status'     => 1,
-
-                    
                 ],
-
-                 [
-                    'name'       => 'GST Registration / Filing',
+                [
                     'slug'       => 'gst-registration-filing',
+                    'name'       => 'GST Registration / Filing',
+                    'icon'       => 'fa-solid fa-receipt',
                     'route_name' => 'retailer.itr.index',
-                    'parent_id'  => $itr->id,
                     'sort_order' => 3,
-                    'status'     => 1,
                 ],
-
                 [
-                     'name' => 'DSC Digital Signature',
                     'slug'       => 'dsc-digital-signature',
-                     'route_name' => 'retailer.itr.index',
-                    'parent_id'  => $itr->id,
+                    'name'       => 'DSC Digital Signature',
+                    'icon'       => 'fa-solid fa-signature',
+                    'route_name' => 'retailer.itr.index',
                     'sort_order' => 4,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'MSME Registration',
                     'slug'       => 'msme-registration',
-                     'route_name' => 'retailer.itr.index',
-                    'parent_id'  => $itr->id,
+                    'name'       => 'MSME Registration',
+                    'icon'       => 'fa-solid fa-industry',
+                    'route_name' => 'retailer.itr.index',
                     'sort_order' => 5,
-                    'status'     => 1,
                 ],
-
-
                 [
-                    'name'       => 'ITR History',
                     'slug'       => 'itr-history',
+                    'name'       => 'ITR History',
+                    'icon'       => 'fa-solid fa-clock-rotate-left',
                     'route_name' => 'retailer.itr.history',
-                    'parent_id'  => $itr->id,
-                    'sort_order' => 3,
-                    'status'     => 1,
+                    'sort_order' => 6,
                 ],
+            ];
 
-            ]);
+            foreach ($itrChildren as $child) {
+                Module::updateOrCreate(
+                    ['slug' => $child['slug']],
+                    [
+                        'name'       => $child['name'],
+                        'icon'       => $child['icon'],
+                        'route_name' => $child['route_name'],
+                        'parent_id'  => $itr->id,
+                        'sort_order' => $child['sort_order'],
+                        'status'     => 1,
+                    ]
+                );
+            }
 
-
-        /*
+            /*
             |--------------------------------------------------------------------------
             | AADHAAR SERVICES
             |--------------------------------------------------------------------------
             */
 
-            $aadhaar = Module::create([
-                'name'       => 'Aadhaar Services',
-                'slug'       => 'aadhaar-services',
-                'icon'       => 'fa fa-address-card',
-                'route_name' => null,
-                'parent_id'  => null,
-                'sort_order' => 30,
-                'status'     => 1,
-            ]);
-
-            Module::insert([
-
+            $aadhaar = Module::updateOrCreate(
+                ['slug' => 'aadhaar-services'],
                 [
-                    'name'       => 'Mobile Number Update',
+                    'name'       => 'Aadhaar Services',
+                    'icon'       => 'fa-solid fa-address-card',
+                    'route_name' => null,
+                    'parent_id'  => null,
+                    'sort_order' => 30,
+                    'status'     => 1,
+                ]
+            );
+
+            $aadhaarChildren = [
+                [
                     'slug'       => 'mobile-number-update',
+                    'name'       => 'Mobile Number Update',
+                    'icon'       => 'fa-solid fa-mobile-screen',
                     'route_name' => 'retailer.aadhaar.service',
-                    'parent_id'  => $aadhaar->id,
                     'sort_order' => 1,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'Name Correction',
                     'slug'       => 'name-correction',
+                    'name'       => 'Name Correction',
+                    'icon'       => 'fa-solid fa-signature',
                     'route_name' => 'retailer.aadhaar.service',
-                    'parent_id'  => $aadhaar->id,
                     'sort_order' => 2,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'DOB Correction',
                     'slug'       => 'dob-correction',
+                    'name'       => 'DOB Correction',
+                    'icon'       => 'fa-solid fa-calendar-days',
                     'route_name' => 'retailer.aadhaar.service',
-                    'parent_id'  => $aadhaar->id,
                     'sort_order' => 3,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'Address Update',
                     'slug'       => 'address-update',
+                    'name'       => 'Address Update',
+                    'icon'       => 'fa-solid fa-location-dot',
                     'route_name' => 'retailer.aadhaar.service',
-                    'parent_id'  => $aadhaar->id,
                     'sort_order' => 4,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'Father Name Update',
                     'slug'       => 'father-name-update',
+                    'name'       => 'Father Name Update',
+                    'icon'       => 'fa-solid fa-person',
                     'route_name' => 'retailer.aadhaar.service',
-                    'parent_id'  => $aadhaar->id,
                     'sort_order' => 5,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'Husband Name Update',
                     'slug'       => 'husband-name-update',
+                    'name'       => 'Husband Name Update',
+                    'icon'       => 'fa-solid fa-people-arrows',
                     'route_name' => 'retailer.aadhaar.service',
-                    'parent_id'  => $aadhaar->id,
                     'sort_order' => 6,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'Gender Update',
                     'slug'       => 'gender-update',
+                    'name'       => 'Gender Update',
+                    'icon'       => 'fa-solid fa-venus-mars',
                     'route_name' => 'retailer.aadhaar.service',
-                    'parent_id'  => $aadhaar->id,
                     'sort_order' => 7,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'Email/Misc Update',
                     'slug'       => 'email-update',
+                    'name'       => 'Email/Misc Update',
+                    'icon'       => 'fa-solid fa-envelope',
                     'route_name' => 'retailer.aadhaar.service',
-                    'parent_id'  => $aadhaar->id,
                     'sort_order' => 8,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'Biometric Appointment',
                     'slug'       => 'biometric-appointment',
+                    'name'       => 'Biometric Appointment',
+                    'icon'       => 'fa-solid fa-fingerprint',
                     'route_name' => 'retailer.aadhaar.service',
-                    'parent_id'  => $aadhaar->id,
                     'sort_order' => 9,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'Child Aadhaar Enrollment',
                     'slug'       => 'child-aadhaar-enrollment',
+                    'name'       => 'Child Aadhaar Enrollment',
+                    'icon'       => 'fa-solid fa-child',
                     'route_name' => 'retailer.aadhaar.service',
-                    'parent_id'  => $aadhaar->id,
                     'sort_order' => 10,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'New Aadhaar Apply',
                     'slug'       => 'new-aadhaar-apply',
+                    'name'       => 'New Aadhaar Apply',
+                    'icon'       => 'fa-solid fa-id-badge',
                     'route_name' => 'retailer.aadhaar.service',
-                    'parent_id'  => $aadhaar->id,
                     'sort_order' => 11,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'Aadhaar PVC Card',
                     'slug'       => 'aadhaar-pvc-card',
+                    'name'       => 'Aadhaar PVC Card',
+                    'icon'       => 'fa-solid fa-credit-card',
                     'route_name' => 'retailer.aadhaar.service',
-                    'parent_id'  => $aadhaar->id,
                     'sort_order' => 12,
-                    'status'     => 1,
                 ],
-
-
                 [
-                    'name'       => 'Aadhaar Service History',
                     'slug'       => 'aadhaar-history',
+                    'name'       => 'Aadhaar Service History',
+                    'icon'       => 'fa-solid fa-clock-rotate-left',
                     'route_name' => 'retailer.aadhaar.history',
-                    'parent_id'  => $aadhaar->id,
-                    'sort_order' => 16,
-                    'status'     => 1,
+                    'sort_order' => 13,
                 ],
+            ];
 
-            ]);
+            foreach ($aadhaarChildren as $child) {
+                Module::updateOrCreate(
+                    ['slug' => $child['slug']],
+                    [
+                        'name'       => $child['name'],
+                        'icon'       => $child['icon'],
+                        'route_name' => $child['route_name'],
+                        'parent_id'  => $aadhaar->id,
+                        'sort_order' => $child['sort_order'],
+                        'status'     => 1,
+                    ]
+                );
+            }
 
-            /*                                                                         |
-            | -------------------------------------------------------------------------- |
-            | CSC SERVICES                                                               |
-            | -------------------------------------------------------------------------- |
-            | */                                                                         
+            /*
+            |--------------------------------------------------------------------------
+            | CSC SERVICES
+            |--------------------------------------------------------------------------
+            */
 
-            $csc = Module::create([
-                'name'       => 'CSC Services',
-                'slug'       => 'csc-services',
-                'icon'       => 'fa fa-landmark',
-                'route_name' => null,
-                'parent_id'  => null,
-                'sort_order' => 40,
-                'status'     => 1,
-                ]);
+            $csc = Module::updateOrCreate(
+                ['slug' => 'csc-services'],
+                [
+                    'name'       => 'CSC Services',
+                    'icon'       => 'fa-solid fa-landmark',
+                    'route_name' => null,
+                    'parent_id'  => null,
+                    'sort_order' => 40,
+                    'status'     => 1,
+                ]
+            );
 
-                Module::insert([
+            $cscChildren = [
+                [
+                    'slug'       => 'pm-kisan-registration',
+                    'name'       => 'PM Kisan Registration',
+                    'icon'       => 'fa-solid fa-tractor',
+                    'route_name' => 'retailer.csc.service',
+                    'sort_order' => 1,
+                ],
+                [
+                    'slug'       => 'ayushman-card',
+                    'name'       => 'Ayushman Card',
+                    'icon'       => 'fa-solid fa-heart-pulse',
+                    'route_name' => 'retailer.csc.service',
+                    'sort_order' => 2,
+                ],
+                [
+                    'slug'       => 'income-certificate',
+                    'name'       => 'Income Certificate',
+                    'icon'       => 'fa-solid fa-sack-dollar',
+                    'route_name' => 'retailer.csc.service',
+                    'sort_order' => 3,
+                ],
+                [
+                    'slug'       => 'domicile-niwas-certificate',
+                    'name'       => 'Domicile/Niwas Certificate',
+                    'icon'       => 'fa-solid fa-house-chimney',
+                    'route_name' => 'retailer.csc.service',
+                    'sort_order' => 4,
+                ],
+                [
+                    'slug'       => 'caste-certificate',
+                    'name'       => 'Caste Certificate',
+                    'icon'       => 'fa-solid fa-people-group',
+                    'route_name' => 'retailer.csc.service',
+                    'sort_order' => 5,
+                ],
+                [
+                    'slug'       => 'birth-certificate',
+                    'name'       => 'Birth Certificate',
+                    'icon'       => 'fa-solid fa-baby',
+                    'route_name' => 'retailer.csc.service',
+                    'sort_order' => 6,
+                ],
+                [
+                    'slug'       => 'death-certificate',
+                    'name'       => 'Death Certificate',
+                    'icon'       => 'fa-solid fa-cross',
+                    'route_name' => 'retailer.csc.service',
+                    'sort_order' => 7,
+                ],
+                [
+                    'slug'       => 'labour-card',
+                    'name'       => 'Labour Card',
+                    'icon'       => 'fa-solid fa-helmet-safety',
+                    'route_name' => 'retailer.csc.service',
+                    'sort_order' => 8,
+                ],
+                [
+                    'slug'       => 'e-shram-card',
+                    'name'       => 'E-Shram Card',
+                    'icon'       => 'fa-solid fa-id-card-clip',
+                    'route_name' => 'retailer.csc.service',
+                    'sort_order' => 9,
+                ],
+                [
+                    'slug'       => 'ration-card',
+                    'name'       => 'Ration Card',
+                    'icon'       => 'fa-solid fa-wheat-awn',
+                    'route_name' => 'retailer.csc.service',
+                    'sort_order' => 10,
+                ],
+                [
+                    'slug'       => 'csc-history',
+                    'name'       => 'CSC Service History',
+                    'icon'       => 'fa-solid fa-clock-rotate-left',
+                    'route_name' => 'retailer.csc.history',
+                    'sort_order' => 11,
+                ],
+            ];
 
-
-            [
-                'name'       => 'PM Kisan Registration',
-                'slug'       => 'pm-kisan-registration',
-                'route_name' => 'retailer.csc.service',
-                'parent_id'  => $csc->id,
-                'sort_order' => 1,
-                'status'     => 1,
-            ],
-
-            [
-                'name'       => 'Ayushman Card',
-                'slug'       => 'ayushman-card',
-                'route_name' => 'retailer.csc.service',
-                'parent_id'  => $csc->id,
-                'sort_order' => 2,
-                'status'     => 1,
-            ],
-
-            [
-                'name'       => 'Income Certificate',
-                'slug'       => 'income-certificate',
-                'route_name' => 'retailer.csc.service',
-                'parent_id'  => $csc->id,
-                'sort_order' => 3,
-                'status'     => 1,
-            ],
-
-            [
-                'name'       => 'Domicile/Niwas Certificate',
-                'slug'       => 'domicile-niwas-certificate',
-                'route_name' => 'retailer.csc.service',
-                'parent_id'  => $csc->id,
-                'sort_order' => 4,
-                'status'     => 1,
-            ],
-
-            [
-                'name'       => 'Caste Certificate',
-                'slug'       => 'caste-certificate',
-                'route_name' => 'retailer.csc.service',
-                'parent_id'  => $csc->id,
-                'sort_order' => 5,
-                'status'     => 1,
-            ],
-
-            [
-                'name'       => 'Birth Certificate',
-                'slug'       => 'birth-certificate',
-                'route_name' => 'retailer.csc.service',
-                'parent_id'  => $csc->id,
-                'sort_order' => 6,
-                'status'     => 1,
-            ],
-
-            [
-                'name'       => 'Death Certificate',
-                'slug'       => 'death-certificate',
-                'route_name' => 'retailer.csc.service',
-                'parent_id'  => $csc->id,
-                'sort_order' => 7,
-                'status'     => 1,
-            ],
-
-            [
-                'name'       => 'Labour Card',
-                'slug'       => 'labour-card',
-                'route_name' => 'retailer.csc.service',
-                'parent_id'  => $csc->id,
-                'sort_order' => 8,
-                'status'     => 1,
-            ],
-
-            [
-                'name'       => 'E-Shram Card',
-                'slug'       => 'e-shram-card',
-                'route_name' => 'retailer.csc.service',
-                'parent_id'  => $csc->id,
-                'sort_order' => 9,
-                'status'     => 1,
-            ],
-
-            [
-                'name'       => 'Ration Card',
-                'slug'       => 'ration-card',
-                'route_name' => 'retailer.csc.service',
-                'parent_id'  => $csc->id,
-                'sort_order' => 10,
-                'status'     => 1,
-            ],
-
-            [
-                'name'       => 'CSC Service History',
-                'slug'       => 'csc-history',
-                'route_name' => 'retailer.csc.history',
-                'parent_id'  => $csc->id,
-                'sort_order' => 11,
-                'status'     => 1,
-            ],
-
-
-            
-
-
-            ]);
-
+            foreach ($cscChildren as $child) {
+                Module::updateOrCreate(
+                    ['slug' => $child['slug']],
+                    [
+                        'name'       => $child['name'],
+                        'icon'       => $child['icon'],
+                        'route_name' => $child['route_name'],
+                        'parent_id'  => $csc->id,
+                        'sort_order' => $child['sort_order'],
+                        'status'     => 1,
+                    ]
+                );
+            }
 
             /*
             |--------------------------------------------------------------------------
@@ -555,324 +529,288 @@ class ModuleSeeder extends Seeder
             |--------------------------------------------------------------------------
             */
 
-            $voterId = Module::create([
-                'name'       => 'Voter ID Services',
-                'slug'       => 'voter-id-services',
-                'icon'       => 'fa fa-vote-yea',
-                'route_name' => null,
-                'parent_id'  => null,
-                'sort_order' => 50,
-                'status'     => 1,
-            ]);
-
-            Module::insert([
-
+            $voterId = Module::updateOrCreate(
+                ['slug' => 'voter-id-services'],
                 [
-                    'name'       => 'New Voter ID Apply',
+                    'name'       => 'Voter ID Services',
+                    'icon'       => 'fa-solid fa-vote-yea',
+                    'route_name' => null,
+                    'parent_id'  => null,
+                    'sort_order' => 50,
+                    'status'     => 1,
+                ]
+            );
+
+            $voterIdChildren = [
+                [
                     'slug'       => 'new-voter-id',
+                    'name'       => 'New Voter ID Apply',
+                    'icon'       => 'fa-solid fa-square-plus',
                     'route_name' => 'retailer.voter-id.service',
-                    'parent_id'  => $voterId->id,
                     'sort_order' => 1,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'Voter ID Correction',
                     'slug'       => 'voter-id-correction',
+                    'name'       => 'Voter ID Correction',
+                    'icon'       => 'fa-solid fa-pen-to-square',
                     'route_name' => 'retailer.voter-id.service',
-                    'parent_id'  => $voterId->id,
                     'sort_order' => 2,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'Mobile Number Update',
                     'slug'       => 'voter-id-mobile-update',
+                    'name'       => 'Mobile Number Update',
+                    'icon'       => 'fa-solid fa-mobile-screen',
                     'route_name' => 'retailer.voter-id.service',
-                    'parent_id'  => $voterId->id,
                     'sort_order' => 3,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'Address Update',
                     'slug'       => 'voter-id-address-update',
+                    'name'       => 'Address Update',
+                    'icon'       => 'fa-solid fa-location-dot',
                     'route_name' => 'retailer.voter-id.service',
-                    'parent_id'  => $voterId->id,
                     'sort_order' => 4,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'DOB Update',
                     'slug'       => 'voter-id-dob-update',
+                    'name'       => 'DOB Update',
+                    'icon'       => 'fa-solid fa-calendar-days',
                     'route_name' => 'retailer.voter-id.service',
-                    'parent_id'  => $voterId->id,
                     'sort_order' => 5,
-                    'status'     => 1,
                 ],
-
                 [
-                    'name'       => 'Voter ID History',
                     'slug'       => 'voter-id-history',
+                    'name'       => 'Voter ID History',
+                    'icon'       => 'fa-solid fa-clock-rotate-left',
                     'route_name' => 'retailer.voter-id.history',
-                    'parent_id'  => $voterId->id,
                     'sort_order' => 6,
-                    'status'     => 1,
                 ],
+            ];
 
-            ]);
+            foreach ($voterIdChildren as $child) {
+                Module::updateOrCreate(
+                    ['slug' => $child['slug']],
+                    [
+                        'name'       => $child['name'],
+                        'icon'       => $child['icon'],
+                        'route_name' => $child['route_name'],
+                        'parent_id'  => $voterId->id,
+                        'sort_order' => $child['sort_order'],
+                        'status'     => 1,
+                    ]
+                );
+            }
 
             /*
-        |--------------------------------------------------------------------------
-        | BANK ACCOUNT SERVICES
-        |--------------------------------------------------------------------------
-        */
-
-        $bankAccount = Module::create([
-            'name'       => 'Bank Account Services',
-            'slug'       => 'bank-account-services',
-            'icon'       => 'fa fa-university',
-            'route_name' => null,
-            'parent_id'  => null,
-            'sort_order' => 60,
-            'status'     => 1,
-        ]);
-
-        Module::insert([
-
-            [
-                'name'       => 'Airtel Bank Account Opening',
-                'slug'       => 'airtel-bank-account',
-                'route_name' => 'retailer.bank-account.service',
-                'parent_id'  => $bankAccount->id,
-                'sort_order' => 1,
-                'status'     => 1,
-            ],
-
-            [
-                'name'       => 'Indian Bank',
-                'slug'       => 'indian-bank',
-                'route_name' => 'retailer.bank-account.service',
-                'parent_id'  => $bankAccount->id,
-                'sort_order' => 2,
-                'status'     => 1,
-            ],
-
-            [
-                'name'       => 'Indian Overseas Bank',
-                'slug'       => 'indian-overseas-bank',
-                'route_name' => 'retailer.bank-account.service',
-                'parent_id'  => $bankAccount->id,
-                'sort_order' => 3,
-                'status'     => 1,
-            ],
-            [
-                'name'       => 'NSDL Payment Bank',
-                'slug'       => 'nsdl-payment-bank',
-                'route_name' => 'retailer.bank-account.service',
-                'parent_id'  => $bankAccount->id,
-                'sort_order' => 4,
-                'status'     => 1,
-            ],
-
-            [
-                'name'       => 'Jio Payment Bank',
-                'slug'       => 'jio-payment-bank',
-                'route_name' => 'retailer.bank-account.service',
-                'parent_id'  => $bankAccount->id,
-                'sort_order' => 5,
-                'status'     => 1,
-            ],
-
-            [
-                'name'       => 'Bank of Baroda',
-                'slug'       => 'bank-of-baroda',
-                'route_name' => 'retailer.bank-account.service',
-                'parent_id'  => $bankAccount->id,
-                'sort_order' => 6,
-                'status'     => 1,
-            ],
-
-            [
-                'name'       => 'Kotak Bank Account',
-                'slug'       => 'kotak-bank-account',
-                'route_name' => 'retailer.bank-account.service',
-                'parent_id'  => $bankAccount->id,
-                'sort_order' => 7,
-                'status'     => 1,
-            ],
-
-            [
-                'name'       => 'SBI/PNB Bank Account',
-                'slug'       => 'sbi-pnb-bank-account',
-                'route_name' => 'retailer.bank-account.service',
-                'parent_id'  => $bankAccount->id,
-                'sort_order' => 8,
-                'status'     => 1,
-            ],
-
-             [
-                'name'       => 'Bank Account History',
-                'slug'       => 'bank-account-history',
-                'route_name' => 'retailer.bank-account.history',
-                'parent_id'  => $bankAccount->id,
-                'sort_order' => 9,
-                'status'     => 1,
-            ],
-
-        ]);
-
-
-        /*
             |--------------------------------------------------------------------------
-            | SUPPORT CHAT
+            | BANK ACCOUNT SERVICES
             |--------------------------------------------------------------------------
             */
 
-            Module::create([
+            $bankAccount = Module::updateOrCreate(
+                ['slug' => 'bank-account-services'],
+                [
+                    'name'       => 'Bank Account Services',
+                    'icon'       => 'fa-solid fa-university',
+                    'route_name' => null,
+                    'parent_id'  => null,
+                    'sort_order' => 60,
+                    'status'     => 1,
+                ]
+            );
 
-                'name'       => 'Support Chat',
+            $bankAccountChildren = [
+                [
+                    'slug'       => 'airtel-bank-account',
+                    'name'       => 'Airtel Bank Account Opening',
+                    'icon'       => 'fa-solid fa-piggy-bank',
+                    'route_name' => 'retailer.bank-account.service',
+                    'sort_order' => 1,
+                ],
+                [
+                    'slug'       => 'indian-bank',
+                    'name'       => 'Indian Bank',
+                    'icon'       => 'fa-solid fa-building-columns',
+                    'route_name' => 'retailer.bank-account.service',
+                    'sort_order' => 2,
+                ],
+                [
+                    'slug'       => 'indian-overseas-bank',
+                    'name'       => 'Indian Overseas Bank',
+                    'icon'       => 'fa-solid fa-building-columns',
+                    'route_name' => 'retailer.bank-account.service',
+                    'sort_order' => 3,
+                ],
+                [
+                    'slug'       => 'nsdl-payment-bank',
+                    'name'       => 'NSDL Payment Bank',
+                    'icon'       => 'fa-solid fa-building-columns',
+                    'route_name' => 'retailer.bank-account.service',
+                    'sort_order' => 4,
+                ],
+                [
+                    'slug'       => 'jio-payment-bank',
+                    'name'       => 'Jio Payment Bank',
+                    'icon'       => 'fa-solid fa-building-columns',
+                    'route_name' => 'retailer.bank-account.service',
+                    'sort_order' => 5,
+                ],
+                [
+                    'slug'       => 'bank-of-baroda',
+                    'name'       => 'Bank of Baroda',
+                    'icon'       => 'fa-solid fa-building-columns',
+                    'route_name' => 'retailer.bank-account.service',
+                    'sort_order' => 6,
+                ],
+                [
+                    'slug'       => 'kotak-bank-account',
+                    'name'       => 'Kotak Bank Account',
+                    'icon'       => 'fa-solid fa-building-columns',
+                    'route_name' => 'retailer.bank-account.service',
+                    'sort_order' => 7,
+                ],
+                [
+                    'slug'       => 'sbi-pnb-bank-account',
+                    'name'       => 'SBI/PNB Bank Account',
+                    'icon'       => 'fa-solid fa-building-columns',
+                    'route_name' => 'retailer.bank-account.service',
+                    'sort_order' => 8,
+                ],
+                [
+                    'slug'       => 'bank-account-history',
+                    'name'       => 'Bank Account History',
+                    'icon'       => 'fa-solid fa-clock-rotate-left',
+                    'route_name' => 'retailer.bank-account.history',
+                    'sort_order' => 9,
+                ],
+            ];
 
-                'slug'       => 'support-chat',
+            foreach ($bankAccountChildren as $child) {
+                Module::updateOrCreate(
+                    ['slug' => $child['slug']],
+                    [
+                        'name'       => $child['name'],
+                        'icon'       => $child['icon'],
+                        'route_name' => $child['route_name'],
+                        'parent_id'  => $bankAccount->id,
+                        'sort_order' => $child['sort_order'],
+                        'status'     => 1,
+                    ]
+                );
+            }
 
-                'icon'       => 'fa fa-headset',
+            /*
+            |--------------------------------------------------------------------------
+            | OTHER SERVICES
+            |--------------------------------------------------------------------------
+            */
 
-                'route_name' => 'retailer.chat.index',
+            $otherService = Module::updateOrCreate(
+                ['slug' => 'other-services'],
+                [
+                    'name'       => 'Other Services',
+                    'icon'       => 'fa-solid fa-briefcase',
+                    'route_name' => null,
+                    'parent_id'  => null,
+                    'sort_order' => 70,
+                    'status'     => 1,
+                ]
+            );
 
-                'parent_id'  => null,
+            $otherServiceChildren = [
+                [
+                    'slug'       => 'raj-patra',
+                    'name'       => 'Raj Patra',
+                    'icon'       => 'fa-solid fa-newspaper',
+                    'route_name' => 'retailer.other-service.service',
+                    'sort_order' => 1,
+                ],
+                [
+                    'slug'       => 'food-licence',
+                    'name'       => 'Food Licence',
+                    'icon'       => 'fa-solid fa-utensils',
+                    'route_name' => 'retailer.other-service.service',
+                    'sort_order' => 3,
+                ],
+                [
+                    'slug'       => 'npci-aadhaar-seeding',
+                    'name'       => 'NPCI Aadhaar Seeding',
+                    'icon'       => 'fa-solid fa-link',
+                    'route_name' => 'retailer.other-service.service',
+                    'sort_order' => 4,
+                ],
+                [
+                    'slug'       => 'import-export-certificate',
+                    'name'       => 'Import Export Certificate(IEC)',
+                    'icon'       => 'fa-solid fa-ship',
+                    'route_name' => 'retailer.other-service.service',
+                    'sort_order' => 7,
+                ],
+                [
+                    'slug'       => 'rent-agreement',
+                    'name'       => 'Rent Agreement',
+                    'icon'       => 'fa-solid fa-file-contract',
+                    'route_name' => 'retailer.other-service.service',
+                    'sort_order' => 8,
+                ],
+                [
+                    'slug'       => 'police-verification',
+                    'name'       => 'Police Verification',
+                    'icon'       => 'fa-solid fa-shield-halved',
+                    'route_name' => 'retailer.other-service.service',
+                    'sort_order' => 9,
+                ],
+                [
+                    'slug'       => 'driving-learning-license',
+                    'name'       => 'Driving Learning License',
+                    'icon'       => 'fa-solid fa-car',
+                    'route_name' => 'retailer.other-service.service',
+                    'sort_order' => 10,
+                ],
+                [
+                    'slug'       => 'vehicle-chalan-payment',
+                    'name'       => 'Vehicle Chalan Payment',
+                    'icon'       => 'fa-solid fa-money-check-dollar',
+                    'route_name' => 'retailer.other-service.service',
+                    'sort_order' => 11,
+                ],
+                [
+                    'slug'       => 'rto-service',
+                    'name'       => 'RTO Sevice',
+                    'icon'       => 'fa-solid fa-car-side',
+                    'route_name' => 'retailer.other-service.service',
+                    'sort_order' => 12,
+                ],
+                [
+                    'slug'       => 'passport-service',
+                    'name'       => 'Passport Service',
+                    'icon'       => 'fa-solid fa-passport',
+                    'route_name' => 'retailer.other-service.service',
+                    'sort_order' => 13,
+                ],
+                [
+                    'slug'       => 'other-service-history',
+                    'name'       => 'Other Service History',
+                    'icon'       => 'fa-solid fa-clock-rotate-left',
+                    'route_name' => 'retailer.other-service.history',
+                    'sort_order' => 14,
+                ],
+            ];
 
-                'sort_order' => 3,
+            foreach ($otherServiceChildren as $child) {
+                Module::updateOrCreate(
+                    ['slug' => $child['slug']],
+                    [
+                        'name'       => $child['name'],
+                        'icon'       => $child['icon'],
+                        'route_name' => $child['route_name'],
+                        'parent_id'  => $otherService->id,
+                        'sort_order' => $child['sort_order'],
+                        'status'     => 1,
+                    ]
+                );
+            }
 
-                'status'     => 1,
-
-            ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | OTHER SERVICES
-        |--------------------------------------------------------------------------
-        */
-
-        $otherService = Module::create([
-            'name'       => 'Other Services',
-            'slug'       => 'other-services',
-            'icon'       => 'fa fa-briefcase',
-            'route_name' => null,
-            'parent_id'  => null,
-            'sort_order' => 70,
-            'status'     => 1,
-        ]);
-
-        Module::insert([
-
-            [
-                'name'       => 'Raj Patra',
-                'slug'       => 'raj-patra',
-                'route_name' => 'retailer.other-service.service',
-                'parent_id'  => $otherService->id,
-                'sort_order' => 1,
-                'status'     => 1,
-            ],
-
-           
-
-            [
-                'name'       => 'Food Licence',
-                'slug'       => 'food-licence',
-                'route_name' => 'retailer.other-service.service',
-                'parent_id'  => $otherService->id,
-                'sort_order' => 3,
-                'status'     => 1,
-            ],
-
-            [
-                'name'       => 'NPCI Aadhaar Seeding',
-                'slug'       => 'npci-aadhaar-seeding',
-                'route_name' => 'retailer.other-service.service',
-                'parent_id'  => $otherService->id,
-                'sort_order' => 4,
-                'status'     => 1,
-            ],
-
-            
-            [
-                'name'       => 'Import Export Certificate(IEC)',
-                'slug'       => 'import-export-certificate',
-                'route_name' => 'retailer.other-service.service',
-                'parent_id'  => $otherService->id,
-                'sort_order' => 7,
-                'status'     => 1,
-            ],
-
-            [
-                'name'       => 'Rent Agreement',
-                'slug'       => 'rent-agreement',
-                'route_name' => 'retailer.other-service.service',
-                'parent_id'  => $otherService->id,
-                'sort_order' => 8,
-                'status'     => 1,
-            ],
-
-            [
-                'name'       => 'Police Verification',
-                'slug'       => 'police-verification',
-                'route_name' => 'retailer.other-service.service',
-                'parent_id'  => $otherService->id,
-                'sort_order' => 9,
-                'status'     => 1,
-            ],
-
-             
-             [
-                'name'       => 'Driving Learning License',
-                'slug'       => 'driving-learning-license',
-                'route_name' => 'retailer.other-service.service',
-                'parent_id'  => $otherService->id,
-                'sort_order' => 10,
-                'status'     => 1,
-            ],
-
-               [
-                'name'       => 'Vehicle Chalan Payment',
-                'slug'       => 'vehicle-chalan-payment',
-                'route_name' => 'retailer.other-service.service',
-                'parent_id'  => $otherService->id,
-                'sort_order' => 11,
-                'status'     => 1,
-            ],
-
-             [
-                'name'       => 'RTO Sevice',
-                'slug'       => 'rto-service',
-                'route_name' => 'retailer.other-service.service',
-                'parent_id'  => $otherService->id,
-                'sort_order' => 12,
-                'status'     => 1,
-            ],
-
-            [
-                'name'       => 'Passport Service',
-                'slug'       => 'passport-service',
-                'route_name' => 'retailer.other-service.service',
-                'parent_id'  => $otherService->id,
-                'sort_order' => 13,
-                'status'     => 1,
-            ],
-
-            [
-                'name'       => 'Other Service History',
-                'slug'       => 'other-service-history',
-                'route_name' => 'retailer.other-service.history',
-                'parent_id'  => $otherService->id,
-                'sort_order' => 14,
-                'status'     => 1,
-            ],
-
-        ]);
-
-
-         DB::commit();
+            DB::commit();
 
         } catch (\Throwable $e) {
 

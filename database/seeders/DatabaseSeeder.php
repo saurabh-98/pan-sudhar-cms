@@ -49,8 +49,7 @@ class DatabaseSeeder extends Seeder
             */
 
             AdminSeeder::class,
-            DistributorSeeder::class,
-
+          
             /*
             |--------------------------------------------------------------------------
             | CMS
