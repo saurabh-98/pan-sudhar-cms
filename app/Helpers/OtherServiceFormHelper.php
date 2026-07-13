@@ -64,8 +64,42 @@ if (! function_exists('other_service_fields')) {
             */
 
             'gst-registration-filing' => array_merge(
-                $commonFields,
+                
                 [
+
+                     [
+                        'name' => 'customer_name',
+                        'label' => 'Customer Name',
+                        'type' => 'text',
+                        'required' => true,
+                    ],
+
+                    [
+                        'name' => 'mobile',
+                        'label' => 'Customer Mobile Number',
+                        'type' => 'text',
+                        'required' => true,
+                    ],
+
+                    [
+                        'name' => 'email',
+                        'label' => 'Email Address',
+                        'type' => 'email',
+                    ],
+
+                    [
+                        'name' => 'aadhaar_number',
+                        'label' => 'Aadhaar Number',
+                        'type' => 'text',
+                    ],
+
+                
+                    [
+                        'name' => 'aadhaar_card',
+                        'label' => 'Aadhaar card',
+                        'type' => 'file',
+                    ],
+
 
                     [
                         'name' => 'document',
