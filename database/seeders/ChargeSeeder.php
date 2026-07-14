@@ -78,7 +78,7 @@ class ChargeSeeder extends Seeder
                 'name'        => 'File ITR',
                 'code'        => 'file_itr',
                 'type'        => 'fixed',
-                'value'       => 299,
+                'value'       => 399,
                 'description' => 'ITR filing charge',
                 'is_active'   => 1,
                 'created_at'  => now(),

@@ -1,0 +1,460 @@
+<?php
+
+namespace App\Models;
+
+use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class TdsFile extends Model
+{
+    use HasFactory;
+
+    /*
+    |--------------------------------------------------------------------------
+    | TABLE
+    |--------------------------------------------------------------------------
+    */
+
+    protected $table =
+        'tds_files';
+
+    /*
+    |--------------------------------------------------------------------------
+    | PRIMARY KEY
+    |--------------------------------------------------------------------------
+    */
+
+    protected $primaryKey =
+        'id';
+
+    /*
+    |--------------------------------------------------------------------------
+    | PAGINATION
+    |--------------------------------------------------------------------------
+    */
+
+    protected $perPage = 20;
+
+    /*
+    |--------------------------------------------------------------------------
+    | FILLABLE
+    |--------------------------------------------------------------------------
+    */
+
+    protected $fillable = [
+
+    'user_id',
+
+    'application_no',
+
+    'name',
+
+    'mobile',
+
+    'email',
+
+    'remarks',
+
+    'admin_remarks',
+
+    'assigned_to',
+
+    'assigned_at',
+
+    'aadhaar_front',
+
+    'aadhaar_back',
+
+    'pan_card',
+
+    'charge',
+
+    'payment_status',
+
+    'status',
+
+    'wallet_deducted',
+
+    'wallet_deducted_at',
+
+    'ip_address',
+
+    'browser',
+
+];
+    /*
+    |--------------------------------------------------------------------------
+    | APPENDS
+    |--------------------------------------------------------------------------
+    */
+
+    protected $appends = [
+
+    'status_badge',
+
+    'applicant_name',
+
+    'aadhaar_front_url',
+
+    'aadhaar_back_url',
+
+    'pan_card_url',
+
+    'assigned_employee_name',
+
+    'service_document_url',
+
+];
+    /*
+    |--------------------------------------------------------------------------
+    | CASTS
+    |--------------------------------------------------------------------------
+    */
+
+        protected $casts = [
+
+        'charge' => 'decimal:2',
+
+        'wallet_deducted' => 'boolean',
+
+        'wallet_deducted_at' => 'datetime',
+
+        'assigned_at' => 'datetime',
+
+        'created_at' => 'datetime',
+
+        'updated_at' => 'datetime',
+
+    ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | USER RELATIONSHIP
+    |--------------------------------------------------------------------------
+    */
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(
+
+            User::class,
+
+            'user_id'
+
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | ASSIGNED USER
+    |--------------------------------------------------------------------------
+    */
+
+    public function assignedEmployee(): BelongsTo
+    {
+        return $this->belongsTo(
+
+            User::class,
+
+            'assigned_to'
+
+        );
+    }
+
+
+     /*
+    |--------------------------------------------------------------------------
+    | DOCUMENTS
+    |--------------------------------------------------------------------------
+    */
+
+    public function documents()
+    {
+        return $this->hasMany(
+
+            ServiceDocument::class,
+
+            'service_id'
+
+        )->where(
+
+            'service_type',
+
+            'tds'
+
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | APPLICANT NAME
+    |--------------------------------------------------------------------------
+    */
+
+    public function getApplicantNameAttribute(): string
+    {
+        return $this->name ?? '';
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | STATUS BADGE
+    |--------------------------------------------------------------------------
+    */
+
+    public function getStatusBadgeAttribute(): string
+{
+    return match ($this->status) {
+
+        'Approved' => '
+            <span class="badge bg-success">
+                Approved
+            </span>',
+
+        'Rejected' => '
+            <span class="badge bg-danger">
+                Rejected
+            </span>',
+
+        'Processing' => '
+            <span class="badge bg-warning text-dark">
+                Processing
+            </span>',
+
+        'Pending' => '
+            <span class="badge bg-secondary">
+                Pending
+            </span>',
+
+        default => '
+            <span class="badge bg-secondary">
+                Pending
+            </span>',
+    };
+}
+
+
+    public function getAssignedEmployeeNameAttribute(): ?string
+    {
+        return optional($this->assignedEmployee)->name;
+    }
+
+    /*
+|--------------------------------------------------------------------------
+| SERVICE DOCUMENT URL
+|--------------------------------------------------------------------------
+*/
+
+public function getServiceDocumentUrlAttribute(): ?string
+{
+    $document = $this->documents()->first();
+
+    if (!$document) {
+        return null;
+    }
+
+    if (!file_exists_custom($document->file_path)) {
+        return null;
+    }
+
+    return file_url($document->file_path);
+}
+    
+    /*
+    |--------------------------------------------------------------------------
+    | AADHAAR FRONT URL
+    |--------------------------------------------------------------------------
+    */
+
+    public function getAadhaarFrontUrlAttribute(): ?string
+    {
+        if (
+            empty($this->aadhaar_front)
+            ||
+            !file_exists_custom(
+                $this->aadhaar_front
+            )
+        ) {
+            return null;
+        }
+
+        return file_url(
+            $this->aadhaar_front
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | AADHAAR BACK URL
+    |--------------------------------------------------------------------------
+    */
+
+    public function getAadhaarBackUrlAttribute(): ?string
+    {
+        if (
+            empty($this->aadhaar_back)
+            ||
+            !file_exists_custom(
+                $this->aadhaar_back
+            )
+        ) {
+            return null;
+        }
+
+        return file_url(
+            $this->aadhaar_back
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | PAN CARD URL
+    |--------------------------------------------------------------------------
+    */
+
+    public function getPanCardUrlAttribute(): ?string
+    {
+        if (
+            empty($this->pan_card)
+            ||
+            !file_exists_custom(
+                $this->pan_card
+            )
+        ) {
+            return null;
+        }
+
+        return file_url(
+            $this->pan_card
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | FILE EXISTS
+    |--------------------------------------------------------------------------
+    */
+
+    public function hasFile(
+        string $column
+    ): bool {
+
+        if (
+            empty(
+                $this->{$column}
+            )
+        ) {
+            return false;
+        }
+
+        return file_exists_custom(
+            $this->{$column}
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | SCOPES
+    |--------------------------------------------------------------------------
+    */
+
+    public function scopePending($query)
+    {
+        return $query->where(
+            'status',
+            'Pending'
+        );
+    }
+
+    public function scopeApproved($query)
+    {
+        return $query->where(
+            'status',
+            'Approved'
+        );
+    }
+
+    public function scopeRejected($query)
+    {
+        return $query->where(
+            'status',
+            'Rejected'
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | BOOT
+    |--------------------------------------------------------------------------
+    */
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function (
+            $model
+        ) {
+
+            if (
+                empty(
+                    $model->application_no
+                )
+            ) {
+
+                $model->application_no =
+
+                    'TDS'
+
+                    . date('Ymd')
+
+                    . rand(
+                        100000,
+                        999999
+                    );
+            }
+
+            if (
+                empty(
+                    $model->status
+                )
+            ) {
+
+                $model->status =
+                    'Pending';
+            }
+
+            if (
+                empty(
+                    $model->payment_status
+                )
+            ) {
+
+                $model->payment_status =
+                    'Pending';
+            }
+        });
+
+        static::deleting(function (
+            $model
+        ) {
+
+            foreach ([
+
+                $model->aadhaar_front,
+
+                $model->aadhaar_back,
+
+                $model->pan_card
+
+            ] as $file) {
+
+                delete_uploaded_file(
+                    $file
+                );
+            }
+        });
+    }
+}

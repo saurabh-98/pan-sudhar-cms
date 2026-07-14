@@ -12,7 +12,7 @@ use App\DTO\CscServiceDTO;
 use App\Http\Requests\StoreCscServiceRequest;
 use App\Services\CscServiceService;
 use App\Services\StateService;
-use App\Services\Districtservice;
+use App\Services\DistrictService;
 use App\Services\ServiceGuidelineService;
 
 use App\Models\CscService;
