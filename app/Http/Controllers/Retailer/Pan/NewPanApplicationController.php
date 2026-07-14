@@ -318,7 +318,7 @@ class NewPanApplicationController extends Controller
                                 </a>
 
                                 
-                                    href="'
+                                <a   href="'
 
                                     . file_url(
                                         $document->file_path
@@ -384,7 +384,7 @@ class NewPanApplicationController extends Controller
                         <div class="d-flex gap-2">
 
                             
-                                href="'
+                            <a  href="'
 
                                 . route(
                                     'retailer.pan.view',
