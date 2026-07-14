@@ -302,6 +302,7 @@ class PermissionSeeder extends Seeder
             'pan-find.status',
             'pan-find.delete',
             'pan-find.upload',
+            'pan-find.reject',
 
       
 
