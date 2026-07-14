@@ -1,6 +1,6 @@
 @extends('layout.retailer')
 
-@section('title', 'ITR Filing Preview')
+@section('title', 'TDS Filing Preview')
 
 @section('content')
 
@@ -12,7 +12,7 @@
         <div>
 
             <h2 class="fw-bold">
-                ITR Filing Preview
+                TDS Filing Preview
             </h2>
 
             <p class="text-muted mb-0">
@@ -26,7 +26,7 @@
             <span class="badge bg-warning text-dark fs-6 px-4 py-3">
 
                 ITR Charge :
-                ₹{{ number_format($itrCharge, 2) }}
+                ₹{{ number_format($tdsCharge, 2) }}
 
             </span>
 
@@ -249,7 +249,7 @@
 
                         </strong>
 
-                        ₹{{ number_format($itrCharge, 2) }}
+                        ₹{{ number_format($tdsCharge, 2) }}
 
                     </div>
 
@@ -261,7 +261,7 @@
             <div class="d-flex justify-content-between mt-4">
 
                 <a
-                    href="{{ route('retailer.itr.index') }}"
+                    href="{{ route('retailer.tds.index') }}"
                     class="btn btn-light btn-lg"
                 >
 
@@ -323,7 +323,7 @@ $('#finalSubmitBtn').click(function(){
     $.ajax({
 
         url:
-        "{{ route('retailer.itr.final-submit') }}",
+        "{{ route('retailer.tds.final-submit') }}",
 
         type: 'POST',
 

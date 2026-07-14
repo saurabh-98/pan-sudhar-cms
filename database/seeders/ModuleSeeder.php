@@ -171,26 +171,20 @@ class ModuleSeeder extends Seeder
                     'route_name' => 'retailer.pan-apply-without-document.history',
                     'sort_order' => 6,
                 ],
-                [
-                    'slug'       => 'pan-training',
-                    'name'       => 'PAN Training',
-                    'icon'       => 'fa-solid fa-chalkboard-user',
-                    'route_name' => 'retailer.pan.training',
-                    'sort_order' => 7,
-                ],
+              
                 [
                     'slug'       => 'pan-find',
                     'name'       => 'PAN Find/Aadhar To PAN',
                     'icon'       => 'fa-solid fa-magnifying-glass',
                     'route_name' => 'retailer.pan-find.apply',
-                    'sort_order' => 8,
+                    'sort_order' => 7,
                 ],
                 [
                     'slug'       => 'pan-find-history',
                     'name'       => 'PAN Find/Aadhar To PAN History',
                     'icon'       => 'fa-solid fa-clock-rotate-left',
                     'route_name' => 'retailer.pan-find.history',
-                    'sort_order' => 9,
+                    'sort_order' => 8,
                 ],
             ];
 
@@ -238,7 +232,7 @@ class ModuleSeeder extends Seeder
                     'slug'       => 'itr-file-tds-refund',
                     'name'       => 'ITR Filing & TDS Refund',
                     'icon'       => 'fa-solid fa-hand-holding-dollar',
-                    'route_name' => 'retailer.itr.index',
+                    'route_name' => 'retailer.tds.index',
                     'sort_order' => 2,
                 ],
                 [
@@ -281,9 +275,17 @@ class ModuleSeeder extends Seeder
 
                 [
                     'slug'       => 'itr-history',
-                    'name'       => 'Finance History',
+                    'name'       => 'Finance-ITR History',
                     'icon'       => 'fa-solid fa-clock-rotate-left',
                     'route_name' => 'retailer.itr.history',
+                    'sort_order' => 8,
+                ],
+
+                [
+                    'slug'       => 'tds-history',
+                    'name'       => 'Finance-TDS History',
+                    'icon'       => 'fa-solid fa-clock-rotate-left',
+                    'route_name' => 'retailer.tds.history',
                     'sort_order' => 8,
                 ],
             ];

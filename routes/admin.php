@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\SalaryStructureController;
 use App\Http\Controllers\Admin\PayrollController;
 use App\Http\Controllers\Admin\PayslipController;
 use App\Http\Controllers\Admin\ServiceGuidelineController;
+use App\Http\Controllers\Admin\AdminTdsController;
 
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\EventController;
@@ -1655,6 +1656,122 @@ Route::prefix('pages')
               Route::post(
                 '/rejected/{id}/reject',
                 [ItrFileController::class, 'reject']
+            )->name('reject');
+
+
+    });
+
+
+    Route::prefix('tds')
+        ->name('tds.')
+        ->middleware([
+
+            'auth',
+        
+            'permission:tds.view'
+
+        ])
+        ->group(function () {
+
+        /*
+        |--------------------------------------------------------------------------
+        | ITR DASHBOARD / LIST
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/',
+            [AdminTdsController::class, 'index']
+        )->name('index');
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ITR HISTORY
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/history',
+            [AdminTdsController::class, 'history']
+        )->name('history');
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SHOW ITR DETAILS
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/show/{id}',
+            [AdminTdsController::class, 'show']
+        )->name('show');
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ASSIGN ITR
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post(
+            '/assign/{id}',
+            [AdminTdsController::class, 'assign']
+        )->name('assign');
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE STATUS
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post(
+            '/status/{id}',
+            [AdminTdsController::class, 'status']
+        )->name('status');
+
+
+        Route::post(
+            '/document-upload/{id}',
+            [AdminTdsController::class, 'uploadDocument']
+        )->name('document.upload');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DELETE ITR
+        |--------------------------------------------------------------------------
+        */
+
+        Route::delete(
+            '/delete/{id}',
+            [AdminTdsController::class, 'delete']
+        )->name('delete');
+
+        /*
+            |--------------------------------------------------------------------------
+            | DOWNLOAD ALL DOCUMENTS
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+
+                '/tds/{id}/download-documents',
+
+                [AdminTdsController::class, 'downloadDocuments']
+
+            )->name('download.documents');
+
+
+              Route::post(
+                '/rejected/{id}/reject',
+                [AdminTdsController::class, 'reject']
             )->name('reject');
 
 

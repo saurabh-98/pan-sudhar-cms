@@ -103,6 +103,43 @@
 
         ->count();
 
+
+        /*
+    |--------------------------------------------------------------------------
+    | ITR COUNT
+    |--------------------------------------------------------------------------
+    */
+
+    $tdsCount = \App\Models\TdsFile::query()
+
+        ->when(
+
+            auth()->user()->hasRole('Executive'),
+
+            function($query){
+
+                $query->where(
+
+                    'assigned_to',
+
+                    auth()->id()
+
+                );
+
+            },
+
+            function($query){
+
+                $query->whereNull('assigned_to');
+
+            }
+
+        )
+
+        ->count();
+
+
+
         $aadhaarCount = \App\Models\AadhaarService::query()
 
         ->when(
@@ -493,6 +530,24 @@
                     </a>
                 </li>
                 @endcan
+
+                  {{-- ITR --}}
+                @can('tds.view')
+                <li>
+                    <a href="{{ route('admin.tds.index') }}"
+                    class="sbx-link {{ request()->routeIs('admin.tds.*') ? 'sbx-active' : '' }}">
+                        <i class="fa fa-file-invoice-dollar"></i>
+                        <span>TDS Services</span>
+
+                        @if($tdsCount > 0)
+                            <span class="sbx-count-badge">
+                                {{ $tdsCount }}
+                            </span>
+                        @endif
+                    </a>
+                </li>
+                @endcan
+
 
                 {{-- VOTER ID --}}
                 @can('voter-id.view')

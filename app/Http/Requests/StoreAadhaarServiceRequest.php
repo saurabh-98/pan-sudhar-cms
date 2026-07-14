@@ -38,15 +38,10 @@ class StoreAadhaarServiceRequest extends FormRequest
                 $rules += [
 
                     'customer_name' => 'required|string|max:255',
-
-                    'mobile' => 'required|digits:10',
-
+                    'old_mobile' => 'required|digits:10',
                     'aadhaar_number' => 'required|digits:12',
-
-                    'aadhaar_front' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-
-                    'aadhaar_back' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-                ];
+                    'new_mobile' => 'required|digits:10',
+                    'aadhaar_acknowledgement' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',                ];
 
             break;
 
@@ -55,12 +50,12 @@ class StoreAadhaarServiceRequest extends FormRequest
                 $rules += [
 
                     'customer_name' => 'required|string|max:255',
-
                     'new_name' => 'required|string|max:255',
-
+                    'mobile' => 'required|digits:10',
+                    'alternate_mobile' => 'nullable|digits:10',
                     'aadhaar_number' => 'required|digits:12',
-
-                    'name_proof' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'aadhaar_card' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'supportive_document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
                 ];
 
             break;
@@ -69,15 +64,15 @@ class StoreAadhaarServiceRequest extends FormRequest
 
                 $rules += [
 
-                    'customer_name' => 'required|string|max:255',
-
+                   'customer_name' => 'required|string|max:255',
                     'old_dob' => 'nullable|date',
-
                     'new_dob' => 'required|date',
-
+                    'mobile' => 'required|digits:10',
+                    'alternate_mobile' => 'nullable|digits:10',
                     'aadhaar_number' => 'required|digits:12',
-
+                    'aadhaar_card' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
                     'dob_proof' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'supportive_document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
                 ];
 
             break;
@@ -86,18 +81,16 @@ class StoreAadhaarServiceRequest extends FormRequest
 
                 $rules += [
 
-                    'customer_name' => 'required|string|max:255',
-
-                    'aadhaar_number' => 'required|digits:12',
-
+                   'customer_name' => 'required|string|max:255',
+                    'mobile' => 'required|digits:10',
                     'new_address' => 'required|string|max:1000',
-
-                    'address_proof' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'aadhaar_card' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'address_proof' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
                 ];
 
             break;
 
-            case 'father-name-update':
+            case  'father-husband-name-update':
 
                 $rules += [
 
@@ -110,35 +103,18 @@ class StoreAadhaarServiceRequest extends FormRequest
 
             break;
 
-            case 'husband-name-update':
-
-                $rules += [
-
-                    'customer_name' => 'required|string|max:255',
-
-                    'husband_name' => 'required|string|max:255',
-
-                    'aadhaar_number' => 'required|digits:12',
-                ];
-
-            break;
 
             case 'gender-update':
 
                 $rules += [
 
-                    'customer_name' => 'required|string|max:255',
-
+                   'customer_name' => 'required|string|max:255',
+                    'gender' => ['required', Rule::in(['Male','Female','Transgender'])],
+                    'mobile' => 'required|digits:10',
+                    'alternate_mobile' => 'nullable|digits:10',
                     'aadhaar_number' => 'required|digits:12',
-
-                    'gender' => [
-                        'required',
-                        Rule::in([
-                            'Male',
-                            'Female',
-                            'Transgender'
-                        ]),
-                    ],
+                    'aadhaar_card' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'supportive_document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
                 ];
 
             break;
@@ -148,10 +124,12 @@ class StoreAadhaarServiceRequest extends FormRequest
                 $rules += [
 
                     'customer_name' => 'required|string|max:255',
-
                     'email' => 'required|email|max:255',
-
+                    'mobile' => 'required|digits:10',
+                    'alternate_mobile' => 'nullable|digits:10',
                     'aadhaar_number' => 'required|digits:12',
+                    'aadhaar_card' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'supportive_document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
                 ];
 
             break;
@@ -161,10 +139,12 @@ class StoreAadhaarServiceRequest extends FormRequest
                 $rules += [
 
                     'customer_name' => 'required|string|max:255',
-
+                    'biometric_type' => ['required', Rule::in(['Fingerprint','Iris','Face'])],
                     'mobile' => 'required|digits:10',
-
+                    'alternate_mobile' => 'nullable|digits:10',
                     'aadhaar_number' => 'required|digits:12',
+                    'aadhaar_card' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'supportive_document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
                 ];
 
             break;
@@ -204,8 +184,11 @@ class StoreAadhaarServiceRequest extends FormRequest
                 $rules += [
 
                     'aadhaar_number' => 'required|digits:12',
-
                     'mobile' => 'required|digits:10',
+                    'alternate_mobile' => 'nullable|digits:10',
+                    'delivery_address' => 'required|string|max:1000',
+                    'aadhaar_card' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                    'supportive_document' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
                 ];
 
             break;
@@ -244,8 +227,7 @@ class StoreAadhaarServiceRequest extends FormRequest
                     'name-correction',
                     'dob-correction',
                     'address-update',
-                    'father-name-update',
-                    'husband-name-update',
+                    'father-husband-name-update',
                     'gender-update',
                     'email-update',
                     'biometric-update',
@@ -264,16 +246,11 @@ class StoreAadhaarServiceRequest extends FormRequest
     public function messages(): array
     {
         return [
-
-            '*.required' => 'This field is required.',
-
-            '*.digits' => 'Invalid number format.',
-
-            '*.email' => 'Please enter a valid email address.',
-
-            '*.mimes' => 'Only JPG, JPEG, PNG and PDF files are allowed.',
-
-            '*.max' => 'The uploaded file size exceeds the allowed limit.',
+            'required' => ':attribute is required.',
+            'digits' => ':attribute must be valid.',
+            'email' => 'Please enter a valid email address.',
+            'mimes' => 'Only JPG, JPEG, PNG and PDF files are allowed.',
+            'max' => 'The uploaded file exceeds the maximum allowed size.',
         ];
     }
 }

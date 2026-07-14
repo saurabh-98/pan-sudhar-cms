@@ -290,6 +290,17 @@ class ChargeSeeder extends Seeder
                 'updated_at'  => now(),
             ],
 
+             [
+                'name'        => 'Domicile/Niwas Certificate',
+                'code'        => 'domicile_niwas_certificate',
+                'type'        => 'fixed',
+                'value'       => 400,
+                'description' => 'Domicile/Niwas Registration Charge',
+                'is_active'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+
             [
                 'name'        => 'Ayushman Card',
                 'code'        => 'ayushman_card',

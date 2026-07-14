@@ -206,6 +206,18 @@ class PermissionSeeder extends Seeder
             'itr.status',
             'itr.delete',
 
+              /*
+            |--------------------------------------------------------------------------
+            | TDS MODULE
+            |--------------------------------------------------------------------------
+            */
+
+            'tds.view',
+            'tds.assign',
+            'tds.status',
+            'tds.delete',
+
+
 
 
             /*

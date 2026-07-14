@@ -292,7 +292,7 @@
                             </span>
 
                             <span class="pan-charge-amount">
-                                ₹{{ number_format($itrCharge, 2) }}
+                                ₹{{ number_format($tdsCharge, 2) }}
                             </span>
 
                         </div>
@@ -311,7 +311,7 @@
 
                             <h5 id="serviceGuidelineLabel">
                                 <i class="fa fa-file-pdf me-2 text-danger"></i>
-                                ITR — Service Guidelines
+                                TDS — Service Guidelines
                             </h5>
 
                             <div class="pan-offcanvas-header-actions">
@@ -1305,7 +1305,7 @@ $(function(){
         $.ajax({
 
             url:
-            "{{ route('retailer.itr.preview') }}",
+            "{{ route('retailer.tds.preview') }}",
 
             type:'POST',
 

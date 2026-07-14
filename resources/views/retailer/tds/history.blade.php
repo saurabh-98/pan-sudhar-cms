@@ -1,6 +1,6 @@
 @extends('layout.retailer')
 
-@section('title', 'ITR History')
+@section('title', 'TDS History')
 
 @section('content')
 
@@ -16,11 +16,11 @@
                 <div>
 
                     <h3 class="fw-bold mb-1">
-                        ITR History
+                        TDS History
                     </h3>
 
                     <p class="text-muted mb-0">
-                        View all submitted ITR records
+                        View all submitted TDS records
                     </p>
 
                 </div>
@@ -47,7 +47,7 @@
                 <div class="spinner-border text-dark"></div>
 
                 <p class="mt-3 text-muted">
-                    Loading ITR Records...
+                    Loading TDS Records...
                 </p>
 
             </div>
@@ -104,7 +104,7 @@
                 <i class="fa fa-folder-open fa-4x text-muted mb-3"></i>
 
                 <h4 class="fw-bold">
-                    No ITR History Found
+                    No TDS History Found
                 </h4>
 
                 <p class="text-muted">
@@ -164,7 +164,7 @@
 
         $.ajax({
 
-            url: "{{ route('retailer.itr.history') }}?page=" + page,
+            url: "{{ route('retailer.tds.history') }}?page=" + page,
 
             type: "GET",
 

@@ -44,6 +44,7 @@ use App\Http\Controllers\Retailer\OtherService\OtherServiceController;
 */
 
 use App\Http\Controllers\Retailer\Itr\FileItrController;
+use App\Http\Controllers\Retailer\Itr\FileTdsController;
 use App\Http\Controllers\Retailer\Itr\ItrHistoryController;
 use App\Http\Controllers\Retailer\Itr\ItrCorrectionController;
 use App\Http\Controllers\Retailer\Itr\Form16Controller;
@@ -420,6 +421,55 @@ Route::prefix('itr')
             'destroy'
         )->name('delete');
     });
+
+
+    Route::prefix('tds')
+    ->name('tds.')
+    ->controller(FileTdsController::class)
+    ->group(function () {
+
+        Route::get(
+            '/',
+            'index'
+        )->name('index');
+
+        Route::post(
+            '/preview',
+            'preview'
+        )->name('preview');
+
+        Route::get(
+            '/preview-page',
+            'previewPage'
+        )->name('preview-page');
+
+        Route::post(
+            '/final-submit',
+            'finalSubmit'
+        )->name('final-submit');
+
+        Route::get(
+            '/acknowledgement/{id}',
+            'acknowledgement'
+        )->name('acknowledgement');
+
+        Route::get(
+            '/history',
+            'history'
+        )->name('history');
+
+        
+        Route::get(
+            '/show/{id}',
+            'show'
+        )->name('show');
+
+        Route::delete(
+            '/delete/{id}',
+            'destroy'
+        )->name('delete');
+    });
+
 
   /*
 |--------------------------------------------------------------------------
