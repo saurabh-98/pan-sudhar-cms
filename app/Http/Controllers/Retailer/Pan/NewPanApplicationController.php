@@ -297,7 +297,7 @@ class NewPanApplicationController extends Controller
                             <div class="d-flex gap-2 flex-wrap">
 
                                 
-                                    href="'
+                                <a    href="'
 
                                     . file_url(
                                         $document->file_path
