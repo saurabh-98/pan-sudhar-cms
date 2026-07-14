@@ -60,33 +60,79 @@ if (!function_exists('normalize_file_path')) {
 if (!function_exists('store_uploaded_file')) {
 
     function store_uploaded_file($file, string $folder): ?string
-{
-    if (!$file || !$file->isValid()) {
-        return null;
+    {
+        if (!$file || !$file->isValid()) {
+            return null;
+        }
+
+        $allowed = ['jpg', 'jpeg', 'png', 'webp', 'pdf'];
+
+        $extension = strtolower($file->getClientOriginalExtension());
+
+        if (!in_array($extension, $allowed)) {
+            throw new \Exception('Invalid file type.');
+        }
+
+        $fileName = uniqid() . '_' . time() . '_' . rand(1000, 9999) . '.' . $extension;
+
+        $destination = public_path('uploads/' . trim($folder, '/'));
+
+        try {
+
+            // Create directory if it does not exist
+            if (!File::isDirectory($destination)) {
+
+                File::makeDirectory(
+                    $destination,
+                    0775,
+                    true,
+                    true
+                );
+            }
+
+            // Ensure permissions
+            @chmod($destination, 0775);
+
+            // Check directory
+            if (!File::exists($destination)) {
+
+                throw new \Exception(
+                    "Upload directory does not exist: {$destination}"
+                );
+            }
+
+            if (!is_writable($destination)) {
+
+                throw new \Exception(
+                    "Upload directory is not writable: {$destination}"
+                );
+            }
+
+            // Move file
+            $file->move($destination, $fileName);
+
+            return 'uploads/' . trim($folder, '/') . '/' . $fileName;
+
+        } catch (\Throwable $e) {
+
+            logger()->error('File Upload Failed', [
+
+                'destination' => $destination,
+
+                'folder' => $folder,
+
+                'file_name' => $fileName,
+
+                'error' => $e->getMessage(),
+
+                'trace' => $e->getTraceAsString(),
+
+            ]);
+
+            throw new \Exception($e->getMessage());
+        }
     }
-
-    $allowed = ['jpg', 'jpeg', 'png', 'webp', 'pdf'];
-
-    $extension = strtolower($file->getClientOriginalExtension());
-
-    if (!in_array($extension, $allowed)) {
-        return null;
-    }
-
-    $fileName = uniqid().'_'.time().'_'.rand(1000,9999).'.'.$extension;
-
-    $destination = public_path('uploads/'.$folder);
-
-    if (!File::exists($destination)) {
-        File::makeDirectory($destination, 0775, true);
-    }
-
-    $file->move($destination, $fileName);
-
-    return 'uploads/'.$folder.'/'.$fileName;
 }
-}
-
 /*
 |--------------------------------------------------------------------------
 | FILE URL
