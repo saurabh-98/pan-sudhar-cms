@@ -43,7 +43,7 @@ if (! function_exists('aadhaar_service_fields')) {
 
         return [
 
-            'mobile-number-update' => array_merge([
+           'mobile-number-update' => [
 
                 [
                     'name' => 'customer_name',
@@ -53,30 +53,34 @@ if (! function_exists('aadhaar_service_fields')) {
                 ],
 
                 [
-                    'name' => 'new_mobile',
-                    'label' => 'New Mobile Number',
+                    'name' => 'old_mobile',
+                    'label' => 'Customer Old Mobile No.',
                     'type' => 'text',
                     'required' => true,
                 ],
 
-               
+                [
+                    'name' => 'aadhaar_number',
+                    'label' => 'Customer Aadhaar No.',
+                    'type' => 'text',
+                    'required' => true,
+                ],
 
-            [
-                'name' => 'aadhaar_number',
-                'label' => 'Aadhaar Number',
-                'type' => 'text',
-                'required' => true,
+                [
+                    'name' => 'new_mobile',
+                    'label' => 'Customer New Mobile No.',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'aadhaar_acknowledgement',
+                    'label' => 'Aadhaar Front & Back with Sign Acknowledgement',
+                    'type' => 'file',
+                    'required' => true,
+                ],
+
             ],
-
-            [
-                'name' => 'aadhaar_card',
-                'label' => 'Aadhaar Front & Back',
-                'type' => 'file',
-                'required' => true,
-            ],
-
-
-            ], ),
 
             'name-correction' => array_merge([
 
@@ -95,6 +99,8 @@ if (! function_exists('aadhaar_service_fields')) {
                 ],
 
             ], $kycFields),
+
+
 
             'dob-correction' => array_merge([
 
@@ -124,60 +130,90 @@ if (! function_exists('aadhaar_service_fields')) {
 
             ], $kycFields),
 
-            'address-update' => array_merge([
+           'address-update' => [
 
                 [
                     'name' => 'customer_name',
                     'label' => 'Customer Name',
                     'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'mobile',
+                    'label' => 'Customer Mobile No.',
+                    'type' => 'text',
+                    'required' => true,
                 ],
 
                 [
                     'name' => 'new_address',
-                    'label' => 'New Address',
+                    'label' => 'Type New Address',
                     'type' => 'textarea',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'aadhaar_card',
+                    'label' => 'Aadhaar Front & Back',
+                    'type' => 'file',
+                    'required' => true,
                 ],
 
                 [
                     'name' => 'address_proof',
-                    'label' => 'Address Proof',
+                    'label' => 'Supporting Document / Address Proof',
                     'type' => 'file',
+                    'required' => true,
                 ],
 
-            ], $kycFields),
+            ],
 
-            'father-name-update' => array_merge([
+           'father-husband-name-update' => [
 
                 [
-                    'name' => 'customer_name',
-                    'label' => 'Current Father Name',
+                    'name' => 'current_name',
+                    'label' => 'Current Father / Husband Name',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'new_name',
+                    'label' => 'New Father / Husband Name',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'mobile',
+                    'label' => 'Customer Mobile No.',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'alternate_mobile',
+                    'label' => 'Alternate Mobile No.',
                     'type' => 'text',
                 ],
 
                 [
-                    'name' => 'father_name',
-                    'label' => 'New Father Name',
-                    'type' => 'text',
-                ],
-
-            ], $kycFields),
-
-            'husband-name-update' => array_merge([
-
-                [
-                    'name' => 'customer_name',
-                    'label' => 'Customer Name',
-                    'type' => 'text',
+                    'name' => 'aadhaar_card',
+                    'label' => 'Aadhaar Front & Back',
+                    'type' => 'file',
+                    'required' => true,
                 ],
 
                 [
-                    'name' => 'husband_name',
-                    'label' => 'New Husband Name',
-                    'type' => 'text',
+                    'name' => 'father_husband_proof',
+                    'label' => 'Father / Husband Proof',
+                    'type' => 'file',
+                    'required' => true,
                 ],
 
-            ], $kycFields),
-
+            ],
+            
             'gender-update' => array_merge([
 
                 [

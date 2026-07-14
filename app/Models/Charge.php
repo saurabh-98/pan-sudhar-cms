@@ -105,4 +105,9 @@ class Charge extends Model
     {
         return $this->hasMany(ChargeCommission::class);
     }
+
+    public function locations()
+    {
+        return $this->hasMany(ChargeLocation::class);
+    }
 }

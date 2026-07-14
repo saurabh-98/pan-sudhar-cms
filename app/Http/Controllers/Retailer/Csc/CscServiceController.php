@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 use App\DTO\CscServiceDTO;
 use App\Http\Requests\StoreCscServiceRequest;
 use App\Services\CscServiceService;
+use App\Services\StateService;
+use App\Services\Districtservice;
 use App\Services\ServiceGuidelineService;
 
 use App\Models\CscService;
@@ -25,7 +27,9 @@ class CscServiceController extends Controller
 {
     public function __construct(
         protected CscServiceService $cscServiceService,
-        protected ServiceGuidelineService $serviceGuidelineService
+        protected ServiceGuidelineService $serviceGuidelineService,
+        protected StateService $stateService,
+        protected DistrictService $districtService
     ) {}
 
 
@@ -75,6 +79,8 @@ class CscServiceController extends Controller
             'retailer.csc.create',
             [
                 'serviceSlug'   => $service,
+
+                'states' => $this->stateService->getAll(),
 
                 'serviceName'   => $serviceName,
 
@@ -866,6 +872,13 @@ class CscServiceController extends Controller
                 'Application deleted successfully.'
 
         ]);
+    }
+
+    public function getDistricts(int $stateId)
+    {
+        return response()->json(
+            $this->districtService->getByState($stateId)
+        );
     }
 
    

@@ -212,6 +212,37 @@
 
                                     @endif
 
+                                     {{-- STATE DROPDOWN --}}
+                                @elseif(($field['type'] ?? '') === 'state_dropdown')
+                                    <select
+                                        name="{{ $field['name'] }}"
+                                        id="{{ $field['name'] }}"
+                                        class="form-select aadhaar-input state-dropdown"
+                                        {{ !empty($field['required']) ? 'required' : '' }}
+                                    >
+                                        <option value="">Select State</option>
+                                        @foreach($states as $state)
+                                            <option
+                                                value="{{ $state->id }}"
+                                                {{ old($field['name'], $data['form_data'][$field['name']] ?? '') == $state->id ? 'selected' : '' }}
+                                            >
+                                                {{ $state->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+
+                                {{-- DISTRICT DROPDOWN --}}
+                                @elseif(($field['type'] ?? '') === 'district_dropdown')
+                                    <select
+                                        name="{{ $field['name'] }}"
+                                        id="{{ $field['name'] }}"
+                                        class="form-select aadhaar-input district-dropdown"
+                                        {{ !empty($field['required']) ? 'required' : '' }}
+                                    >
+                                        <option value="">Select District</option>
+                                    </select>
+
+
                                 {{-- SELECT --}}
                                 @elseif(($field['type'] ?? '') === 'select')
 
@@ -487,6 +518,31 @@ $(document).ready(function(){
         );
 
     }
+
+
+    $(document).on('change', '.state-dropdown', function () {
+        let stateId = $(this).val();
+        let district = $('.district-dropdown');
+
+        district.html('<option>Loading...</option>');
+
+        $.get(
+            "{{ route('retailer.csc.districts.by-state', '') }}/" + stateId,
+            function (response) {
+                let html = '<option value="">Select District</option>';
+
+                $.each(response, function (i, item) {
+                    html += `
+                        <option value="${item.id}">
+                            ${item.name}
+                        </option>
+                    `;
+                });
+
+                district.html(html);
+            }
+        );
+    });
 
 
     $('#aadhaarForm').on('submit', function(e){

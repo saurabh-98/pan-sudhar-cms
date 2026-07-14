@@ -195,23 +195,67 @@ if (! function_exists('other_service_fields')) {
             |--------------------------------------------------------------------------
             */
 
-            'dsc-digital-signature' => array_merge(
-                $commonFields,
-                [
-                    [
-                        'name' => 'pan_number',
-                        'label' => 'PAN Number',
-                        'type' => 'text',
-                        'required' => true,
-                    ],
+            'dsc-digital-signature' => [
 
-                    [
-                        'name' => 'organisation_name',
-                        'label' => 'Organisation Name',
-                        'type' => 'text',
+                [
+                    'name' => 'customer_name',
+                    'label' => 'Customer Name',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'mobile',
+                    'label' => 'Customer Mobile No.',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'state',
+                    'label' => 'State',
+                    'type' => 'state_dropdown',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'district',
+                    'label' => 'District',
+                    'type' => 'district_dropdown',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'dsc_class',
+                    'label' => 'DSC Class',
+                    'type' => 'select',
+                    'required' => true,
+                    'options' => [
+                        'Class 1 (Normal Paper Sign)',
+                        'Class 2 (Government Portal, Startup etc.)',
+                        'Class 3 (Tender, MCA, GST, Company ITR)'
                     ],
-                ]
-            ),
+                ],
+
+                [
+                    'name' => 'organisation_name',
+                    'label' => 'Organisation Name',
+                    'type' => 'text',
+                ],
+
+                [
+                    'name' => 'email',
+                    'label' => 'Email ID',
+                    'type' => 'email',
+                ],
+
+                [
+                    'name' => 'remarks',
+                    'label' => 'Remarks',
+                    'type' => 'textarea',
+                ],
+
+            ],
 
             /*
             |--------------------------------------------------------------------------
@@ -219,23 +263,77 @@ if (! function_exists('other_service_fields')) {
             |--------------------------------------------------------------------------
             */
 
-            'msme-registration' => array_merge(
-                $commonFields,
-                [
-                    [
-                        'name' => 'business_name',
-                        'label' => 'Business Name',
-                        'type' => 'text',
-                        'required' => true,
-                    ],
+            'msme-registration' => [
 
-                    [
-                        'name' => 'business_type',
-                        'label' => 'Business Type',
-                        'type' => 'text',
-                    ],
-                ]
-            ),
+                [
+                    'name' => 'customer_name',
+                    'label' => 'Customer Name',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'mobile',
+                    'label' => 'Customer Mobile No.',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'bank_details',
+                    'label' => 'Upload Bank Details',
+                    'type' => 'file',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'email',
+                    'label' => 'Email ID',
+                    'type' => 'email',
+                ],
+
+                [
+                    'name' => 'business_name',
+                    'label' => 'Business Name',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'business_category',
+                    'label' => 'Business Category',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'business_address',
+                    'label' => 'Business Address',
+                    'type' => 'textarea',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'purpose',
+                    'label' => 'Purpose',
+                    'type' => 'textarea',
+                ],
+
+                [
+                    'name' => 'aadhaar_card',
+                    'label' => 'Upload Aadhaar Card',
+                    'type' => 'file',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'pan_card',
+                    'label' => 'Upload PAN Card',
+                    'type' => 'file',
+                    'required' => true,
+                ],
+
+            ],
 
             /*
             |--------------------------------------------------------------------------
@@ -291,53 +389,130 @@ if (! function_exists('other_service_fields')) {
             |--------------------------------------------------------------------------
             */
 
-            'rent-agreement' => array_merge(
+            'rent-agreement' => [
+
                 [
+                    'name' => 'customer_name',
+                    'label' => 'Customer Name',
+                    'type' => 'text',
+                    'required' => true,
+                ],
 
-                     [
-                        'name' => 'customer_name',
-                        'label' => 'Customer Name',
-                        'type' => 'text',
-                        'required' => true,
-                    ],
+                [
+                    'name' => 'mobile',
+                    'label' => 'Customer Mobile',
+                    'type' => 'text',
+                    'required' => true,
+                ],
 
-                    [
-                        'name' => 'mobile',
-                        'label' => 'Customer Mobile Number',
-                        'type' => 'text',
-                        'required' => true,
-                    ],
+                [
+                    'name' => 'state_id',
+                    'label' => 'State',
+                    'type' => 'state_dropdown',
+                    'required' => true,
+                ],
 
-                    
-                
-                    [
-                        'name' => 'document',
-                        'label' => 'Supporting Document',
-                        'type' => 'file',
-                    ],
+                [
+                    'name' => 'district_id',
+                    'label' => 'District',
+                    'type' => 'district_dropdown',
+                    'required' => true,
+                ],
 
-                    [
-                        'name' => 'owner_name',
-                        'label' => 'Owner Name',
-                        'type' => 'text',
-                        'required' => true,
+                [
+                    'name' => 'stamp_paper_value',
+                    'label' => 'Stamp Paper Value',
+                    'type' => 'select',
+                    'required' => true,
+                    'options' => [
+                        '10',
+                        '50',
+                        '100',
                     ],
+                ],
 
-                    [
-                        'name' => 'tenant_name',
-                        'label' => 'Tenant Name',
-                        'type' => 'text',
-                        'required' => true,
-                    ],
+                [
+                    'name' => 'aadhaar_card',
+                    'label' => 'Customer Aadhaar Front & Back',
+                    'type' => 'file',
+                    'required' => true,
+                ],
 
-                    [
-                        'name' => 'property_address',
-                        'label' => 'Property Address',
-                        'type' => 'textarea',
-                        'required' => true,
-                    ],
-                ]
-            ),
+                [
+                    'name' => 'agreement_date',
+                    'label' => 'Date of Rent Agreement',
+                    'type' => 'date',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'monthly_rent',
+                    'label' => 'Monthly Rent Amount',
+                    'type' => 'number',
+                    'required' => true,
+                ],
+
+                // Landlord Details
+
+                [
+                    'name' => 'owner_name',
+                    'label' => 'Landlord / Owner Name',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'owner_father_name',
+                    'label' => 'Landlord Father Name',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'owner_address',
+                    'label' => 'Landlord Full Address',
+                    'type' => 'textarea',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'owner_id_proof',
+                    'label' => 'Landlord Address / ID Proof',
+                    'type' => 'file',
+                    'required' => true,
+                ],
+
+                // Tenant Details
+
+                [
+                    'name' => 'tenant_name',
+                    'label' => 'Tenant Name',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'tenant_father_name',
+                    'label' => 'Tenant Father Name',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'tenant_address',
+                    'label' => 'Tenant Full Address',
+                    'type' => 'textarea',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'tenant_id_proof',
+                    'label' => 'Tenant Address / ID Proof',
+                    'type' => 'file',
+                    'required' => true,
+                ],
+
+            ],
 
             /*
             |--------------------------------------------------------------------------

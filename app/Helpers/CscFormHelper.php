@@ -108,9 +108,9 @@ if (! function_exists('csc_service_fields')) {
             |--------------------------------------------------------------------------
             */
 
-            'income-certificate' => array_merge([
+            'income-certificate' => [
 
-                 [
+                [
                     'name' => 'customer_name',
                     'label' => 'Customer Name',
                     'type' => 'text',
@@ -119,8 +119,22 @@ if (! function_exists('csc_service_fields')) {
 
                 [
                     'name' => 'mobile',
-                    'label' => 'Customer Mobile Number',
+                    'label' => 'Customer Mobile No.',
                     'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'state_id',
+                    'label' => 'State',
+                    'type' => 'state_dropdown',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'district_id',
+                    'label' => 'District',
+                    'type' => 'district_dropdown',
                     'required' => true,
                 ],
 
@@ -128,9 +142,10 @@ if (! function_exists('csc_service_fields')) {
                     'name' => 'aadhaar_number',
                     'label' => 'Aadhaar Number',
                     'type' => 'text',
+                    'required' => true,
                 ],
 
-                 [
+                [
                     'name' => 'mother_name',
                     'label' => "Mother's Name",
                     'type' => 'text',
@@ -149,35 +164,39 @@ if (! function_exists('csc_service_fields')) {
                     'type' => 'number',
                 ],
 
-
                 [
-                    'name' => 'photo',
+                    'name' => 'passport_photo',
                     'label' => 'Live Passport Size Photo',
                     'type' => 'file',
                 ],
 
                 [
-                    'name' => 'document',
+                    'name' => 'aadhaar_card',
                     'label' => 'Aadhaar Card',
                     'type' => 'file',
                 ],
 
-                 [
-                    'name' => 'document',
-                    'label' => 'Govt. Bank Passbook ',
+                [
+                    'name' => 'bank_passbook',
+                    'label' => 'Govt. Bank Passbook',
                     'type' => 'file',
                 ],
-                    
-            ],),
 
+                [
+                    'name' => 'address_proof',
+                    'label' => 'E-Bill / Address Proof / 10th Marksheet',
+                    'type' => 'file',
+                ],
+
+            
+            ],
             /*
             |--------------------------------------------------------------------------
             | RESIDENCE CERTIFICATE
             |--------------------------------------------------------------------------
             */
 
-            'domicile-niwas-certificate' => array_merge([
-
+            'domicile-niwas-certificate' => [
 
                 [
                     'name' => 'customer_name',
@@ -188,8 +207,22 @@ if (! function_exists('csc_service_fields')) {
 
                 [
                     'name' => 'mobile',
-                    'label' => 'Customer Mobile Number',
+                    'label' => 'Customer Mobile No.',
                     'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'state_id',
+                    'label' => 'State',
+                    'type' => 'state_dropdown',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'district_id',
+                    'label' => 'District',
+                    'type' => 'district_dropdown',
                     'required' => true,
                 ],
 
@@ -197,38 +230,41 @@ if (! function_exists('csc_service_fields')) {
                     'name' => 'aadhaar_number',
                     'label' => 'Aadhaar Number',
                     'type' => 'text',
+                    'required' => true,
                 ],
 
-                 [
+                [
                     'name' => 'mother_name',
                     'label' => "Mother's Name",
                     'type' => 'text',
                     'required' => true,
                 ],
 
-                 [
+                [
+                    'name' => 'passport_photo',
+                    'label' => 'Live Passport Size Photo',
+                    'type' => 'file',
+                ],
+
+                [
                     'name' => 'aadhaar_card',
                     'label' => 'Aadhaar Card',
                     'type' => 'file',
                 ],
 
                 [
-                    'name' => 'residence_proof',
-                    'label' => 'Address Proof',
+                    'name' => 'bank_passbook',
+                    'label' => 'Govt. Bank Passbook',
                     'type' => 'file',
                 ],
 
                 [
-                    'name' => 'address',
-                    'label' => 'Full Address',
-                    'type' => 'textarea',
+                    'name' => 'address_proof',
+                    'label' => 'Address Proof (E-Bill / 10th Marksheet / Passport / DL / Voter ID / Water Bill / Telephone Bill)',
+                    'type' => 'file',
                 ],
 
-                
-
-               
-
-            ],),
+            ],
 
             /*
             |--------------------------------------------------------------------------
@@ -236,10 +272,9 @@ if (! function_exists('csc_service_fields')) {
             |--------------------------------------------------------------------------
             */
 
-            'caste-certificate' => array_merge([
+          'caste-certificate' => [
 
-
-                 [
+                [
                     'name' => 'customer_name',
                     'label' => 'Customer Name',
                     'type' => 'text',
@@ -248,8 +283,22 @@ if (! function_exists('csc_service_fields')) {
 
                 [
                     'name' => 'mobile',
-                    'label' => 'Customer Mobile Number',
+                    'label' => 'Customer Mobile No.',
                     'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'state_id',
+                    'label' => 'State',
+                    'type' => 'state_dropdown',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'district_id',
+                    'label' => 'District',
+                    'type' => 'district_dropdown',
                     'required' => true,
                 ],
 
@@ -257,6 +306,7 @@ if (! function_exists('csc_service_fields')) {
                     'name' => 'aadhaar_number',
                     'label' => 'Aadhaar Number',
                     'type' => 'text',
+                    'required' => true,
                 ],
 
                 [
@@ -266,22 +316,36 @@ if (! function_exists('csc_service_fields')) {
                     'required' => true,
                 ],
 
-                 [
-                    'name' => 'aadhaar_card',
-                    'label' => 'Aadhaar Card',
-                    'type' => 'file',
-                ],
-
-                  [
-                    'name' => 'photo',
-                    'label' => 'Passport Size Photo',
-                    'type' => 'file',
+                [
+                    'name' => 'certificate_type',
+                    'label' => 'Certificate Type',
+                    'type' => 'select',
+                    'required' => true,
+                    'options' => [
+                        'Central English Wala',
+                        'State',
+                        'NCL',
+                        'Creamy Layer',
+                        'Jati Praman Patra',
+                    ],
                 ],
 
                 [
-                    'name' => 'category',
-                    'label' => 'Category',
+                    'name' => 'document_type',
+                    'label' => 'Document Type',
                     'type' => 'select',
+                    'required' => true,
+                    'options' => [
+                        'With Document',
+                        'Without Document',
+                    ],
+                ],
+
+                [
+                    'name' => 'caste_category',
+                    'label' => 'Caste Category',
+                    'type' => 'select',
+                    'required' => true,
                     'options' => [
                         'SC',
                         'ST',
@@ -291,12 +355,44 @@ if (! function_exists('csc_service_fields')) {
                 ],
 
                 [
-                    'name' => 'caste_proof',
+                    'name' => 'old_caste_certificate',
                     'label' => 'Old Caste Certificate',
                     'type' => 'file',
                 ],
 
-            ],),
+                [
+                    'name' => 'passport_photo',
+                    'label' => 'Live Passport Size Photo',
+                    'type' => 'file',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'aadhaar_card',
+                    'label' => 'Aadhaar Card',
+                    'type' => 'file',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'bank_passbook',
+                    'label' => 'Govt. Bank Passbook',
+                    'type' => 'file',
+                ],
+
+                [
+                    'name' => 'address_proof',
+                    'label' => 'Address Proof (E-Bill / 10th Marksheet / Passport / DL / Voter ID / Water Bill / Telephone Bill)',
+                    'type' => 'file',
+                ],
+
+                [
+                    'name' => 'remarks',
+                    'label' => 'Remarks / Purpose',
+                    'type' => 'textarea',
+                ],
+
+            ],
 
             /*
             |--------------------------------------------------------------------------

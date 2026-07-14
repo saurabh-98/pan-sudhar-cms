@@ -336,12 +336,21 @@ document
         .then(
             data => {
 
-                if(data.status){
+                if (data.status) {
 
-                    window.location.href =
-                        data.redirect_url;
+                if (data.new_tab) {
 
-                }else{
+                    window.open(data.redirect_url, '_blank');
+
+                    window.location.href = data.receiving_url;
+
+                } else {
+
+                    window.location.href = data.redirect_url;
+
+                }
+
+            } else {
 
                     button.disabled = false;
 

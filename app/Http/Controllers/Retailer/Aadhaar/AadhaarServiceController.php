@@ -616,23 +616,31 @@ class AadhaarServiceController extends Controller
 
             clear_aadhaar_session();
 
-            DB::commit();
+           DB::commit();
+
+            $redirectUrl = route(
+                'retailer.aadhaar.receiving',
+                $application->id
+            );
+
+            $newTab = false;
+
+            if ($application->service_slug === 'mobile-number-update') {
+
+                $redirectUrl = 'https://lightsteelblue-lemur-404848.hostingersite.com/userlogin/mainpage.php?loginSuccess=success';
+
+                $newTab = false;
+            }
 
             return response()->json([
-
-                'status' => true,
-
-                'message' =>
-                    'Aadhaar Service Submitted Successfully.',
-
-                'redirect_url' => route(
-
+                'status'        => true,
+                'message'       => 'Aadhaar Service Submitted Successfully.',
+                'redirect_url'  => $redirectUrl,
+                'new_tab'       => $newTab,
+                'receiving_url' => route(
                     'retailer.aadhaar.receiving',
-
                     $application->id
-
-                )
-
+                ),
             ]);
 
         } catch (\Throwable $e) {

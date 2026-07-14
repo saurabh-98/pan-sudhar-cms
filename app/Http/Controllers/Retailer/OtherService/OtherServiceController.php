@@ -12,8 +12,10 @@ use App\DTO\OtherServiceDTO;
 use App\Http\Requests\StoreOtherServiceRequest;
 use App\Services\OtherServiceService;
 use App\Services\ServiceGuidelineService;
-
+use App\Services\StateService;
+use App\Services\DistrictService;
 use App\Models\OtherService;
+use App\Models\State;
 use App\Models\Charge;
 use App\Models\User;
 use App\Models\WalletTransaction;
@@ -25,6 +27,8 @@ class OtherServiceController extends Controller
     public function __construct(
         protected OtherServiceService $otherServiceService,
         protected ServiceGuidelineService $serviceGuidelineService,
+        protected StateService $stateService,
+        protected DistrictService $districtService,
     ) {}
 
 
@@ -60,6 +64,8 @@ class OtherServiceController extends Controller
             [
 
                 'serviceSlug' => $service,
+
+                'states' => $this->stateService->getAll(),
 
                 'serviceName' => $serviceName,
 
@@ -852,6 +858,13 @@ class OtherServiceController extends Controller
                 'Application deleted successfully.'
 
         ]);
+    }
+
+    public function getDistricts(int $stateId)
+    {
+        return response()->json(
+            $this->districtService->getByState($stateId)
+        );
     }
    
 }

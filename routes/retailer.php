@@ -854,6 +854,11 @@ Route::prefix('aadhaar')
                 'create'
             )->name('service');
 
+            Route::get(
+                '/districts/{state}',
+                'getDistricts'
+            )->name('districts.by-state');
+
             /*
             |--------------------------------------------------------------------------
             | PREVIEW
@@ -1179,6 +1184,11 @@ Route::prefix('aadhaar')
                 '/service/{service}',
                 'create'
             )->name('service');
+
+            Route::get(
+                '/districts/{state}',
+                'getDistricts'
+            )->name('districts.by-state');
 
             /*
             |--------------------------------------------------------------------------
