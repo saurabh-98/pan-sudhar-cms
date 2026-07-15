@@ -1,5 +1,11 @@
 @extends('layout.app')
 
+@php
+
+$popup = getActivePopup('login');
+
+@endphp
+
 @section('content')
 
 <link rel="stylesheet"
@@ -438,6 +444,10 @@
 
 </div>
 
+@include('components.popup',[
+    'popup' => $popup
+])
+
 @endsection
 
 @section('scripts')
@@ -728,6 +738,53 @@ $(function(){
 
 });
 
+/*==========================================
+| POPUP
+==========================================*/
+
+@if($popup)
+
+setTimeout(function(){
+
+    let popupKey = "popup_{{ $popup->id }}";
+
+    let today = new Date().toDateString();
+
+    @if($popup->show_once_per_day)
+
+        if(localStorage.getItem(popupKey) != today){
+
+            let popup = new bootstrap.Modal(
+
+                document.getElementById('popupModal')
+
+            );
+
+            popup.show();
+
+            localStorage.setItem(
+                popupKey,
+                today
+            );
+
+        }
+
+    @else
+
+        new bootstrap.Modal(
+
+            document.getElementById('popupModal')
+
+        ).show();
+
+    @endif
+
+},1000);
+
+@endif
+
 </script>
+
+
 
 @endsection

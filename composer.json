@@ -53,6 +53,7 @@
             "app/Helpers/CscFormHelper.php",
              "app/Helpers/VoterIdSessionHelper.php",
             "app/Helpers/VoterIdFormHelper.php",
+             "app/Helpers/PopupHelper.php",
             "app/Helpers/BankAccountSessionHelper.php",
             "app/Helpers/BankAccountFormHelper.php",
              "app/Helpers/OtherServiceSessionHelper.php",

@@ -832,6 +832,7 @@
         ====================================================== --}}
         @if(
             auth()->user()->can('settings.view') ||
+            auth()->user()->can('popup-announcements.view') ||
             auth()->user()->can('banners.view') ||
             auth()->user()->can('pages.view') ||
             auth()->user()->can('navigation.view')
@@ -859,6 +860,31 @@
                         <span>
 
                             Logo Settings
+
+                        </span>
+
+                    </a>
+
+                </li>
+
+                @endcan
+
+                {{-- POPUP MANAGEMENT --}}
+                @can('popup-announcements.view')
+
+                <li>
+
+                    <a href="{{ route('admin.popup-announcements.index') }}"
+                    class="sbx-link
+                    {{ request()->routeIs('admin.popup-announcements.*')
+                            ? 'sbx-active'
+                            : '' }}">
+
+                        <i class="fa fa-bullhorn"></i>
+
+                        <span>
+
+                            Popup Management
 
                         </span>
 

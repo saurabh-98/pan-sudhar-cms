@@ -1,5 +1,11 @@
 @extends('layout.app')
 
+@php
+
+$popup = getActivePopup('home');
+
+@endphp
+
 @section('content')
 
 <!-- =========================================================
@@ -872,6 +878,10 @@
     </div>
 
 </section>
+
+@include('components.popup',[
+    'popup' => $popup
+])
 
 @endsection
 

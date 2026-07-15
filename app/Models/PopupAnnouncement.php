@@ -27,6 +27,8 @@ class PopupAnnouncement extends Model
         'show_on_login',
 
         'show_on_dashboard',
+        
+        'show_on_home',
 
         'show_once_per_day',
 

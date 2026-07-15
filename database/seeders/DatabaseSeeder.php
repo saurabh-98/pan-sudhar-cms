@@ -62,6 +62,7 @@ class DatabaseSeeder extends Seeder
             ModuleSeeder::class,
             ChargeSeeder::class,
             ChargeCommissionSeeder::class,
+            PopupAnnouncementSeeder::class,
 
         ]);
 
