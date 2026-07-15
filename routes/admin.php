@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\PayslipController;
 use App\Http\Controllers\Admin\ServiceGuidelineController;
 use App\Http\Controllers\Admin\AdminTdsController;
 use App\Http\Controllers\Admin\RetailerActivityController;
+use App\Http\Controllers\Admin\PopupAnnouncementController;
 
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\EventController;
@@ -2034,6 +2035,96 @@ Route::prefix('pages')
                 ->name('delete');
 
         });
+
+
+        Route::prefix('popup-announcements')
+    ->name('popup-announcements.')
+    ->middleware('permission:popup-announcements.view')
+    ->group(function () {
+
+        /*
+        |--------------------------------------------------------------------------
+        | INDEX
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/',
+            [PopupAnnouncementController::class, 'index']
+        )->name('index');
+
+        /*
+        |--------------------------------------------------------------------------
+        | DATATABLE
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/list',
+            [PopupAnnouncementController::class, 'list']
+        )->name('list');
+
+        /*
+        |--------------------------------------------------------------------------
+        | CREATE
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/create',
+            [PopupAnnouncementController::class, 'create']
+        )->name('create')
+        ->middleware('permission:popup-announcements.create');
+
+        /*
+        |--------------------------------------------------------------------------
+        | STORE
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post(
+            '/store',
+            [PopupAnnouncementController::class, 'store']
+        )->name('store')
+        ->middleware('permission:popup-announcements.create');
+
+        /*
+        |--------------------------------------------------------------------------
+        | EDIT
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/edit/{id}',
+            [PopupAnnouncementController::class, 'edit']
+        )->name('edit')
+        ->middleware('permission:popup-announcements.edit');
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post(
+            '/update/{id}',
+            [PopupAnnouncementController::class, 'update']
+        )->name('update')
+        ->middleware('permission:popup-announcements.edit');
+
+        /*
+        |--------------------------------------------------------------------------
+        | DELETE
+        |--------------------------------------------------------------------------
+        */
+
+        Route::delete(
+            '/delete/{id}',
+            [PopupAnnouncementController::class, 'destroy']
+        )->name('delete')
+        ->middleware('permission:popup-announcements.delete');
+
+    });
 
         
 

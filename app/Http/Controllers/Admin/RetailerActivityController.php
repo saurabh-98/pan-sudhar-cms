@@ -80,14 +80,12 @@ class RetailerActivityController extends Controller
 
             ->editColumn('name', function ($row) {
 
-                $letter = strtoupper(substr($row->name, 0, 1));
+                
 
                 return '
                     <div class="d-flex align-items-center">
 
-                        <div class="avatar-circle me-2">
-                            '.$letter.'
-                        </div>
+                       
 
                         <div>
 

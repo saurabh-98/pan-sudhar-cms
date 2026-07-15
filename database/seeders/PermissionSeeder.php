@@ -311,6 +311,11 @@ class PermissionSeeder extends Seeder
             'chat.assign',
             'chat.close',
             'chat.delete',
+            
+            'popup-announcements.view',
+            'popup-announcements.create',
+            'popup-announcements.edit',
+            'popup-announcements.delete',
 
 
         ];
