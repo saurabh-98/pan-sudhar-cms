@@ -20,6 +20,12 @@ class PaymentRequest extends Model
         'admin_remarks'
     ];
 
+    protected $casts = [
+        'verified_at' => 'datetime',
+        'created_at'  => 'datetime',
+        'updated_at'  => 'datetime',
+    ];
+
     public function retailer()
     {
         return $this->belongsTo(User::class,'retailer_id');
