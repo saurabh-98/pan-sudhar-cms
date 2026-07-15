@@ -107,6 +107,92 @@
     border-radius: 6px !important;
 }
 
+/* =========================================================
+   ROLE-WISE TABS
+========================================================= */
+
+.role-tabs {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin-bottom: 18px;
+}
+
+.role-tab {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    border: 1px solid #e2e8f0;
+
+    background: #fff;
+
+    color: #334155;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    padding: 8px 16px;
+
+    border-radius: 999px;
+
+    cursor: pointer;
+
+    user-select: none;
+
+    transition: all 0.2s ease;
+}
+
+.role-tab:hover {
+
+    border-color: #94a3b8;
+
+    transform: translateY(-1px);
+}
+
+.role-tab.active {
+
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+
+    border-color: transparent;
+
+    color: #fff;
+
+    box-shadow: 0 8px 16px -8px rgba(15, 23, 42, 0.5);
+}
+
+.role-tab .tab-count {
+
+    background: rgba(100, 116, 139, 0.15);
+
+    color: inherit;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    padding: 2px 8px;
+
+    border-radius: 999px;
+
+    min-width: 22px;
+
+    text-align: center;
+}
+
+.role-tab.active .tab-count {
+
+    background: rgba(255, 255, 255, 0.18);
+}
+
 </style>
 
 
@@ -132,6 +218,41 @@
 
         @endcan
 
+    </div>
+
+    <!-- ROLE-WISE TABS -->
+    <div class="role-tabs" id="roleTabs">
+
+    
+
+        <button type="button" class="role-tab active" data-role="all">
+            All <span class="tab-count" data-count="all">0</span>
+        </button>
+
+        <button type="button" class="role-tab" data-role="admin">
+            Admin <span class="tab-count" data-count="admin">0</span>
+        </button>
+
+        <button type="button" class="role-tab" data-role="retailer">
+            Retailer <span class="tab-count" data-count="retailer">0</span>
+        </button>
+
+        <button class="role-tab" data-role="executive">
+            Executive <span class="tab-count" data-count="executive">0</span>
+        </button>
+
+        <button class="role-tab" data-role="distributor">
+            Distributor <span class="tab-count" data-count="distributor">0</span>
+        </button>
+
+        <button class="role-tab" data-role="super distributor">
+            Super Distributor
+            <span class="tab-count" data-count="super distributor">0</span>
+        </button>
+
+         
+
+       
     </div>
 
 
@@ -183,6 +304,104 @@ $(document).ready(function () {
 
     /*
     |--------------------------------------------------------------------------
+    | ROLE CATEGORY HELPER
+    |--------------------------------------------------------------------------
+    | Single source of truth for both the badge color AND the tab filter,
+    | so a role always lands in the same bucket in both places.
+    */
+
+    function roleCategory(roleValue) {
+        if (!roleValue || String(roleValue).trim() === '') {
+            return 'no-role';
+        }
+
+        let role = String(roleValue).toLowerCase();
+
+        if (role.includes('admin')) return 'admin';
+        if (role.includes('retailer')) return 'retailer';
+        if (role.includes('super distributor')) return 'super distributor';
+        if (role.includes('sub distributor')) return 'sub distributor';
+        if (role.includes('distributor')) return 'distributor';
+        if (role.includes('executive')) return 'executive';
+
+        return 'other';
+    }
+
+    function badgeClassFor(category) {
+        switch (category) {
+            case 'admin':
+                return 'bg-danger text-white';
+            case 'retailer':
+                return 'bg-success text-white';
+            case 'executive':
+                return 'bg-dark text-white';
+            case 'super distributor':
+                return 'bg-warning text-dark';
+            case 'distributor':
+                return 'bg-info text-dark';
+            case 'sub distributor':
+                return 'bg-secondary text-white';
+            default:
+                return 'bg-primary text-white';
+        }
+    }
+
+    let activeRoleFilter = 'all';
+
+    /*
+    |--------------------------------------------------------------------------
+    | ROLE COUNTS (always computed from the full dataset, independent of
+    | whichever tab / search is currently active)
+    |--------------------------------------------------------------------------
+    */
+
+    function updateRoleCounts(rows) {
+
+       let counts = {
+            all: rows.length,
+            admin: 0,
+            retailer: 0,
+            executive: 0,
+            distributor: 0,
+            'super distributor': 0
+        };
+
+        rows.forEach(function (row) {
+
+            let category = roleCategory(row.role);
+
+            counts[category] = (counts[category] || 0) + 1;
+        });
+
+        Object.keys(counts).forEach(function (key) {
+
+            $('.tab-count[data-count="' + key + '"]').text(counts[key] || 0);
+        });
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | CUSTOM DATATABLES FILTER — restricts rows to the active role tab
+    |--------------------------------------------------------------------------
+    */
+
+    $.fn.dataTable.ext.search.push(function (settings, searchData, index, rowData) {
+
+        if (settings.nTable.id !== 'userTable') {
+
+            return true;
+        }
+
+        if (activeRoleFilter === 'all') {
+
+            return true;
+        }
+
+        return roleCategory(rowData.role) === activeRoleFilter;
+    });
+
+    /*
+    |--------------------------------------------------------------------------
     | DATATABLE
     |--------------------------------------------------------------------------
     */
@@ -195,7 +414,12 @@ $(document).ready(function () {
 
             url: "{{ route('admin.users.list') }}",
 
-            dataSrc: 'data'
+            dataSrc: function (json) {
+
+                updateRoleCounts(json.data || []);
+
+                return json.data;
+            }
         },
 
         language: {
@@ -217,18 +441,20 @@ $(document).ready(function () {
             |--------------------------------------------------------------------------
             | DYNAMIC ROLE BADGE
             |--------------------------------------------------------------------------
+            | type-aware render: DataTables asks for a 'display' string for what
+            | you see, but a 'filter'/'sort' string for searching and ordering.
+            | Returning the badge HTML for every type used to break search/sort.
             */
 
             {
                 data: 'role',
 
-                render: function (data) {
+                render: function (data, type) {
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | NO ROLE
-                    |--------------------------------------------------------------------------
-                    */
+                    if (type !== 'display') {
+
+                        return data || '';
+                    }
 
                     if (!data || data.length === 0) {
 
@@ -241,60 +467,7 @@ $(document).ready(function () {
                         `;
                     }
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | LOWERCASE
-                    |--------------------------------------------------------------------------
-                    */
-
-                    let role = data.toLowerCase();
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | BADGE CLASS
-                    |--------------------------------------------------------------------------
-                    */
-
-                    let badgeClass = 'bg-primary text-white';
-
-                    if (role.includes('admin')) {
-
-                        badgeClass = 'bg-danger text-white';
-                    }
-                    else if (role.includes('teacher')) {
-
-                        badgeClass = 'bg-success text-white';
-                    }
-                    else if (role.includes('principal')) {
-
-                        badgeClass = 'bg-dark text-white';
-                    }
-                    else if (role.includes('accountant')) {
-
-                        badgeClass = 'bg-warning text-dark';
-                    }
-                    else if (role.includes('hr')) {
-
-                        badgeClass = 'bg-info text-dark';
-                    }
-                    else if (role.includes('reception')) {
-
-                        badgeClass = 'bg-secondary text-white';
-                    }
-                    else if (role.includes('transport')) {
-
-                        badgeClass = 'bg-primary text-white';
-                    }
-                    else if (role.includes('library')) {
-
-                        badgeClass = 'bg-success text-white';
-                    }
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | RETURN
-                    |--------------------------------------------------------------------------
-                    */
+                    let badgeClass = badgeClassFor(roleCategory(data));
 
                     return `
                         <span class="role-badge ${badgeClass}">
@@ -309,7 +482,14 @@ $(document).ready(function () {
            {
                 data: 'status',
 
-                render: function(data){
+                render: function (data, type) {
+
+                    let isActive = (data == 1 || data === true);
+
+                    if (type !== 'display') {
+
+                        return isActive ? 'Active' : 'Inactive';
+                    }
 
                     /*
                     |--------------------------------------------------------------------------
@@ -317,10 +497,7 @@ $(document).ready(function () {
                     |--------------------------------------------------------------------------
                     */
 
-                    if (
-                        data == 1 ||
-                        data === true
-                    ) {
+                    if (isActive) {
 
                         return `
                             <span class="badge rounded-pill bg-success px-3 py-2">
@@ -401,6 +578,24 @@ $(document).ready(function () {
                 }
             }
         ]
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ROLE TAB CLICK — swap the active filter and redraw
+    |--------------------------------------------------------------------------
+    */
+
+    $('#roleTabs').on('click', '.role-tab', function () {
+
+        $('.role-tab').removeClass('active');
+
+        $(this).addClass('active');
+
+        activeRoleFilter = $(this).data('role');
+
+        table.draw();
     });
 
 
@@ -487,7 +682,7 @@ $(document).ready(function () {
 
                                 timer: 2000,
 
-                                showConfirmButton: false
+                                showConfirmButton: true
                             });
 
                             table.ajax.reload();
