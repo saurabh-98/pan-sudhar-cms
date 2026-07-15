@@ -296,6 +296,18 @@
 
         @endcan
 
+
+        @can('retailer-activity.view')
+        <li>
+            <a href="{{ route('admin.retailer-activity.index') }}"
+            class="sbx-link {{ request()->routeIs('admin.retailer-activity.*') ? 'sbx-active' : '' }}">
+                <i class="fa fa-clock"></i>
+                <span>Retailer Activity</span>
+            </a>
+        </li>
+        @endcan
+
+
         {{-- =====================================================
             | WALLET MANAGEMENT
             ====================================================== --}}
@@ -668,6 +680,7 @@
 </li>
 
 @endif
+
 
 
         {{-- =====================================================

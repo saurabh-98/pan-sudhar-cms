@@ -391,4 +391,15 @@ public function retailers()
     );
 }
 
+public function retailerSessions()
+{
+    return $this->hasMany(RetailerSession::class, 'retailer_id');
+}
+
+public function latestRetailerSession()
+{
+    return $this->hasOne(RetailerSession::class, 'retailer_id')
+                ->latestOfMany('last_activity_at');
+}
+
 }

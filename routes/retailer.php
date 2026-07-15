@@ -137,13 +137,10 @@ Route::get(
 */
 
 Route::middleware([
-
     'auth',
-    'role:retailer'
-
-])
-->group(function () {
-
+    'role:retailer',
+    'retailer.activity'
+])->group(function () {
     /*
     |--------------------------------------------------------------------------
     | DASHBOARD

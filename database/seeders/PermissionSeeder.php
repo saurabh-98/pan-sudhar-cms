@@ -304,7 +304,7 @@ class PermissionSeeder extends Seeder
             'pan-find.upload',
             'pan-find.reject',
 
-      
+            'retailer-activity.view',
 
             'chat.view',
             'chat.reply',

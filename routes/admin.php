@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\PayrollController;
 use App\Http\Controllers\Admin\PayslipController;
 use App\Http\Controllers\Admin\ServiceGuidelineController;
 use App\Http\Controllers\Admin\AdminTdsController;
+use App\Http\Controllers\Admin\RetailerActivityController;
 
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\EventController;
@@ -1974,6 +1975,16 @@ Route::prefix('pages')
 
         });
 
+        Route::prefix('retailer-activity')
+        ->name('retailer-activity.')
+        ->controller(RetailerActivityController::class)
+        ->group(function () {
+
+            Route::get('/', 'index')->name('index');
+
+            Route::get('/datatable', 'datatable')
+                ->name('datatable');
+        });
 
 
 

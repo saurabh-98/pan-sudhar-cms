@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Models\RetailerSession;
 
 class LoginController extends Controller
 {
@@ -174,6 +175,17 @@ class LoginController extends Controller
             $request->session()
                     ->regenerate();
 
+
+            $session = RetailerSession::create([
+                'retailer_id'      => $user->id,
+                'login_at'         => now(),
+                'last_activity_at' => now(),
+            ]);
+
+            session([
+                'retailer_session_id' => $session->id
+            ]);
+
             /*
             |--------------------------------------------------------------------------
             | SUCCESS
@@ -234,21 +246,37 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
+        $sessionId = session('retailer_session_id');
+
+        if ($sessionId) {
+
+            $session = RetailerSession::find($sessionId);
+
+            if ($session && is_null($session->logout_at)) {
+
+                $logoutTime = now();
+
+                $duration = abs(
+                    $session->login_at->diffInSeconds($logoutTime)
+                );
+
+                $session->update([
+                    'logout_at'        => $logoutTime,
+                    'duration_seconds' => $duration,
+                ]);
+            }
+        }
+
         Auth::logout();
 
-        $request->session()
-                ->invalidate();
+        $request->session()->forget('retailer_session_id');
 
-        $request->session()
-                ->regenerateToken();
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
 
         return redirect()
             ->route('retailer.login')
-            ->with(
-
-                'success',
-
-                'Logged out successfully.'
-            );
+            ->with('success', 'Logged out successfully.');
     }
 }

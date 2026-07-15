@@ -161,6 +161,11 @@ class Retailer extends Model
         );
     }
 
+    public function retailerSessions()
+    {
+        return $this->hasMany(RetailerSession::class, 'retailer_id');
+    }
+
     /*
     |--------------------------------------------------------------------------
     | STATUS LABEL

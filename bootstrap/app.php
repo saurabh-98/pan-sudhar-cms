@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use App\Http\Middleware\UpdateRetailerActivity;
 
 return Application::configure(
 
@@ -124,8 +125,10 @@ return Application::configure(
         'role_or_permission' =>
             \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
 
-    ]);
+        'retailer.activity' =>
+            UpdateRetailerActivity::class,
 
+    ]);
     $middleware->group('api', [
 
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
