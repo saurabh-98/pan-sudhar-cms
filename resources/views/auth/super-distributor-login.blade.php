@@ -299,27 +299,7 @@
 
                             </div>
 
-                            <!-- =====================================
-                            | CAPTCHA
-                            ====================================== -->
-
-                            <div class="dist-captcha">
-
-                                <label class="dist-label">
-
-                                    Security Verification
-
-                                </label>
-
-                                <div class="g-recaptcha"
-                                     data-sitekey="{{ config('services.recaptcha.site_key') }}">
-
-                                </div>
-
-                                <span class="dist-error error-captcha"></span>
-
-                            </div>
-
+                    
                             <!-- =====================================
                             | LOGIN BUTTON
                             ====================================== -->
@@ -366,9 +346,6 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script src="https://www.google.com/recaptcha/api.js"
-        async
-        defer></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
@@ -422,18 +399,7 @@
 
             $('.dist-error').html('');
 
-            let captcha = grecaptcha.getResponse();
-
-            if (captcha.length === 0) {
-
-                $('.error-captcha').html('Please verify captcha.');
-
-                toastr.error('Please verify you are human.');
-
-                return false;
-
-            }
-
+           
             toastr.info(
                 'Authenticating Super Distributor...',
                 'Please Wait'
@@ -462,9 +428,9 @@
 
                     password: $('#password').val(),
 
-                    remember: $('#remember').is(':checked') ? 1 : 0,
+                    remember: $('#remember').is(':checked') ? 1 : 0
 
-                    'g-recaptcha-response': captcha
+                  
 
                 },
 
@@ -499,7 +465,6 @@
                         Login To Super Distributor Panel
                     `);
 
-                    grecaptcha.reset();
 
                     if (xhr.status === 422) {
 

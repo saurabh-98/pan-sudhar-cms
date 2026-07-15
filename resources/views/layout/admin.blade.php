@@ -85,6 +85,7 @@
 
 <!-- CUSTOM JS -->
 <script src="{{ asset('assets/js/admin.js') }}"></script>
+<script src="{{ asset('assets/js/dashboard.js') }}"></script>
 
 <!-- PAGE JS -->
 @yield('scripts')

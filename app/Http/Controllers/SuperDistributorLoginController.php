@@ -70,22 +70,7 @@ class SuperDistributorLoginController extends Controller
 
     ];
 
-    /*
-    |--------------------------------------------------------------------------
-    | TURNSTILE VALIDATION (PRODUCTION ONLY)
-    |--------------------------------------------------------------------------
-    */
-
-    if (app()->environment('production')) {
-
-        $rules['cf-turnstile-response'] = [
-
-            'required'
-
-        ];
-
-    }
-
+   
     /*
     |--------------------------------------------------------------------------
     | VALIDATOR
@@ -108,9 +93,7 @@ class SuperDistributorLoginController extends Controller
 
                 'Password is required.',
 
-            'cf-turnstile-response.required' =>
-
-                'Please complete the security verification.'
+         
 
         ]
 
@@ -134,51 +117,7 @@ class SuperDistributorLoginController extends Controller
 
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | VERIFY CLOUDFLARE TURNSTILE
-    |--------------------------------------------------------------------------
-    */
-
-    if (app()->environment('production')) {
-
-        $response = Http::asForm()->post(
-
-            'https://challenges.cloudflare.com/turnstile/v0/siteverify',
-
-            [
-
-                'secret'   => config('services.turnstile.secret_key'),
-
-                'response' => $request->input('cf-turnstile-response'),
-
-                'remoteip' => $request->ip(),
-
-            ]
-
-        );
-
-        if (! $response->json('success')) {
-
-            return response()->json([
-
-                'success' => false,
-
-                'errors' => [
-
-                    'captcha' => [
-
-                        'Verification failed.'
-
-                    ]
-
-                ]
-
-            ], 422);
-
-        }
-
-    }
+   
 
     /*
     |--------------------------------------------------------------------------

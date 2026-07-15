@@ -72,11 +72,7 @@ class DistributorLoginController extends Controller
 
                 ],
 
-                'g-recaptcha-response' => [
-
-                    'required'
-
-                ]
+              
 
             ],
 
@@ -90,9 +86,7 @@ class DistributorLoginController extends Controller
 
                     'Password is required.',
 
-                'g-recaptcha-response.required' =>
-
-                    'Captcha verification is required.'
+               
 
             ]
         );

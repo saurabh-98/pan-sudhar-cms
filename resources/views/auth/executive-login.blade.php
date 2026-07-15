@@ -231,22 +231,7 @@
 
                         </div>
 
-                        <div class="exl-captcha">
-
-                            <label class="exl-label">
-
-                                Verify You Are Human
-
-                            </label>
-
-                            <div
-                                class="g-recaptcha"
-                                data-sitekey="{{ config('services.recaptcha.site_key') }}">
-                            </div>
-
-                            <span class="exl-error error-captcha"></span>
-
-                        </div>
+                      
 
                         <button
                             type="submit"
@@ -290,7 +275,6 @@
 ========================================================= --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 {{-- =========================================================
 | TOASTR
@@ -362,21 +346,6 @@ $(document).ready(function () {
 
         $('.text-danger').html('');
 
-        let captcha = grecaptcha.getResponse();
-
-        if(captcha.length === 0){
-
-            $('.error-captcha').html(
-                'Please verify captcha.'
-            );
-
-            toastr.error(
-                'Please verify you are human.'
-            );
-
-            return false;
-        }
-
         toastr.info(
             'Authenticating executive credentials...',
             'Please Wait'
@@ -405,9 +374,9 @@ $(document).ready(function () {
 
                 password: $('#password').val(),
 
-                remember: $('#remember').is(':checked') ? 1 : 0,
+                remember: $('#remember').is(':checked') ? 1 : 0
 
-                'g-recaptcha-response': captcha
+              
             },
 
             success: function(response){
@@ -439,7 +408,7 @@ $(document).ready(function () {
                     Login To Executive Panel
                 `);
 
-                grecaptcha.reset();
+
 
                 if(xhr.status === 422){
 
