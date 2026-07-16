@@ -2,7 +2,7 @@
 
 @php
 
-$popup = getActivePopup('home');
+$popup = getActivePopup('dashboard');
 
 @endphp
 
