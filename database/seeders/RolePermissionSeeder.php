@@ -210,6 +210,8 @@ class RolePermissionSeeder extends Seeder
 
             'wallet.add',
 
+             'wallet.deduct',
+
             'wallet.transactions',
 
             'payment.requests.view',
@@ -253,17 +255,7 @@ class RolePermissionSeeder extends Seeder
 
 
 
-            /*
-            |--------------------------------------------------------------------------
-            | ADMIN WALLET
-            |--------------------------------------------------------------------------
-            */
-
-            'admin.wallet.view',
-            'admin.wallet.add',
-            'admin.wallet.withdraw',
-            'admin.wallet.history',
-            'admin.wallet.delete',
+          
 
             /*
             |--------------------------------------------------------------------------
@@ -332,13 +324,18 @@ class RolePermissionSeeder extends Seeder
             'pan-find.reject',
 
 
-          
+            'retailer-activity.view',
 
             'chat.view',
             'chat.reply',
             'chat.assign',
             'chat.close',
             'chat.delete',
+
+            'popup-announcements.view',
+            'popup-announcements.create',
+            'popup-announcements.edit',
+            'popup-announcements.delete',
 
             
 

@@ -784,6 +784,31 @@ Route::prefix('pages')
             )->name('add')
             ->middleware('permission:wallet.add');
 
+              /*
+        |--------------------------------------------------------------------------
+        | DataTable Sources
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/retailers/list', [WalletController::class,'retailerList'])
+            ->name('retailers.list');
+
+        Route::get('/executives/list', [WalletController::class,'executiveList'])
+            ->name('executives.list');
+
+   
+            /*
+            |--------------------------------------------------------------------------
+            | Deduct / Pull Back Balance
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/deduct/{id}',
+                [WalletController::class,'deductBalance']
+            )->name('deduct')
+            ->middleware('permission:wallet.deduct');
+
             /*
             |--------------------------------------------------------------------------
             | Wallet Transactions

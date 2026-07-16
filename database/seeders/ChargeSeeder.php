@@ -112,7 +112,7 @@ class ChargeSeeder extends Seeder
                 'name'        => 'Mobile Number Update',
                 'code'        => 'mobile_number_update',
                 'type'        => 'fixed',
-                'value'       => 250,
+                'value'       => 200,
                 'description' => 'Mobile Number Update Charge',
                 'is_active'   => 1,
                 'created_at'  => now(),
@@ -153,26 +153,17 @@ class ChargeSeeder extends Seeder
             ],
 
             [
-                'name'        => 'Father Name Update',
-                'code'        => 'father_name_update',
+                'name'        => 'Father/Husband Name Update',
+                'code'        => 'father-husband-name-update',
                 'type'        => 'fixed',
                 'value'       => 250,
-                'description' => 'Father Name Update Charge',
+                'description' => 'Father/Husband Name Update Charge',
                 'is_active'   => 1,
                 'created_at'  => now(),
                 'updated_at'  => now(),
             ],
 
-            [
-                'name'        => 'Husband Name Update',
-                'code'        => 'husband_name_update',
-                'type'        => 'fixed',
-                'value'       => 250,
-                'description' => 'Husband Name Update Charge',
-                'is_active'   => 1,
-                'created_at'  => now(),
-                'updated_at'  => now(),
-            ],
+            
 
             [
                 'name'        => 'Gender Update',

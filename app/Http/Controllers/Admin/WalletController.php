@@ -21,74 +21,136 @@ class WalletController extends Controller
 
     public function index()
     {
-        $retailers = User::role('retailer')
-            ->latest()
-            ->paginate(20);
-        
-
-        return view(
-            'admin.wallet.index',
-            compact('retailers')
-        );
+       
+        return view('admin.wallet.index');
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | ADD BALANCE
-    |--------------------------------------------------------------------------
-    */
+    public function retailerList()
+    {
+        $retailers = User::role('retailer')->latest();
 
+        return DataTables::of($retailers)
+
+            ->addIndexColumn()
+
+            ->editColumn('wallet_balance', function ($row) {
+                return '<strong class="text-success">₹'.number_format($row->wallet_balance, 2).'</strong>';
+            })
+
+            ->addColumn('action', function ($row) {
+                return view('admin.wallet.partials.action-buttons', [
+                    'user'   => $row,
+                    'addBtn' => 'Add',
+                    'addClass' => 'btn-primary',
+                ])->render();
+            })
+
+            ->rawColumns(['wallet_balance', 'action'])
+
+            ->make(true);
+    }
+
+
+    public function executiveList()
+    {
+        $executives = User::role('Executive')->latest();
+
+        return DataTables::of($executives)
+
+            ->addIndexColumn()
+
+            ->editColumn('wallet_balance', function ($row) {
+                return '<strong class="text-success">₹'.number_format($row->wallet_balance, 2).'</strong>';
+            })
+
+            ->addColumn('action', function ($row) {
+                return view('admin.wallet.partials.action-buttons', [
+                    'user'   => $row,
+                    'addBtn' => 'Recharge',
+                    'addClass' => 'btn-success',
+                ])->render();
+            })
+
+            ->rawColumns(['wallet_balance', 'action'])
+
+            ->make(true);
+    }
+
+   
+    
+    
     public function addBalance(Request $request, $id)
     {
         $request->validate([
+            'amount' => 'required|numeric|min:1',
+        ]);
 
-            'amount' => 'required|numeric|min:1'
+        $user = DB::transaction(function () use ($request, $id) {
 
+            $user = User::lockForUpdate()->findOrFail($id);
+
+            $user->increment('wallet_balance', $request->amount);
+
+            $user->refresh(); 
+
+            $remark = $user->hasRole('Executive')
+                ? 'Executive Recharge By Admin'
+                : 'Wallet Recharge By Admin';
+
+            WalletTransaction::create([
+                'user_id' => $user->id,
+                'amount' => $request->amount,
+                'type' => 'credit',
+                'remark' => $remark,
+            ]);
+
+            return $user;
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => $user->hasRole('Executive')
+                ? 'Executive wallet balance added successfully.'
+                : 'Retailer wallet balance added successfully.',
+            'data' => [
+                'user_id' => $user->id,
+                'wallet_balance' => $user->wallet_balance,
+            ]
+        ], 200);
+    }
+
+    public function deductBalance(Request $request, $id)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:1',
         ]);
 
         $user = User::findOrFail($id);
 
-        /*
-        |--------------------------------------------------------------------------
-        | ADD WALLET BALANCE
-        |--------------------------------------------------------------------------
-        */
+        if ($user->wallet_balance < $request->amount) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Insufficient wallet balance.'
+            ], 422);
+        }
 
-        $user->wallet_balance += $request->amount;
-
-        $user->save();
-
-        /*
-        |--------------------------------------------------------------------------
-        | SAVE TRANSACTION
-        |--------------------------------------------------------------------------
-        */
+        $user->decrement('wallet_balance', $request->amount);
 
         WalletTransaction::create([
-
             'user_id' => $user->id,
-
             'amount' => $request->amount,
-
-            'type' => 'credit',
-
-            'remark' => 'Wallet Recharge By Admin'
-
+            'type' => 'debit',
+            'remark' => 'Wallet Deducted By Admin',
         ]);
 
-        return back()->with(
-            'success',
-            'Wallet balance added successfully.'
-        );
+        return response()->json([
+            'success' => true,
+            'message' => 'Wallet balance deducted successfully.',
+            'wallet_balance' => $user->fresh()->wallet_balance,
+        ]);
     }
-
-    /*
-    |--------------------------------------------------------------------------
-    | TRANSACTIONS
-    |--------------------------------------------------------------------------
-    */
-
+   
     public function transactions()
     {
         $transactions = WalletTransaction::with('user')
@@ -133,7 +195,7 @@ class WalletController extends Controller
 
                 ->editColumn('status', function ($row) {
 
-                    if($row->status=='approved'){
+                    if($row->status=='Approved'){
 
                         return '<span class="badge bg-success">Approved</span>';
 

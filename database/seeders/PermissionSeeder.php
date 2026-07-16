@@ -176,6 +176,8 @@ class PermissionSeeder extends Seeder
 
             'wallet.add',
 
+            'wallet.deduct',
+
             'wallet.transactions',
 
             'payment.requests.view',
@@ -220,17 +222,7 @@ class PermissionSeeder extends Seeder
 
 
 
-            /*
-            |--------------------------------------------------------------------------
-            | ADMIN WALLET
-            |--------------------------------------------------------------------------
-            */
-
-            'admin.wallet.view',
-            'admin.wallet.add',
-            'admin.wallet.withdraw',
-            'admin.wallet.history',
-            'admin.wallet.delete',
+           
 
             /*
             |--------------------------------------------------------------------------

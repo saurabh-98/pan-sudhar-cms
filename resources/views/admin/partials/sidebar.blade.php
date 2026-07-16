@@ -345,7 +345,7 @@
 
                             <span>
 
-                                Retailer Wallet
+                                Recharge Wallet
 
                             </span>
 
