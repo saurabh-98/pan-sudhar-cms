@@ -1,5 +1,12 @@
 @extends('layout.retailer')
 
+@php
+
+$popup = getActivePopup('home');
+
+@endphp
+
+
 @section('content')
 
 @php
@@ -256,6 +263,11 @@
     @endif
 
 </div>
+
+@include('components.popup',[
+    'popup' => $popup
+])
+
 
 <script>
 (function () {

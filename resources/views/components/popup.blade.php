@@ -1,182 +1,63 @@
 @if($popup)
 
-<style>
-    #popupModal .modal-content{
-        border:none;
-        border-radius:18px;
-        overflow:hidden;
-        box-shadow:0 20px 60px rgba(0,0,0,.25);
-        animation:popupZoom .35s ease;
-    }
+@php
 
-    @keyframes popupZoom{
-        from{
-            transform:scale(.8);
-            opacity:0;
-        }
-        to{
-            transform:scale(1);
-            opacity:1;
-        }
-    }
+$user = auth()->user();
 
-    .popup-header{
-        background:linear-gradient(135deg,#0d6efd,#6610f2);
-        color:#fff;
-        padding:25px;
-    }
+$retailer = null;
 
-    .popup-title{
-        font-size:28px;
-        font-weight:700;
-        margin-bottom:5px;
-    }
+$referralLink = '';
 
-    .popup-subtitle{
-        opacity:.9;
-        font-size:14px;
-    }
+if($user){
 
-    .gift-icon{
-        width:65px;
-        height:65px;
-        background:#fff;
-        color:#0d6efd;
-        border-radius:50%;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        font-size:32px;
-        margin-right:18px;
-    }
+    $retailer = DB::table('retailers')
+        ->where('user_id',$user->id)
+        ->first();
 
-    .popup-banner{
-        width:100%;
-        border-radius:12px;
-        margin-bottom:20px;
-    }
+    if($retailer){
 
-    .reward-box{
-        background:#fff8e6;
-        border-left:5px solid #ffc107;
-        border-radius:12px;
-        padding:18px;
-        margin-bottom:25px;
-    }
-
-    .reward-box h4{
-        margin:0;
-        color:#ff6600;
-        font-weight:700;
-    }
-
-    .reward-box p{
-        margin-top:6px;
-        margin-bottom:0;
-    }
-
-    .popup-body{
-        padding:30px;
-    }
-
-    .popup-body ol{
-        padding-left:22px;
-        margin-bottom:0;
-    }
-
-    .popup-body li{
-        margin-bottom:14px;
-        line-height:1.8;
-        font-size:15px;
-        color:#555;
-    }
-
-    .popup-body strong{
-        color:#0d6efd;
-    }
-
-    .popup-footer{
-        background:#f8f9fa;
-        padding:18px 25px;
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-    }
-
-    .btn-popup{
-        border-radius:30px;
-        padding:10px 28px;
-        font-weight:600;
-    }
-
-    .btn-popup-primary{
-        background:#0d6efd;
-        color:#fff;
-        transition:.3s;
-    }
-
-    .btn-popup-primary:hover{
-        background:#0b5ed7;
-        transform:translateY(-2px);
-        color:#fff;
-    }
-
-    .btn-popup-secondary{
-        border:1px solid #ccc;
-        background:#fff;
-    }
-
-    .offer-badge{
-        display:inline-block;
-        background:#dc3545;
-        color:#fff;
-        padding:4px 12px;
-        border-radius:50px;
-        font-size:12px;
-        margin-bottom:10px;
-    }
-
-    @media(max-width:768px){
-
-        .popup-header{
-            text-align:center;
-        }
-
-        .popup-header .d-flex{
-            flex-direction:column;
-        }
-
-        .gift-icon{
-            margin-right:0;
-            margin-bottom:15px;
-        }
-
-        .popup-footer{
-            flex-direction:column;
-            gap:12px;
-        }
-
-        .btn-popup{
-            width:100%;
-        }
+        $referralLink = route('register',[
+            'ref'=>$retailer->referral_code
+        ]);
 
     }
-</style>
+
+}
+
+@endphp
+
+<link rel="stylesheet"
+      href="{{ asset('assets/css/referral-popup.css') }}">
 
 <div class="modal fade"
      id="popupModal"
      tabindex="-1"
      data-bs-backdrop="static">
 
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
 
-        <div class="modal-content">
+        <div class="modal-content referral-popup">
+
+            {{-- ===========================
+                Header
+            ============================ --}}
 
             <div class="popup-header">
 
+                <button
+                    type="button"
+                    class="popup-close-btn"
+                    id="popupCloseBtn">
+
+                    ✕
+
+                </button>
+
                 <div class="d-flex align-items-center">
 
-                    <div class="gift-icon">
+                    <div
+                        class="gift-icon"
+                        id="giftIcon">
 
                         🎁
 
@@ -186,21 +67,21 @@
 
                         <span class="offer-badge">
 
-                            LIMITED TIME OFFER
+                            REFER & EARN
 
                         </span>
 
-                        <div class="popup-title">
+                        <h3 class="popup-title">
 
                             {{ $popup->title }}
 
-                        </div>
+                        </h3>
 
-                        <div class="popup-subtitle">
+                        <p class="popup-subtitle">
 
-                            Invite retailers and earn exciting rewards.
+                            Invite retailers and earn wallet rewards instantly.
 
-                        </div>
+                        </p>
 
                     </div>
 
@@ -210,95 +91,235 @@
 
             <div class="popup-body">
 
-                @if($popup->image)
+         
 
-                    <img src="{{ file_url($popup->image) }}"
-                         class="popup-banner">
 
-                @endif
+            @if(auth()->check() && $retailer)
 
-                <div class="reward-box">
+                {{-- Referral Code --}}
 
-                    <h4>
+                <div class="referral-code-card">
 
-                        💰 Earn ₹100 on Every Successful Referral
+                    <span>Your Referral Code</span>
+
+                    <h2>{{ $retailer->referral_code }}</h2>
+
+                    <small>
+                        Share this code or your referral link with new retailers.
+                    </small>
+
+                </div>
+
+                {{-- Countdown --}}
+
+                <div class="countdown-strip" id="countdownStrip">
+
+                    ⏳ Offer Ends In
+
+                    <span class="unit" id="cdHours">24</span>h
+
+                    <span class="unit" id="cdMinutes">00</span>m
+
+                    <span class="unit" id="cdSeconds">00</span>s
+
+                </div>
+
+                {{-- Referral Link --}}
+
+                <div class="copy-link-row">
+
+                    <input
+                        type="text"
+                        id="referralLinkInput"
+                        value="{{ $referralLink }}"
+                        readonly>
+
+                    <button
+                        type="button"
+                        class="copy-link-btn"
+                        id="copyLinkBtn">
+
+                        📋 Copy
+
+                    </button>
+
+                </div>
+
+                {{-- QR Code --}}
+
+                <div class="text-center mt-4">
+
+                    <img
+                        src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data={{ urlencode($referralLink) }}"
+                        class="img-fluid rounded"
+                        width="180">
+
+                </div>
+
+                {{-- Share Buttons --}}
+
+                <div class="share-buttons mt-4">
+
+                    <a
+                        href="https://wa.me/?text={{ urlencode('Join PAN Sudhar Portal using my referral link: '.$referralLink) }}"
+                        target="_blank"
+                        class="btn btn-success">
+
+                        <i class="fab fa-whatsapp"></i>
+
+                        WhatsApp
+
+                    </a>
+
+                    <a
+                        href="https://t.me/share/url?url={{ urlencode($referralLink) }}"
+                        target="_blank"
+                        class="btn btn-info">
+
+                        <i class="fab fa-telegram"></i>
+
+                        Telegram
+
+                    </a>
+
+                    <a
+                        href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode($referralLink) }}"
+                        target="_blank"
+                        class="btn btn-primary">
+
+                        <i class="fab fa-facebook"></i>
+
+                        Facebook
+
+                    </a>
+
+                </div>
+
+            @else
+
+                <div class="alert alert-primary text-center">
+
+                    <h4 class="mb-3">
+
+                        🎉 Refer a Retailer & Earn ₹100
 
                     </h4>
 
                     <p>
 
-                        Refer your friends today and get your reward directly in your wallet after successful verification.
+                        Login to your retailer account to get your personal referral
+                        link and start earning rewards.
 
                     </p>
 
-                </div>
+                    <a
+                        href="{{ route('retailer.login') }}"
+                        class="btn btn-primary">
 
-                {!! $popup->description !!}
-
-            </div>
-
-            <div class="popup-footer">
-
-                <button
-                    class="btn btn-popup btn-popup-secondary"
-                    data-bs-dismiss="modal">
-
-                    Maybe Later
-
-                </button>
-
-                @if($popup->button_link)
-
-                    <a href="{{ $popup->button_link }}"
-                       class="btn btn-popup btn-popup-primary">
-
-                        🚀 {{ $popup->button_text }}
+                        Login Now
 
                     </a>
 
-                @endif
+                </div>
 
-            </div>
+            @endif
 
-        </div>
+   
+
+    {!! $popup->description !!}
+
+</div>
+
+{{-- ===========================================
+    Popup Footer
+============================================ --}}
+
+<div class="popup-footer">
+
+    <button
+        type="button"
+        class="btn btn-popup btn-popup-secondary"
+        id="popupMaybeLaterBtn">
+
+        Maybe Later
+
+    </button>
+
+    <div class="d-flex gap-2 flex-wrap">
+
+       
+        <button
+            type="button"
+            id="copyReferralBtn"
+            class="btn btn-warning">
+
+            <i class="fas fa-copy"></i>
+
+            Copy Link
+
+        </button>
+
+        <a
+            href="https://wa.me/?text={{ urlencode('Join PAN Sudhar Portal using my referral link: '.$referralLink) }}"
+            target="_blank"
+            class="btn btn-success">
+
+            <i class="fab fa-whatsapp"></i>
+
+            Share
+
+        </a>
 
     </div>
 
 </div>
 
+</div>
+
+</div>
+
+</div>
+
+<div id="confettiLayer"></div>
+
+<script src="{{ asset('assets/js/referral-popup.js') }}"></script>
+
 <script>
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded',function(){
 
-    let popupKey = "popup_{{ $popup->id }}";
+    const popupKey = "popup_{{ $popup->id }}";
 
-    let today = new Date().toDateString();
+    const today = new Date().toDateString();
 
-    const modal = new bootstrap.Modal(
-        document.getElementById('popupModal')
-    );
+    const modalEl = document.getElementById('popupModal');
 
-    @if($popup->show_once_per_day)
+    if(modalEl){
 
-        if(localStorage.getItem(popupKey) == today){
+        const modal = new bootstrap.Modal(modalEl);
+
+        @if($popup->show_once_per_day)
+
+            if(localStorage.getItem(popupKey) == today){
+
+                modal.show();
+
+                localStorage.setItem(
+                    popupKey,
+                    today
+                );
+
+            }
+
+        @else
 
             modal.show();
 
-            localStorage.setItem(
-                popupKey,
-                today
-            );
+        @endif
 
-        }
-
-    @else
-
-        modal.show();
-
-    @endif
+    }
 
 });
-
 </script>
 
 @endif

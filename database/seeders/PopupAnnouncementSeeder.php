@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\PopupAnnouncement;
-use Illuminate\Support\Str;
 
 class PopupAnnouncementSeeder extends Seeder
 {
@@ -20,31 +19,82 @@ class PopupAnnouncementSeeder extends Seeder
             ],
 
             [
-                'title' => 'Refer a Retailer & Earn ₹100',
+
+                'title' => '🎉 Refer a Retailer & Earn ₹100',
 
                 'description' => '
-                    <h5>🎉 Refer a Retailer & Earn ₹100 on Every Successful Referral!</h5>
 
-                    <p><strong>Terms & Conditions Apply</strong></p>
+                    <div class="referral-terms">
 
-                    <ol>
-                        <li>Please ensure that you have used our services worth more than <strong>₹1,000</strong> during the last month.</li>
+                        <h5>
+                            Refer a Retailer & Earn <span style="color:#28a745;">₹100</span>
+                            on Every Successful Referral!
+                        </h5>
 
-                        <li>You must have been an active retailer with us for at least <strong>90 days</strong> to be eligible.</li>
+                        <p class="mb-3">
+                            Invite new retailers using your referral link.
+                            Once all eligibility criteria are met and the referred retailer is approved,
+                            your referral reward will be credited automatically.
+                        </p>
 
-                        <li>The referral bonus will be provided only after the referred retailer has been successfully verified.</li>
+                        <div class="alert alert-warning">
 
-                        <li>Duplicate, fake, or multiple referrals using the same person, mobile number, or documents will not be accepted.</li>
+                            <strong>Terms & Conditions</strong>
 
-                        <li>The referral bonus will be credited to your wallet within <strong>7–15 working days</strong>.</li>
-                    </ol>
+                            <ol class="mt-2 mb-0">
+
+                                <li>
+                                    You must have completed
+                                    <strong>₹1,000 or more</strong>
+                                    business during the previous month.
+                                </li>
+
+                                <li>
+                                    Your retailer account must be at least
+                                    <strong>90 days old</strong>.
+                                </li>
+
+                                <li>
+                                    The referred retailer must successfully complete registration
+                                    and receive admin approval.
+                                </li>
+
+                                <li>
+                                    Fake, duplicate, or self-referrals are strictly prohibited.
+                                    Duplicate mobile numbers, Aadhaar, PAN, email addresses,
+                                    or documents will lead to rejection.
+                                </li>
+
+                                <li>
+                                    Referral rewards are credited within
+                                    <strong>7–15 working days</strong>
+                                    after successful verification.
+                                </li>
+
+                                <li>
+                                    The company reserves the right to reject any referral
+                                    that violates the referral policy.
+                                </li>
+
+                            </ol>
+
+                        </div>
+
+                    </div>
+
                 ',
 
                 'image' => null,
 
-                'button_text' => 'Refer Now',
+                /*
+                |--------------------------------------------------------------------------
+                | Dynamic referral link is generated in Blade
+                |--------------------------------------------------------------------------
+                */
 
-                'button_link' => '/retailer/refer',
+                'button_text' => 'Copy Referral Link',
+
+                'button_link' => '#',
 
                 'background_color' => '#ffffff',
 
@@ -63,6 +113,7 @@ class PopupAnnouncementSeeder extends Seeder
                 'priority' => 1,
 
                 'status' => true,
+
             ]
 
         );

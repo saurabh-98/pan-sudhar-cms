@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\Module;
 use App\Models\RetailerModuleAccess;
+use App\Models\ReferralReward;
+use Carbon\Carbon;
 
 class RetailerApprovalController extends Controller
 {
@@ -409,155 +411,310 @@ class RetailerApprovalController extends Controller
     |--------------------------------------------------------------------------
     */
 
-        public function approve(
-Request $request,
-$id
-)
+    public function approve(Request $request, $id)
 {
+    $credentials = [];
 
-$credentials = [];
+    DB::transaction(function () use (
+        $id,
+        $request,
+        &$credentials
+    ) {
 
-DB::transaction(function () use (
-    $id,
-    $request,
-    &$credentials
-) {
+        /*
+        |--------------------------------------------------------------------------
+        | GET RETAILER
+        |--------------------------------------------------------------------------
+        */
 
-    $retailer = DB::table('retailers')
-        ->where('id', $id)
-        ->lockForUpdate()
-        ->first();
+        $retailer = DB::table('retailers')
+            ->where('id', $id)
+            ->lockForUpdate()
+            ->first();
 
-    if (!$retailer) {
+        if (!$retailer) {
+            abort(404);
+        }
 
-        abort(404);
-    }
+        if ($retailer->status === 'approved') {
+            return;
+        }
 
-    if ($retailer->status === 'approved') {
+        /*
+        |--------------------------------------------------------------------------
+        | CHECK EXISTING USER
+        |--------------------------------------------------------------------------
+        */
 
-        return;
-    }
+        $existingUser = User::where(
+                'email',
+                $retailer->email
+            )
+            ->orWhere(
+                'mobile',
+                $retailer->mobile
+            )
+            ->first();
 
-    $existingUser = User::where(
-        'email',
-        $retailer->email
-    )
-    ->orWhere(
-        'mobile',
-        $retailer->mobile
-    )
-    ->first();
+        if ($existingUser) {
 
-    if ($existingUser) {
+            throw new \Exception(
+                'Retailer account already exists.'
+            );
 
-        throw new \Exception(
-            'Retailer account already exists.'
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | LOGIN CREDENTIALS
+        |--------------------------------------------------------------------------
+        */
+
+        $userId = $retailer->email;
+
+        $plainPassword = $retailer->mobile;
+
+        /*
+        |--------------------------------------------------------------------------
+        | CREATE USER
+        |--------------------------------------------------------------------------
+        */
+
+        $user = User::create([
+
+            'name' => $retailer->name,
+
+            'email' => $userId,
+
+            'mobile' => $retailer->mobile,
+
+            'password' => Hash::make(
+                $plainPassword
+            ),
+
+            'status' => 1
+
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | ASSIGN ROLE
+        |--------------------------------------------------------------------------
+        */
+
+        $user->assignRole('retailer');
+
+        /*
+        |--------------------------------------------------------------------------
+        | ASSIGN MODULE ACCESS
+        |--------------------------------------------------------------------------
+        */
+
+        $moduleIds = Module::pluck('id');
+
+        foreach ($moduleIds as $moduleId) {
+
+            RetailerModuleAccess::firstOrCreate([
+
+                'retailer_id' => $user->id,
+
+                'module_id' => $moduleId
+
+            ]);
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE RETAILER
+        |--------------------------------------------------------------------------
+        */
+
+        DB::table('retailers')
+            ->where('id', $id)
+            ->update([
+
+                'user_id' => $user->id,
+
+                'status' => 'approved',
+
+                'is_verified' => 1,
+
+                'approved_by' => auth()->id(),
+
+                'approved_at' => now(),
+
+                'updated_at' => now()
+
+            ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | NEXT PART STARTS HERE
+        |--------------------------------------------------------------------------
+        */
+
+                /*
+        |--------------------------------------------------------------------------
+        | REFERRAL REWARD
+        |--------------------------------------------------------------------------
+        */
+
+        if (!empty($retailer->referred_by)) {
+
+            $reward = ReferralReward::where(
+                    'referred_id',
+                    $retailer->id
+                )
+                ->where(
+                    'status',
+                    'Pending'
+                )
+                ->first();
+
+            if ($reward) {
+
+                $eligible = true;
+
+                $remarks = 'Eligible for referral reward.';
+
+                /*
+                |--------------------------------------------------------------------------
+                | GET REFERRER
+                |--------------------------------------------------------------------------
+                */
+
+                $referrer = DB::table('retailers')
+                    ->where(
+                        'id',
+                        $retailer->referred_by
+                    )
+                    ->first();
+
+                /*
+                |--------------------------------------------------------------------------
+                | RULE 1
+                | Retailer should be 90 days old
+                |--------------------------------------------------------------------------
+                */
+
+                if ($referrer) {
+
+                    $days = \Carbon\Carbon::parse(
+                        $referrer->created_at
+                    )->diffInDays(now());
+
+                    if ($days < 90) {
+
+                        $eligible = false;
+
+                        $remarks = 'Retailer account is less than 90 days old.';
+
+                    }
+
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | RULE 2
+                | Last Month Business > ₹1000
+                |--------------------------------------------------------------------------
+                */
+
+                if ($eligible) {
+
+                    $lastMonthBusiness = DB::table('wallet_transactions')
+
+                        ->where(
+                            'retailer_id',
+                            $retailer->referred_by
+                        )
+
+                        ->whereBetween(
+                            'created_at',
+                            [
+                                now()->subMonth()->startOfMonth(),
+                                now()->subMonth()->endOfMonth()
+                            ]
+                        )
+
+                        ->sum('amount');
+
+                    if ($lastMonthBusiness < 1000) {
+
+                        $eligible = false;
+
+                        $remarks = 'Last month business is below ₹1000.';
+
+                    }
+
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | UPDATE REFERRAL STATUS
+                |--------------------------------------------------------------------------
+                */
+
+                if ($eligible) {
+
+                    $reward->update([
+
+                        'status' => 'Approved',
+
+                        'approved_at' => now(),
+
+                        'release_at' => now()->addDays(7),
+
+                        'wallet_credited' => false,
+
+                        'remarks' => 'Eligible. Wallet will be credited after release date.'
+
+                    ]);
+
+                } else {
+
+                    $reward->update([
+
+                        'status' => 'Rejected',
+
+                        'remarks' => $remarks
+
+                    ]);
+
+                }
+
+            }
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | STORE LOGIN CREDENTIALS
+        |--------------------------------------------------------------------------
+        */
+
+        $credentials = [
+
+            'username' => $userId,
+
+            'password' => $plainPassword
+
+        ];
+
+    });
+
+    return back()
+
+        ->with(
+            'success',
+            'Retailer approved successfully.'
+        )
+
+        ->with(
+            'credentials',
+            $credentials
         );
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | LOGIN CREDENTIALS
-    |--------------------------------------------------------------------------
-    */
-
-    $userId = $retailer->email;
-
-    $plainPassword = $retailer->mobile;
-
-    $user = User::create([
-
-        'name' => $retailer->name,
-
-        'email' => $userId,
-
-        'mobile' => $retailer->mobile,
-
-        'password' => Hash::make(
-            $plainPassword
-        ),
-
-        'status' => 1
-
-    ]);
-
-    /*
-    |--------------------------------------------------------------------------
-    | ASSIGN ROLE
-    |--------------------------------------------------------------------------
-    */
-
-    $user->assignRole(
-        'retailer'
-    );
-
-    /*
-    |--------------------------------------------------------------------------
-    | ASSIGN ALL MODULE ACCESS
-    |--------------------------------------------------------------------------
-    */
-
-    $moduleIds = Module::pluck('id');
-
-    foreach ($moduleIds as $moduleId) {
-
-        RetailerModuleAccess::firstOrCreate([
-            'retailer_id' => $user->id,
-            'module_id'   => $moduleId,
-        ]);
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | UPDATE RETAILER STATUS
-    |--------------------------------------------------------------------------
-    */
-
-    DB::table('retailers')
-        ->where('id', $id)
-        ->update([
-
-            'user_id'      => $user->id,
-
-            'status'       => 'approved',
-
-            'is_verified'  => 1,
-
-            'approved_by'  => auth()->id(),
-
-            'approved_at'  => now(),
-
-            'updated_at'   => now()
-
-        ]);
-
-    /*
-    |--------------------------------------------------------------------------
-    | STORE CREDENTIALS
-    |--------------------------------------------------------------------------
-    */
-
-    $credentials = [
-
-        'username' => $userId,
-
-        'password' => $plainPassword
-
-    ];
-});
-
-return back()
-
-    ->with(
-        'success',
-        'Retailer approved successfully.'
-    )
-
-    ->with(
-        'credentials',
-        $credentials
-    );
-
 
 }
 
@@ -599,27 +756,28 @@ public function reject(Request $request, $id)
     */
 
     public function loginAsRetailer($userId)
-{
-    $retailer = User::findOrFail($userId);
+    {
+        $retailer = User::findOrFail($userId);
 
-    if (!$retailer->hasRole('retailer')) {
-        abort(403);
+        if (!$retailer->hasRole('retailer')) {
+            abort(403);
+        }
+
+        $adminId = auth()->id();
+
+        Auth::login($retailer);
+
+        request()->session()->regenerate();
+
+        session([
+            'admin_id' => $adminId
+        ]);
+
+        return redirect()->route(
+            'retailer.dashboard'
+        );
     }
 
-    $adminId = auth()->id();
-
-    Auth::login($retailer);
-
-    request()->session()->regenerate();
-
-    session([
-        'admin_id' => $adminId
-    ]);
-
-    return redirect()->route(
-        'retailer.dashboard'
-    );
-}
     /*
     |--------------------------------------------------------------------------
     | BACK TO ADMIN
@@ -646,41 +804,41 @@ public function reject(Request $request, $id)
     }
 
     public function modules($userId)
-{
-$user = User::findOrFail(
-$userId
-);
-
-
-$modules = Module::where(
-    'status',
-    1
-)
-->orderBy(
-    'name'
-)
-->get();
-
-$assignedModules = RetailerModuleAccess::where(
-        'retailer_id',
+    {
+        $user = User::findOrFail(
         $userId
-    )
-    ->pluck(
-        'module_id'
-    )
-    ->toArray();
-
-return view(
-    'admin.retailer-approvals.module',
-    compact(
-        'user',
-        'modules',
-        'assignedModules'
-    )
-);
+        );
 
 
-}
+        $modules = Module::where(
+            'status',
+            1
+        )
+        ->orderBy(
+            'name'
+        )
+        ->get();
+
+        $assignedModules = RetailerModuleAccess::where(
+                'retailer_id',
+                $userId
+            )
+            ->pluck(
+                'module_id'
+            )
+            ->toArray();
+
+        return view(
+            'admin.retailer-approvals.module',
+            compact(
+                'user',
+                'modules',
+                'assignedModules'
+            )
+        );
+
+
+    }
 
  /*                                                                         |
 | -------------------------------------------------------------------------- |
