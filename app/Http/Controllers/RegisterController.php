@@ -118,9 +118,7 @@ class RegisterController extends Controller
                     'exists:users,id'
                 ],
 
-                'g-recaptcha-response' => [
-                    'required'
-                ]
+              
 
             ],
 
@@ -150,8 +148,7 @@ class RegisterController extends Controller
 
                 'distributor_id.exists' => 'Selected distributor is invalid',
 
-                'g-recaptcha-response.required' => 'Please verify captcha'
-
+               
             ]
 
         );

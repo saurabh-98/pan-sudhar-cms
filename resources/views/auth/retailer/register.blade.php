@@ -489,32 +489,7 @@
 
                             </div>
 
-                            <!-- CAPTCHA -->
-                            <div class="form-group-modern mb-4">
-
-                                <label>
-
-                                    Verify You Are Human
-
-                                </label>
-
-                                <div class="g-recaptcha"
-                                    data-sitekey="{{ config('services.recaptcha.site_key') }}">
-                                </div>
-
-                                <small class="captcha-validation text-danger d-block mt-2"></small>
-
-                                @error('g-recaptcha-response')
-
-                                    <small class="text-danger d-block mt-1">
-
-                                        {{ $message }}
-
-                                    </small>
-
-                                @enderror
-
-                            </div>
+                    
 
                             <!-- BUTTON -->
                             <button
@@ -568,17 +543,10 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script src="https://www.google.com/recaptcha/api.js"
-        async
-        defer></script>
-
 @section('scripts')
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script src="https://www.google.com/recaptcha/api.js"
-        async
-        defer></script>
 
 <script>
 
@@ -954,23 +922,7 @@ $(document).ready(function () {
 
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | CAPTCHA VALIDATION
-    |--------------------------------------------------------------------------
-    */
-
-    $('.captcha-validation').text('');
-
-    if (grecaptcha.getResponse() == '') {
-
-        $('.captcha-validation')
-            .text('Please verify captcha');
-
-        isValid = false;
-
-    }
-
+    
     /*
     |--------------------------------------------------------------------------
     | INVALID CHECK

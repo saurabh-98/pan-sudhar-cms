@@ -16,7 +16,7 @@ if($user){
 
     if($retailer){
 
-        $referralLink = route('register',[
+        $referralLink = route('retailer.register',[
             'ref'=>$retailer->referral_code
         ]);
 
