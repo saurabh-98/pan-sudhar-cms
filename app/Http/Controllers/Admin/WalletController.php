@@ -195,7 +195,7 @@ class WalletController extends Controller
 
                 ->editColumn('status', function ($row) {
 
-                    if($row->status=='Approved'){
+                    if($row->status=='approved'){
 
                         return '<span class="badge bg-success">Approved</span>';
 
