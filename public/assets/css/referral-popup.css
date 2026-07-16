@@ -5,6 +5,16 @@
 
 /* ---------- Modal shell: pinned to the real viewport ---------- */
 
+
+.referral-modal{
+    max-width:700px;
+}
+
+.referral-popup{
+    border-radius:20px;
+    overflow:hidden;
+}
+
 #popupModal{
     padding:0 !important;
     position:fixed !important;

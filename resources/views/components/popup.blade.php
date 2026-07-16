@@ -34,7 +34,7 @@ if($user){
      tabindex="-1"
      data-bs-backdrop="static">
 
-    <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered referral-modal">
 
         <div class="modal-content referral-popup">
 
