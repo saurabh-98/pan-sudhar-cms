@@ -431,6 +431,7 @@
             auth()->user()->can('aadhaar.view') ||
             auth()->user()->can('csc.view') ||
             auth()->user()->can('itr.view') ||
+            auth()->user()->can('tds.view') ||
             auth()->user()->can('voter-id.view') ||
             auth()->user()->can('bank-account.view') ||
             auth()->user()->can('other-service.view')
