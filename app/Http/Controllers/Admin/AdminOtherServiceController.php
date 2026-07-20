@@ -724,7 +724,7 @@ class AdminOtherServiceController extends Controller
 
         ServiceDocument::create([
 
-            'service_type'  => 'other-service',
+            'service_type'  => 'other_service',
 
             'service_id'    => $application->id,
 
