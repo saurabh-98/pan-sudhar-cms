@@ -466,36 +466,7 @@ class AdminCscController extends Controller
             abort(403);
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | CHECK EXISTING RECEIPT
-        |--------------------------------------------------------------------------
-        */
-
-        $alreadyUploaded = ServiceDocument::where(
-
-            'service_type',
-            'aadhaar'
-
-        )
-        ->where(
-
-            'service_id',
-            $application->id
-
-        )
-        ->exists();
-
-        if ($alreadyUploaded) {
-
-            return response()->json([
-
-                'status'  => false,
-
-                'message' => 'Receipt already uploaded.'
-
-            ], 422);
-        }
+       
 
         /*
         |--------------------------------------------------------------------------
@@ -507,7 +478,7 @@ class AdminCscController extends Controller
 
             $request->file('support_file'),
 
-            'service-documents/aadhaar'
+            'service-documents/csc'
 
         );
 
@@ -530,7 +501,7 @@ class AdminCscController extends Controller
 
         ServiceDocument::create([
 
-            'service_type'  => 'aadhaar',
+            'service_type'  => 'csc',
 
             'service_id'    => $application->id,
 
@@ -615,7 +586,7 @@ class AdminCscController extends Controller
 
             'remark'  =>
 
-                'Aadhaar Service Commission #' .
+                'Csc Service Commission #' .
                 $application->application_no
 
         ]);
@@ -638,7 +609,7 @@ class AdminCscController extends Controller
 
                 'remark'  =>
 
-                    'Executive Aadhaar Commission #' .
+                    'Executive Csc Service Commission #' .
                     $application->application_no
 
             ]);

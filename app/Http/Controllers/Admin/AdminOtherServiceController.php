@@ -689,36 +689,7 @@ class AdminOtherServiceController extends Controller
             abort(403);
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | CHECK EXISTING RECEIPT
-        |--------------------------------------------------------------------------
-        */
-
-        $alreadyUploaded = ServiceDocument::where(
-
-            'service_type',
-            'aadhaar'
-
-        )
-        ->where(
-
-            'service_id',
-            $application->id
-
-        )
-        ->exists();
-
-        if ($alreadyUploaded) {
-
-            return response()->json([
-
-                'status'  => false,
-
-                'message' => 'Receipt already uploaded.'
-
-            ], 422);
-        }
+      
 
         /*
         |--------------------------------------------------------------------------
@@ -753,7 +724,7 @@ class AdminOtherServiceController extends Controller
 
         ServiceDocument::create([
 
-            'service_type'  => 'bank',
+            'service_type'  => 'other-sercice',
 
             'service_id'    => $application->id,
 
