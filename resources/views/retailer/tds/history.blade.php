@@ -67,7 +67,6 @@
                             <th>Email</th>
                             <th>Status</th>
                             <th>Remarks</th>
-                            <th>Admin Remarks</th>
                             <th>Date</th>
                             <th>Aadhaar Front</th>
                             <th>Aadhaar Back</th>
@@ -234,7 +233,6 @@
 
                                 <td>${itr.remarks ?? 'N/A'}</td>
 
-                                <td>${itr.admin_remarks ?? 'N/A'}</td>
 
                                 <td>
                                     ${
