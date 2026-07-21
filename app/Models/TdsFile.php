@@ -182,7 +182,7 @@ class TdsFile extends Model
 
             'service_type',
 
-            'tds'
+            'tds_refund'
 
         );
     }
