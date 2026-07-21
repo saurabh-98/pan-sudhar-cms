@@ -19,6 +19,8 @@ use App\Models\State;
 use App\Models\Charge;
 use App\Models\User;
 use App\Models\WalletTransaction;
+use App\Models\Module;
+
 
 use Yajra\DataTables\Facades\DataTables;
 
@@ -582,16 +584,24 @@ class OtherServiceController extends Controller
     */
 
     
-    public function index()
+   public function index()
     {
         if (request()->ajax()) {
 
-          $applications = OtherService::query()
+            $financeSlugs = [
+                'gst-registration-filing',
+                'dsc-digital-signature',
+                'msme-registration',
+                'food-licence',
+                'import-export-certificate',
+            ];
 
+            $applications = OtherService::query()
                 ->with([
                     'user.retailer',
                     'serviceDocuments',
                 ])
+                ->whereNotIn('service_slug', $financeSlugs)
                 ->latest();
 
             return DataTables::of($applications)
@@ -599,7 +609,6 @@ class OtherServiceController extends Controller
                 ->addIndexColumn()
 
                 ->addColumn('customer_name', function ($row) {
-
                     return e(
                         $row->getField(
                             'customer_name',
@@ -609,7 +618,6 @@ class OtherServiceController extends Controller
                 })
 
                 ->addColumn('mobile', function ($row) {
-
                     return e(
                         $row->getField(
                             'mobile',
@@ -619,7 +627,6 @@ class OtherServiceController extends Controller
                 })
 
                 ->addColumn('service', function ($row) {
-
                     return '
                         <span class="badge bg-info">
                             '.e($row->service_display).'
@@ -628,12 +635,10 @@ class OtherServiceController extends Controller
                 })
 
                 ->addColumn('payment', function ($row) {
-
                     return $row->payment_badge;
                 })
 
                 ->addColumn('amount', function ($row) {
-
                     return '
                         <span class="fw-bold text-success">
                             ₹'.number_format(
@@ -645,24 +650,18 @@ class OtherServiceController extends Controller
                 })
 
                 ->addColumn('status', function ($row) {
-
                     return $row->status_badge;
                 })
 
                 ->editColumn('created_at', function ($row) {
-
                     return '
                         <div>
                             <div class="fw-semibold">
-                                '.$row->created_at->format(
-                                    'd M Y'
-                                ).'
+                                '.$row->created_at->format('d M Y').'
                             </div>
 
                             <small class="text-muted">
-                                '.$row->created_at->format(
-                                    'h:i A'
-                                ).'
+                                '.$row->created_at->format('h:i A').'
                             </small>
                         </div>
                     ';
@@ -708,31 +707,136 @@ class OtherServiceController extends Controller
                 })
 
                 ->rawColumns([
-
                     'service',
-
                     'payment',
-
                     'amount',
-
                     'status',
-
                     'created_at',
-
                     'document_status',
-
                     'action',
-
                 ])
 
                 ->make(true);
         }
 
-        return view(
-            'retailer.other-service.history'
-        );
+        return view('retailer.other-service.history');
     }
 
+    public function financeHistory()
+    {
+        if (request()->ajax()) {
+
+            $financeSlugs = [
+                'gst-registration-filing',
+                'dsc-digital-signature',
+                'msme-registration',
+                'food-licence',
+                'import-export-certificate',
+            ];
+
+            $applications = OtherService::query()
+                ->with([
+                    'user.retailer',
+                    'serviceDocuments',
+                ])
+                ->whereIn('service_slug', $financeSlugs)   // <-- only finance services
+                ->latest();
+
+            return DataTables::of($applications)
+
+                ->addIndexColumn()
+
+                ->addColumn('customer_name', function ($row) {
+                    return e($row->getField('customer_name', 'N/A'));
+                })
+
+                ->addColumn('mobile', function ($row) {
+                    return e($row->getField('mobile', '-'));
+                })
+
+                ->addColumn('service', function ($row) {
+                    return '
+                        <span class="badge bg-info">
+                            '.e($row->service_display).'
+                        </span>
+                    ';
+                })
+
+                ->addColumn('payment', function ($row) {
+                    return $row->payment_badge;
+                })
+
+                ->addColumn('amount', function ($row) {
+                    return '
+                        <span class="fw-bold text-success">
+                            ₹'.number_format($row->amount,2).'
+                        </span>
+                    ';
+                })
+
+                ->addColumn('status', function ($row) {
+                    return $row->status_badge;
+                })
+
+                ->editColumn('created_at', function ($row) {
+                    return '
+                        <div>
+                            <div class="fw-semibold">
+                                '.$row->created_at->format('d M Y').'
+                            </div>
+
+                            <small class="text-muted">
+                                '.$row->created_at->format('h:i A').'
+                            </small>
+                        </div>
+                    ';
+                })
+
+                ->addColumn('document_status', function ($row) {
+
+                    if ($row->serviceDocuments->isNotEmpty()) {
+
+                        return '
+                            <span class="badge bg-success">
+                                <i class="fa fa-check-circle"></i>
+                                Available
+                            </span>
+                        ';
+                    }
+
+                    return '
+                        <span class="badge bg-warning text-dark">
+                            <i class="fa fa-clock"></i>
+                            Pending
+                        </span>
+                    ';
+                })
+
+                ->addColumn('action', function ($row) {
+
+                    return '
+                        <a href="'.route('retailer.other-service.show',$row->id).'"
+                        class="btn btn-sm btn-primary">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                    ';
+                })
+
+                ->rawColumns([
+                    'service',
+                    'payment',
+                    'amount',
+                    'status',
+                    'created_at',
+                    'document_status',
+                    'action',
+                ])
+
+                ->make(true);
+        }
+
+        return view('retailer.other-service.finance-history');
+    }
 
     /*
     |--------------------------------------------------------------------------

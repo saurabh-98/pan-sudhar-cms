@@ -286,7 +286,15 @@ class ModuleSeeder extends Seeder
                     'name'       => 'Finance-TDS History',
                     'icon'       => 'fa-solid fa-clock-rotate-left',
                     'route_name' => 'retailer.tds.history',
-                    'sort_order' => 8,
+                    'sort_order' => 9,
+                ],
+
+                [
+                    'slug'       => 'finance-other-history',
+                    'name'       => 'Finance Other Services History',
+                    'icon'       => 'fa-solid fa-clock-rotate-left',
+                    'route_name' => 'retailer.other-service.finance-history',
+                    'sort_order' => 10,
                 ],
             ];
 

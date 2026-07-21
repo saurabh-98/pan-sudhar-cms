@@ -1478,88 +1478,50 @@ Route::prefix('pages')
         ->middleware('permission:other-service.view')
         ->group(function () {
 
-            /*
-            |--------------------------------------------------------------------------
-            | LIST
-            |--------------------------------------------------------------------------
-            */
-
             Route::get(
                 '/',
                 [AdminOtherServiceController::class, 'index']
             )->name('index');
 
-            /*
-            |--------------------------------------------------------------------------
-            | SHOW
-            |--------------------------------------------------------------------------
-            */
+            Route::get(
+                '/finance',
+                [AdminOtherServiceController::class, 'financeIndex']
+            )->name('finance.index');
 
             Route::get(
                 '/show/{id}',
-                [AdminOtherServiceController::class, 'show']
-            )->name('show');
-
-            /*
-            |--------------------------------------------------------------------------
-            | ASSIGN
-            |--------------------------------------------------------------------------
-            */
+                [AdminOtherServiceController::class, 'show'
+            ])->name('show');
 
             Route::post(
                 '/assign/{id}',
                 [AdminOtherServiceController::class, 'assign']
             )->name('assign');
 
-            /*
-            |--------------------------------------------------------------------------
-            | UPDATE STATUS
-            |--------------------------------------------------------------------------
-            */
-
             Route::post(
                 '/status/{id}',
                 [AdminOtherServiceController::class, 'status']
             )->name('status');
-
-            /*
-            |--------------------------------------------------------------------------
-            | UPLOAD DOCUMENT
-            |--------------------------------------------------------------------------
-            */
 
             Route::post(
                 '/document-upload/{id}',
                 [AdminOtherServiceController::class, 'uploadDocument']
             )->name('document.upload');
 
-            /*
-            |--------------------------------------------------------------------------
-            | DOWNLOAD DOCUMENTS
-            |--------------------------------------------------------------------------
-            */
-
             Route::get(
                 '/download-documents/{id}',
                 [AdminOtherServiceController::class, 'downloadDocuments']
             )->name('download.documents');
-
-            /*
-            |--------------------------------------------------------------------------
-            | DELETE
-            |--------------------------------------------------------------------------
-            */
 
             Route::delete(
                 '/delete/{id}',
                 [AdminOtherServiceController::class, 'delete']
             )->name('delete');
 
-             Route::post(
+            Route::post(
                 '/rejected/{id}/reject',
                 [AdminOtherServiceController::class, 'reject']
             )->name('reject');
-
         });
 
 

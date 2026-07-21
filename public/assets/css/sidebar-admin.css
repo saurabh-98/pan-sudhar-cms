@@ -54,6 +54,21 @@
     transition:all .35s ease;
 }
 
+.sbx-divider{
+    border-top:1px solid rgba(255,255,255,.12);
+    padding-top:12px;
+}
+
+.sbx-divider span{
+    letter-spacing:1px;
+    font-size:11px;
+    color:#22c55e !important;
+}
+
+.sbx-divider i{
+    color:#22c55e;
+}
+
 
 /* =========================================================
 | ANIMATED OVERLAY

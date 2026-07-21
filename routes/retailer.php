@@ -1281,6 +1281,11 @@ Route::prefix('aadhaar')
                 'index'
             )->name('history');
 
+            Route::get(
+                '/finance-history',
+                 'financeHistory'
+            )->name('finance-history');
+
             /*
             |--------------------------------------------------------------------------
             | SHOW

@@ -325,6 +325,7 @@ class RolePermissionSeeder extends Seeder
 
 
             'retailer-activity.view',
+            'finance-other-service.view',
 
             'chat.view',
             'chat.reply',

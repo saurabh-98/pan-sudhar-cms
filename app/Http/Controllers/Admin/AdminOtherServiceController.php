@@ -22,14 +22,23 @@ class AdminOtherServiceController extends Controller
 
     public function index(Request $request)
     {
+
+        $financeSlugs = [
+            'gst-registration-filing',
+            'dsc-digital-signature',
+            'msme-registration',
+            'food-licence',
+            'import-export-certificate',
+        ];
+
         if ($request->ajax()) {
 
             $applications = OtherService::query()
-
                 ->with([
                     'user',
                     'assignedUser'
-                ]);
+                ])
+                ->whereNotIn('service_slug', $financeSlugs);
 
             /*
             |--------------------------------------------------------------------------
@@ -395,6 +404,131 @@ class AdminOtherServiceController extends Controller
         }
 
         return view('admin.other-service.index');
+    }
+
+
+    public function financeIndex(Request $request)
+    {
+        $financeSlugs = [
+            'gst-registration-filing',
+            'dsc-digital-signature',
+            'msme-registration',
+            'food-licence',
+            'import-export-certificate',
+        ];
+
+        if ($request->ajax()) {
+
+            $applications = OtherService::query()
+                ->with([
+                    'user',
+                    'assignedUser',
+                ])
+                ->whereIn('service_slug', $financeSlugs);
+
+            if (auth()->user()->hasRole('Executive')) {
+                $applications
+                    ->whereNotNull('assigned_to')
+                    ->where('assigned_to', auth()->id());
+            }
+
+            $applications->latest();
+
+            return datatables()
+                ->of($applications)
+                ->addIndexColumn()
+
+                ->addColumn('retailer', function ($row) {
+                    return '
+                        <div class="retailer-box">
+                            <div class="retailer-avatar">'
+                            . strtoupper(substr($row->user->name ?? 'N', 0, 1)) .
+                            '</div>
+                            <div>
+                                <div class="retailer-name">'
+                                . ($row->user->name ?? 'N/A') .
+                                '</div>
+                            </div>
+                        </div>';
+                })
+
+                ->addColumn('application_no', fn($row) =>
+                    '<div class="application-box"><span class="application-id">'
+                    . $row->application_no .
+                    '</span></div>'
+                )
+
+                ->addColumn('applicant', function ($row) {
+                    return e(
+                        $row->getField(
+                            'customer_name',
+                            $row->getField('child_name', 'N/A')
+                        )
+                    );
+                })
+
+                ->addColumn('mobile', fn($row) =>
+                    $row->getField('mobile', '-')
+                )
+
+                ->addColumn('service', fn($row) =>
+                    '<span class="badge bg-info">'.$row->service_name.'</span>'
+                )
+
+                ->addColumn('status', fn($row) => $row->status_badge)
+
+                ->addColumn('payment', fn($row) => $row->payment_badge)
+
+                ->addColumn('assigned_to', function ($row) {
+
+                    if ($row->assignedUser) {
+                        return '<span class="assigned-badge">'
+                            .$row->assignedUser->name.
+                        '</span>';
+                    }
+
+                    return '<span class="not-assigned-badge">
+                                Not Assigned
+                            </span>';
+                })
+
+                ->addColumn('created_at', function ($row) {
+
+                    return '
+                        <div>
+                            <div class="fw-semibold">'
+                                .$row->created_at->format('d M Y').'
+                            </div>
+                            <small class="text-muted">'
+                                .$row->created_at->format('h:i A').'
+                            </small>
+                        </div>';
+                })
+
+                ->addColumn('action', function ($row) {
+
+                    return '
+                        <a href="'.route('admin.other-service.show',$row->id).'"
+                        class="btn btn-primary btn-sm">
+                            <i class="fa fa-eye"></i> View
+                        </a>';
+                })
+
+                ->rawColumns([
+                    'retailer',
+                    'application_no',
+                    'service',
+                    'status',
+                    'payment',
+                    'assigned_to',
+                    'created_at',
+                    'action'
+                ])
+
+                ->make(true);
+        }
+
+        return view('admin.other-service.finance-index');
     }
 
 

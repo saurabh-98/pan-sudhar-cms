@@ -297,6 +297,7 @@ class PermissionSeeder extends Seeder
             'pan-find.reject',
 
             'retailer-activity.view',
+            'finance-other-service.view',
 
             'chat.view',
             'chat.reply',
