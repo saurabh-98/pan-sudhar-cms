@@ -607,7 +607,7 @@ class AdminTdsController extends Controller
         $alreadyUploaded = ServiceDocument::where(
 
             'service_type',
-            'tds'
+            'tds_refund'
 
         )
         ->where(
@@ -662,7 +662,7 @@ class AdminTdsController extends Controller
 
         ServiceDocument::create([
 
-            'service_type'  => 'itr',
+            'service_type'  => 'tds_refund',
 
             'service_id'    => $application->id,
 
