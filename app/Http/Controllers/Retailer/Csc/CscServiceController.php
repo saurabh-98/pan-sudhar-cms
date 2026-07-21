@@ -682,26 +682,62 @@ class CscServiceController extends Controller
                     ';
                 })
 
-                ->addColumn('document_status', function ($row) {
+                   ->addColumn('document_status', function ($row) {
 
-                    if ($row->serviceDocuments->isNotEmpty()) {
+                    $document = $row->serviceDocuments->first();
+
+                    if (
+                        $document &&
+                        file_exists_custom($document->file_path) &&
+                        in_array(
+                            strtolower($row->status),
+                            ['approved', 'completed']
+                        )
+                    ) {
 
                         return '
-                            <span class="badge bg-success">
-                                <i class="fa fa-check-circle"></i>
-                                Available
+                            <div class="d-flex gap-2 flex-wrap">
+
+                                <a
+                                    href="' . file_url($document->file_path) . '"
+                                    target="_blank"
+                                    class="btn btn-sm btn-success"
+                                >
+                                    <i class="fa fa-eye me-1"></i>
+                                    View
+                                </a>
+
+                                <a
+                                    href="' . file_url($document->file_path) . '"
+                                    download
+                                    class="btn btn-sm btn-primary"
+                                >
+                                    <i class="fa fa-download me-1"></i>
+                                    Download
+                                </a>
+
+                            </div>
+                        ';
+                    }
+
+                    if (
+                        $document &&
+                        file_exists_custom($document->file_path)
+                    ) {
+
+                        return '
+                            <span class="badge bg-info">
+                                Uploaded
                             </span>
                         ';
                     }
 
                     return '
-                        <span class="badge bg-danger">
-                            <i class="fa fa-times-circle"></i>
+                        <span class="badge bg-warning text-dark">
                             Pending
                         </span>
                     ';
                 })
-
                 ->addColumn('action', function ($row) {
 
                     return '
