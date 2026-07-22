@@ -11,42 +11,18 @@
         <div class="card-header d-flex justify-content-between align-items-center">
 
             <h4 class="mb-0">
-
                 <i class="fas fa-qrcode me-2"></i>
-
                 Payment Requests
-
             </h4>
 
         </div>
 
         <div class="card-body">
 
-            @if(session('success'))
-
-                <div class="alert alert-success">
-
-                    {{ session('success') }}
-
-                </div>
-
-            @endif
-
-            @if(session('error'))
-
-                <div class="alert alert-danger">
-
-                    {{ session('error') }}
-
-                </div>
-
-            @endif
-
             <div class="table-responsive">
 
-                <table
-                    class="table table-bordered table-striped align-middle"
-                    id="paymentRequestTable">
+                <table class="table table-bordered table-striped align-middle"
+                       id="paymentRequestTable">
 
                     <thead>
 
@@ -82,13 +58,14 @@
 
 @endsection
 
+
 @section('scripts')
 
 <script>
 
 $(function(){
 
-    $('#paymentRequestTable').DataTable({
+    let table = $('#paymentRequestTable').DataTable({
 
         processing:true,
 
@@ -101,75 +78,46 @@ $(function(){
         columns:[
 
             {
-
                 data:'DT_RowIndex',
-
                 name:'DT_RowIndex',
-
-                orderable:false,
-
-                searchable:false
-
-            },
-
-            {
-
-                data:'retailer',
-
-                name:'retailer',
-
+                searchable:false,
                 orderable:false
-
             },
 
             {
+                data:'retailer',
+                name:'retailer',
+                orderable:false
+            },
 
+            {
                 data:'amount',
-
                 name:'amount'
-
             },
 
             {
-
                 data:'utr',
-
                 name:'utr',
-
                 defaultContent:'-'
-
             },
 
             {
-
                 data:'status',
-
                 name:'status',
-
-                orderable:false,
-
-                searchable:false
-
+                searchable:false,
+                orderable:false
             },
 
             {
-
                 data:'created_at',
-
                 name:'created_at'
-
             },
 
             {
-
                 data:'action',
-
                 name:'action',
-
-                orderable:false,
-
-                searchable:false
-
+                searchable:false,
+                orderable:false
             }
 
         ],
@@ -177,6 +125,209 @@ $(function(){
         pageLength:10,
 
         order:[[5,'desc']]
+
+    });
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Approve Payment
+    |--------------------------------------------------------------------------
+    */
+
+    $(document).on('click','.btn-approve',function(){
+
+        let url = $(this).data('url');
+
+        Swal.fire({
+
+            title:'Approve Payment',
+
+            input:'textarea',
+
+            inputLabel:'Admin Remarks',
+
+            inputPlaceholder:'Enter remarks (optional)',
+
+            showCancelButton:true,
+
+            confirmButtonText:'Approve',
+
+            cancelButtonText:'Cancel',
+
+            confirmButtonColor:'#198754'
+
+        }).then((result)=>{
+
+            if(!result.isConfirmed){
+                return;
+            }
+
+            Swal.fire({
+
+                title:'Processing...',
+
+                allowOutsideClick:false,
+
+                didOpen:()=>{
+                    Swal.showLoading();
+                }
+
+            });
+
+            $.ajax({
+
+                url:url,
+
+                type:'POST',
+
+                data:{
+                    _token:"{{ csrf_token() }}",
+                    admin_remarks:result.value
+                },
+
+                success:function(response){
+
+                    Swal.fire({
+
+                        icon:'success',
+
+                        title:'Success',
+
+                        text:response.message
+
+                    });
+
+                    table.ajax.reload(null,false);
+
+                },
+
+                error:function(xhr){
+
+                    Swal.fire({
+
+                        icon:'error',
+
+                        title:'Error',
+
+                        text:xhr.responseJSON?.message ?? 'Something went wrong.'
+
+                    });
+
+                }
+
+            });
+
+        });
+
+    });
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Reject Payment
+    |--------------------------------------------------------------------------
+    */
+
+    $(document).on('click','.btn-reject',function(){
+
+        let url=$(this).data('url');
+
+        Swal.fire({
+
+            title:'Reject Payment',
+
+            input:'textarea',
+
+            inputLabel:'Reason',
+
+            inputPlaceholder:'Reason for rejection',
+
+            inputValidator:(value)=>{
+
+                if(!value){
+
+                    return 'Reason is required';
+
+                }
+
+            },
+
+            showCancelButton:true,
+
+            confirmButtonText:'Reject',
+
+            confirmButtonColor:'#dc3545'
+
+        }).then((result)=>{
+
+            if(!result.isConfirmed){
+                return;
+            }
+
+            Swal.fire({
+
+                title:'Processing...',
+
+                allowOutsideClick:false,
+
+                didOpen:()=>{
+
+                    Swal.showLoading();
+
+                }
+
+            });
+
+            $.ajax({
+
+                url:url,
+
+                type:'POST',
+
+                data:{
+
+                    _token:"{{ csrf_token() }}",
+
+                    admin_remarks:result.value
+
+                },
+
+                success:function(response){
+
+                    Swal.fire({
+
+                        icon:'success',
+
+                        title:'Rejected',
+
+                        text:response.message
+
+                    });
+
+                    table.ajax.reload(null,false);
+
+                },
+
+                error:function(xhr){
+
+                    Swal.fire({
+
+                        icon:'error',
+
+                        title:'Error',
+
+                        text:xhr.responseJSON?.message ?? 'Something went wrong.'
+
+                    });
+
+                }
+
+            });
+
+        });
 
     });
 

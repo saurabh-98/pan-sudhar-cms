@@ -1,618 +1,583 @@
-/* ==========================================================
-   RETAILER ERP PREMIUM HEADER 2026
-========================================================== */
+/* =============================================================
+   RETAILER DASHBOARD HEADER — "AURORA LEDGER" THEME
+   A glass header with a living gradient wallet card. Drop in
+   after Bootstrap/FontAwesome. Classes match the stfh-* markup
+   already in the blade template — no HTML changes required.
+============================================================= */
 
-:root{
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
-    --hdr-primary:#2563eb;
-    --hdr-primary-light:#3b82f6;
+:root {
+    /* Core palette — deep indigo / electric violet / cyan, with
+       a warm amber reserved only for money-moving actions */
+    --stfh-ink: #0b1020;
+    --stfh-indigo: #2a2a72;
+    --stfh-violet: #4338ca;
+    --stfh-primary: #3b5bfd;
+    --stfh-primary-dark: #2233c9;
+    --stfh-cyan: #22d3ee;
+    --stfh-amber: #fbbf24;
+    --stfh-amber-dark: #f59e0b;
+    --stfh-success: #22c55e;
+    --stfh-danger: #f43f5e;
 
-    --hdr-success:#10b981;
+    --stfh-text: #101426;
+    --stfh-muted: #6b7280;
+    --stfh-border: rgba(16, 20, 38, 0.08);
+    --stfh-bg: #ffffff;
+    --stfh-surface: #f5f6fb;
 
-    --hdr-dark:#0f172a;
+    --stfh-radius: 18px;
+    --stfh-radius-sm: 12px;
+    --stfh-shadow: 0 1px 2px rgba(16, 20, 38, 0.04), 0 8px 24px rgba(16, 20, 38, 0.06);
+    --stfh-shadow-lg: 0 20px 48px rgba(16, 20, 38, 0.18);
+    --stfh-ease: cubic-bezier(0.22, 1, 0.36, 1);
 
-    --hdr-text:#0f172a;
-    --hdr-muted:#64748b;
-
-    --hdr-border:#e5e7eb;
-
-    --hdr-white:#ffffff;
-
-    --hdr-shadow:
-    0 8px 30px rgba(15,23,42,.06);
-
-    --hdr-transition:.35s ease;
+    --stfh-font-display: 'Outfit', 'Segoe UI', sans-serif;
+    --stfh-font-body: 'Inter', 'Segoe UI', sans-serif;
 }
 
-/* ==========================================================
-   HEADER
-========================================================== */
+html, body {
+    margin: 0;
+    padding: 0;
+}
 
-.stfh-header{
+/* =============================================================
+   HEADER SHELL — frosted glass over whatever sits behind it
+============================================================= */
+.stfh-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 0;
+    padding: 12px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    font-family: var(--stfh-font-body);
 
-    position:sticky;
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: saturate(180%) blur(14px);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    border-bottom: 1px solid var(--stfh-border);
+    box-shadow: var(--stfh-shadow);
+}
 
-    top:0;
+/* subtle top accent line — a hairline gradient rather than a
+   full-strength border, the header's one quiet flourish */
+.stfh-header::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--stfh-primary), var(--stfh-cyan) 45%, var(--stfh-amber) 100%);
+    opacity: 0.9;
+}
 
-    z-index:1050;
+.stfh-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
 
-    display:flex;
+.stfh-left .btn {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--stfh-radius-sm);
+    color: var(--stfh-text);
+    transition: transform 0.25s var(--stfh-ease), background 0.25s var(--stfh-ease), color 0.25s var(--stfh-ease);
+}
 
-    align-items:center;
+.stfh-left .btn:hover {
+    background: var(--stfh-surface);
+    color: var(--stfh-primary);
+    transform: scale(1.08) rotate(-4deg);
+}
 
-    justify-content:space-between;
+.stfh-title {
+    font-family: var(--stfh-font-display);
+    font-weight: 700;
+    font-size: 1.08rem;
+    color: var(--stfh-ink);
+    letter-spacing: -0.015em;
+    white-space: nowrap;
+}
 
-    gap:14px;
+.stfh-left small {
+    font-size: 0.78rem;
+    color: var(--stfh-muted) !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 240px;
+    display: inline-block;
+}
 
-    height:64px;
+/* =============================================================
+   RIGHT SIDE
+============================================================= */
+.stfh-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
 
-    padding:0 18px;
+/* =============================================================
+   WALLET CARD — the signature element: a living gradient mesh
+   with a slow animated drift and a light sweep on hover
+============================================================= */
+.stfh-wallet {
+    display: flex;
+    align-items: stretch;
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--stfh-radius);
+    padding: 11px 14px;
+    color: #fff;
+    isolation: isolate;
 
     background:
-    rgba(255,255,255,.88);
+        radial-gradient(120% 160% at 100% 0%, rgba(34, 211, 238, 0.55), transparent 55%),
+        radial-gradient(120% 160% at 0% 100%, rgba(251, 191, 36, 0.25), transparent 50%),
+        linear-gradient(135deg, var(--stfh-ink) 0%, var(--stfh-indigo) 45%, var(--stfh-violet) 75%, var(--stfh-primary) 100%);
+    background-size: 100% 100%, 100% 100%, 220% 220%;
+    animation: stfh-mesh-drift 14s ease-in-out infinite;
 
-    backdrop-filter:
-    blur(18px);
-
-    -webkit-backdrop-filter:
-    blur(18px);
-
-    border-bottom:
-    1px solid rgba(226,232,240,.70);
-
-    box-shadow:
-    var(--hdr-shadow);
+    box-shadow: var(--stfh-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    transition: box-shadow 0.35s var(--stfh-ease), transform 0.35s var(--stfh-ease);
 }
 
-/* ==========================================================
-   LEFT
-========================================================== */
-
-.stfh-left{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:14px;
+@keyframes stfh-mesh-drift {
+    0%, 100% { background-position: 0% 0%, 0% 0%, 0% 50%; }
+    50% { background-position: 0% 0%, 0% 0%, 100% 50%; }
 }
 
-.stfh-title{
-
-    font-size:17px;
-
-    font-weight:800;
-
-    color:var(--hdr-text);
-
-    line-height:1;
+/* light sweep across the card, revealed on hover */
+.stfh-wallet::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.22) 45%, transparent 60%);
+    background-size: 220% 100%;
+    background-position: 130% 0;
+    transition: background-position 0.8s var(--stfh-ease);
+    pointer-events: none;
 }
 
-.stfh-left small{
-
-    display:block;
-
-    margin-top:2px;
-
-    color:var(--hdr-muted);
-
-    font-size:11px;
+.stfh-wallet:hover {
+    box-shadow: var(--stfh-shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    transform: translateY(-2px);
 }
 
-/* ==========================================================
-   RIGHT
-========================================================== */
-
-.stfh-right{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
+.stfh-wallet:hover::after {
+    background-position: -30% 0;
 }
 
-/* ==========================================================
-   WALLET CARD
-========================================================== */
-
-.stfh-wallet{
-
-    position:relative;
-
-    overflow:hidden;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    gap:18px;
-
-    min-width:360px;
-
-    padding:12px 18px;
-
-    border-radius:18px;
-
-    background:linear-gradient(135deg,#10b981,#14b8a6);
-
-    color:#fff;
-
-    box-shadow:0 12px 30px rgba(16,185,129,.22);
+.stfh-wallet-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-right: 14px;
+    position: relative;
+    z-index: 1;
 }
 
-.stfh-wallet::before{
-
-    content:"";
-
-    position:absolute;
-
-    right:-35px;
-
-    top:-35px;
-
-    width:110px;
-
-    height:110px;
-
-    border-radius:50%;
-
-    background:rgba(255,255,255,.10);
-
-    pointer-events:none;
+.stfh-wallet-icon {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    backdrop-filter: blur(6px);
+    transition: transform 0.3s var(--stfh-ease);
 }
 
-.stfh-wallet::after{
-
-    content:"";
-
-    position:absolute;
-
-    left:-25px;
-
-    bottom:-35px;
-
-    width:90px;
-
-    height:90px;
-
-    border-radius:50%;
-
-    background:rgba(255,255,255,.06);
-
-    pointer-events:none;
+.stfh-wallet:hover .stfh-wallet-icon {
+    transform: rotate(-8deg) scale(1.06);
 }
 
-.stfh-wallet-left{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:14px;
-
-    z-index:2;
+.stfh-wallet-label {
+    font-family: var(--stfh-font-display);
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: rgba(255, 255, 255, 0.72);
+    margin-bottom: 2px;
 }
 
-.stfh-wallet-icon{
-
-    width:48px;
-
-    height:48px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    border-radius:14px;
-
-    background:rgba(255,255,255,.18);
-
-    font-size:18px;
-
-    color:#fff;
-
-    backdrop-filter:blur(10px);
+.stfh-wallet-balance {
+    font-family: var(--stfh-font-display);
+    font-size: 1.22rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+    text-shadow: 0 1px 12px rgba(34, 211, 238, 0.35);
 }
 
-.stfh-wallet-label{
-
-    font-size:11px;
-
-    text-transform:uppercase;
-
-    letter-spacing:1.2px;
-
-    font-weight:700;
-
-    opacity:.85;
+.stfh-wallet-meta {
+    display: flex;
+    gap: 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
+    padding-top: 6px;
 }
 
-.stfh-wallet-balance{
-
-    margin-top:2px;
-
-    font-size:28px;
-
-    font-weight:800;
-
-    line-height:1;
+.stfh-wallet-item {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
 }
 
-.stfh-wallet-actions{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
-
-    z-index:2;
+.stfh-wallet-item small {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.6);
 }
 
-.stfh-wallet-btn{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:8px;
-
-    padding:10px 18px;
-
-    border-radius:30px;
-
-    background:#fff;
-
-    color:#10b981;
-
-    text-decoration:none;
-
-    font-size:13px;
-
-    font-weight:700;
-
-    transition:.3s;
+.stfh-wallet-item strong {
+    font-size: 0.82rem;
+    font-weight: 600;
 }
 
-.stfh-wallet-btn i{
-
-    font-size:12px;
+.stfh-wallet-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    padding-left: 14px;
+    border-left: 1px solid rgba(255, 255, 255, 0.16);
+    position: relative;
+    z-index: 1;
 }
 
-.stfh-wallet-btn:hover{
-
-    background:#f8fafc;
-
-    color:#059669;
-
-    transform:translateY(-2px);
-
-    box-shadow:0 10px 20px rgba(0,0,0,.15);
+.stfh-wallet-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #fff, #eef2ff);
+    color: var(--stfh-primary-dark);
+    font-family: var(--stfh-font-display);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 6px 13px;
+    border-radius: 999px;
+    text-decoration: none;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    transition: transform 0.25s var(--stfh-ease), box-shadow 0.25s var(--stfh-ease), background 0.25s var(--stfh-ease), color 0.25s var(--stfh-ease);
 }
 
-.stfh-wallet-history{
-
-    width:42px;
-
-    height:42px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    border-radius:50%;
-
-    background:rgba(255,255,255,.16);
-
-    color:#fff;
-
-    text-decoration:none;
-
-    transition:.3s;
+.stfh-wallet-btn:hover {
+    background: linear-gradient(135deg, var(--stfh-amber), var(--stfh-amber-dark));
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35);
 }
 
-.stfh-wallet-history:hover{
-
-    background:#fff;
-
-    color:#10b981;
-
-    transform:translateY(-2px);
+.stfh-wallet-btn i {
+    transition: transform 0.25s var(--stfh-ease);
 }
 
-/* ==========================================================
-   SESSION TIMER
-========================================================== */
+.stfh-wallet-btn:hover i {
+    transform: rotate(90deg);
+}
 
-.session-timer-box{
+.stfh-wallet-history {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    transition: transform 0.35s var(--stfh-ease), background 0.25s var(--stfh-ease);
+}
 
-    display:flex;
+.stfh-wallet-history:hover {
+    background: rgba(255, 255, 255, 0.28);
+    transform: rotate(-360deg);
+}
 
-    align-items:center;
+/* =============================================================
+   NOTIFICATION BELL — rings out with an expanding wave when a
+   badge is present
+============================================================= */
+.stfh-notif button {
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    position: relative;
+    transition: background 0.25s var(--stfh-ease);
+}
 
-    gap:6px;
+.stfh-notif button:hover {
+    background: var(--stfh-surface);
+}
 
-    padding:8px 12px;
+.stfh-notif-icon {
+    font-size: 1.15rem;
+    color: var(--stfh-text);
+    transition: transform 0.35s var(--stfh-ease), color 0.25s var(--stfh-ease);
+    transform-origin: top center;
+    display: inline-block;
+}
 
-    border-radius:12px;
+.stfh-notif button:hover .stfh-notif-icon {
+    color: var(--stfh-primary);
+    animation: stfh-ring 0.6s var(--stfh-ease);
+}
 
+@keyframes stfh-ring {
+    0%, 100% { transform: rotate(0); }
+    20% { transform: rotate(14deg); }
+    40% { transform: rotate(-12deg); }
+    60% { transform: rotate(8deg); }
+    80% { transform: rotate(-6deg); }
+}
+
+.stfh-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--stfh-danger), #fb7185);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 2px #fff;
+}
+
+.stfh-badge::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: inherit;
+    animation: stfh-wave 1.8s var(--stfh-ease) infinite;
+    z-index: -1;
+}
+
+@keyframes stfh-wave {
+    0% { transform: scale(1); opacity: 0.7; }
+    100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* =============================================================
+   SHARED DROPDOWN — frosted glass panel
+============================================================= */
+.stfh-dropdown {
+    min-width: 310px;
+    margin-top: 14px !important;
+    padding: 10px !important;
+    border: 1px solid rgba(16, 20, 38, 0.06) !important;
+    border-radius: var(--stfh-radius) !important;
+    background: rgba(255, 255, 255, 0.86) !important;
+    backdrop-filter: blur(18px) saturate(180%);
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
+    box-shadow: var(--stfh-shadow-lg) !important;
+    animation: stfh-dropdown-in 0.22s var(--stfh-ease);
+    transform-origin: top right;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+@keyframes stfh-dropdown-in {
+    from { opacity: 0; transform: translateY(-8px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.stfh-dropdown h6 {
+    font-family: var(--stfh-font-display);
+    color: var(--stfh-ink);
+}
+
+.stfh-dropdown .dropdown-item {
+    border-radius: var(--stfh-radius-sm);
+    margin: 2px 0;
+    width: 100%;
+    font-size: 0.88rem;
+    transition: background 0.2s var(--stfh-ease), color 0.2s var(--stfh-ease), padding-left 0.2s var(--stfh-ease);
+}
+
+.stfh-dropdown .dropdown-item:hover,
+.stfh-dropdown .dropdown-item:focus {
+    background: var(--stfh-surface);
+    color: var(--stfh-primary);
+    padding-left: 1.1rem;
+}
+
+.stfh-dropdown .dropdown-item.text-danger:hover {
+    background: rgba(244, 63, 94, 0.08);
+    color: var(--stfh-danger) !important;
+}
+
+.stfh-dropdown .border-bottom,
+.stfh-dropdown .border-top {
+    border-color: var(--stfh-border) !important;
+}
+
+.stfh-dropdown .bg-light {
+    background: linear-gradient(135deg, rgba(59, 91, 253, 0.06), rgba(34, 211, 238, 0.06)) !important;
+    border-radius: var(--stfh-radius-sm);
+}
+
+/* notification list rows get a soft left accent on hover */
+.stfh-dropdown .mb-3.border-bottom {
+    border-radius: var(--stfh-radius-sm);
+    padding: 8px 10px !important;
+    border-left: 3px solid transparent;
+    transition: border-color 0.2s var(--stfh-ease), background 0.2s var(--stfh-ease);
+}
+
+.stfh-dropdown .mb-3.border-bottom:hover {
+    border-left-color: var(--stfh-primary);
+    background: var(--stfh-surface);
+}
+
+.stfh-mini-wallet {
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+    background: linear-gradient(135deg, var(--stfh-primary), var(--stfh-cyan));
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    flex-shrink: 0;
+    box-shadow: 0 6px 16px rgba(59, 91, 253, 0.3);
+}
+
+/* =============================================================
+   USER MENU — animated gradient ring on the avatar
+============================================================= */
+.stfh-user-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: transparent;
+    border: 1px solid transparent;
+    padding: 4px 10px 4px 4px;
+    border-radius: 999px;
+    transition: background 0.25s var(--stfh-ease), border-color 0.25s var(--stfh-ease);
+}
+
+.stfh-user-btn:hover {
+    background: var(--stfh-surface);
+    border-color: var(--stfh-border);
+}
+
+.stfh-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    padding: 2px;
     background:
-    linear-gradient(
-        135deg,
-        #eff6ff,
-        #dbeafe
-    );
-
-    color:#2563eb;
-
-    font-size:12px;
-
-    font-weight:700;
-
-    border:
-    1px solid #bfdbfe;
+        linear-gradient(#fff, #fff) padding-box,
+        conic-gradient(from 0deg, var(--stfh-primary), var(--stfh-cyan), var(--stfh-amber), var(--stfh-primary)) border-box;
+    border: 2px solid transparent;
+    transition: transform 0.3s var(--stfh-ease);
 }
 
-.session-timer-box i{
-
-    animation:
-    pulseTimer 1.5s infinite;
+.stfh-user-btn:hover .stfh-avatar {
+    transform: scale(1.06);
+    animation: stfh-ring-spin 2.4s linear infinite;
 }
 
-@keyframes pulseTimer{
-
-    50%{
-
-        transform:scale(1.12);
-    }
+@keyframes stfh-ring-spin {
+    from { filter: hue-rotate(0deg); }
+    to { filter: hue-rotate(360deg); }
 }
 
-/* ==========================================================
-   NOTIFICATION
-========================================================== */
-
-.stfh-notif{
-
-    position:relative;
+.stfh-username {
+    font-family: var(--stfh-font-display);
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--stfh-text);
+    line-height: 1.1;
 }
 
-.stfh-notif button{
-
-    width:42px;
-    height:42px;
-
-    border:none;
-
-    border-radius:12px;
-
-    display:flex;
-
-    align-items:center;
-    justify-content:center;
-
-    background:#fff;
-
-    border:1px solid var(--hdr-border);
-
-    transition:var(--hdr-transition);
+.stfh-user-btn small {
+    color: var(--stfh-muted) !important;
 }
 
-.stfh-notif button:hover{
-
-    background:
-    linear-gradient(
-        135deg,
-        #eff6ff,
-        #dbeafe
-    );
-
-    border-color:#2563eb;
-
-    transform:translateY(-2px);
+.stfh-user-btn .fa-angle-down {
+    font-size: 0.75rem;
+    color: var(--stfh-muted);
+    transition: transform 0.3s var(--stfh-ease), color 0.3s var(--stfh-ease);
 }
 
-.stfh-notif-icon{
-
-    color:#475569;
-
-    font-size:16px;
+.stfh-user-btn[aria-expanded="true"] .fa-angle-down {
+    transform: rotate(180deg);
+    color: var(--stfh-primary);
 }
 
-.stfh-badge{
-
-    position:absolute;
-
-    top:-3px;
-    right:-3px;
-
-    width:18px;
-    height:18px;
-
-    border-radius:50%;
-
-    display:flex;
-
-    align-items:center;
-    justify-content:center;
-
-    font-size:9px;
-
-    font-weight:800;
-
-    color:#fff;
-
-    background:#ef4444;
-
-    animation:
-    notifPulse 2s infinite;
-}
-
-@keyframes notifPulse{
-
-    0%{
-        box-shadow:0 0 0 0 rgba(239,68,68,.5);
-    }
-
-    70%{
-        box-shadow:0 0 0 10px rgba(239,68,68,0);
-    }
-
-    100%{
-        box-shadow:0 0 0 0 rgba(239,68,68,0);
-    }
-}
-
-/* ==========================================================
-   USER BUTTON
-========================================================== */
-
-.stfh-user-btn{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
-
-    padding:5px 8px 5px 5px;
-
-    border:none;
-
-    border-radius:16px;
-
-    background:#fff;
-
-    border:1px solid var(--hdr-border);
-
-    transition:var(--hdr-transition);
-}
-
-.stfh-user-btn:hover{
-
-    transform:translateY(-2px);
-
-    box-shadow:
-    0 10px 25px rgba(37,99,235,.08);
-}
-
-.stfh-avatar{
-
-    width:38px;
-    height:38px;
-
-    border-radius:12px;
-
-    object-fit:cover;
-
-    border:2px solid #dbeafe;
-}
-
-.stfh-username{
-
-    font-size:13px;
-
-    font-weight:700;
-
-    color:#0f172a;
-}
-
-/* ==========================================================
-   DROPDOWN
-========================================================== */
-
-.stfh-dropdown{
-
-    min-width:320px;
-
-    margin-top:10px;
-
-    border:none !important;
-
-    border-radius:18px !important;
-
-    overflow:hidden;
-
-    box-shadow:
-    0 25px 60px rgba(15,23,42,.12);
-}
-
-.stfh-dropdown .dropdown-item{
-
-    padding:12px 18px;
-
-    font-size:13px;
-
-    transition:.25s ease;
-}
-
-.stfh-dropdown .dropdown-item:hover{
-
-    background:#eff6ff;
-
-    color:#2563eb;
-}
-
-/* ==========================================================
-   ADMIN BUTTON
-========================================================== */
-
-.btn-danger{
-
-    border-radius:10px !important;
-
-    font-size:12px !important;
-
-    font-weight:700 !important;
-
-    padding:8px 12px !important;
-}
-
-/* ==========================================================
+/* =============================================================
    RESPONSIVE
-========================================================== */
+============================================================= */
+@media (max-width: 991.98px) {
+    .stfh-header { padding: 10px 16px; }
+    .stfh-right { gap: 8px; }
+    .stfh-title { font-size: 0.95rem; }
+    .stfh-left small { max-width: 160px; }
+}
 
-@media(max-width:992px){
-
-    .session-timer-box,
-    .stfh-wallet{
-
-        display:none;
-    }
-
-    .stfh-header{
-
-        height:60px;
-
-        padding:0 12px;
-    }
-
-    .stfh-title{
-
-        font-size:15px;
+@media (max-width: 575.98px) {
+    .stfh-header { padding: 8px 12px; }
+    .stfh-title { font-size: 0.85rem; }
+    .stfh-left small { max-width: 110px; font-size: 0.7rem; }
+    .stfh-avatar { width: 34px; height: 34px; }
+    .stfh-dropdown {
+        min-width: calc(100vw - 24px);
+        left: 12px !important;
+        right: 12px !important;
     }
 }
 
-@media(max-width:576px){
+@media (max-width: 380px) {
+    .stfh-right { gap: 4px; }
+}
 
-    .stfh-header{
+/* custom scrollbar inside long dropdowns */
+.stfh-dropdown::-webkit-scrollbar { width: 6px; }
+.stfh-dropdown::-webkit-scrollbar-thumb {
+    background: rgba(59, 91, 253, 0.35);
+    border-radius: 999px;
+}
 
-        padding:0 10px;
-    }
-
-    .stfh-username{
-
-        display:none;
-    }
-
-    .stfh-dropdown{
-
-        min-width:260px;
+/* respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .stfh-wallet,
+    .stfh-wallet::after,
+    .stfh-wallet-btn,
+    .stfh-wallet-history,
+    .stfh-avatar,
+    .stfh-notif-icon,
+    .stfh-dropdown,
+    .stfh-badge,
+    .stfh-badge::before {
+        animation: none !important;
+        transition: none !important;
     }
 }

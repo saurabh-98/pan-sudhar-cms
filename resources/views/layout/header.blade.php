@@ -103,32 +103,7 @@
                 | LOGO ICON / IMAGE / TEXT
                 ===================================================== -->
 
-                <div class="logo-icon">
-
-                    @if(($settings['logo_type'] ?? '') === 'image'
-                        && !empty($settings['logo']))
-
-                        <!-- IMAGE LOGO -->
-                        <img src="{{ asset($settings['logo']) }}"
-                             alt="Portal Logo">
-
-                    @elseif(($settings['logo_type'] ?? '') === 'text')
-
-                        <!-- TEXT LOGO -->
-                        <span class="dynamic-logo-text">
-
-                            {{ $settings['logo_text'] ?? 'PS' }}
-
-                        </span>
-
-                    @else
-
-                        <!-- DEFAULT -->
-                        🪪
-
-                    @endif
-
-                </div>
+               
 
                 <!-- =====================================================
                 | TEXT

@@ -343,69 +343,184 @@
 
 <script>
 
-$('#approveBtn').click(function(){
+$(function(){
 
-    Swal.fire({
+    // ============================
+    // APPROVE PAYMENT
+    // ============================
 
-        title:'Approve Payment?',
+    $('#approveBtn').click(function(){
 
-        text:'Wallet balance will be credited.',
+        Swal.fire({
 
-        icon:'question',
+            title:'Approve Payment?',
 
-        showCancelButton:true,
+            text:'Wallet balance / due amount will be adjusted.',
 
-        confirmButtonColor:'#198754',
+            icon:'question',
 
-        confirmButtonText:'Approve'
+            showCancelButton:true,
 
-    }).then((result)=>{
+            confirmButtonColor:'#198754',
 
-        if(result.isConfirmed){
+            confirmButtonText:'Approve'
 
-            $('#approveForm').submit();
+        }).then((result)=>{
 
-        }
+            if(!result.isConfirmed){
+                return;
+            }
+
+            Swal.fire({
+
+                title:'Processing...',
+
+                allowOutsideClick:false,
+
+                didOpen:()=>{
+                    Swal.showLoading();
+                }
+
+            });
+
+            $.ajax({
+
+                url:$('#approveForm').attr('action'),
+
+                type:'POST',
+
+                data:$('#approveForm').serialize(),
+
+                success:function(response){
+
+                    Swal.fire({
+
+                        icon:'success',
+
+                        title:'Success',
+
+                        text:response.message
+
+                    }).then(()=>{
+
+                        window.location.href="{{ route('admin.wallet.payment-requests') }}";
+
+                    });
+
+                },
+
+                error:function(xhr){
+
+                    Swal.fire({
+
+                        icon:'error',
+
+                        title:'Error',
+
+                        text:xhr.responseJSON?.message ?? 'Something went wrong.'
+
+                    });
+
+                }
+
+            });
+
+        });
 
     });
 
-});
 
-$('#rejectBtn').click(function(){
+    // ============================
+    // REJECT PAYMENT
+    // ============================
 
-    Swal.fire({
+    $('#rejectBtn').click(function(){
 
-        title:'Reject Payment',
+        Swal.fire({
 
-        input:'textarea',
+            title:'Reject Payment',
 
-        inputPlaceholder:'Enter rejection reason...',
+            input:'textarea',
 
-        inputValidator:(value)=>{
+            inputPlaceholder:'Enter rejection reason...',
 
-            if(!value){
+            inputValidator:(value)=>{
 
-                return 'Remarks are required';
+                if(!value){
+                    return 'Remarks are required';
+                }
 
+            },
+
+            showCancelButton:true,
+
+            confirmButtonColor:'#dc3545',
+
+            confirmButtonText:'Reject'
+
+        }).then((result)=>{
+
+            if(!result.isConfirmed){
+                return;
             }
-
-        },
-
-        showCancelButton:true,
-
-        confirmButtonText:'Reject',
-
-        confirmButtonColor:'#dc3545'
-
-    }).then((result)=>{
-
-        if(result.isConfirmed){
 
             $('#rejectRemarks').val(result.value);
 
-            $('#rejectForm').submit();
+            Swal.fire({
 
-        }
+                title:'Processing...',
+
+                allowOutsideClick:false,
+
+                didOpen:()=>{
+                    Swal.showLoading();
+                }
+
+            });
+
+            $.ajax({
+
+                url:$('#rejectForm').attr('action'),
+
+                type:'POST',
+
+                data:$('#rejectForm').serialize(),
+
+                success:function(response){
+
+                    Swal.fire({
+
+                        icon:'success',
+
+                        title:'Rejected',
+
+                        text:response.message
+
+                    }).then(()=>{
+
+                        window.location.href="{{ route('admin.wallet.payment-requests') }}";
+
+                    });
+
+                },
+
+                error:function(xhr){
+
+                    Swal.fire({
+
+                        icon:'error',
+
+                        title:'Error',
+
+                        text:xhr.responseJSON?.message ?? 'Something went wrong.'
+
+                    });
+
+                }
+
+            });
+
+        });
 
     });
 

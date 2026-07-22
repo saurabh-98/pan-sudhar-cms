@@ -35,22 +35,34 @@ class WalletController extends Controller
             ->addIndexColumn()
 
             ->editColumn('wallet_balance', function ($row) {
-                return '<strong class="text-success">₹'.number_format($row->wallet_balance, 2).'</strong>';
+                return '<strong class="text-success">₹' . number_format($row->wallet_balance, 2) . '</strong>';
+            })
+
+            ->addColumn('wallet_due', function ($row) {
+
+                if ($row->wallet_due > 0) {
+                    return '<strong class="text-danger">₹' . number_format($row->wallet_due, 2) . '</strong>';
+                }
+
+                return '<strong class="text-success">₹0.00</strong>';
             })
 
             ->addColumn('action', function ($row) {
                 return view('admin.wallet.partials.action-buttons', [
-                    'user'   => $row,
-                    'addBtn' => 'Add',
-                    'addClass' => 'btn-primary',
+                    'user'      => $row,
+                    'addBtn'    => 'Add',
+                    'addClass'  => 'btn-primary',
                 ])->render();
             })
 
-            ->rawColumns(['wallet_balance', 'action'])
+            ->rawColumns([
+                'wallet_balance',
+                'wallet_due',
+                'action'
+            ])
 
             ->make(true);
     }
-
 
     public function executiveList()
     {
@@ -84,25 +96,45 @@ class WalletController extends Controller
     {
         $request->validate([
             'amount' => 'required|numeric|min:1',
+            'recharge_type' => 'required|in:payment,credit',
         ]);
 
         $user = DB::transaction(function () use ($request, $id) {
 
             $user = User::lockForUpdate()->findOrFail($id);
 
-            $user->increment('wallet_balance', $request->amount);
+            // Increase wallet balance
+            $user->wallet_balance += $request->amount;
 
-            $user->refresh(); 
+            // If recharge is on credit, also increase due amount
+            if ($request->recharge_type === 'credit') {
+                $user->wallet_due += $request->amount;
+            }
 
-            $remark = $user->hasRole('Executive')
-                ? 'Executive Recharge By Admin'
-                : 'Wallet Recharge By Admin';
+            $user->save();
+            $user->refresh();
+
+            // Wallet Transaction
+            $remark = '';
+
+            if ($user->hasRole('Executive')) {
+
+                $remark = $request->recharge_type === 'credit'
+                    ? 'Executive Credit Recharge (Pay Later)'
+                    : 'Executive Wallet Recharge (Payment Received)';
+
+            } else {
+
+                $remark = $request->recharge_type === 'credit'
+                    ? 'Retailer Credit Recharge (Pay Later)'
+                    : 'Retailer Wallet Recharge (Payment Received)';
+            }
 
             WalletTransaction::create([
                 'user_id' => $user->id,
-                'amount' => $request->amount,
-                'type' => 'credit',
-                'remark' => $remark,
+                'amount'  => $request->amount,
+                'type'    => 'credit',
+                'remark'  => $remark,
             ]);
 
             return $user;
@@ -110,14 +142,15 @@ class WalletController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => $user->hasRole('Executive')
-                ? 'Executive wallet balance added successfully.'
-                : 'Retailer wallet balance added successfully.',
+            'message' => $request->recharge_type === 'credit'
+                ? 'Wallet credited successfully. Due amount has also been updated.'
+                : 'Wallet recharged successfully.',
             'data' => [
-                'user_id' => $user->id,
+                'user_id'        => $user->id,
                 'wallet_balance' => $user->wallet_balance,
+                'wallet_due'     => $user->wallet_due,
             ]
-        ], 200);
+        ]);
     }
 
     public function deductBalance(Request $request, $id)
@@ -256,100 +289,169 @@ class WalletController extends Controller
         );
     }
 
-    public function approvePayment(Request $request,$id)
+    public function approvePayment(Request $request, $id)
     {
         DB::beginTransaction();
 
-        try{
+        try {
 
             $payment = PaymentRequest::findOrFail($id);
 
-            if($payment->status!='pending'){
+            if ($payment->status != 'pending') {
 
-                return back()->with(
-                    'error',
-                    'Request already processed.'
-                );
-
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Request already processed.'
+                ], 422);
             }
 
-            $user = User::findOrFail($payment->retailer_id);
+            $user = User::lockForUpdate()->findOrFail($payment->retailer_id);
 
-            $user->wallet_balance += $payment->amount;
+            $paymentAmount = $payment->amount;
+
+            /*
+            |--------------------------------------------------------------------------
+            | First adjust outstanding due
+            |--------------------------------------------------------------------------
+            */
+
+            if ($user->wallet_due > 0) {
+
+                if ($paymentAmount >= $user->wallet_due) {
+
+                    // Payment clears all due
+                    $remaining   = $paymentAmount - $user->wallet_due;
+                    $adjustedDue = $user->wallet_due;
+
+                    $user->wallet_due = 0;
+
+                    // Extra amount goes into wallet
+                    if ($remaining > 0) {
+
+                        $user->wallet_balance += $remaining;
+
+                        WalletTransaction::create([
+                            'user_id' => $user->id,
+                            'amount'  => $remaining,
+                            'type'    => 'credit',
+                            'remark'  => 'Extra Payment Credited To Wallet'
+                        ]);
+                    }
+
+                    WalletTransaction::create([
+                        'user_id' => $user->id,
+                        'amount'  => $adjustedDue,
+                        'type'    => 'due_clear',
+                        'remark'  => 'Outstanding Due Cleared'
+                    ]);
+
+                } else {
+
+                    // Partial payment, reduce due only
+                    $user->wallet_due -= $paymentAmount;
+
+                    WalletTransaction::create([
+                        'user_id' => $user->id,
+                        'amount'  => $paymentAmount,
+                        'type'    => 'due_clear',
+                        'remark'  => 'Partial Due Payment'
+                    ]);
+                }
+
+            } else {
+
+                // No outstanding due, normal wallet recharge
+                $user->wallet_balance += $paymentAmount;
+
+                WalletTransaction::create([
+                    'user_id' => $user->id,
+                    'amount'  => $paymentAmount,
+                    'type'    => 'credit',
+                    'remark'  => 'Wallet Recharge Approved'
+                ]);
+            }
 
             $user->save();
 
-            WalletTransaction::create([
-
-                'user_id'=>$user->id,
-
-                'amount'=>$payment->amount,
-
-                'type'=>'credit',
-
-                'remark'=>'Wallet Recharge Approved'
-
-            ]);
-
             $payment->update([
-
-                'status'=>'approved',
-
-                'admin_remarks'=>$request->admin_remarks,
-
-                'verified_at'=>Carbon::now()
-
+                'status'        => 'approved',
+                'admin_remarks' => $request->admin_remarks,
+                'verified_at'   => Carbon::now(),
             ]);
 
             DB::commit();
 
-            return redirect()
-                ->route('admin.wallet.payment-requests')
-                ->with(
-                    'success',
-                    'Payment approved successfully.'
-                );
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment approved successfully.',
+                'data' => [
+                    'payment_id'      => $payment->id,
+                    'retailer_id'     => $user->id,
+                    'wallet_balance'  => $user->wallet_balance,
+                    'wallet_due'      => $user->wallet_due,
+                    'payment_status'  => $payment->status,
+                ]
+            ], 200);
 
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
 
             DB::rollBack();
 
-            return back()->with(
-                'error',
-                $e->getMessage()
-            );
-
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
         }
     }
 
-    public function rejectPayment(Request $request,$id)
+
+    public function rejectPayment(Request $request, $id)
     {
-        $payment = PaymentRequest::findOrFail($id);
-
-        if($payment->status!='pending'){
-
-            return back()->with(
-                'error',
-                'Request already processed.'
-            );
-
-        }
-
-        $payment->update([
-
-            'status'=>'rejected',
-
-            'admin_remarks'=>$request->admin_remarks,
-
-            'verified_at'=>Carbon::now()
-
+        $request->validate([
+            'admin_remarks' => 'required|string|max:500',
         ]);
 
-        return redirect()
-            ->route('admin.wallet.payment-requests')
-            ->with(
-                'success',
-                'Payment rejected successfully.'
-            );
+        DB::beginTransaction();
+
+        try {
+
+            $payment = PaymentRequest::findOrFail($id);
+
+            if ($payment->status != 'pending') {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Request already processed.'
+                ], 422);
+            }
+
+            $payment->update([
+                'status'        => 'rejected',
+                'admin_remarks' => $request->admin_remarks,
+                'verified_at'   => Carbon::now(),
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment rejected successfully.',
+                'data' => [
+                    'payment_id'     => $payment->id,
+                    'payment_status' => $payment->status,
+                    'admin_remarks'  => $payment->admin_remarks,
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+
+        }
     }
 }

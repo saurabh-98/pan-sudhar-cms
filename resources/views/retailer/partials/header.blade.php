@@ -74,6 +74,23 @@
                         ₹{{ number_format(auth()->user()->wallet_balance ?? 0,2) }}
                     </div>
 
+                   <div class="stfh-wallet-meta">
+
+                
+                        <div class="stfh-wallet-item">
+
+                            <small>Outstanding Due</small>
+
+                            <strong class="{{ (auth()->user()->wallet_due ?? 0) > 0 ? 'text-warning' : 'text-white' }}">
+
+                                ₹{{ number_format(auth()->user()->wallet_due ?? 0,2) }}
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
             </div>
@@ -304,16 +321,30 @@
                         <div>
 
                             <small class="text-muted d-block">
-
                                 Available Balance
-
                             </small>
 
-                            <h5 class="mb-0 fw-bold text-primary">
-
+                            <h5 class="mb-2 fw-bold text-primary">
                                 ₹{{ number_format(auth()->user()->wallet_balance ?? 0,2) }}
-
                             </h5>
+
+                            <small class="text-muted d-block">
+                                Outstanding Due
+                            </small>
+
+                            @if((auth()->user()->wallet_due ?? 0) > 0)
+
+                                <h6 class="mb-0 fw-bold text-danger">
+                                    ₹{{ number_format(auth()->user()->wallet_due,2) }}
+                                </h6>
+
+                            @else
+
+                                <h6 class="mb-0 fw-bold text-success">
+                                    ₹0.00
+                                </h6>
+
+                            @endif
 
                         </div>
 

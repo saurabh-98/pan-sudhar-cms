@@ -154,7 +154,7 @@ class ChargeSeeder extends Seeder
 
             [
                 'name'        => 'Father/Husband Name Update',
-                'code'        => 'father-husband-name-update',
+                'code'        => 'father_husband_name_update',
                 'type'        => 'fixed',
                 'value'       => 250,
                 'description' => 'Father/Husband Name Update Charge',
@@ -340,7 +340,7 @@ class ChargeSeeder extends Seeder
                 'name'        => 'Birth Certificate',
                 'code'        => 'birth_certificate',
                 'type'        => 'fixed',
-                'value'       => 50,
+                'value'       => 1500,
                 'description' => 'Birth Certificate Charge',
                 'is_active'   => 1,
                 'created_at'  => now(),
