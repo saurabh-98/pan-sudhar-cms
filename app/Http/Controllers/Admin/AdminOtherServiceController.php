@@ -29,8 +29,13 @@ class AdminOtherServiceController extends Controller
             'msme-registration',
             'food-licence',
             'import-export-certificate',
-        ];
 
+            // New Services
+            'pf-service',
+            'loan-service',
+            'insurance-service',
+        ];
+        
         if ($request->ajax()) {
 
             $applications = OtherService::query()
