@@ -645,6 +645,180 @@ $panFindCount = \App\Models\PanFindHistory::where(
 @endif
 
 
+   {{-- =====================================================
+| REPORTS
+===================================================== --}}
+@canany([
+    'reports.dashboard',
+    'reports.service',
+    'reports.wallet-ledger',
+    'reports.commission',
+    'reports.revenue',
+    'reports.profit-loss'
+])
+
+<li class="sbx-section">
+    Reports
+</li>
+
+<li class="sbx-group">
+
+    {{-- Main Reports Menu --}}
+    <a href="javascript:void(0);" class="sbx-link">
+        <i class="fa-solid fa-chart-column"></i>
+        <span>Reports</span>
+        <i class="fa fa-angle-down ms-auto"></i>
+    </a>
+
+    <ul class="sbx-submenu">
+
+        {{-- Dashboard --}}
+        @can('reports.dashboard')
+        <li>
+            <a href="{{ route('admin.reports.index') }}"
+               class="sbx-link {{ request()->routeIs('admin.reports.index') ? 'sbx-active' : '' }}">
+                <i class="fa fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        @endcan
+
+        {{-- Service Reports --}}
+        @can('reports.service')
+        <li class="sbx-group">
+
+            <a href="javascript:void(0);" class="sbx-link">
+                <i class="fa fa-file-lines"></i>
+                <span>Service Reports</span>
+                <i class="fa fa-angle-down ms-auto"></i>
+            </a>
+
+            <ul class="sbx-submenu">
+
+                <li>
+                    <a href="{{ route('admin.reports.service','new-pan') }}" class="sbx-link">
+                        <i class="fa fa-angle-right"></i>
+                        <span>New PAN</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('admin.reports.service','pan-correction') }}" class="sbx-link">
+                        <i class="fa fa-angle-right"></i>
+                        <span>PAN Correction</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('admin.reports.service','pan-find') }}" class="sbx-link">
+                        <i class="fa fa-angle-right"></i>
+                        <span>PAN Find</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('admin.reports.service','pan-without-document') }}" class="sbx-link">
+                        <i class="fa fa-angle-right"></i>
+                        <span>PAN Without Document</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('admin.reports.service','aadhaar') }}" class="sbx-link">
+                        <i class="fa fa-angle-right"></i>
+                        <span>Aadhaar</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('admin.reports.service','csc') }}" class="sbx-link">
+                        <i class="fa fa-angle-right"></i>
+                        <span>CSC</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('admin.reports.service','bank') }}" class="sbx-link">
+                        <i class="fa fa-angle-right"></i>
+                        <span>Bank</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('admin.reports.service','voter') }}" class="sbx-link">
+                        <i class="fa fa-angle-right"></i>
+                        <span>Voter ID</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('admin.reports.service','itr') }}" class="sbx-link">
+                        <i class="fa fa-angle-right"></i>
+                        <span>ITR</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('admin.reports.service','other') }}" class="sbx-link">
+                        <i class="fa fa-angle-right"></i>
+                        <span>Other Services</span>
+                    </a>
+                </li>
+
+            </ul>
+
+        </li>
+        @endcan
+
+        {{-- Wallet Ledger --}}
+        @can('reports.wallet-ledger')
+        <li>
+            <a href="{{ route('admin.reports.wallet') }}"
+               class="sbx-link {{ request()->routeIs('admin.reports.wallet') ? 'sbx-active' : '' }}">
+                <i class="fa fa-wallet"></i>
+                <span>Wallet Ledger</span>
+            </a>
+        </li>
+        @endcan
+
+        {{-- Commission Ledger --}}
+        @can('reports.commission')
+        <li>
+            <a href="{{ route('admin.reports.commission') }}"
+               class="sbx-link {{ request()->routeIs('admin.reports.commission') ? 'sbx-active' : '' }}">
+                <i class="fa fa-percent"></i>
+                <span>Commission Ledger</span>
+            </a>
+        </li>
+        @endcan
+
+        {{-- Revenue Report --}}
+        @can('reports.revenue')
+        <li>
+            <a href="{{ route('admin.reports.revenue') }}"
+               class="sbx-link {{ request()->routeIs('admin.reports.revenue') ? 'sbx-active' : '' }}">
+                <i class="fa fa-chart-line"></i>
+                <span>Revenue Report</span>
+            </a>
+        </li>
+        @endcan
+
+        {{-- Profit & Loss --}}
+        @can('reports.profit-loss')
+        <li>
+            <a href="{{ route('admin.reports.profit') }}"
+               class="sbx-link {{ request()->routeIs('admin.reports.profit') ? 'sbx-active' : '' }}">
+                <i class="fa fa-coins"></i>
+                <span>Profit &amp; Loss</span>
+            </a>
+        </li>
+        @endcan
+
+    </ul>
+
+</li>
+
+@endcanany
 
         {{-- =====================================================
         | LOCATION MASTER
@@ -1023,67 +1197,61 @@ $panFindCount = \App\Models\PanFindHistory::where(
         {{-- =====================================================
         | PAYMENT SETTINGS
         ====================================================== --}}
-       @if(
+        @if(
             auth()->user()->can('upi.view') ||
             auth()->user()->can('charges.view') ||
+            auth()->user()->can('profit-partners.view') ||
             auth()->user()->can('footer.view')
         )
 
         <li class="sbx-section">
-
             Payment Settings
-
         </li>
 
         <li class="sbx-group">
 
             <ul class="sbx-submenu">
 
+                {{-- UPI --}}
                 @can('upi.view')
-
                 <li>
-
                     <a href="{{ route('admin.upi.index') }}"
-                       class="sbx-link
-                       {{ request()->routeIs('admin.upi.*')
-                            ? 'sbx-active' : '' }}">
+                    class="sbx-link {{ request()->routeIs('admin.upi.*') ? 'sbx-active' : '' }}">
 
                         <i class="fa fa-qrcode"></i>
 
-                        <span>
-
-                            UPI Settings
-
-                        </span>
+                        <span>UPI Settings</span>
 
                     </a>
-
                 </li>
-
                 @endcan
 
-
+                {{-- Charges --}}
                 @can('charges.view')
-
                 <li>
-
                     <a href="{{ route('admin.charges.index') }}"
-                    class="sbx-link
-                    {{ request()->routeIs('admin.charges.*')
-                            ? 'sbx-active' : '' }}">
+                    class="sbx-link {{ request()->routeIs('admin.charges.*') ? 'sbx-active' : '' }}">
 
                         <i class="fa fa-money-bill-wave"></i>
 
-                        <span>
-
-                            Charges Management
-
-                        </span>
+                        <span>Charges Management</span>
 
                     </a>
-
                 </li>
+                @endcan
 
+                {{-- Profit Partners --}}
+                @can('profit-partners.view')
+                <li>
+                    <a href="{{ route('admin.profit-partners.index') }}"
+                    class="sbx-link {{ request()->routeIs('admin.profit-partners.*') ? 'sbx-active' : '' }}">
+
+                        <i class="fas fa-handshake"></i>
+
+                        <span>Profit Partners</span>
+
+                    </a>
+                </li>
                 @endcan
 
             </ul>

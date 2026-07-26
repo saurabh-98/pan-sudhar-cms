@@ -12,16 +12,18 @@ use App\Models\PanApplication;
 use App\Models\User;
 use App\Models\WalletTransaction;
 use App\Models\ServiceDocument;
+use App\Services\ProfitDistributionService;
 
 use ZipArchive;
 
 class AdminNewPanController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | PAN APPLICATION LIST
-    |--------------------------------------------------------------------------
-    */
+        protected ProfitDistributionService $profitDistribution;
+
+        public function __construct(ProfitDistributionService $profitDistribution)
+        {
+            $this->profitDistribution = $profitDistribution;
+        }
 
     
 
@@ -797,7 +799,7 @@ class AdminNewPanController extends Controller
         ]);
     }
 
-    /*
+   /*
     |--------------------------------------------------------------------------
     | UPDATE STATUS
     |--------------------------------------------------------------------------
@@ -811,6 +813,30 @@ class AdminNewPanController extends Controller
 
     /*
     |--------------------------------------------------------------------------
+    | BUSINESS PARTNER PROFIT DISTRIBUTION
+    |--------------------------------------------------------------------------
+    */
+
+    $this->profitDistribution->distribute(
+
+        serviceType: 'pan',
+
+        serviceId: $application->id,
+
+        referenceNo: $application->application_no,
+
+        serviceAmount: (float) ($application->amount ?? $application->charge ?? 0),
+
+        executiveCommission: $executiveCommission,
+
+        distributorCommission: $distributorCommission,
+
+        remarks: 'PAN Service Profit Distribution'
+
+    );
+
+    /*
+    |--------------------------------------------------------------------------
     | SUCCESS RESPONSE
     |--------------------------------------------------------------------------
     */
@@ -819,9 +845,7 @@ class AdminNewPanController extends Controller
 
         'status' => true,
 
-        'message' =>
-
-            'Receipt uploaded and commission added successfully.'
+        'message' => 'Receipt uploaded and commission added successfully.'
 
     ]);
 }

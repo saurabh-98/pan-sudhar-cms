@@ -14,11 +14,19 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\File;
+use App\Services\ProfitDistributionService;
 
 
 class AdminPanFindController extends Controller
 {
 
+
+    protected ProfitDistributionService $profitDistribution;
+
+    public function __construct(ProfitDistributionService $profitDistribution)
+    {
+        $this->profitDistribution = $profitDistribution;
+    }
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -937,6 +945,31 @@ class AdminPanFindController extends Controller
             'admin_remark' => 'PAN details verified and submitted by Executive.',
 
         ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | BUSINESS PARTNER PROFIT DISTRIBUTION
+        |--------------------------------------------------------------------------
+        */
+
+        $this->profitDistribution->distribute(
+
+            serviceType: 'pan-find',
+
+            serviceId: $application->id,
+
+            referenceNo: $application->application_no,
+
+            serviceAmount: (float) ($application->amount ?? $application->charge ?? 0),
+
+            executiveCommission: $executiveCommission,
+
+            distributorCommission: $distributorCommission,
+
+            remarks: 'PAN Find Profit Distribution'
+
+        );
 
               /*
         |--------------------------------------------------------------------------

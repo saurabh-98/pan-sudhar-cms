@@ -12,6 +12,14 @@ use App\Services\FooterService;
 use App\Models\Setting;
 use App\Models\Module;
 use App\Models\RetailerModuleAccess;
+use App\Models\PanApplication;
+use App\Models\PanCorrection;
+use App\Models\AadhaarService;
+use App\Models\CscService;
+use App\Models\ItrApplication;
+use App\Models\OtherService;
+
+use App\Observers\ProfitDistributionObserver;
 
 class AppServiceProvider extends ServiceProvider
 {

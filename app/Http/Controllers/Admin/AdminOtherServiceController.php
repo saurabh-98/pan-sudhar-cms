@@ -13,12 +13,19 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\File;
+use App\Services\ProfitDistributionService;
 
 
 class AdminOtherServiceController extends Controller
 {
 
-    
+    protected ProfitDistributionService $profitDistribution;
+
+    public function __construct(
+        ProfitDistributionService $profitDistribution
+    ) {
+        $this->profitDistribution = $profitDistribution;
+    }
 
     public function index(Request $request)
     {
@@ -995,7 +1002,7 @@ class AdminOtherServiceController extends Controller
             ]);
         }
         
-        /*
+       /*
         |--------------------------------------------------------------------------
         | UPDATE STATUS
         |--------------------------------------------------------------------------
@@ -1006,6 +1013,30 @@ class AdminOtherServiceController extends Controller
             'status' => 'Approved'
 
         ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | BUSINESS PARTNER PROFIT DISTRIBUTION
+        |--------------------------------------------------------------------------
+        */
+
+        $this->profitDistribution->distribute(
+
+            serviceType: 'other_service',
+
+            serviceId: $application->id,
+
+            referenceNo: $application->application_no,
+
+            serviceAmount: (float) ($application->amount ?? $application->charge ?? 0),
+
+            executiveCommission: $executiveCommission,
+
+            distributorCommission: $distributorCommission,
+
+            remarks: 'Other Service Profit Distribution'
+
+        );
 
         /*
         |--------------------------------------------------------------------------

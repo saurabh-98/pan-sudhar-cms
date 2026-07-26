@@ -13,13 +13,19 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\File;
+use App\Services\ProfitDistributionService;
 
 
 class AdminAadhaarController extends Controller
 {
 
     
+    protected ProfitDistributionService $profitDistribution;
 
+    public function __construct(ProfitDistributionService $profitDistribution)
+    {
+        $this->profitDistribution = $profitDistribution;
+    }
  
 
     public function index(Request $request)
@@ -939,6 +945,31 @@ class AdminAadhaarController extends Controller
             'status' => 'Approved'
 
         ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Business Partner Profit Distribution
+        |--------------------------------------------------------------------------
+        */
+
+        $this->profitDistribution->distribute(
+
+            serviceType: 'aadhaar',
+
+            serviceId: $application->id,
+
+            referenceNo: $application->application_no,
+
+            serviceAmount: (float) ($application->amount ?? $application->charge ?? 0),
+
+            executiveCommission: $executiveCommission,
+
+            distributorCommission: $distributorCommission,
+
+            remarks: 'Aadhaar Service Profit Distribution'
+
+        );
 
         /*
         |--------------------------------------------------------------------------

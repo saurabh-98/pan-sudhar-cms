@@ -15,15 +15,17 @@ use App\Models\TdsFile;
 use App\Models\User;
 use App\Models\ServiceDocument;
 use App\Models\WalletTransaction;
+use App\Services\ProfitDistributionService;
 
 class AdminTdsController extends Controller
 {
 
-    /*
-    |--------------------------------------------------------------------------
-    | ITR LIST
-    |--------------------------------------------------------------------------
-    */
+    protected ProfitDistributionService $profitDistribution;
+
+    public function __construct(ProfitDistributionService $profitDistribution)
+    {
+        $this->profitDistribution = $profitDistribution;
+    }
 
     
 
@@ -35,7 +37,7 @@ class AdminTdsController extends Controller
 
                 ->with([
                     'user',
-                    'assignedEmployee'
+                    'assignedUser'
                 ]);
 
             /*
@@ -53,20 +55,7 @@ class AdminTdsController extends Controller
                     );
             }
 
-            /*
-            |--------------------------------------------------------------------------
-            | STATUS TAB FILTER
-            |--------------------------------------------------------------------------
-            | NOTE: this model's status column mixes casing ('completed',
-            | 'Approved', 'pending', 'Processing'), and the status-badge
-            | column already treats anything outside those four exact
-            | strings as "Rejected". These filters mirror that same
-            | four-value list exactly so tabs match what the badge shows.
-            | If you ever normalize casing on this column, simplify this
-            | block to a case-insensitive check instead.
-            |--------------------------------------------------------------------------
-            */
-
+    
             if ($request->filled('status_tab')) {
 
                 switch ($request->status_tab) {
@@ -370,7 +359,7 @@ class AdminTdsController extends Controller
 
                 'user',
 
-                'assignedEmployee',
+                'assignedUser',
 
                 'documents.user'
 
@@ -536,7 +525,7 @@ class AdminTdsController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function uploadDocument(
+        public function uploadDocument(
         Request $request,
         int $id
         )
@@ -902,6 +891,31 @@ class AdminTdsController extends Controller
             'status' => 'Approved'
 
         ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | BUSINESS PARTNER PROFIT DISTRIBUTION
+        |--------------------------------------------------------------------------
+        */
+
+        $this->profitDistribution->distribute(
+
+            serviceType: 'tds_refund',
+
+            serviceId: $application->id,
+
+            referenceNo: 'TDS-'.$application->id,
+
+            serviceAmount: (float) ($application->amount ?? $application->charge ?? 0),
+
+            executiveCommission: $executiveCommission,
+
+            distributorCommission: $distributorCommission,
+
+            remarks: 'TDS Refund Profit Distribution'
+
+        );
+
 
         /*
         |--------------------------------------------------------------------------

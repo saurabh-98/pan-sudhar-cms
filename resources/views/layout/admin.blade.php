@@ -30,8 +30,11 @@
     <link rel="stylesheet" href="{{ asset('assets/css/charges-admin.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/charges-admin.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/admin-common-service.css') }}">
-
-
+    <link rel="stylesheet" href="{{ asset('assets/css/report-page.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/revenue-report.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/wallet-ledger.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/commission-ledger.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/profit-loss.css') }}">
 
 </head>
 

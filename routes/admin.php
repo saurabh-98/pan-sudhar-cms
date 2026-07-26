@@ -25,6 +25,8 @@ use App\Http\Controllers\Admin\ServiceGuidelineController;
 use App\Http\Controllers\Admin\AdminTdsController;
 use App\Http\Controllers\Admin\RetailerActivityController;
 use App\Http\Controllers\Admin\PopupAnnouncementController;
+use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\ProfitPartnerController;
 
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\EventController;
@@ -1526,7 +1528,237 @@ Route::prefix('pages')
 
 
 
+     
+   
 
+    Route::prefix('reports')
+        ->name('reports.')
+        ->controller(ReportController::class)
+        ->group(function () {
+
+            /*
+            |--------------------------------------------------------------------------
+            | Dashboard
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get('/', 'index')
+                ->middleware('permission:reports.dashboard')
+                ->name('index');
+
+            /*
+            |--------------------------------------------------------------------------
+            | Wallet Ledger
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get('/wallet-ledger', 'walletLedger')
+                ->middleware('permission:reports.wallet-ledger')
+                ->name('wallet');
+
+            /*
+            |--------------------------------------------------------------------------
+            | Commission Ledger
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get('/commission-ledger', 'commissionLedger')
+                ->middleware('permission:reports.commission')
+                ->name('commission');
+
+            /*
+            |--------------------------------------------------------------------------
+            | Revenue Report
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get('/revenue', 'revenueReport')
+                ->middleware('permission:reports.revenue')
+                ->name('revenue');
+
+            /*
+            |--------------------------------------------------------------------------
+            | Profit & Loss
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get('/profit-loss', 'profitLoss')
+                ->middleware('permission:reports.profit-loss')
+                ->name('profit');
+
+            /*
+            |--------------------------------------------------------------------------
+            | Generic Service Reports
+            |--------------------------------------------------------------------------
+            */
+
+            Route::middleware('permission:reports.service')->group(function () {
+
+                Route::get('/{service}', 'serviceReport')
+                    ->whereIn('service', [
+                        'new-pan',
+                        'pan-correction',
+                        'pan-without-document',
+                        'pan-find',
+                        'aadhaar',
+                        'csc',
+                        'bank',
+                        'voter',
+                        'itr',
+                        'tds',
+                        'other',
+                    ])
+                    ->name('service');
+
+                Route::get('/{service}/data', 'serviceData')
+                    ->whereIn('service', [
+                        'new-pan',
+                        'pan-correction',
+                        'pan-without-document',
+                        'pan-find',
+                        'aadhaar',
+                        'csc',
+                        'bank',
+                        'voter',
+                        'itr',
+                        'tds',
+                        'other',
+                    ])
+                    ->name('data');
+
+                Route::get('/{service}/{id}', 'show')
+                    ->whereNumber('id')
+                    ->whereIn('service', [
+                        'new-pan',
+                        'pan-correction',
+                        'pan-without-document',
+                        'pan-find',
+                        'aadhaar',
+                        'csc',
+                        'bank',
+                        'voter',
+                        'itr',
+                        'tds',
+                        'other',
+                    ])
+                    ->name('show');
+
+            });
+
+            /*
+            |--------------------------------------------------------------------------
+            | Export
+            |--------------------------------------------------------------------------
+            */
+
+            Route::middleware('permission:reports.export')->group(function () {
+
+                Route::get('/{service}/excel', 'exportExcel')
+                    ->whereIn('service', [
+                        'new-pan',
+                        'pan-correction',
+                        'pan-without-document',
+                        'pan-find',
+                        'aadhaar',
+                        'csc',
+                        'bank',
+                        'voter',
+                        'itr',
+                        'tds',
+                        'other',
+                    ])
+                    ->name('excel');
+
+                Route::get('/{service}/pdf', 'exportPdf')
+                    ->whereIn('service', [
+                        'new-pan',
+                        'pan-correction',
+                        'pan-without-document',
+                        'pan-find',
+                        'aadhaar',
+                        'csc',
+                        'bank',
+                        'voter',
+                        'itr',
+                        'tds',
+                        'other',
+                    ])
+                    ->name('pdf');
+
+            });
+
+            /*
+            |--------------------------------------------------------------------------
+            | Print
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get('/{service}/print', 'printReport')
+                ->middleware('permission:reports.print')
+                ->whereIn('service', [
+                    'new-pan',
+                    'pan-correction',
+                    'pan-without-document',
+                    'pan-find',
+                    'aadhaar',
+                    'csc',
+                    'bank',
+                    'voter',
+                    'itr',
+                    'tds',
+                    'other',
+                ])
+                ->name('print');
+
+        });
+
+
+    
+    Route::prefix('profit-partners')
+        ->name('profit-partners.')
+        ->middleware('permission:profit-partners.view')
+        ->group(function () {
+
+            Route::get(
+                '/',
+                [ProfitPartnerController::class, 'index']
+            )->name('index');
+
+            Route::get(
+                '/list',
+                [ProfitPartnerController::class, 'list']
+            )->name('list');
+
+            Route::post(
+                '/store',
+                [ProfitPartnerController::class, 'store']
+            )
+            ->middleware('permission:profit-partners.create')
+            ->name('store');
+
+            Route::get(
+                '/edit/{id}',
+                [ProfitPartnerController::class, 'edit']
+            )
+            ->middleware('permission:profit-partners.edit')
+            ->name('edit');
+
+            Route::post(
+                '/update/{id}',
+                [ProfitPartnerController::class, 'update']
+            )
+            ->middleware('permission:profit-partners.edit')
+            ->name('update');
+
+            Route::delete(
+                '/delete/{id}',
+                [ProfitPartnerController::class, 'destroy']
+            )
+            ->middleware('permission:profit-partners.delete')
+            ->name('delete');
+
+            
+        });
 
     /*
     |--------------------------------------------------------------------------

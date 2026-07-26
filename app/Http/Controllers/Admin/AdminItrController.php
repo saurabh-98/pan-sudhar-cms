@@ -15,9 +15,18 @@ use App\Models\ItrFile;
 use App\Models\User;
 use App\Models\ServiceDocument;
 use App\Models\WalletTransaction;
+use App\Services\ProfitDistributionService;
 
 class AdminItrController extends Controller
 {
+
+
+    protected ProfitDistributionService $profitDistribution;
+
+    public function __construct(ProfitDistributionService $profitDistribution)
+    {
+        $this->profitDistribution = $profitDistribution;
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -791,7 +800,7 @@ class AdminItrController extends Controller
                 'remark'  => 'Executive + Distributor ITR Service Commission #ITR-'.$application->id,
             ]);
         }
-        /*
+       /*
         |--------------------------------------------------------------------------
         | UPDATE STATUS
         |--------------------------------------------------------------------------
@@ -800,6 +809,22 @@ class AdminItrController extends Controller
         $application->update([
 
             'status' => 'Approved'
+
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | SUCCESS RESPONSE
+        |--------------------------------------------------------------------------
+        */
+
+        return response()->json([
+
+            'status' => true,
+
+            'message' => 'ITR receipt uploaded successfully.',
+
+            'file_url' => file_url($path)
 
         ]);
 

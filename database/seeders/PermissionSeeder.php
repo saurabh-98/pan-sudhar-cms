@@ -310,6 +310,28 @@ class PermissionSeeder extends Seeder
             'popup-announcements.edit',
             'popup-announcements.delete',
 
+            /*
+            |--------------------------------------------------------------------------
+            | REPORTS
+            |--------------------------------------------------------------------------
+            */
+
+            'reports.dashboard',
+
+            'reports.service',
+
+            'reports.wallet-ledger',
+
+            'reports.commission',
+
+            'reports.revenue',
+
+            'reports.profit-loss',
+
+            'reports.export',
+
+            'reports.print',
+
 
         ];
 
