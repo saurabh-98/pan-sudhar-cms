@@ -720,6 +720,170 @@ if (! function_exists('other_service_fields')) {
                 ]
             ),
 
+            /*
+            |--------------------------------------------------------------------------
+            | PF SERVICE
+            |--------------------------------------------------------------------------
+            */
+
+            'pf-service' => [
+
+                [
+                    'name' => 'customer_name',
+                    'label' => 'Customer Name',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'mobile',
+                    'label' => 'Mobile Number',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'pf_number',
+                    'label' => 'PF Number',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+            ],
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | LOAN SERVICE
+            |--------------------------------------------------------------------------
+            */
+
+            'loan-service' => [
+
+                [
+                    'name' => 'customer_name',
+                    'label' => 'Customer Name',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'mobile',
+                    'label' => 'Mobile Number',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'loan_type',
+                    'label' => 'Loan Type',
+                    'type' => 'select',
+                    'required' => true,
+                    'options' => [
+                        'Personal Loan',
+                        'Home Loan',
+                        'Credit Card',
+                        'Vehicle Loan',
+                    ],
+                ],
+
+                [
+                    'name' => 'existing_loan',
+                    'label' => 'Existing Loan',
+                    'type' => 'radio',
+                    'required' => true,
+                    'options' => [
+                        'Yes',
+                        'No',
+                    ],
+                ],
+
+                [
+                    'name' => 'in_hand_salary',
+                    'label' => 'In Hand Salary',
+                    'type' => 'number',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'required_amount',
+                    'label' => 'Loan Amount Required',
+                    'type' => 'number',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'remarks',
+                    'label' => 'Remarks',
+                    'type' => 'textarea',
+                ],
+
+            ],
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | INSURANCE SERVICE
+            |--------------------------------------------------------------------------
+            */
+
+            'insurance-service' => [
+
+                [
+                    'name' => 'customer_name',
+                    'label' => 'Customer Name',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'mobile',
+                    'label' => 'Mobile Number',
+                    'type' => 'text',
+                    'required' => true,
+                ],
+
+                [
+                    'name' => 'insurance_type',
+                    'label' => 'Insurance Type',
+                    'type' => 'select',
+                    'required' => true,
+                    'options' => [
+                        'Life Insurance',
+                        'Health Insurance',
+                        'Vehicle Insurance',
+                    ],
+                ],
+
+                [
+                    'name' => 'purpose',
+                    'label' => 'Purpose',
+                    'type' => 'select',
+                    'required' => true,
+                    'options' => [
+                        'Saving',
+                        'Investment',
+                    ],
+                ],
+
+                [
+                    'name' => 'company',
+                    'label' => 'Insurance Company',
+                    'type' => 'select',
+                    'options' => [
+                        'LIC',
+                        'Axis Max',
+                    ],
+                ],
+
+                [
+                    'name' => 'remarks',
+                    'label' => 'Remarks',
+                    'type' => 'textarea',
+                ],
+
+            ],
+
         ][$serviceSlug] ?? [];
     }
 }

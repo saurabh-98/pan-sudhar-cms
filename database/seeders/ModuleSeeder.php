@@ -274,11 +274,35 @@ class ModuleSeeder extends Seeder
                 ],
 
                 [
+                    'slug'       => 'pf-service',
+                    'name'       => 'PF Services',
+                    'icon'       => 'fa-solid fa-id-card',
+                    'route_name' => 'retailer.other-service.service',
+                    'sort_order' => 8,
+                ],
+
+                [
+                    'slug'       => 'loan-service',
+                    'name'       => 'Loan Services',
+                    'icon'       => 'fa-solid fa-hand-holding-dollar',
+                    'route_name' => 'retailer.other-service.service',
+                    'sort_order' => 9,
+                ],
+
+                [
+                    'slug'       => 'insurance-service',
+                    'name'       => 'Insurance Services',
+                    'icon'       => 'fa-solid fa-shield-heart',
+                    'route_name' => 'retailer.other-service.service',
+                    'sort_order' => 10,
+                ],
+
+                [
                     'slug'       => 'itr-history',
                     'name'       => 'Finance-ITR History',
                     'icon'       => 'fa-solid fa-clock-rotate-left',
                     'route_name' => 'retailer.itr.history',
-                    'sort_order' => 8,
+                    'sort_order' => 11,
                 ],
 
                 [
@@ -286,7 +310,7 @@ class ModuleSeeder extends Seeder
                     'name'       => 'Finance-TDS History',
                     'icon'       => 'fa-solid fa-clock-rotate-left',
                     'route_name' => 'retailer.tds.history',
-                    'sort_order' => 9,
+                    'sort_order' => 12,
                 ],
 
                 [
@@ -294,7 +318,7 @@ class ModuleSeeder extends Seeder
                     'name'       => 'Finance Other Services History',
                     'icon'       => 'fa-solid fa-clock-rotate-left',
                     'route_name' => 'retailer.other-service.finance-history',
-                    'sort_order' => 10,
+                    'sort_order' => 13,
                 ],
             ];
 

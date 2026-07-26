@@ -85,6 +85,40 @@ class ChargeSeeder extends Seeder
                 'updated_at'  => now(),
             ],
 
+
+            [
+                'name'        => 'PF Services',
+                'code'        => 'pf_service',
+                'type'        => 'fixed',
+                'value'       => 100,
+                'description' => 'PF Service Charge',
+                'is_active'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+
+            [
+                'name'        => 'Loan Services',
+                'code'        => 'loan_service',
+                'type'        => 'fixed',
+                'value'       => 300,
+                'description' => 'Loan Service Charge',
+                'is_active'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+
+            [
+                'name'        => 'Insurance Services',
+                'code'        => 'insurance_service',
+                'type'        => 'fixed',
+                'value'       => 0,
+                'description' => 'Insurance Service Charge (Commission Based)',
+                'is_active'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+
             /*
             |--------------------------------------------------------------------------
             | WALLET SERVICES
