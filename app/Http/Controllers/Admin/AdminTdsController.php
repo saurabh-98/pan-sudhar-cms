@@ -676,106 +676,221 @@ class AdminTdsController extends Controller
 
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | EXECUTIVE
-        |--------------------------------------------------------------------------
-        */
+      /*
+    |--------------------------------------------------------------------------
+    | USERS
+    |--------------------------------------------------------------------------
+    */
 
-        $executive = auth()->user();
+    $executive = auth()->user();
 
-        /*
-        |--------------------------------------------------------------------------
-        | ADMIN
-        |--------------------------------------------------------------------------
-        */
+    $retailer = $application
+        ->user
+        ->retailer;
 
-        $admin = User::role('admin')->first();
+    $distributor = $retailer?->distributor;
 
-        /*
-        |--------------------------------------------------------------------------
-        | COMMISSION
-        |--------------------------------------------------------------------------
-        */
+    $admin = User::role('Admin')
+        ->first();
 
-        $commissionAmount = 50;
+    /*
+    |--------------------------------------------------------------------------
+    | SERVICE CHARGE
+    |--------------------------------------------------------------------------
+    */
 
-        /*
-        |--------------------------------------------------------------------------
-        | CREDIT EXECUTIVE
-        |--------------------------------------------------------------------------
-        */
+    $charge = Charge::getCharge(
+        'itr_filing_tds_refund'
+    );
+
+    if (!$charge) {
+
+        DB::rollBack();
+
+        return response()->json([
+
+            'status' => false,
+
+            'message' => 'Charge configuration not found.'
+
+        ], 422);
+
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | EXECUTIVE COMMISSION
+    |--------------------------------------------------------------------------
+    */
+
+    $executiveCommission = (float)
+
+        $charge->commissions()
+
+            ->where(
+
+                'role',
+                'Executive'
+
+            )
+
+            ->where(
+
+                'is_active',
+                true
+
+            )
+
+            ->value('value');
+
+    /*
+    |--------------------------------------------------------------------------
+    | DISTRIBUTOR COMMISSION
+    |--------------------------------------------------------------------------
+    */
+
+    $distributorCommission = (float)
+
+        $charge->commissions()
+
+            ->where(
+
+                'role',
+                'Distributor'
+
+            )
+
+            ->where(
+
+                'is_active',
+                true
+
+            )
+
+            ->value('value');
+
+    /*
+    |--------------------------------------------------------------------------
+    | TOTAL COMMISSION
+    |--------------------------------------------------------------------------
+    */
+
+    $totalCommission = $executiveCommission;
+
+    if ($distributor) {
+        $totalCommission += $distributorCommission;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | CREDIT EXECUTIVE
+    |--------------------------------------------------------------------------
+    */
+
+    if ($executiveCommission > 0) {
 
         $executive->increment(
 
             'wallet_balance',
 
-            $commissionAmount
+            $executiveCommission
 
         );
-
-        /*
-        |--------------------------------------------------------------------------
-        | DEBIT ADMIN
-        |--------------------------------------------------------------------------
-        */
-
-        if ($admin) {
-
-            $admin->decrement(
-
-                'wallet_balance',
-
-                $commissionAmount
-
-            );
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | EXECUTIVE TRANSACTION
-        |--------------------------------------------------------------------------
-        */
 
         WalletTransaction::create([
 
             'user_id' => $executive->id,
 
-            'amount'  => $commissionAmount,
+            'amount' => $executiveCommission,
 
-            'type'    => 'credit',
+            'type' => 'credit',
 
-            'remark'  =>
+            'remark' =>
+
+                'Executive Commission - TDS Service #TDS-' .
+                $application->id
+
+        ]);
+
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | CREDIT DISTRIBUTOR
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+
+        $distributor &&
+
+        $distributorCommission > 0
+
+    ) {
+
+        $distributor->increment(
+
+            'wallet_balance',
+
+            $distributorCommission
+
+        );
+
+        WalletTransaction::create([
+
+            'user_id' => $distributor->id,
+
+            'amount' => $distributorCommission,
+
+            'type' => 'credit',
+
+            'remark' =>
+
+                'Distributor Commission - TDS Service #TDS-' .
+                $application->id
+
+        ]);
+
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | DEBIT ADMIN
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+
+        $admin &&
+
+        $totalCommission > 0
+
+    ) {
+
+        $admin->decrement(
+
+            'wallet_balance',
+
+            $totalCommission
+
+        );
+
+        WalletTransaction::create([
+
+            'user_id' => $admin->id,
+
+            'amount' => $totalCommission,
+
+            'type' => 'debit',
+
+            'remark' =>
 
                 'TDS Service Commission #TDS-' .
                 $application->id
 
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | ADMIN TRANSACTION
-        |--------------------------------------------------------------------------
-        */
-
-        if ($admin) {
-
-            WalletTransaction::create([
-
-                'user_id' => $admin->id,
-
-                'amount'  => $commissionAmount,
-
-                'type'    => 'debit',
-
-                'remark'  =>
-
-                    'Executive TDS Commission #TDS-' .
-                    $application->id
-
-            ]);
-        }
-
+    }
         /*
         |--------------------------------------------------------------------------
         | UPDATE STATUS

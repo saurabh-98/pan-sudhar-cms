@@ -826,11 +826,43 @@ class AdminBankAccountController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | COMMISSION
+        | GET CHARGE
         |--------------------------------------------------------------------------
         */
 
-        $commissionAmount = 50;
+        $charge = Charge::with('commissions')
+            ->active()
+            ->where('code', str_replace('-', '_', $application->service_slug))
+            ->first();
+
+        $executiveCommission = 0;
+        $distributorCommission = 0;
+
+        if ($charge) {
+
+            $executiveCommission = (float) $charge->commissions()
+                ->where('role', 'Executive')
+                ->where('is_active', true)
+                ->value('value');
+
+            $distributorCommission = (float) $charge->commissions()
+                ->where('role', 'Distributor')
+                ->where('is_active', true)
+                ->value('value');
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | FIND RETAILER & DISTRIBUTOR
+        |--------------------------------------------------------------------------
+        */
+
+        $retailer = $application->user;
+        $distributor = null;
+
+        if ($retailer && $retailer->created_by) {
+            $distributor = User::find($retailer->created_by);
+        }
 
         /*
         |--------------------------------------------------------------------------
@@ -838,76 +870,68 @@ class AdminBankAccountController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $executive->increment(
+        if ($executiveCommission > 0) {
 
-            'wallet_balance',
-
-            $commissionAmount
-
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | DEBIT ADMIN
-        |--------------------------------------------------------------------------
-        */
-
-        if ($admin) {
-
-            $admin->decrement(
-
+            $executive->increment(
                 'wallet_balance',
-
-                $commissionAmount
-
+                $executiveCommission
             );
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | EXECUTIVE TRANSACTION
-        |--------------------------------------------------------------------------
-        */
-
-        WalletTransaction::create([
-
-            'user_id' => $executive->id,
-
-            'amount'  => $commissionAmount,
-
-            'type'    => 'credit',
-
-            'remark'  =>
-
-                'Bank Service Commission #' .
-                $application->application_no
-
-        ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADMIN TRANSACTION
-        |--------------------------------------------------------------------------
-        */
-
-        if ($admin) {
 
             WalletTransaction::create([
-
-                'user_id' => $admin->id,
-
-                'amount'  => $commissionAmount,
-
-                'type'    => 'debit',
-
-                'remark'  =>
-
-                    'Executive Bank Commission #' .
-                    $application->application_no
-
+                'user_id' => $executive->id,
+                'amount'  => $executiveCommission,
+                'type'    => 'credit',
+                'remark'  => 'Bank Service Executive Commission #'.$application->application_no,
             ]);
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | CREDIT DISTRIBUTOR
+        |--------------------------------------------------------------------------
+        */
+
+        if ($distributor && $distributorCommission > 0) {
+
+            $distributor->increment(
+                'wallet_balance',
+                $distributorCommission
+            );
+
+            WalletTransaction::create([
+                'user_id' => $distributor->id,
+                'amount'  => $distributorCommission,
+                'type'    => 'credit',
+                'remark'  => 'Bank Service Distributor Commission #'.$application->application_no,
+            ]);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | DEDUCT ADMIN
+        |--------------------------------------------------------------------------
+        */
+
+        $totalCommission = $executiveCommission;
+
+        if ($distributor) {
+            $totalCommission += $distributorCommission;
+        }
+
+        if ($admin && $totalCommission > 0) {
+
+            $admin->decrement(
+                'wallet_balance',
+                $totalCommission
+            );
+
+            WalletTransaction::create([
+                'user_id' => $admin->id,
+                'amount'  => $totalCommission,
+                'type'    => 'debit',
+                'remark'  => 'Executive + Distributor Bank Service Commission #'.$application->application_no,
+            ]);
+        }
         /*
         |--------------------------------------------------------------------------
         | UPDATE STATUS

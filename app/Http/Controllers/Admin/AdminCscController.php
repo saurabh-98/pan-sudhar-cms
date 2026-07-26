@@ -533,11 +533,43 @@ class AdminCscController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | COMMISSION
+        | GET CHARGE
         |--------------------------------------------------------------------------
         */
 
-        $commissionAmount = 50;
+        $charge = Charge::with('commissions')
+            ->active()
+            ->where('code', str_replace('-', '_', $application->service_slug))
+            ->first();
+
+        $executiveCommission = 0;
+        $distributorCommission = 0;
+
+        if ($charge) {
+
+            $executiveCommission = (float) $charge->commissions()
+                ->where('role', 'Executive')
+                ->where('is_active', true)
+                ->value('value');
+
+            $distributorCommission = (float) $charge->commissions()
+                ->where('role', 'Distributor')
+                ->where('is_active', true)
+                ->value('value');
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | FIND RETAILER & DISTRIBUTOR
+        |--------------------------------------------------------------------------
+        */
+
+        $retailer = $application->user;
+        $distributor = null;
+
+        if ($retailer && $retailer->created_by) {
+            $distributor = User::find($retailer->created_by);
+        }
 
         /*
         |--------------------------------------------------------------------------
@@ -545,73 +577,66 @@ class AdminCscController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $executive->increment(
+        if ($executiveCommission > 0) {
 
-            'wallet_balance',
-
-            $commissionAmount
-
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | DEBIT ADMIN
-        |--------------------------------------------------------------------------
-        */
-
-        if ($admin) {
-
-            $admin->decrement(
-
+            $executive->increment(
                 'wallet_balance',
-
-                $commissionAmount
-
+                $executiveCommission
             );
+
+            WalletTransaction::create([
+                'user_id' => $executive->id,
+                'amount'  => $executiveCommission,
+                'type'    => 'credit',
+                'remark'  => 'CSC Service Executive Commission #'.$application->application_no,
+            ]);
         }
 
         /*
         |--------------------------------------------------------------------------
-        | EXECUTIVE TRANSACTION
+        | CREDIT DISTRIBUTOR
         |--------------------------------------------------------------------------
         */
 
-        WalletTransaction::create([
+        if ($distributor && $distributorCommission > 0) {
 
-            'user_id' => $executive->id,
+            $distributor->increment(
+                'wallet_balance',
+                $distributorCommission
+            );
 
-            'amount'  => $commissionAmount,
-
-            'type'    => 'credit',
-
-            'remark'  =>
-
-                'Csc Service Commission #' .
-                $application->application_no
-
-        ]);
+            WalletTransaction::create([
+                'user_id' => $distributor->id,
+                'amount'  => $distributorCommission,
+                'type'    => 'credit',
+                'remark'  => 'CSC Service Distributor Commission #'.$application->application_no,
+            ]);
+        }
 
         /*
         |--------------------------------------------------------------------------
-        | ADMIN TRANSACTION
+        | DEDUCT ADMIN
         |--------------------------------------------------------------------------
         */
 
-        if ($admin) {
+        $totalCommission = $executiveCommission;
+
+        if ($distributor) {
+            $totalCommission += $distributorCommission;
+        }
+
+        if ($admin && $totalCommission > 0) {
+
+            $admin->decrement(
+                'wallet_balance',
+                $totalCommission
+            );
 
             WalletTransaction::create([
-
                 'user_id' => $admin->id,
-
-                'amount'  => $commissionAmount,
-
+                'amount'  => $totalCommission,
                 'type'    => 'debit',
-
-                'remark'  =>
-
-                    'Executive Csc Service Commission #' .
-                    $application->application_no
-
+                'remark'  => 'Executive + Distributor CSC Service Commission #'.$application->application_no,
             ]);
         }
 

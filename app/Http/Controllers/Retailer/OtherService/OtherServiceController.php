@@ -594,8 +594,13 @@ class OtherServiceController extends Controller
                 'msme-registration',
                 'food-licence',
                 'import-export-certificate',
-            ];
 
+                // New Services
+                'pf-service',
+                'loan-service',
+                'insurance-service',
+            ];
+            
             $applications = OtherService::query()
                 ->with([
                     'user.retailer',

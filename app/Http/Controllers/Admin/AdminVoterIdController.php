@@ -769,27 +769,110 @@ class AdminVoterIdController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | EXECUTIVE
+        | USERS
         |--------------------------------------------------------------------------
         */
 
         $executive = auth()->user();
 
+        $retailer = $application
+            ->user
+            ->retailer;
+
+        $distributor = $retailer?->distributor;
+
+        $admin = User::role('Admin')
+            ->first();
+
         /*
         |--------------------------------------------------------------------------
-        | ADMIN
+        | SERVICE CHARGE
         |--------------------------------------------------------------------------
         */
 
-        $admin = User::role('admin')->first();
+        $charge = Charge::getCharge(
+            str_replace('-', '_', $application->service_slug)
+        );
+
+        if (!$charge) {
+
+            DB::rollBack();
+
+            return response()->json([
+
+                'status' => false,
+
+                'message' => 'Charge configuration not found.'
+
+            ], 422);
+
+        }
 
         /*
         |--------------------------------------------------------------------------
-        | COMMISSION
+        | EXECUTIVE COMMISSION
         |--------------------------------------------------------------------------
         */
 
-        $commissionAmount = 50;
+        $executiveCommission = (float)
+
+            $charge->commissions()
+
+                ->where(
+
+                    'role',
+                    'Executive'
+
+                )
+
+                ->where(
+
+                    'is_active',
+                    true
+
+                )
+
+                ->value('value');
+
+        /*
+        |--------------------------------------------------------------------------
+        | DISTRIBUTOR COMMISSION
+        |--------------------------------------------------------------------------
+        */
+
+        $distributorCommission = (float)
+
+            $charge->commissions()
+
+                ->where(
+
+                    'role',
+                    'Distributor'
+
+                )
+
+                ->where(
+
+                    'is_active',
+                    true
+
+                )
+
+                ->value('value');
+
+        /*
+        |--------------------------------------------------------------------------
+        | TOTAL COMMISSION
+        |--------------------------------------------------------------------------
+        */
+
+        $totalCommission = $executiveCommission;
+
+        if ($distributor) {
+
+            $totalCommission += $distributorCommission;
+
+        }
 
         /*
         |--------------------------------------------------------------------------
@@ -797,13 +880,71 @@ class AdminVoterIdController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $executive->increment(
+        if ($executiveCommission > 0) {
 
-            'wallet_balance',
+            $executive->increment(
 
-            $commissionAmount
+                'wallet_balance',
 
-        );
+                $executiveCommission
+
+            );
+
+            WalletTransaction::create([
+
+                'user_id' => $executive->id,
+
+                'amount' => $executiveCommission,
+
+                'type' => 'credit',
+
+                'remark' =>
+
+                    'Executive Commission - Bank Service #' .
+                    $application->application_no
+
+            ]);
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | CREDIT DISTRIBUTOR
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+
+            $distributor &&
+
+            $distributorCommission > 0
+
+        ) {
+
+            $distributor->increment(
+
+                'wallet_balance',
+
+                $distributorCommission
+
+            );
+
+            WalletTransaction::create([
+
+                'user_id' => $distributor->id,
+
+                'amount' => $distributorCommission,
+
+                'type' => 'credit',
+
+                'remark' =>
+
+                    'Distributor Commission - Bank Service #' .
+                    $application->application_no
+
+            ]);
+
+        }
 
         /*
         |--------------------------------------------------------------------------
@@ -811,60 +952,37 @@ class AdminVoterIdController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        if ($admin) {
+        if (
+
+            $admin &&
+
+            $totalCommission > 0
+
+        ) {
 
             $admin->decrement(
 
                 'wallet_balance',
 
-                $commissionAmount
+                $totalCommission
 
             );
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | EXECUTIVE TRANSACTION
-        |--------------------------------------------------------------------------
-        */
-
-        WalletTransaction::create([
-
-            'user_id' => $executive->id,
-
-            'amount'  => $commissionAmount,
-
-            'type'    => 'credit',
-
-            'remark'  =>
-
-                'Bank Service Commission #' .
-                $application->application_no
-
-        ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADMIN TRANSACTION
-        |--------------------------------------------------------------------------
-        */
-
-        if ($admin) {
 
             WalletTransaction::create([
 
                 'user_id' => $admin->id,
 
-                'amount'  => $commissionAmount,
+                'amount' => $totalCommission,
 
-                'type'    => 'debit',
+                'type' => 'debit',
 
-                'remark'  =>
+                'remark' =>
 
-                    'Executive Bank Commission #' .
+                    'Bank Service Commission #' .
                     $application->application_no
 
             ]);
+
         }
 
         /*

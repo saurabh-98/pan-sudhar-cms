@@ -35,7 +35,7 @@ class AdminOtherServiceController extends Controller
             'loan-service',
             'insurance-service',
         ];
-        
+
         if ($request->ajax()) {
 
             $applications = OtherService::query()
@@ -420,6 +420,11 @@ class AdminOtherServiceController extends Controller
             'msme-registration',
             'food-licence',
             'import-export-certificate',
+
+            // New Services
+            'pf-service',
+            'loan-service',
+            'insurance-service',
         ];
 
         if ($request->ajax()) {
@@ -877,29 +882,58 @@ class AdminOtherServiceController extends Controller
 
         ]);
 
-        /*
+      /*
         |--------------------------------------------------------------------------
         | EXECUTIVE
         |--------------------------------------------------------------------------
         */
 
         $executive = auth()->user();
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADMIN
-        |--------------------------------------------------------------------------
-        */
-
         $admin = User::role('admin')->first();
 
         /*
         |--------------------------------------------------------------------------
-        | COMMISSION
+        | GET CHARGE
         |--------------------------------------------------------------------------
         */
 
-        $commissionAmount = 50;
+        $charge = Charge::with('commissions')
+            ->active()
+            ->where('code', str_replace('-', '_', $application->service_slug))
+            ->first();
+
+        $executiveCommission = 0;
+        $distributorCommission = 0;
+
+        if ($charge) {
+
+            $executiveCommission = (float) optional(
+                $charge->commissions()
+                    ->where('role', 'Executive')
+                    ->where('is_active', true)
+                    ->first()
+            )->value;
+
+            $distributorCommission = (float) optional(
+                $charge->commissions()
+                    ->where('role', 'Distributor')
+                    ->where('is_active', true)
+                    ->first()
+            )->value;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | FIND RETAILER & DISTRIBUTOR
+        |--------------------------------------------------------------------------
+        */
+
+        $retailer = $application->user;
+        $distributor = null;
+
+        if ($retailer && $retailer->created_by) {
+            $distributor = User::find($retailer->created_by);
+        }
 
         /*
         |--------------------------------------------------------------------------
@@ -907,76 +941,60 @@ class AdminOtherServiceController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $executive->increment(
+        if ($executiveCommission > 0) {
 
-            'wallet_balance',
-
-            $commissionAmount
-
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | DEBIT ADMIN
-        |--------------------------------------------------------------------------
-        */
-
-        if ($admin) {
-
-            $admin->decrement(
-
-                'wallet_balance',
-
-                $commissionAmount
-
-            );
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | EXECUTIVE TRANSACTION
-        |--------------------------------------------------------------------------
-        */
-
-        WalletTransaction::create([
-
-            'user_id' => $executive->id,
-
-            'amount'  => $commissionAmount,
-
-            'type'    => 'credit',
-
-            'remark'  =>
-
-                'Other Service Commission #' .
-                $application->application_no
-
-        ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADMIN TRANSACTION
-        |--------------------------------------------------------------------------
-        */
-
-        if ($admin) {
+            $executive->increment('wallet_balance', $executiveCommission);
 
             WalletTransaction::create([
-
-                'user_id' => $admin->id,
-
-                'amount'  => $commissionAmount,
-
-                'type'    => 'debit',
-
-                'remark'  =>
-
-                    'Executive Other Service Commission #' .
-                    $application->application_no
-
+                'user_id' => $executive->id,
+                'amount'  => $executiveCommission,
+                'type'    => 'credit',
+                'remark'  => 'Executive Commission #'.$application->application_no,
             ]);
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | CREDIT DISTRIBUTOR
+        |--------------------------------------------------------------------------
+        */
+
+        if ($distributor && $distributorCommission > 0) {
+
+            $distributor->increment('wallet_balance', $distributorCommission);
+
+            WalletTransaction::create([
+                'user_id' => $distributor->id,
+                'amount'  => $distributorCommission,
+                'type'    => 'credit',
+                'remark'  => 'Distributor Commission #'.$application->application_no,
+            ]);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | DEBIT ADMIN (Executive + Distributor)
+        |--------------------------------------------------------------------------
+        */
+
+        $totalDeduction = $executiveCommission;
+
+        if ($distributor) {
+            $totalDeduction += $distributorCommission;
+        }
+
+        if ($admin && $totalDeduction > 0) {
+
+            $admin->decrement('wallet_balance', $totalDeduction);
+
+            WalletTransaction::create([
+                'user_id' => $admin->id,
+                'amount'  => $totalDeduction,
+                'type'    => 'debit',
+                'remark'  => 'Commission Paid #'.$application->application_no,
+            ]);
+        }
+        
         /*
         |--------------------------------------------------------------------------
         | UPDATE STATUS
@@ -1273,169 +1291,169 @@ class AdminOtherServiceController extends Controller
     
 
     public function reject(int $id)
-{
-try {
+    {
+        try {
 
 
-    DB::beginTransaction();
+            DB::beginTransaction();
 
-    $application = OtherService::lockForUpdate()
-        ->findOrFail($id);
+            $application = OtherService::lockForUpdate()
+                ->findOrFail($id);
 
-    if (
-        in_array(
-            strtolower($application->status),
-            ['approved', 'completed']
-        )
-    ) {
-        DB::rollBack();
+            if (
+                in_array(
+                    strtolower($application->status),
+                    ['approved', 'completed']
+                )
+            ) {
+                DB::rollBack();
 
-        return back()->with(
-            'error',
-            'Approved or completed application cannot be rejected.'
-        );
-    }
+                return back()->with(
+                    'error',
+                    'Approved or completed application cannot be rejected.'
+                );
+            }
 
-    if (
-        strtolower($application->status) === 'rejected'
-    ) {
-        DB::rollBack();
+            if (
+                strtolower($application->status) === 'rejected'
+            ) {
+                DB::rollBack();
 
-        return back()->with(
-            'error',
-            'Application already rejected.'
-        );
-    }
+                return back()->with(
+                    'error',
+                    'Application already rejected.'
+                );
+            }
 
-    /*
-    |--------------------------------------------------------------------------
-    | REFUND PROCESS
-    |--------------------------------------------------------------------------
-    */
+            /*
+            |--------------------------------------------------------------------------
+            | REFUND PROCESS
+            |--------------------------------------------------------------------------
+            */
 
-    if (
-        $application->wallet_deducted &&
-        $application->amount > 0
-    ) {
+            if (
+                $application->wallet_deducted &&
+                $application->amount > 0
+            ) {
 
-        $retailer = User::lockForUpdate()
-            ->findOrFail(
-                $application->user_id
+                $retailer = User::lockForUpdate()
+                    ->findOrFail(
+                        $application->user_id
+                    );
+
+                $admin = User::lockForUpdate()
+                    ->role('admin')
+                    ->first();
+
+                if (!$admin) {
+                    throw new \Exception(
+                        'Admin account not found.'
+                    );
+                }
+
+                if (
+                    $admin->wallet_balance <
+                    $application->amount
+                ) {
+                    throw new \Exception(
+                        'Admin wallet balance is insufficient.'
+                    );
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | DEBIT ADMIN
+                |--------------------------------------------------------------------------
+                */
+
+                $admin->decrement(
+                    'wallet_balance',
+                    $application->amount
+                );
+
+                WalletTransaction::create([
+
+                    'user_id'          => $admin->id,
+
+                    'receiver_id'      => $retailer->id,
+
+                    'amount'           => $application->amount,
+
+                    'type'             => 'debit',
+
+                    'transaction_type' => 'voter-id_refund',
+
+                    'remark'           =>
+                        'Refund amount debited for Voter-Id Service Application No. '
+                        . $application->application_no
+
+                ]);
+
+                /*
+                |--------------------------------------------------------------------------
+                | CREDIT RETAILER
+                |--------------------------------------------------------------------------
+                */
+
+                $retailer->increment(
+                    'wallet_balance',
+                    $application->amount
+                );
+
+                WalletTransaction::create([
+
+                    'user_id'          => $retailer->id,
+
+                    'receiver_id'      => $admin->id,
+
+                    'amount'           => $application->amount,
+
+                    'type'             => 'credit',
+
+                    'transaction_type' => 'bank_account_refund',
+
+                    'remark'           =>
+                        'Refund received for Other Service Application No. '
+                        . $application->application_no
+
+                ]);
+
+                $application->wallet_deducted = 0;
+
+                $application->wallet_deducted_at = null;
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE STATUS
+            |--------------------------------------------------------------------------
+            */
+
+            $application->status = 'Rejected';
+
+            $application->admin_remark =
+                'Rejected by Admin';
+
+            $application->save();
+
+            DB::commit();
+
+            return back()->with(
+                'success',
+                'Other Service application rejected and amount refunded successfully.'
             );
 
-        $admin = User::lockForUpdate()
-            ->role('admin')
-            ->first();
+        } catch (\Exception $e) {
 
-        if (!$admin) {
-            throw new \Exception(
-                'Admin account not found.'
+            DB::rollBack();
+
+            return back()->with(
+                'error',
+                $e->getMessage()
             );
         }
 
-        if (
-            $admin->wallet_balance <
-            $application->amount
-        ) {
-            throw new \Exception(
-                'Admin wallet balance is insufficient.'
-            );
-        }
 
-        /*
-        |--------------------------------------------------------------------------
-        | DEBIT ADMIN
-        |--------------------------------------------------------------------------
-        */
-
-        $admin->decrement(
-            'wallet_balance',
-            $application->amount
-        );
-
-        WalletTransaction::create([
-
-            'user_id'          => $admin->id,
-
-            'receiver_id'      => $retailer->id,
-
-            'amount'           => $application->amount,
-
-            'type'             => 'debit',
-
-            'transaction_type' => 'voter-id_refund',
-
-            'remark'           =>
-                'Refund amount debited for Voter-Id Service Application No. '
-                . $application->application_no
-
-        ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | CREDIT RETAILER
-        |--------------------------------------------------------------------------
-        */
-
-        $retailer->increment(
-            'wallet_balance',
-            $application->amount
-        );
-
-        WalletTransaction::create([
-
-            'user_id'          => $retailer->id,
-
-            'receiver_id'      => $admin->id,
-
-            'amount'           => $application->amount,
-
-            'type'             => 'credit',
-
-            'transaction_type' => 'bank_account_refund',
-
-            'remark'           =>
-                'Refund received for Other Service Application No. '
-                . $application->application_no
-
-        ]);
-
-        $application->wallet_deducted = 0;
-
-        $application->wallet_deducted_at = null;
     }
-
-    /*
-    |--------------------------------------------------------------------------
-    | UPDATE STATUS
-    |--------------------------------------------------------------------------
-    */
-
-    $application->status = 'Rejected';
-
-    $application->admin_remark =
-        'Rejected by Admin';
-
-    $application->save();
-
-    DB::commit();
-
-    return back()->with(
-        'success',
-        'Other Service application rejected and amount refunded successfully.'
-    );
-
-} catch (\Exception $e) {
-
-    DB::rollBack();
-
-    return back()->with(
-        'error',
-        $e->getMessage()
-    );
-}
-
-
-}
 
 }

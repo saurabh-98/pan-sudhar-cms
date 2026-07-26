@@ -676,7 +676,7 @@ class AdminItrController extends Controller
 
         ]);
 
-        /*
+       /*
         |--------------------------------------------------------------------------
         | EXECUTIVE
         |--------------------------------------------------------------------------
@@ -694,11 +694,43 @@ class AdminItrController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | COMMISSION
+        | GET CHARGE
         |--------------------------------------------------------------------------
         */
 
-        $commissionAmount = 50;
+        $charge = Charge::with('commissions')
+            ->active()
+            ->where('code', 'file_itr')
+            ->first();
+
+        $executiveCommission = 0;
+        $distributorCommission = 0;
+
+        if ($charge) {
+
+            $executiveCommission = (float) $charge->commissions()
+                ->where('role', 'Executive')
+                ->where('is_active', true)
+                ->value('value');
+
+            $distributorCommission = (float) $charge->commissions()
+                ->where('role', 'Distributor')
+                ->where('is_active', true)
+                ->value('value');
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | FIND RETAILER & DISTRIBUTOR
+        |--------------------------------------------------------------------------
+        */
+
+        $retailer = $application->user;
+        $distributor = null;
+
+        if ($retailer && $retailer->created_by) {
+            $distributor = User::find($retailer->created_by);
+        }
 
         /*
         |--------------------------------------------------------------------------
@@ -706,76 +738,59 @@ class AdminItrController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $executive->increment(
+        if ($executiveCommission > 0) {
 
-            'wallet_balance',
-
-            $commissionAmount
-
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | DEBIT ADMIN
-        |--------------------------------------------------------------------------
-        */
-
-        if ($admin) {
-
-            $admin->decrement(
-
-                'wallet_balance',
-
-                $commissionAmount
-
-            );
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | EXECUTIVE TRANSACTION
-        |--------------------------------------------------------------------------
-        */
-
-        WalletTransaction::create([
-
-            'user_id' => $executive->id,
-
-            'amount'  => $commissionAmount,
-
-            'type'    => 'credit',
-
-            'remark'  =>
-
-                'ITR Service Commission #ITR-' .
-                $application->id
-
-        ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADMIN TRANSACTION
-        |--------------------------------------------------------------------------
-        */
-
-        if ($admin) {
+            $executive->increment('wallet_balance', $executiveCommission);
 
             WalletTransaction::create([
-
-                'user_id' => $admin->id,
-
-                'amount'  => $commissionAmount,
-
-                'type'    => 'debit',
-
-                'remark'  =>
-
-                    'Executive ITR Commission #ITR-' .
-                    $application->id
-
+                'user_id' => $executive->id,
+                'amount'  => $executiveCommission,
+                'type'    => 'credit',
+                'remark'  => 'ITR Service Executive Commission #ITR-'.$application->id,
             ]);
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | CREDIT DISTRIBUTOR
+        |--------------------------------------------------------------------------
+        */
+
+        if ($distributor && $distributorCommission > 0) {
+
+            $distributor->increment('wallet_balance', $distributorCommission);
+
+            WalletTransaction::create([
+                'user_id' => $distributor->id,
+                'amount'  => $distributorCommission,
+                'type'    => 'credit',
+                'remark'  => 'ITR Service Distributor Commission #ITR-'.$application->id,
+            ]);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | DEDUCT ADMIN
+        |--------------------------------------------------------------------------
+        */
+
+        $totalCommission = $executiveCommission;
+
+        if ($distributor) {
+            $totalCommission += $distributorCommission;
+        }
+
+        if ($admin && $totalCommission > 0) {
+
+            $admin->decrement('wallet_balance', $totalCommission);
+
+            WalletTransaction::create([
+                'user_id' => $admin->id,
+                'amount'  => $totalCommission,
+                'type'    => 'debit',
+                'remark'  => 'Executive + Distributor ITR Service Commission #ITR-'.$application->id,
+            ]);
+        }
         /*
         |--------------------------------------------------------------------------
         | UPDATE STATUS

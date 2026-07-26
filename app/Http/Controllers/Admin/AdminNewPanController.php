@@ -664,7 +664,7 @@ class AdminNewPanController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | ADMIN USER
+    | ADMIN
     |--------------------------------------------------------------------------
     */
 
@@ -672,92 +672,129 @@ class AdminNewPanController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | COMMISSION
+    | GET CHARGE
     |--------------------------------------------------------------------------
     */
 
-    $commissionAmount = 50;
+    $charge = Charge::with('commissions')
+        ->active()
+        ->where('code', str_replace('-', '_', $application->service_slug))
+        ->first();
 
-    /*
-    |--------------------------------------------------------------------------
-    | ADD EXECUTIVE WALLET
-    |--------------------------------------------------------------------------
-    */
+    $executiveCommission = 0;
+    $distributorCommission = 0;
 
-    $executive->increment(
+    if ($charge) {
 
-        'wallet_balance',
+        $executiveCommission = (float) $charge->commissions()
+            ->where('role', 'Executive')
+            ->where('is_active', true)
+            ->value('value');
 
-        $commissionAmount
-
-    );
-
-    /*
-    |--------------------------------------------------------------------------
-    | DEDUCT ADMIN WALLET
-    |--------------------------------------------------------------------------
-    */
-
-    if($admin)
-    {
-
-        $admin->decrement(
-
-            'wallet_balance',
-
-            $commissionAmount
-
-        );
-
+        $distributorCommission = (float) $charge->commissions()
+            ->where('role', 'Distributor')
+            ->where('is_active', true)
+            ->value('value');
     }
 
     /*
     |--------------------------------------------------------------------------
-    | EXECUTIVE WALLET TRANSACTION
+    | FIND RETAILER & DISTRIBUTOR
     |--------------------------------------------------------------------------
     */
 
-    WalletTransaction::create([
+    $retailer = $application->user;
+    $distributor = null;
 
-        'user_id' => $executive->id,
-
-        'amount' => $commissionAmount,
-
-        'type' => 'credit',
-
-        'remark' =>
-
-            'PAN Service Commission #' .
-
-            $application->application_no
-
-    ]);
+    if ($retailer && $retailer->created_by) {
+        $distributor = User::find($retailer->created_by);
+    }
 
     /*
     |--------------------------------------------------------------------------
-    | ADMIN WALLET TRANSACTION
+    | CREDIT EXECUTIVE
     |--------------------------------------------------------------------------
     */
 
-    if($admin)
-    {
+    if ($executiveCommission > 0) {
+
+        $executive->increment(
+            'wallet_balance',
+            $executiveCommission
+        );
+
+        WalletTransaction::create([
+
+            'user_id' => $executive->id,
+
+            'amount' => $executiveCommission,
+
+            'type' => 'credit',
+
+            'remark' => 'PAN Service Executive Commission #' .
+                $application->application_no,
+
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | CREDIT DISTRIBUTOR
+    |--------------------------------------------------------------------------
+    */
+
+    if ($distributor && $distributorCommission > 0) {
+
+        $distributor->increment(
+            'wallet_balance',
+            $distributorCommission
+        );
+
+        WalletTransaction::create([
+
+            'user_id' => $distributor->id,
+
+            'amount' => $distributorCommission,
+
+            'type' => 'credit',
+
+            'remark' => 'PAN Service Distributor Commission #' .
+                $application->application_no,
+
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | DEDUCT ADMIN
+    |--------------------------------------------------------------------------
+    */
+
+    $totalCommission = $executiveCommission;
+
+    if ($distributor) {
+        $totalCommission += $distributorCommission;
+    }
+
+    if ($admin && $totalCommission > 0) {
+
+        $admin->decrement(
+            'wallet_balance',
+            $totalCommission
+        );
 
         WalletTransaction::create([
 
             'user_id' => $admin->id,
 
-            'amount' => $commissionAmount,
+            'amount' => $totalCommission,
 
             'type' => 'debit',
 
-            'remark' =>
-
-                'Executive PAN Commission #' .
-
-                $application->application_no
+            'remark' => 'Executive + Distributor PAN Service Commission #' .
+                $application->application_no,
 
         ]);
-
     }
 
     /*
