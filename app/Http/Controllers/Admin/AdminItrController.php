@@ -44,7 +44,7 @@ class AdminItrController extends Controller
 
                 ->with([
                     'user',
-                    'assignedEmployee'
+                    'assignedUser'
                 ]);
 
             /*
@@ -379,7 +379,7 @@ class AdminItrController extends Controller
 
                 'user',
 
-                'assignedEmployee',
+                'assignedUser',
 
                 'documents.user'
 

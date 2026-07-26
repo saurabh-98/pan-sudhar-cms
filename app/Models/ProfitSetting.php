@@ -6,5 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProfitSetting extends Model
 {
-    //
+    protected $fillable = [
+
+        'partner_profit_percentage',
+
+        'status',
+
+    ];
 }

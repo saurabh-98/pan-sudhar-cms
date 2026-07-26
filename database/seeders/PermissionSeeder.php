@@ -332,6 +332,14 @@ class PermissionSeeder extends Seeder
 
             'reports.print',
 
+            'profit-partners.view',
+
+            'profit-partners.create',
+
+            'profit-partners.edit',
+
+            'profit-partners.delete',
+
 
         ];
 
