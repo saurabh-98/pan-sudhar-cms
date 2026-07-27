@@ -812,21 +812,24 @@ class AdminItrController extends Controller
 
         ]);
 
+
         /*
         |--------------------------------------------------------------------------
-        | SUCCESS RESPONSE
+        | DISTRIBUTE PARTNER PROFIT
         |--------------------------------------------------------------------------
         */
 
-        return response()->json([
+        $this->profitDistributionService->distribute(
+            serviceType: 'itr_file',
+            serviceId: $application->id,
+            referenceNo: 'ITR-' . $application->id,
+            serviceAmount: (float) $application->amount,
+            executiveCommission: $executiveCommission,
+            distributorCommission: $distributorCommission,
+            remarks: 'ITR Service Profit Distribution'
+        );
 
-            'status' => true,
-
-            'message' => 'ITR receipt uploaded successfully.',
-
-            'file_url' => file_url($path)
-
-        ]);
+       
 
         /*
         |--------------------------------------------------------------------------
