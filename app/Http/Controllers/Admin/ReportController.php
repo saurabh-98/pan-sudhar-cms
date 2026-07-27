@@ -134,6 +134,24 @@ class ReportController extends Controller
         return $this->services[$service]['model'];
     }
 
+    protected function getPartnerServiceType(string $service): ?string
+    {
+        return match ($service) {
+            'new-pan'              => 'pan_application',
+            'pan-correction'       => 'pan_correction_application',
+            'pan-without-document' => 'pan_without_document',
+            'pan-find'             => 'pan_find_history',
+            'aadhaar'              => 'aadhaar_service',
+            'csc'                  => 'csc_service',
+            'bank'                 => 'bank_account_service',
+            'voter'                => 'voter_id_service',
+            'itr'                  => 'itr_file',
+            'tds'                  => 'tds_file',
+            'other'                => 'other_service',
+            default                => null,
+        };
+    }
+
     protected function getQuery(string $service)
     {
         $model = $this->getModel($service);
@@ -435,12 +453,11 @@ class ReportController extends Controller
 
         if (!empty($serviceIds)) {
 
+           $serviceType = $this->getPartnerServiceType($service);
+
             $partnerProfit = ProfitPartnerTransaction::query()
-
-                ->where('service_type', $service)
-
+                ->where('service_type', $serviceType)
                 ->whereIn('service_id', $serviceIds)
-
                 ->sum('profit_amount');
 
         }
