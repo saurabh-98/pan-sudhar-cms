@@ -24,7 +24,7 @@ use App\Models\CscService;
 use App\Models\BankAccountService;
 use App\Models\OtherService;
 use App\Models\ItrFile;
-use App\Models\tdsFile;
+use App\Models\TdsFile;
 use App\Models\VoterIdService;
 use App\Models\ProfitPartnerTransaction;
 
