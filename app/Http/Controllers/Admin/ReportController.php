@@ -445,19 +445,14 @@ class ReportController extends Controller
 
         }
 
-        /*
+
+       /*
         |--------------------------------------------------------------------------
         | Company Profit
         |--------------------------------------------------------------------------
         */
 
         $companyProfit = $netProfit - $partnerProfit;
-
-        if ($companyProfit < 0) {
-
-            $companyProfit = 0;
-
-        }
 
         /*
         |--------------------------------------------------------------------------
@@ -641,7 +636,7 @@ class ReportController extends Controller
         return view(
             'admin.reports.wallet-ledger',
             [
-                'transactions' => $query->paginate(50)->withQueryString(),
+                'transactions' => $query->paginate(10)->withQueryString(),
                 'users' => User::role('Retailer')->get(),
             ]
         );
@@ -664,7 +659,7 @@ class ReportController extends Controller
         return view(
             'admin.reports.commission-ledger',
             [
-                'transactions' => $query->paginate(50)->withQueryString(),
+                'transactions' => $query->paginate(10)->withQueryString(),
                 'users' => User::query()->get(),
             ]
         );

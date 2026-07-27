@@ -152,7 +152,7 @@ class ItrFile extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function assignedEmployee(): BelongsTo
+    public function assignedUser(): BelongsTo
     {
         return $this->belongsTo(
 
