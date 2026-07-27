@@ -18,11 +18,16 @@ use ZipArchive;
 
 class AdminNewPanController extends Controller
 {
-        protected ProfitDistributionService $profitDistribution;
+        protected FinancialSettlementService $financialSettlement;
 
-        public function __construct(ProfitDistributionService $profitDistribution)
-        {
-            $this->profitDistribution = $profitDistribution;
+        public function __construct(
+
+            FinancialSettlementService $financialSettlement
+
+        ){
+
+            $this->financialSettlement = $financialSettlement;
+
         }
 
     
@@ -540,304 +545,171 @@ class AdminNewPanController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function uploadDocument(
-    Request $request,
-    int $id
-)
-{
-
-    /*
-    |--------------------------------------------------------------------------
-    | ONLY EXECUTIVE
-    |--------------------------------------------------------------------------
-    */
-
-    if(!auth()->user()->hasRole('Executive'))
+    public function uploadDocument(Request $request, int $id)
     {
-        abort(403);
-    }
+        /*
+        |--------------------------------------------------------------------------
+        | ONLY EXECUTIVE
+        |--------------------------------------------------------------------------
+        */
 
-    /*
-    |--------------------------------------------------------------------------
-    | VALIDATION
-    |--------------------------------------------------------------------------
-    */
+        abort_unless(auth()->user()->hasRole('Executive'), 403);
 
-    $request->validate([
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDATION
+        |--------------------------------------------------------------------------
+        */
 
-        'support_file' => [
+        $request->validate([
 
-            'required',
-            'file',
-            'mimes:pdf,jpg,jpeg,png,doc,docx',
-            'max:5120'
+            'support_file' => [
+                'required',
+                'file',
+                'mimes:pdf,jpg,jpeg,png,doc,docx',
+                'max:5120'
+            ],
 
-        ],
-
-        'upload_remarks' => [
-
-            'nullable',
-            'string',
-            'max:1000'
-
-        ]
-
-    ]);
-
-    /*
-    |--------------------------------------------------------------------------
-    | APPLICATION
-    |--------------------------------------------------------------------------
-    */
-
-    $application = PanApplication::findOrFail($id);
-
-    /*
-    |--------------------------------------------------------------------------
-    | EXECUTIVE SECURITY
-    |--------------------------------------------------------------------------
-    */
-
-    if($application->assigned_to != auth()->id())
-    {
-        abort(403);
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | CHECK ALREADY COMPLETED
-    |--------------------------------------------------------------------------
-    */
-
-    if($application->status === 'Approved')
-    {
-        return response()->json([
-
-            'status' => false,
-
-            'message' => 'This application is already Approved.'
-
-        ], 422);
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | FILE UPLOAD
-    |--------------------------------------------------------------------------
-    */
-
-    $path = store_uploaded_file(
-
-        $request->file('support_file'),
-
-        'service-documents/pan'
-
-    );
-
-    /*
-    |--------------------------------------------------------------------------
-    | SAVE DOCUMENT
-    |--------------------------------------------------------------------------
-    */
-
-    ServiceDocument::create([
-
-        'service_type' => 'pan',
-
-        'service_id'   => $application->id,
-
-        'user_id'      => auth()->id(),
-
-        'file_path'    => $path,
-
-        'remarks'      => $request->upload_remarks,
-
-        'document_type'=> 'receipt'
-
-    ]);
-
-    /*
-    |--------------------------------------------------------------------------
-    | EXECUTIVE
-    |--------------------------------------------------------------------------
-    */
-
-    $executive = auth()->user();
-
-    /*
-    |--------------------------------------------------------------------------
-    | ADMIN
-    |--------------------------------------------------------------------------
-    */
-
-    $admin = User::role('admin')->first();
-
-    /*
-    |--------------------------------------------------------------------------
-    | GET CHARGE
-    |--------------------------------------------------------------------------
-    */
-
-    $charge = Charge::with('commissions')
-        ->active()
-        ->where('code', str_replace('-', '_', $application->service_slug))
-        ->first();
-
-    $executiveCommission = 0;
-    $distributorCommission = 0;
-
-    if ($charge) {
-
-        $executiveCommission = (float) $charge->commissions()
-            ->where('role', 'Executive')
-            ->where('is_active', true)
-            ->value('value');
-
-        $distributorCommission = (float) $charge->commissions()
-            ->where('role', 'Distributor')
-            ->where('is_active', true)
-            ->value('value');
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | FIND RETAILER & DISTRIBUTOR
-    |--------------------------------------------------------------------------
-    */
-
-    $retailer = $application->user;
-    $distributor = null;
-
-    if ($retailer && $retailer->created_by) {
-        $distributor = User::find($retailer->created_by);
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | CREDIT EXECUTIVE
-    |--------------------------------------------------------------------------
-    */
-
-    if ($executiveCommission > 0) {
-
-        $executive->increment(
-            'wallet_balance',
-            $executiveCommission
-        );
-
-        WalletTransaction::create([
-
-            'user_id' => $executive->id,
-
-            'amount' => $executiveCommission,
-
-            'type' => 'credit',
-
-            'remark' => 'PAN Service Executive Commission #' .
-                $application->application_no,
+            'upload_remarks' => [
+                'nullable',
+                'string',
+                'max:1000'
+            ]
 
         ]);
-    }
 
-    /*
-    |--------------------------------------------------------------------------
-    | CREDIT DISTRIBUTOR
-    |--------------------------------------------------------------------------
-    */
+        /*
+        |--------------------------------------------------------------------------
+        | APPLICATION
+        |--------------------------------------------------------------------------
+        */
 
-    if ($distributor && $distributorCommission > 0) {
+        $application = PanApplication::findOrFail($id);
 
-        $distributor->increment(
-            'wallet_balance',
-            $distributorCommission
+        /*
+        |--------------------------------------------------------------------------
+        | SECURITY
+        |--------------------------------------------------------------------------
+        */
+
+        abort_if($application->assigned_to != auth()->id(), 403);
+
+        /*
+        |--------------------------------------------------------------------------
+        | ALREADY APPROVED
+        |--------------------------------------------------------------------------
+        */
+
+        if ($application->status === 'Approved') {
+
+            return response()->json([
+                'status' => false,
+                'message' => 'This application is already approved.'
+            ], 422);
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | CHECK RECEIPT
+        |--------------------------------------------------------------------------
+        */
+
+        $alreadyUploaded = ServiceDocument::where([
+            'service_type' => 'pan',
+            'service_id'   => $application->id,
+        ])->exists();
+
+        if ($alreadyUploaded) {
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Receipt already uploaded.'
+            ], 422);
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILE UPLOAD
+        |--------------------------------------------------------------------------
+        */
+
+        $path = store_uploaded_file(
+            $request->file('support_file'),
+            'service-documents/pan'
         );
 
-        WalletTransaction::create([
+        if (!$path) {
 
-            'user_id' => $distributor->id,
+            return response()->json([
+                'status' => false,
+                'message' => 'File upload failed.'
+            ], 422);
 
-            'amount' => $distributorCommission,
+        }
 
-            'type' => 'credit',
+        /*
+        |--------------------------------------------------------------------------
+        | SAVE DOCUMENT
+        |--------------------------------------------------------------------------
+        */
 
-            'remark' => 'PAN Service Distributor Commission #' .
-                $application->application_no,
+        ServiceDocument::create([
+
+            'service_type'   => 'pan',
+
+            'service_id'     => $application->id,
+
+            'user_id'        => auth()->id(),
+
+            'file_path'      => $path,
+
+            'remarks'        => $request->upload_remarks,
+
+            'document_type'  => 'receipt',
 
         ]);
-    }
 
-    /*
-    |--------------------------------------------------------------------------
-    | DEDUCT ADMIN
-    |--------------------------------------------------------------------------
-    */
+        /*
+        |--------------------------------------------------------------------------
+        | APPROVE APPLICATION
+        |--------------------------------------------------------------------------
+        */
 
-    $totalCommission = $executiveCommission;
+        $application->update([
+            'status' => 'Approved'
+        ]);
 
-    if ($distributor) {
-        $totalCommission += $distributorCommission;
-    }
+        /*
+        |--------------------------------------------------------------------------
+        | FINANCIAL SETTLEMENT
+        |--------------------------------------------------------------------------
+        */
 
-    if ($admin && $totalCommission > 0) {
+        $this->financialSettlementService->settle(
 
-        $admin->decrement(
-            'wallet_balance',
-            $totalCommission
+            serviceType: 'pan',
+
+            serviceId: $application->id,
+
+            referenceNo: $application->application_no,
+
+            serviceAmount: (float) ($application->amount ?? $application->charge ?? 0),
+
+            chargeCode: str_replace('-', '_', $application->service_slug),
+
+            retailer: $application->user,
+
+            executive: auth()->user(),
+
+            remarks: 'PAN Service Settlement'
+
         );
 
-        WalletTransaction::create([
-
-            'user_id' => $admin->id,
-
-            'amount' => $totalCommission,
-
-            'type' => 'debit',
-
-            'remark' => 'Executive + Distributor PAN Service Commission #' .
-                $application->application_no,
-
-        ]);
-    }
-
-   /*
-    |--------------------------------------------------------------------------
-    | UPDATE STATUS
-    |--------------------------------------------------------------------------
-    */
-
-    $application->update([
-
-        'status' => 'Approved'
-
-    ]);
-
     /*
     |--------------------------------------------------------------------------
-    | BUSINESS PARTNER PROFIT DISTRIBUTION
-    |--------------------------------------------------------------------------
-    */
-
-    $this->profitDistribution->distribute(
-
-        serviceType: 'pan',
-
-        serviceId: $application->id,
-
-        referenceNo: $application->application_no,
-
-        serviceAmount: (float) ($application->amount ?? $application->charge ?? 0),
-
-        executiveCommission: $executiveCommission,
-
-        distributorCommission: $distributorCommission,
-
-        remarks: 'PAN Service Profit Distribution'
-
-    );
-
-    /*
-    |--------------------------------------------------------------------------
-    | SUCCESS RESPONSE
+    | SUCCESS
     |--------------------------------------------------------------------------
     */
 
@@ -845,7 +717,9 @@ class AdminNewPanController extends Controller
 
         'status' => true,
 
-        'message' => 'Receipt uploaded and commission added successfully.'
+        'message' => 'Receipt uploaded successfully.',
+
+        'file_url' => file_url($path),
 
     ]);
 }

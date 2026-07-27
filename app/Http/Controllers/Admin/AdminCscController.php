@@ -13,17 +13,23 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\File;
-use App\Services\ProfitDistributionService;
+use App\Services\FinancialSettlementService;
+
 
 
 class AdminCscController extends Controller
 {
 
-    protected ProfitDistributionService $profitDistribution;
+     protected FinancialSettlementService $financialSettlement;
 
-    public function __construct(ProfitDistributionService $profitDistribution)
-    {
-        $this->profitDistribution = $profitDistribution;
+    public function __construct(
+
+        FinancialSettlementService $financialSettlement
+
+    ){
+
+        $this->financialSettlement = $financialSettlement;
+
     }
     
 
@@ -524,165 +530,41 @@ class AdminCscController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | EXECUTIVE
-        |--------------------------------------------------------------------------
-        */
-
-        $executive = auth()->user();
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADMIN
-        |--------------------------------------------------------------------------
-        */
-
-        $admin = User::role('admin')->first();
-
-        /*
-        |--------------------------------------------------------------------------
-        | GET CHARGE
-        |--------------------------------------------------------------------------
-        */
-
-        $charge = Charge::with('commissions')
-            ->active()
-            ->where('code', str_replace('-', '_', $application->service_slug))
-            ->first();
-
-        $executiveCommission = 0;
-        $distributorCommission = 0;
-
-        if ($charge) {
-
-            $executiveCommission = (float) $charge->commissions()
-                ->where('role', 'Executive')
-                ->where('is_active', true)
-                ->value('value');
-
-            $distributorCommission = (float) $charge->commissions()
-                ->where('role', 'Distributor')
-                ->where('is_active', true)
-                ->value('value');
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | FIND RETAILER & DISTRIBUTOR
-        |--------------------------------------------------------------------------
-        */
-
-        $retailer = $application->user;
-        $distributor = null;
-
-        if ($retailer && $retailer->created_by) {
-            $distributor = User::find($retailer->created_by);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | CREDIT EXECUTIVE
-        |--------------------------------------------------------------------------
-        */
-
-        if ($executiveCommission > 0) {
-
-            $executive->increment(
-                'wallet_balance',
-                $executiveCommission
-            );
-
-            WalletTransaction::create([
-                'user_id' => $executive->id,
-                'amount'  => $executiveCommission,
-                'type'    => 'credit',
-                'remark'  => 'CSC Service Executive Commission #'.$application->application_no,
-            ]);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | CREDIT DISTRIBUTOR
-        |--------------------------------------------------------------------------
-        */
-
-        if ($distributor && $distributorCommission > 0) {
-
-            $distributor->increment(
-                'wallet_balance',
-                $distributorCommission
-            );
-
-            WalletTransaction::create([
-                'user_id' => $distributor->id,
-                'amount'  => $distributorCommission,
-                'type'    => 'credit',
-                'remark'  => 'CSC Service Distributor Commission #'.$application->application_no,
-            ]);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | DEDUCT ADMIN
-        |--------------------------------------------------------------------------
-        */
-
-        $totalCommission = $executiveCommission;
-
-        if ($distributor) {
-            $totalCommission += $distributorCommission;
-        }
-
-        if ($admin && $totalCommission > 0) {
-
-            $admin->decrement(
-                'wallet_balance',
-                $totalCommission
-            );
-
-            WalletTransaction::create([
-                'user_id' => $admin->id,
-                'amount'  => $totalCommission,
-                'type'    => 'debit',
-                'remark'  => 'Executive + Distributor CSC Service Commission #'.$application->application_no,
-            ]);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
         | UPDATE STATUS
         |--------------------------------------------------------------------------
         */
 
         $application->update([
 
-            'status' => 'Approved'
+            'status' => 'Approved',
 
         ]);
 
         /*
         |--------------------------------------------------------------------------
-        | Business Partner Profit Distribution
+        | Financial Settlement
         |--------------------------------------------------------------------------
         */
 
-        $this->profitDistribution->distribute(
+        $this->financialSettlementService->settle(
 
-            serviceType: 'csc',
+            serviceType: 'csc_service',
 
             serviceId: $application->id,
 
             referenceNo: $application->application_no,
 
-            serviceAmount: (float) $application->amount,
+            serviceAmount: (float) ($application->amount ?? $application->charge ?? 0),
 
-            executiveCommission: $executiveCommission,
+            chargeCode: str_replace('-', '_', $application->service_slug),
 
-            distributorCommission: $distributorCommission,
+            retailer: $application->user,
 
-            remarks: 'CSC Service Profit Distribution'
+            executive: auth()->user(),
+
+            remarks: 'CSC Service Settlement'
 
         );
-
         /*
         |--------------------------------------------------------------------------
         | SUCCESS RESPONSE

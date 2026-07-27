@@ -13,19 +13,24 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\File;
-use App\Services\ProfitDistributionService;
+use App\Services\FinancialSettlementService;
 
 
 class AdminOtherServiceController extends Controller
 {
 
-    protected ProfitDistributionService $profitDistribution;
+        protected FinancialSettlementService $financialSettlement;
 
-    public function __construct(
-        ProfitDistributionService $profitDistribution
-    ) {
-        $this->profitDistribution = $profitDistribution;
-    }
+        public function __construct(
+
+            FinancialSettlementService $financialSettlement
+
+        ){
+
+            $this->financialSettlement = $financialSettlement;
+
+        }
+
 
     public function index(Request $request)
     {
@@ -780,10 +785,7 @@ class AdminOtherServiceController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function uploadDocument(
-        Request $request,
-        int $id
-    )
+    public function uploadDocument(Request $request, int $id)
     {
         /*
         |--------------------------------------------------------------------------
@@ -791,9 +793,7 @@ class AdminOtherServiceController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        if (!auth()->user()->hasRole('Executive')) {
-            abort(403);
-        }
+        abort_unless(auth()->user()->hasRole('Executive'), 403);
 
         /*
         |--------------------------------------------------------------------------
@@ -804,21 +804,17 @@ class AdminOtherServiceController extends Controller
         $request->validate([
 
             'support_file' => [
-
                 'required',
                 'file',
                 'mimes:pdf,jpg,jpeg,png,doc,docx',
-                'max:5120'
-
+                'max:5120',
             ],
 
             'upload_remarks' => [
-
                 'nullable',
                 'string',
-                'max:1000'
-
-            ]
+                'max:1000',
+            ],
 
         ]);
 
@@ -836,11 +832,27 @@ class AdminOtherServiceController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        if ($application->assigned_to != auth()->id()) {
-            abort(403);
-        }
+        abort_if($application->assigned_to != auth()->id(), 403);
 
-      
+        /*
+        |--------------------------------------------------------------------------
+        | CHECK EXISTING RECEIPT
+        |--------------------------------------------------------------------------
+        */
+
+        $alreadyUploaded = ServiceDocument::where([
+            'service_type' => 'other_service',
+            'service_id'   => $application->id,
+        ])->exists();
+
+        if ($alreadyUploaded) {
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Receipt already uploaded.',
+            ], 422);
+
+        }
 
         /*
         |--------------------------------------------------------------------------
@@ -849,22 +861,17 @@ class AdminOtherServiceController extends Controller
         */
 
         $path = store_uploaded_file(
-
             $request->file('support_file'),
-
             'service-documents/other-service'
-
         );
 
         if (!$path) {
 
             return response()->json([
-
-                'status'  => false,
-
-                'message' => 'File upload failed.'
-
+                'status' => false,
+                'message' => 'File upload failed.',
             ], 422);
+
         }
 
         /*
@@ -875,152 +882,39 @@ class AdminOtherServiceController extends Controller
 
         ServiceDocument::create([
 
-            'service_type'  => 'other_service',
+            'service_type'   => 'other_service',
 
-            'service_id'    => $application->id,
+            'service_id'     => $application->id,
 
-            'user_id'       => auth()->id(),
+            'user_id'        => auth()->id(),
 
-            'file_path'     => $path,
+            'file_path'      => $path,
 
-            'remarks'       => $request->upload_remarks,
+            'remarks'        => $request->upload_remarks,
 
-            'document_type' => 'receipt'
+            'document_type'  => 'receipt',
 
         ]);
 
-      /*
-        |--------------------------------------------------------------------------
-        | EXECUTIVE
-        |--------------------------------------------------------------------------
-        */
-
-        $executive = auth()->user();
-        $admin = User::role('admin')->first();
-
         /*
         |--------------------------------------------------------------------------
-        | GET CHARGE
-        |--------------------------------------------------------------------------
-        */
-
-        $charge = Charge::with('commissions')
-            ->active()
-            ->where('code', str_replace('-', '_', $application->service_slug))
-            ->first();
-
-        $executiveCommission = 0;
-        $distributorCommission = 0;
-
-        if ($charge) {
-
-            $executiveCommission = (float) optional(
-                $charge->commissions()
-                    ->where('role', 'Executive')
-                    ->where('is_active', true)
-                    ->first()
-            )->value;
-
-            $distributorCommission = (float) optional(
-                $charge->commissions()
-                    ->where('role', 'Distributor')
-                    ->where('is_active', true)
-                    ->first()
-            )->value;
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | FIND RETAILER & DISTRIBUTOR
-        |--------------------------------------------------------------------------
-        */
-
-        $retailer = $application->user;
-        $distributor = null;
-
-        if ($retailer && $retailer->created_by) {
-            $distributor = User::find($retailer->created_by);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | CREDIT EXECUTIVE
-        |--------------------------------------------------------------------------
-        */
-
-        if ($executiveCommission > 0) {
-
-            $executive->increment('wallet_balance', $executiveCommission);
-
-            WalletTransaction::create([
-                'user_id' => $executive->id,
-                'amount'  => $executiveCommission,
-                'type'    => 'credit',
-                'remark'  => 'Executive Commission #'.$application->application_no,
-            ]);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | CREDIT DISTRIBUTOR
-        |--------------------------------------------------------------------------
-        */
-
-        if ($distributor && $distributorCommission > 0) {
-
-            $distributor->increment('wallet_balance', $distributorCommission);
-
-            WalletTransaction::create([
-                'user_id' => $distributor->id,
-                'amount'  => $distributorCommission,
-                'type'    => 'credit',
-                'remark'  => 'Distributor Commission #'.$application->application_no,
-            ]);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | DEBIT ADMIN (Executive + Distributor)
-        |--------------------------------------------------------------------------
-        */
-
-        $totalDeduction = $executiveCommission;
-
-        if ($distributor) {
-            $totalDeduction += $distributorCommission;
-        }
-
-        if ($admin && $totalDeduction > 0) {
-
-            $admin->decrement('wallet_balance', $totalDeduction);
-
-            WalletTransaction::create([
-                'user_id' => $admin->id,
-                'amount'  => $totalDeduction,
-                'type'    => 'debit',
-                'remark'  => 'Commission Paid #'.$application->application_no,
-            ]);
-        }
-        
-       /*
-        |--------------------------------------------------------------------------
-        | UPDATE STATUS
+        | APPROVE APPLICATION
         |--------------------------------------------------------------------------
         */
 
         $application->update([
 
-            'status' => 'Approved'
+            'status' => 'Approved',
 
         ]);
 
         /*
         |--------------------------------------------------------------------------
-        | BUSINESS PARTNER PROFIT DISTRIBUTION
+        | FINANCIAL SETTLEMENT
         |--------------------------------------------------------------------------
         */
 
-        $this->profitDistribution->distribute(
+        $this->financialSettlementService->settle(
 
             serviceType: 'other_service',
 
@@ -1030,11 +924,13 @@ class AdminOtherServiceController extends Controller
 
             serviceAmount: (float) ($application->amount ?? $application->charge ?? 0),
 
-            executiveCommission: $executiveCommission,
+            chargeCode: str_replace('-', '_', $application->service_slug),
 
-            distributorCommission: $distributorCommission,
+            retailer: $application->user,
 
-            remarks: 'Other Service Profit Distribution'
+            executive: auth()->user(),
+
+            remarks: 'Other Service Settlement'
 
         );
 
@@ -1046,17 +942,14 @@ class AdminOtherServiceController extends Controller
 
         return response()->json([
 
-            'status' => true,
+            'status'   => true,
 
-            'message' =>
+            'message'  => 'Other Service receipt uploaded successfully.',
 
-                'Other Service receipt uploaded successfully.',
-
-            'file_url' => file_url($path)
+            'file_url' => file_url($path),
 
         ]);
     }
-
 
    
 

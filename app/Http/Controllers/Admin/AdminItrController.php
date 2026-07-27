@@ -16,18 +16,23 @@ use App\Models\User;
 use App\Models\ServiceDocument;
 use App\Models\WalletTransaction;
 use App\Services\ProfitDistributionService;
+use App\Services\FinancialSettlementService;
 
 class AdminItrController extends Controller
 {
 
 
-    protected ProfitDistributionService $profitDistribution;
+    protected FinancialSettlementService $financialSettlement;
 
-    public function __construct(ProfitDistributionService $profitDistribution)
-    {
-        $this->profitDistribution = $profitDistribution;
+    public function __construct(
+
+        FinancialSettlementService $financialSettlement
+
+    ){
+
+        $this->financialSettlement = $financialSettlement;
+
     }
-
     /*
     |--------------------------------------------------------------------------
     | ITR LIST
@@ -685,121 +690,7 @@ class AdminItrController extends Controller
 
         ]);
 
-       /*
-        |--------------------------------------------------------------------------
-        | EXECUTIVE
-        |--------------------------------------------------------------------------
-        */
-
-        $executive = auth()->user();
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADMIN
-        |--------------------------------------------------------------------------
-        */
-
-        $admin = User::role('admin')->first();
-
-        /*
-        |--------------------------------------------------------------------------
-        | GET CHARGE
-        |--------------------------------------------------------------------------
-        */
-
-        $charge = Charge::with('commissions')
-            ->active()
-            ->where('code', 'file_itr')
-            ->first();
-
-        $executiveCommission = 0;
-        $distributorCommission = 0;
-
-        if ($charge) {
-
-            $executiveCommission = (float) $charge->commissions()
-                ->where('role', 'Executive')
-                ->where('is_active', true)
-                ->value('value');
-
-            $distributorCommission = (float) $charge->commissions()
-                ->where('role', 'Distributor')
-                ->where('is_active', true)
-                ->value('value');
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | FIND RETAILER & DISTRIBUTOR
-        |--------------------------------------------------------------------------
-        */
-
-        $retailer = $application->user;
-        $distributor = null;
-
-        if ($retailer && $retailer->created_by) {
-            $distributor = User::find($retailer->created_by);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | CREDIT EXECUTIVE
-        |--------------------------------------------------------------------------
-        */
-
-        if ($executiveCommission > 0) {
-
-            $executive->increment('wallet_balance', $executiveCommission);
-
-            WalletTransaction::create([
-                'user_id' => $executive->id,
-                'amount'  => $executiveCommission,
-                'type'    => 'credit',
-                'remark'  => 'ITR Service Executive Commission #ITR-'.$application->id,
-            ]);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | CREDIT DISTRIBUTOR
-        |--------------------------------------------------------------------------
-        */
-
-        if ($distributor && $distributorCommission > 0) {
-
-            $distributor->increment('wallet_balance', $distributorCommission);
-
-            WalletTransaction::create([
-                'user_id' => $distributor->id,
-                'amount'  => $distributorCommission,
-                'type'    => 'credit',
-                'remark'  => 'ITR Service Distributor Commission #ITR-'.$application->id,
-            ]);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | DEDUCT ADMIN
-        |--------------------------------------------------------------------------
-        */
-
-        $totalCommission = $executiveCommission;
-
-        if ($distributor) {
-            $totalCommission += $distributorCommission;
-        }
-
-        if ($admin && $totalCommission > 0) {
-
-            $admin->decrement('wallet_balance', $totalCommission);
-
-            WalletTransaction::create([
-                'user_id' => $admin->id,
-                'amount'  => $totalCommission,
-                'type'    => 'debit',
-                'remark'  => 'Executive + Distributor ITR Service Commission #ITR-'.$application->id,
-            ]);
-        }
+       
        /*
         |--------------------------------------------------------------------------
         | UPDATE STATUS
@@ -815,18 +706,28 @@ class AdminItrController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | DISTRIBUTE PARTNER PROFIT
+        | Financial Settlement
         |--------------------------------------------------------------------------
         */
 
-        $this->profitDistributionService->distribute(
+        $this->financialSettlement->settle(
+
             serviceType: 'itr_file',
+
             serviceId: $application->id,
+
             referenceNo: 'ITR-' . $application->id,
-            serviceAmount: (float) $application->amount,
-            executiveCommission: $executiveCommission,
-            distributorCommission: $distributorCommission,
-            remarks: 'ITR Service Profit Distribution'
+
+            serviceAmount: (float) ($application->amount ?? 0),
+
+            chargeCode: 'file_itr',
+
+            retailer: $application->user,
+
+            executive: auth()->user(),
+
+            remarks: 'ITR Service Settlement'
+
         );
 
        

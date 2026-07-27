@@ -13,20 +13,25 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\File;
-use App\Services\ProfitDistributionService;
+use App\Services\FinancialSettlementService;
 
 
 class AdminBankAccountController extends Controller
 {
 
     
-    protected ProfitDistributionService $profitDistribution;
+    protected FinancialSettlementService $financialSettlement;
 
-    public function __construct(ProfitDistributionService $profitDistribution)
-    {
-        $this->profitDistribution = $profitDistribution;
-    }
-    
+        public function __construct(
+
+            FinancialSettlementService $financialSettlement
+
+        ){
+
+            $this->financialSettlement = $financialSettlement;
+
+        }
+
 
     public function index(Request $request)
     {
@@ -676,10 +681,7 @@ class AdminBankAccountController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function uploadDocument(
-        Request $request,
-        int $id
-    )
+    public function uploadDocument(Request $request, int $id)
     {
         /*
         |--------------------------------------------------------------------------
@@ -687,9 +689,7 @@ class AdminBankAccountController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        if (!auth()->user()->hasRole('Executive')) {
-            abort(403);
-        }
+        abort_unless(auth()->user()->hasRole('Executive'), 403);
 
         /*
         |--------------------------------------------------------------------------
@@ -698,24 +698,17 @@ class AdminBankAccountController extends Controller
         */
 
         $request->validate([
-
             'support_file' => [
-
                 'required',
                 'file',
                 'mimes:pdf,jpg,jpeg,png,doc,docx',
-                'max:5120'
-
+                'max:5120',
             ],
-
             'upload_remarks' => [
-
                 'nullable',
                 'string',
-                'max:1000'
-
-            ]
-
+                'max:1000',
+            ],
         ]);
 
         /*
@@ -732,39 +725,26 @@ class AdminBankAccountController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        if ($application->assigned_to != auth()->id()) {
-            abort(403);
-        }
+        abort_if($application->assigned_to != auth()->id(), 403);
 
         /*
         |--------------------------------------------------------------------------
-        | CHECK EXISTING RECEIPT
+        | RECEIPT ALREADY UPLOADED
         |--------------------------------------------------------------------------
         */
 
-        $alreadyUploaded = ServiceDocument::where(
-
-            'service_type',
-            'bank'
-
-        )
-        ->where(
-
-            'service_id',
-            $application->id
-
-        )
-        ->exists();
+        $alreadyUploaded = ServiceDocument::where([
+            'service_type' => 'bank',
+            'service_id'   => $application->id,
+        ])->exists();
 
         if ($alreadyUploaded) {
 
             return response()->json([
-
                 'status'  => false,
-
-                'message' => 'Receipt already uploaded.'
-
+                'message' => 'Receipt already uploaded.',
             ], 422);
+
         }
 
         /*
@@ -774,22 +754,17 @@ class AdminBankAccountController extends Controller
         */
 
         $path = store_uploaded_file(
-
             $request->file('support_file'),
-
             'service-documents/bank-accounts'
-
         );
 
         if (!$path) {
 
             return response()->json([
-
                 'status'  => false,
-
-                'message' => 'File upload failed.'
-
+                'message' => 'File upload failed.',
             ], 422);
+
         }
 
         /*
@@ -810,153 +785,29 @@ class AdminBankAccountController extends Controller
 
             'remarks'       => $request->upload_remarks,
 
-            'document_type' => 'receipt'
+            'document_type' => 'receipt',
 
         ]);
 
         /*
         |--------------------------------------------------------------------------
-        | EXECUTIVE
-        |--------------------------------------------------------------------------
-        */
-
-        $executive = auth()->user();
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADMIN
-        |--------------------------------------------------------------------------
-        */
-
-        $admin = User::role('admin')->first();
-
-        /*
-        |--------------------------------------------------------------------------
-        | GET CHARGE
-        |--------------------------------------------------------------------------
-        */
-
-        $charge = Charge::with('commissions')
-            ->active()
-            ->where('code', str_replace('-', '_', $application->service_slug))
-            ->first();
-
-        $executiveCommission = 0;
-        $distributorCommission = 0;
-
-        if ($charge) {
-
-            $executiveCommission = (float) $charge->commissions()
-                ->where('role', 'Executive')
-                ->where('is_active', true)
-                ->value('value');
-
-            $distributorCommission = (float) $charge->commissions()
-                ->where('role', 'Distributor')
-                ->where('is_active', true)
-                ->value('value');
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | FIND RETAILER & DISTRIBUTOR
-        |--------------------------------------------------------------------------
-        */
-
-        $retailer = $application->user;
-        $distributor = null;
-
-        if ($retailer && $retailer->created_by) {
-            $distributor = User::find($retailer->created_by);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | CREDIT EXECUTIVE
-        |--------------------------------------------------------------------------
-        */
-
-        if ($executiveCommission > 0) {
-
-            $executive->increment(
-                'wallet_balance',
-                $executiveCommission
-            );
-
-            WalletTransaction::create([
-                'user_id' => $executive->id,
-                'amount'  => $executiveCommission,
-                'type'    => 'credit',
-                'remark'  => 'Bank Service Executive Commission #'.$application->application_no,
-            ]);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | CREDIT DISTRIBUTOR
-        |--------------------------------------------------------------------------
-        */
-
-        if ($distributor && $distributorCommission > 0) {
-
-            $distributor->increment(
-                'wallet_balance',
-                $distributorCommission
-            );
-
-            WalletTransaction::create([
-                'user_id' => $distributor->id,
-                'amount'  => $distributorCommission,
-                'type'    => 'credit',
-                'remark'  => 'Bank Service Distributor Commission #'.$application->application_no,
-            ]);
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | DEDUCT ADMIN
-        |--------------------------------------------------------------------------
-        */
-
-        $totalCommission = $executiveCommission;
-
-        if ($distributor) {
-            $totalCommission += $distributorCommission;
-        }
-
-        if ($admin && $totalCommission > 0) {
-
-            $admin->decrement(
-                'wallet_balance',
-                $totalCommission
-            );
-
-            WalletTransaction::create([
-                'user_id' => $admin->id,
-                'amount'  => $totalCommission,
-                'type'    => 'debit',
-                'remark'  => 'Executive + Distributor Bank Service Commission #'.$application->application_no,
-            ]);
-        }
-        /*
-        |--------------------------------------------------------------------------
-        | UPDATE STATUS
+        | APPROVE APPLICATION
         |--------------------------------------------------------------------------
         */
 
         $application->update([
 
-            'status' => 'Approved'
+            'status' => 'Approved',
 
         ]);
 
         /*
         |--------------------------------------------------------------------------
-        | Business Partner Profit Distribution
+        | FINANCIAL SETTLEMENT
         |--------------------------------------------------------------------------
         */
 
-        $this->profitDistribution->distribute(
+        $this->financialSettlementService->settle(
 
             serviceType: 'bank',
 
@@ -966,33 +817,32 @@ class AdminBankAccountController extends Controller
 
             serviceAmount: (float) ($application->amount ?? $application->charge ?? 0),
 
-            executiveCommission: $executiveCommission,
+            chargeCode: str_replace('-', '_', $application->service_slug),
 
-            distributorCommission: $distributorCommission,
+            retailer: $application->user,
 
-            remarks: 'Bank Service Profit Distribution'
+            executive: auth()->user(),
+
+            remarks: 'Bank Service Settlement'
 
         );
 
         /*
         |--------------------------------------------------------------------------
-        | SUCCESS RESPONSE
+        | SUCCESS
         |--------------------------------------------------------------------------
         */
 
         return response()->json([
 
-            'status' => true,
+            'status'   => true,
 
-            'message' =>
+            'message'  => 'Bank Service receipt uploaded successfully.',
 
-                'bank Service receipt uploaded successfully.',
-
-            'file_url' => file_url($path)
+            'file_url' => file_url($path),
 
         ]);
     }
-
 
    
 

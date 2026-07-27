@@ -160,7 +160,7 @@ class Retailer extends Model
             'distributor_id'
         );
     }
-
+    
     public function retailerSessions()
     {
         return $this->hasMany(RetailerSession::class, 'retailer_id');

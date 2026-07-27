@@ -51,7 +51,7 @@ class PanApplyWithoutDocumentController extends Controller
 
             ->where(
                 'code',
-                'pan_apply_without_document'
+                'without_document_pan'
             )
 
             ->where(

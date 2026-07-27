@@ -13,18 +13,24 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\File;
-use App\Services\ProfitDistributionService;
+use App\Services\FinancialSettlementService;
 
 
 class AdminVoterIdController extends Controller
 {
 
-    protected ProfitDistributionService $profitDistribution;
+    protected FinancialSettlementService $financialSettlement;
 
-    public function __construct(ProfitDistributionService $profitDistribution)
-    {
-        $this->profitDistribution = $profitDistribution;
-    }
+        public function __construct(
+
+            FinancialSettlementService $financialSettlement
+
+        ){
+
+            $this->financialSettlement = $financialSettlement;
+
+        }
+
 
     public function index(Request $request)
     {
@@ -773,225 +779,7 @@ class AdminVoterIdController extends Controller
 
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | USERS
-        |--------------------------------------------------------------------------
-        */
-
-        $executive = auth()->user();
-
-        $retailer = $application
-            ->user
-            ->retailer;
-
-        $distributor = $retailer?->distributor;
-
-        $admin = User::role('Admin')
-            ->first();
-
-        /*
-        |--------------------------------------------------------------------------
-        | SERVICE CHARGE
-        |--------------------------------------------------------------------------
-        */
-
-        $charge = Charge::getCharge(
-            str_replace('-', '_', $application->service_slug)
-        );
-
-        if (!$charge) {
-
-            DB::rollBack();
-
-            return response()->json([
-
-                'status' => false,
-
-                'message' => 'Charge configuration not found.'
-
-            ], 422);
-
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | EXECUTIVE COMMISSION
-        |--------------------------------------------------------------------------
-        */
-
-        $executiveCommission = (float)
-
-            $charge->commissions()
-
-                ->where(
-
-                    'role',
-                    'Executive'
-
-                )
-
-                ->where(
-
-                    'is_active',
-                    true
-
-                )
-
-                ->value('value');
-
-        /*
-        |--------------------------------------------------------------------------
-        | DISTRIBUTOR COMMISSION
-        |--------------------------------------------------------------------------
-        */
-
-        $distributorCommission = (float)
-
-            $charge->commissions()
-
-                ->where(
-
-                    'role',
-                    'Distributor'
-
-                )
-
-                ->where(
-
-                    'is_active',
-                    true
-
-                )
-
-                ->value('value');
-
-        /*
-        |--------------------------------------------------------------------------
-        | TOTAL COMMISSION
-        |--------------------------------------------------------------------------
-        */
-
-        $totalCommission = $executiveCommission;
-
-        if ($distributor) {
-
-            $totalCommission += $distributorCommission;
-
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | CREDIT EXECUTIVE
-        |--------------------------------------------------------------------------
-        */
-
-        if ($executiveCommission > 0) {
-
-            $executive->increment(
-
-                'wallet_balance',
-
-                $executiveCommission
-
-            );
-
-            WalletTransaction::create([
-
-                'user_id' => $executive->id,
-
-                'amount' => $executiveCommission,
-
-                'type' => 'credit',
-
-                'remark' =>
-
-                    'Executive Commission - Bank Service #' .
-                    $application->application_no
-
-            ]);
-
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | CREDIT DISTRIBUTOR
-        |--------------------------------------------------------------------------
-        */
-
-        if (
-
-            $distributor &&
-
-            $distributorCommission > 0
-
-        ) {
-
-            $distributor->increment(
-
-                'wallet_balance',
-
-                $distributorCommission
-
-            );
-
-            WalletTransaction::create([
-
-                'user_id' => $distributor->id,
-
-                'amount' => $distributorCommission,
-
-                'type' => 'credit',
-
-                'remark' =>
-
-                    'Distributor Commission - Bank Service #' .
-                    $application->application_no
-
-            ]);
-
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | DEBIT ADMIN
-        |--------------------------------------------------------------------------
-        */
-
-        if (
-
-            $admin &&
-
-            $totalCommission > 0
-
-        ) {
-
-            $admin->decrement(
-
-                'wallet_balance',
-
-                $totalCommission
-
-            );
-
-            WalletTransaction::create([
-
-                'user_id' => $admin->id,
-
-                'amount' => $totalCommission,
-
-                'type' => 'debit',
-
-                'remark' =>
-
-                    'Bank Service Commission #' .
-                    $application->application_no
-
-            ]);
-
-        }
-
-        /*
+       /*
         |--------------------------------------------------------------------------
         | UPDATE STATUS
         |--------------------------------------------------------------------------
@@ -999,17 +787,17 @@ class AdminVoterIdController extends Controller
 
         $application->update([
 
-            'status' => 'Approved'
+            'status' => 'Approved',
 
         ]);
 
         /*
         |--------------------------------------------------------------------------
-        | BUSINESS PARTNER PROFIT DISTRIBUTION
+        | FINANCIAL SETTLEMENT
         |--------------------------------------------------------------------------
         */
 
-        $this->profitDistribution->distribute(
+        $this->financialSettlementService->settle(
 
             serviceType: 'voter_id',
 
@@ -1019,11 +807,13 @@ class AdminVoterIdController extends Controller
 
             serviceAmount: (float) ($application->amount ?? $application->charge ?? 0),
 
-            executiveCommission: $executiveCommission,
+            chargeCode: str_replace('-', '_', $application->service_slug),
 
-            distributorCommission: $distributorCommission,
+            retailer: $application->user,
 
-            remarks: 'Voter ID Service Profit Distribution'
+            executive: auth()->user(),
+
+            remarks: 'Voter ID Service Settlement'
 
         );
 
@@ -1037,11 +827,9 @@ class AdminVoterIdController extends Controller
 
             'status' => true,
 
-            'message' =>
+            'message' => 'Voter ID Service receipt uploaded successfully.',
 
-                'Voter-Id Service receipt uploaded successfully.',
-
-            'file_url' => file_url($path)
+            'file_url' => file_url($path),
 
         ]);
     }

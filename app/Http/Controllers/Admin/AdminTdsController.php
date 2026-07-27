@@ -15,17 +15,23 @@ use App\Models\TdsFile;
 use App\Models\User;
 use App\Models\ServiceDocument;
 use App\Models\WalletTransaction;
-use App\Services\ProfitDistributionService;
+use App\Services\FinancialSettlementService;
 
 class AdminTdsController extends Controller
 {
 
-    protected ProfitDistributionService $profitDistribution;
+    protected FinancialSettlementService $financialSettlement;
 
-    public function __construct(ProfitDistributionService $profitDistribution)
-    {
-        $this->profitDistribution = $profitDistribution;
-    }
+        public function __construct(
+
+            FinancialSettlementService $financialSettlement
+
+        ){
+
+            $this->financialSettlement = $financialSettlement;
+
+        }
+
 
     
 
@@ -664,222 +670,6 @@ class AdminTdsController extends Controller
             'document_type' => 'receipt'
 
         ]);
-
-      /*
-    |--------------------------------------------------------------------------
-    | USERS
-    |--------------------------------------------------------------------------
-    */
-
-    $executive = auth()->user();
-
-    $retailer = $application
-        ->user
-        ->retailer;
-
-    $distributor = $retailer?->distributor;
-
-    $admin = User::role('Admin')
-        ->first();
-
-    /*
-    |--------------------------------------------------------------------------
-    | SERVICE CHARGE
-    |--------------------------------------------------------------------------
-    */
-
-    $charge = Charge::getCharge(
-        'itr_filing_tds_refund'
-    );
-
-    if (!$charge) {
-
-        DB::rollBack();
-
-        return response()->json([
-
-            'status' => false,
-
-            'message' => 'Charge configuration not found.'
-
-        ], 422);
-
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | EXECUTIVE COMMISSION
-    |--------------------------------------------------------------------------
-    */
-
-    $executiveCommission = (float)
-
-        $charge->commissions()
-
-            ->where(
-
-                'role',
-                'Executive'
-
-            )
-
-            ->where(
-
-                'is_active',
-                true
-
-            )
-
-            ->value('value');
-
-    /*
-    |--------------------------------------------------------------------------
-    | DISTRIBUTOR COMMISSION
-    |--------------------------------------------------------------------------
-    */
-
-    $distributorCommission = (float)
-
-        $charge->commissions()
-
-            ->where(
-
-                'role',
-                'Distributor'
-
-            )
-
-            ->where(
-
-                'is_active',
-                true
-
-            )
-
-            ->value('value');
-
-    /*
-    |--------------------------------------------------------------------------
-    | TOTAL COMMISSION
-    |--------------------------------------------------------------------------
-    */
-
-    $totalCommission = $executiveCommission;
-
-    if ($distributor) {
-        $totalCommission += $distributorCommission;
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | CREDIT EXECUTIVE
-    |--------------------------------------------------------------------------
-    */
-
-    if ($executiveCommission > 0) {
-
-        $executive->increment(
-
-            'wallet_balance',
-
-            $executiveCommission
-
-        );
-
-        WalletTransaction::create([
-
-            'user_id' => $executive->id,
-
-            'amount' => $executiveCommission,
-
-            'type' => 'credit',
-
-            'remark' =>
-
-                'Executive Commission - TDS Service #TDS-' .
-                $application->id
-
-        ]);
-
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | CREDIT DISTRIBUTOR
-    |--------------------------------------------------------------------------
-    */
-
-    if (
-
-        $distributor &&
-
-        $distributorCommission > 0
-
-    ) {
-
-        $distributor->increment(
-
-            'wallet_balance',
-
-            $distributorCommission
-
-        );
-
-        WalletTransaction::create([
-
-            'user_id' => $distributor->id,
-
-            'amount' => $distributorCommission,
-
-            'type' => 'credit',
-
-            'remark' =>
-
-                'Distributor Commission - TDS Service #TDS-' .
-                $application->id
-
-        ]);
-
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | DEBIT ADMIN
-    |--------------------------------------------------------------------------
-    */
-
-    if (
-
-        $admin &&
-
-        $totalCommission > 0
-
-    ) {
-
-        $admin->decrement(
-
-            'wallet_balance',
-
-            $totalCommission
-
-        );
-
-        WalletTransaction::create([
-
-            'user_id' => $admin->id,
-
-            'amount' => $totalCommission,
-
-            'type' => 'debit',
-
-            'remark' =>
-
-                'TDS Service Commission #TDS-' .
-                $application->id
-
-        ]);
-
-    }
         /*
         |--------------------------------------------------------------------------
         | UPDATE STATUS
@@ -894,28 +684,29 @@ class AdminTdsController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | BUSINESS PARTNER PROFIT DISTRIBUTION
+        | FINANCIAL SETTLEMENT
         |--------------------------------------------------------------------------
         */
 
-        $this->profitDistribution->distribute(
+        $this->financialSettlementService->settle(
 
             serviceType: 'tds_refund',
 
             serviceId: $application->id,
 
-            referenceNo: 'TDS-'.$application->id,
+            referenceNo: 'TDS-' . $application->id,
 
             serviceAmount: (float) ($application->amount ?? $application->charge ?? 0),
 
-            executiveCommission: $executiveCommission,
+            chargeCode: 'itr_filing_tds_refund',
 
-            distributorCommission: $distributorCommission,
+            retailer: $application->user,
 
-            remarks: 'TDS Refund Profit Distribution'
+            executive: auth()->user(),
+
+            remarks: 'TDS Refund Settlement'
 
         );
-
 
         /*
         |--------------------------------------------------------------------------
@@ -927,11 +718,9 @@ class AdminTdsController extends Controller
 
             'status' => true,
 
-            'message' =>
+            'message' => 'TDS receipt uploaded successfully.',
 
-                'TDS receipt uploaded successfully.',
-
-            'file_url' => file_url($path)
+            'file_url' => file_url($path),
 
         ]);
         

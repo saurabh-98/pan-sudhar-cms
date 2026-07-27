@@ -12,7 +12,7 @@ use App\Models\Charge;
 use App\Models\User;
 use App\Models\WalletTransaction;
 use App\Models\ServiceDocument;
-use App\Services\ProfitDistributionService;
+use App\Services\FinancialSettlementService;
 
 use ZipArchive;
 use Illuminate\Support\Facades\Http;
@@ -21,12 +21,17 @@ class AdminPanCorrectionController extends Controller
 {
     
 
-    protected ProfitDistributionService $profitDistribution;
+    protected FinancialSettlementService $financialSettlement;
 
-    public function __construct(ProfitDistributionService $profitDistribution)
-    {
-        $this->profitDistribution = $profitDistribution;
-    }
+        public function __construct(
+
+            FinancialSettlementService $financialSettlement
+
+        ){
+
+            $this->financialSettlement = $financialSettlement;
+
+        }
 
     public function index(Request $request)
     {
@@ -540,314 +545,186 @@ class AdminPanCorrectionController extends Controller
     |--------------------------------------------------------------------------
     */
 
-   public function uploadDocument(
-    Request $request,
-    int $id
-)
-{
+   public function uploadDocument(Request $request, int $id)
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | ONLY EXECUTIVE
+        |--------------------------------------------------------------------------
+        */
 
-    /*
-    |--------------------------------------------------------------------------
-    | ONLY EXECUTIVE
-    |--------------------------------------------------------------------------
-    */
+        abort_unless(auth()->user()->hasRole('Executive'), 403);
 
-    if (!auth()->user()->hasRole('Executive')) {
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDATION
+        |--------------------------------------------------------------------------
+        */
 
-        abort(403);
-    }
+        $request->validate([
 
-    /*
-    |--------------------------------------------------------------------------
-    | VALIDATION
-    |--------------------------------------------------------------------------
-    */
+            'support_file' => [
+                'required',
+                'file',
+                'mimes:pdf,jpg,jpeg,png,doc,docx',
+                'max:5120',
+            ],
 
-    $request->validate([
+            'upload_remarks' => [
+                'nullable',
+                'string',
+                'max:1000',
+            ],
 
-        'support_file' => [
+        ]);
 
-            'required',
-            'file',
-            'mimes:pdf,jpg,jpeg,png,doc,docx',
-            'max:5120'
+        /*
+        |--------------------------------------------------------------------------
+        | APPLICATION
+        |--------------------------------------------------------------------------
+        */
 
-        ],
+        $application = PanCorrectionApplication::findOrFail($id);
 
-        'upload_remarks' => [
+        /*
+        |--------------------------------------------------------------------------
+        | SECURITY
+        |--------------------------------------------------------------------------
+        */
 
-            'nullable',
-            'string',
-            'max:1000'
+        abort_if($application->assigned_to != auth()->id(), 403);
 
-        ]
+        /*
+        |--------------------------------------------------------------------------
+        | ALREADY APPROVED
+        |--------------------------------------------------------------------------
+        */
 
-    ]);
+        if ($application->status === 'Approved') {
 
-    /*
-    |--------------------------------------------------------------------------
-    | APPLICATION
-    |--------------------------------------------------------------------------
-    */
+            return response()->json([
+                'status'  => false,
+                'message' => 'This application is already approved.',
+            ], 422);
 
-    $application = PanCorrectionApplication::findOrFail($id);
+        }
 
-    /*
-    |--------------------------------------------------------------------------
-    | EXECUTIVE SECURITY
-    |--------------------------------------------------------------------------
-    */
+        /*
+        |--------------------------------------------------------------------------
+        | CHECK EXISTING RECEIPT
+        |--------------------------------------------------------------------------
+        */
 
-    if ($application->assigned_to != auth()->id()) {
+        $alreadyUploaded = ServiceDocument::where([
+            'service_type' => 'pan_correction',
+            'service_id'   => $application->id,
+        ])->exists();
 
-        abort(403);
-    }
+        if ($alreadyUploaded) {
 
-    /*
-    |--------------------------------------------------------------------------
-    | CHECK ALREADY COMPLETED
-    |--------------------------------------------------------------------------
-    */
+            return response()->json([
+                'status'  => false,
+                'message' => 'Receipt already uploaded.',
+            ], 422);
 
-    if ($application->status === 'Approved') {
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILE UPLOAD
+        |--------------------------------------------------------------------------
+        */
+
+        $path = store_uploaded_file(
+            $request->file('support_file'),
+            'service-documents/pan-correction'
+        );
+
+        if (!$path) {
+
+            return response()->json([
+                'status'  => false,
+                'message' => 'File upload failed.',
+            ], 422);
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | SAVE DOCUMENT
+        |--------------------------------------------------------------------------
+        */
+
+        ServiceDocument::create([
+
+            'service_type'  => 'pan_correction',
+
+            'service_id'    => $application->id,
+
+            'user_id'       => auth()->id(),
+
+            'file_path'     => $path,
+
+            'remarks'       => $request->upload_remarks,
+
+            'document_type' => 'receipt',
+
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | APPROVE APPLICATION
+        |--------------------------------------------------------------------------
+        */
+
+        $application->update([
+            'status' => 'Approved',
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | FINANCIAL SETTLEMENT
+        |--------------------------------------------------------------------------
+        */
+
+        $this->financialSettlementService->settle(
+
+            serviceType: 'pan_correction',
+
+            serviceId: $application->id,
+
+            referenceNo: $application->application_no,
+
+            serviceAmount: (float) ($application->amount ?? $application->charge ?? 0),
+
+            // Use your actual charge code from the charges table
+            chargeCode: 'pan_correction',
+
+            retailer: $application->user,
+
+            executive: auth()->user(),
+
+            remarks: 'PAN Correction Settlement'
+
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | SUCCESS
+        |--------------------------------------------------------------------------
+        */
 
         return response()->json([
 
-            'status' => false,
+            'status'   => true,
 
-            'message' => 'This application is already Approved.'
+            'message'  => 'PAN Correction receipt uploaded successfully.',
 
-        ], 422);
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | FILE UPLOAD (LOCAL / CLOUDINARY HELPER)
-    |--------------------------------------------------------------------------
-    */
-
-    $path = store_uploaded_file(
-
-        $request->file('support_file'),
-
-        'service-documents/pan-correction'
-
-    );
-
-    /*
-    |--------------------------------------------------------------------------
-    | SAVE DOCUMENT
-    |--------------------------------------------------------------------------
-    */
-
-    ServiceDocument::create([
-
-        'service_type'  => 'pan_correction',
-
-        'service_id'    => $application->id,
-
-        'user_id'       => auth()->id(),
-
-        'file_path'     => $path,
-
-        'remarks'       => $request->upload_remarks,
-
-        'document_type' => 'receipt'
-
-    ]);
-
-    /*
-    |--------------------------------------------------------------------------
-    | EXECUTIVE
-    |--------------------------------------------------------------------------
-    */
-
-    $executive = auth()->user();
-
-    /*
-    |--------------------------------------------------------------------------
-    | ADMIN
-    |--------------------------------------------------------------------------
-    */
-
-    $admin = User::role('admin')->first();
-
-    /*
-    |--------------------------------------------------------------------------
-    | GET CHARGE
-    |--------------------------------------------------------------------------
-    */
-
-    $charge = Charge::with('commissions')
-        ->active()
-        ->where('code', str_replace('-', '_', $application->service_slug))
-        ->first();
-
-    $executiveCommission = 0;
-    $distributorCommission = 0;
-
-    if ($charge) {
-
-        $executiveCommission = (float) $charge->commissions()
-            ->where('role', 'Executive')
-            ->where('is_active', true)
-            ->value('value');
-
-        $distributorCommission = (float) $charge->commissions()
-            ->where('role', 'Distributor')
-            ->where('is_active', true)
-            ->value('value');
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | FIND RETAILER & DISTRIBUTOR
-    |--------------------------------------------------------------------------
-    */
-
-    $retailer = $application->user;
-    $distributor = null;
-
-    if ($retailer && $retailer->created_by) {
-        $distributor = User::find($retailer->created_by);
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | CREDIT EXECUTIVE
-    |--------------------------------------------------------------------------
-    */
-
-    if ($executiveCommission > 0) {
-
-        $executive->increment(
-            'wallet_balance',
-            $executiveCommission
-        );
-
-        WalletTransaction::create([
-
-            'user_id' => $executive->id,
-
-            'amount'  => $executiveCommission,
-
-            'type'    => 'credit',
-
-            'remark'  => 'Executive PAN Correction Commission #' .
-                $application->application_no,
+            'file_url' => file_url($path),
 
         ]);
     }
-
-    /*
-    |--------------------------------------------------------------------------
-    | CREDIT DISTRIBUTOR
-    |--------------------------------------------------------------------------
-    */
-
-    if ($distributor && $distributorCommission > 0) {
-
-        $distributor->increment(
-            'wallet_balance',
-            $distributorCommission
-        );
-
-        WalletTransaction::create([
-
-            'user_id' => $distributor->id,
-
-            'amount'  => $distributorCommission,
-
-            'type'    => 'credit',
-
-            'remark'  => 'Distributor PAN Correction Commission #' .
-                $application->application_no,
-
-        ]);
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | DEDUCT ADMIN
-    |--------------------------------------------------------------------------
-    */
-
-    $totalDeduction = $executiveCommission;
-
-    if ($distributor) {
-        $totalDeduction += $distributorCommission;
-    }
-
-    if ($admin && $totalDeduction > 0) {
-
-        $admin->decrement(
-            'wallet_balance',
-            $totalDeduction
-        );
-
-        WalletTransaction::create([
-
-            'user_id' => $admin->id,
-
-            'amount'  => $totalDeduction,
-
-            'type'    => 'debit',
-
-            'remark'  => 'Executive & Distributor PAN Correction Commission #' .
-                $application->application_no,
-
-        ]);
-    }
-    /*
-    |--------------------------------------------------------------------------
-    | UPDATE STATUS
-    |--------------------------------------------------------------------------
-    */
-
-    $application->update([
-
-        'status' => 'Approved'
-
-    ]);
-
-    /*
-    |--------------------------------------------------------------------------
-    | BUSINESS PARTNER PROFIT DISTRIBUTION
-    |--------------------------------------------------------------------------
-    */
-
-    $this->profitDistribution->distribute(
-
-        serviceType: 'pan_correction',
-
-        serviceId: $application->id,
-
-        referenceNo: $application->application_no,
-
-        serviceAmount: (float) ($application->amount ?? $application->charge ?? 0),
-
-        executiveCommission: $executiveCommission,
-
-        distributorCommission: $distributorCommission,
-
-        remarks: 'PAN Correction Profit Distribution'
-
-    );
-
-    /*
-    |--------------------------------------------------------------------------
-    | SUCCESS RESPONSE
-    |--------------------------------------------------------------------------
-    */
-
-    return response()->json([
-
-        'status' => true,
-
-        'message' => 'Receipt uploaded and commission added successfully.'
-
-    ]);
-}
+    
     /*
     |--------------------------------------------------------------------------
     | DOWNLOAD ALL DOCUMENTS
