@@ -13,12 +13,13 @@ use App\Models\User;
 use App\Models\WalletTransaction;
 use App\Models\ServiceDocument;
 use App\Services\ProfitDistributionService;
+use App\Services\FinancialSettlementService;
 
 use ZipArchive;
 
 class AdminNewPanController extends Controller
 {
-        protected FinancialSettlementService $financialSettlement;
+        protected $financialSettlement;
 
         public function __construct(
 

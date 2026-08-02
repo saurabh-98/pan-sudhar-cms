@@ -575,9 +575,7 @@ class AdminPanFindController extends Controller
 
                 now(),
 
-            'status' =>
-
-                'approved'
+           
 
         ]);
 
@@ -593,9 +591,9 @@ class AdminPanFindController extends Controller
 
                 'assigned_to' => $assignedUser->name,
 
-                'remarks' => $application->remarks,
+                'remarks' => $application->remarks
 
-                'status' => $application->status
+               
 
             ]
 
