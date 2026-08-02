@@ -20,18 +20,13 @@ use App\Services\FinancialSettlementService;
 class AdminCscController extends Controller
 {
 
-     protected FinancialSettlementService $financialSettlement;
+     protected FinancialSettlementService $financialSettlementService;
 
-    public function __construct(
-
-        FinancialSettlementService $financialSettlement
-
-    ){
-
-        $this->financialSettlement = $financialSettlement;
-
-    }
-    
+        public function __construct(
+            FinancialSettlementService $financialSettlementService
+        ){
+            $this->financialSettlementService = $financialSettlementService;
+        }    
 
     public function index(Request $request)
 {

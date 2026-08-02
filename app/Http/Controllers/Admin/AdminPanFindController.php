@@ -21,16 +21,12 @@ class AdminPanFindController extends Controller
 {
 
 
-    protected FinancialSettlementService $financialSettlement;
+    protected FinancialSettlementService $financialSettlementService;
 
         public function __construct(
-
-            FinancialSettlementService $financialSettlement
-
+            FinancialSettlementService $financialSettlementService
         ){
-
-            $this->financialSettlement = $financialSettlement;
-
+            $this->financialSettlementService = $financialSettlementService;
         }
 
     public function index(Request $request)

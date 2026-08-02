@@ -19,18 +19,13 @@ use ZipArchive;
 
 class AdminNewPanController extends Controller
 {
-        protected $financialSettlement;
+        protected FinancialSettlementService $financialSettlementService;
 
         public function __construct(
-
-            FinancialSettlementService $financialSettlement
-
+            FinancialSettlementService $financialSettlementService
         ){
-
-            $this->financialSettlement = $financialSettlement;
-
+            $this->financialSettlementService = $financialSettlementService;
         }
-
     
 
         public function index(Request $request)
@@ -690,7 +685,7 @@ class AdminNewPanController extends Controller
 
         $this->financialSettlementService->settle(
 
-            serviceType: 'pan',
+            serviceType: 'new_pan',
 
             serviceId: $application->id,
 

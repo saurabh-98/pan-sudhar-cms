@@ -20,18 +20,13 @@ use App\Services\FinancialSettlementService;
 class AdminTdsController extends Controller
 {
 
-    protected FinancialSettlementService $financialSettlement;
+    protected FinancialSettlementService $financialSettlementService;
 
         public function __construct(
-
-            FinancialSettlementService $financialSettlement
-
+            FinancialSettlementService $financialSettlementService
         ){
-
-            $this->financialSettlement = $financialSettlement;
-
+            $this->financialSettlementService = $financialSettlementService;
         }
-
 
     
 
@@ -232,12 +227,12 @@ class AdminTdsController extends Controller
 
                 ->addColumn('assigned_to', function ($row) {
 
-                    if ($row->assignedEmployee) {
+                    if ($row->assignedUser) {
                         return '
 
                             <span class="assigned-badge">
 
-                                ' . $row->assignedEmployee->name . '
+                                ' . $row->assignedUser->name . '
 
                             </span>
 
@@ -510,12 +505,14 @@ class AdminTdsController extends Controller
 
         $application->refresh();
 
+        
+
         return response()->json([
             'status'  => true,
             'message' => 'TDS Assigned Successfully.',
             'data'    => [
                 'application_id' => $application->id,
-                'assigned_to'    => optional($application->assignedEmployee)->name,
+                'assigned_to' => optional($application->assignedUser)->name,
                 'assigned_at'    => optional($application->assigned_at)?->format('d M Y h:i A'),
                 'admin_remarks'  => $application->admin_remarks,
                 'status'         => $application->status,

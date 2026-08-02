@@ -238,7 +238,7 @@ class TdsFile extends Model
 
     public function getAssignedEmployeeNameAttribute(): ?string
     {
-        return optional($this->assignedEmployee)->name;
+        return optional($this->assignedUser)->name;
     }
 
     /*

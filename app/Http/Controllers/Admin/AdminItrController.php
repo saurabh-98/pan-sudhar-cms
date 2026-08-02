@@ -22,18 +22,15 @@ class AdminItrController extends Controller
 {
 
 
-    protected FinancialSettlementService $financialSettlement;
+    protected FinancialSettlementService $financialSettlementService;
 
-    public function __construct(
-
-        FinancialSettlementService $financialSettlement
-
-    ){
-
-        $this->financialSettlement = $financialSettlement;
-
-    }
-    /*
+        public function __construct(
+            FinancialSettlementService $financialSettlementService
+        ){
+            $this->financialSettlementService = $financialSettlementService;
+        }
+        
+        /*
     |--------------------------------------------------------------------------
     | ITR LIST
     |--------------------------------------------------------------------------
@@ -710,7 +707,7 @@ class AdminItrController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $this->financialSettlement->settle(
+        $this->financialSettlementService->settle(
 
             serviceType: 'itr_file',
 

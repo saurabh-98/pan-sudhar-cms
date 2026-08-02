@@ -19,16 +19,12 @@ use App\Services\FinancialSettlementService;
 class AdminVoterIdController extends Controller
 {
 
-    protected FinancialSettlementService $financialSettlement;
+    protected FinancialSettlementService $financialSettlementService;
 
         public function __construct(
-
-            FinancialSettlementService $financialSettlement
-
+            FinancialSettlementService $financialSettlementService
         ){
-
-            $this->financialSettlement = $financialSettlement;
-
+            $this->financialSettlementService = $financialSettlementService;
         }
 
 
