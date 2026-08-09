@@ -50,7 +50,7 @@ class PanApplyWithoutDocumentService
     */
 
     public function preview(
-        PanApplyWithoutDocumenDTO $panCorrectionDto
+        PanWithoutDocumentDTO $panCorrectionDto
     ): array {
 
 

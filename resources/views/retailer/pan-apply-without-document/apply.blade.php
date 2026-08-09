@@ -220,7 +220,7 @@
 
                     <div class="col-md-4">
 
-                        <label class="pan-label required">
+                        <label class="pan-label ">
 
                             Old PAN Number
 

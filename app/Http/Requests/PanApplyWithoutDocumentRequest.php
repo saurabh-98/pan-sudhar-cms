@@ -74,7 +74,7 @@ class PanApplyWithoutDocumentRequest extends FormRequest
             'last_name' => 'required|string|max:100',
 
             'old_pan_number' =>
-                'required|string|size:10|regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/',
+                'nullable|string|size:10|regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/',
 
             'gender' =>
                 'required|in:Male,Female,Transgender',
