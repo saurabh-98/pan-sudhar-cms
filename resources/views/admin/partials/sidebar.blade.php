@@ -35,6 +35,19 @@ $panCorrectionCount = \App\Models\PanCorrectionApplication::query()
     )
     ->count();
 
+
+    $panWithoutDocsCount = \App\Models\PanWithoutDocument::query()
+    ->when(
+        auth()->user()->hasRole('Executive'),
+        function ($query) {
+            $query->where('assigned_to', auth()->id());
+        },
+        function ($query) {
+            $query->whereNull('assigned_to');
+        }
+    )
+    ->count();
+
 /*
 |--------------------------------------------------------------------------
 | ITR COUNT
@@ -381,6 +394,8 @@ $panFindCount = \App\Models\PanFindHistory::where(
 ===================================================== --}}
 @if(
     auth()->user()->can('pan.view') ||
+    auth()->user()->can('pan-correction.view') ||
+    auth()->user()->can('pan-without-docs.view') ||
     auth()->user()->can('pan-find.view') ||
     auth()->user()->can('aadhaar.view') ||
     auth()->user()->can('csc.view') ||
@@ -421,6 +436,21 @@ $panFindCount = \App\Models\PanFindHistory::where(
 
                 @if($panCorrectionCount > 0)
                     <span class="sbx-count-badge">{{ $panCorrectionCount }}</span>
+                @endif
+            </a>
+        </li>
+        @endcan
+
+        {{-- PAN Without Document --}}
+        @can('pan-without-docs.view')
+        <li>
+            <a href="{{ route('admin.pan-without-docs.index') }}"
+               class="sbx-link {{ request()->routeIs('admin.pan-without-docs.*') ? 'sbx-active' : '' }}">
+                <i class="fa fa-search"></i>
+                <span>PAN Without Docs.</span>
+
+                @if($panWithoutDocsCount > 0)
+                    <span class="sbx-count-badge">{{ $panWithoutDocsCount }}</span>
                 @endif
             </a>
         </li>

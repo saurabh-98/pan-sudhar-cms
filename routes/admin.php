@@ -34,6 +34,7 @@ use App\Http\Controllers\Admin\UpiController;
 use App\Http\Controllers\Admin\WalletController;
 use App\Http\Controllers\Admin\AdminNewPanController;
 use App\Http\Controllers\Admin\AdminPanCorrectionController;
+use App\Http\Controllers\Admin\AdminPanWithoutDocumentController;
 use App\Http\Controllers\Admin\AdminItrController as ItrFileController;
 use App\Http\Controllers\Admin\RetailerApprovalController;
 use App\Http\Controllers\Admin\ModuleController;
@@ -1006,6 +1007,70 @@ Route::prefix('pages')
 
 
     });
+
+
+    Route::prefix('pan-without-docs')
+        ->name('pan-without-docs.')
+        ->middleware('permission:pan-without-docs.view')
+        ->group(function () {
+
+        /*
+        |--------------------------------------------------------------------------
+        | PAN APPLICATION LIST
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/',
+            [AdminPanWithoutDocumentController::class, 'index']
+        )->name('index');
+
+        /*
+        |--------------------------------------------------------------------------
+        | PAN APPLICATION SHOW
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/show/{id}',
+            [AdminPanWithoutDocumentController::class, 'show']
+        )->name('show');
+
+        /*
+        |--------------------------------------------------------------------------
+        | ASSIGN APPLICATION
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post(
+            '/assign/{id}',
+            [AdminPanWithoutDocumentController::class, 'assign']
+        )->name('assign');
+
+    
+
+        Route::post(
+            '/pan/document-upload/{id}',
+            [AdminPanWithoutDocumentController::class, 'uploadDocument']
+        )->name('document.upload');
+
+        Route::get(
+
+                '/pan-correction/{id}/download-documents',
+
+                [AdminPanWithoutDocumentController::class, 'downloadDocuments']
+
+            )->name('new.download.documents');
+
+         Route::post(
+            '/pan-correction/{id}/reject',
+            [AdminPanWithoutDocumentController::class, 'reject']
+        )->name('reject');
+
+
+
+    });
+
 
 
     /*

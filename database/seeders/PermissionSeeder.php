@@ -195,6 +195,16 @@ class PermissionSeeder extends Seeder
             'pan.view',
             'pan.assign',
 
+             /*
+            |--------------------------------------------------------------------------
+            |  PAN WITHOUT DOCS MODULE
+            |--------------------------------------------------------------------------
+            */
+
+
+            'pan-without-docs.view',
+            'pan-without-docs.assign',
+
 
 
             /*
