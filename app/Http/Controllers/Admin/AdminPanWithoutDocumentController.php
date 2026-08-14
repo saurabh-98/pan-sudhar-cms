@@ -236,7 +236,7 @@ class AdminPanWithoutDocumentController extends Controller
                             <a href="'
 
                             . route(
-                                'admin.pan-correction.show',
+                                'admin.pan-without-docs.show',
                                 $row->id
                             )
 
@@ -260,7 +260,7 @@ class AdminPanWithoutDocumentController extends Controller
                                 action="'
 
                                 . route(
-                                    'admin.pan-correction.reject',
+                                    'admin.pan-without-docs.reject',
                                     $row->id
                                 )
 
@@ -376,7 +376,7 @@ class AdminPanWithoutDocumentController extends Controller
 
         return view(
 
-            'admin.pan-correction.show',
+            'admin.pan-without-document.show',
 
             compact(
 
