@@ -86,7 +86,7 @@ class AdminItrController extends Controller
 
                         $applications
                             ->whereNull('assigned_to')
-                            ->whereIn('status', ['pending', 'Processing']);
+                            ->whereRaw('LOWER(status) IN (?, ?)', ['pending', 'processing']);
 
                         break;
 
@@ -94,19 +94,22 @@ class AdminItrController extends Controller
 
                         $applications
                             ->whereNotNull('assigned_to')
-                            ->whereIn('status', ['pending', 'Processing']);
+                            ->whereRaw('LOWER(status) IN (?, ?)', ['pending', 'processing']);
 
                         break;
 
                     case 'approved':
 
-                        $applications->whereIn('status', ['completed', 'Approved']);
+                        $applications->whereRaw('LOWER(status) IN (?, ?)', ['completed', 'approved']);
 
                         break;
 
                     case 'rejected':
 
-                        $applications->whereNotIn('status', ['completed', 'Approved', 'pending', 'Processing']);
+                        $applications->whereRaw(
+                            'LOWER(status) NOT IN (?, ?, ?, ?)',
+                            ['completed', 'approved', 'pending', 'processing']
+                        );
 
                         break;
                 }
@@ -193,67 +196,55 @@ class AdminItrController extends Controller
 
                 ->addColumn('status', function ($row) {
 
-                    if ($row->status == 'completed') {
+                    $status = strtolower((string) $row->status);
+
+                    if ($status === 'completed') {
                         return '
-
                             <span class="badge bg-success">
-
                                 Completed
-
                             </span>
-
                         ';
-                    } elseif ($row->status == 'Approved') {
-                        return '
+                    }
 
+                    if ($status === 'approved') {
+                        return '
                             <span class="badge bg-success">
-
                                 Approved
-
                             </span>
-
                         ';
-                    } elseif ($row->status == 'pending') {
-                        return '
+                    }
 
+                    if ($status === 'pending') {
+                        return '
                             <span class="badge bg-warning text-dark">
-
                                 Pending
-
                             </span>
-
                         ';
-                    } elseif ($row->status == 'Processing') {
+                    }
+
+                    if ($status === 'processing') {
                         return '
-
                             <span class="badge bg-primary">
-
                                 Processing
-
                             </span>
-
                         ';
                     }
 
                     return '
-
                         <span class="badge bg-danger">
-
                             Rejected
-
                         </span>
-
                     ';
                 })
 
                 ->addColumn('assigned_to', function ($row) {
 
-                    if ($row->assignedEmployee) {
+                    if ($row->assignedUser) {
                         return '
 
                             <span class="assigned-badge">
 
-                                ' . $row->assignedEmployee->name . '
+                                ' . e($row->assignedUser->name) . '
 
                             </span>
 
@@ -298,7 +289,7 @@ class AdminItrController extends Controller
 
                     if (
                         !in_array(
-                            strtolower($row->status),
+                            strtolower((string) $row->status),
                             ['approved', 'completed', 'rejected']
                         )
                     ) {
@@ -518,23 +509,26 @@ class AdminItrController extends Controller
         }
 
         $application->update([
-            'assigned_to'   => $request->assigned_to,
+            'assigned_to'   => (int) $request->assigned_to,
             'assigned_at'   => now(),
             'admin_remarks' => $request->remarks,
             'status'        => 'Processing',
         ]);
 
         $application->refresh();
+        $application->load('assignedUser');
 
         return response()->json([
             'status'  => true,
             'message' => 'ITR Assigned Successfully.',
-            'data'    => [
-                'application_id' => $application->id,
-                'assigned_to'    => optional($application->assignedEmployee)->name,
-                'assigned_at'    => optional($application->assigned_at)?->format('d M Y h:i A'),
-                'admin_remarks'  => $application->admin_remarks,
-                'status'         => $application->status,
+            'data' => [
+                'application_id'       => $application->id,
+                'assigned_to'          => $application->assigned_to,
+                'assigned_employee_id' => optional($application->assignedUser)->id,
+                'assigned_employee'    => optional($application->assignedUser)->name,
+                'assigned_at'          => optional($application->assigned_at)?->format('d M Y h:i A'),
+                'admin_remarks'        => $application->admin_remarks,
+                'status'               => $application->status,
             ]
         ], 200);
     }
@@ -1209,13 +1203,9 @@ class AdminItrController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            $application->status = 'rejected';
+            $application->status = 'Rejected';
 
-            if (isset($application->admin_remark)) {
-
-                $application->admin_remark =
-                    'Rejected by Admin';
-            }
+            $application->admin_remarks = 'Rejected by Admin';
 
             $application->save();
 

@@ -693,7 +693,7 @@ class AdminNewPanController extends Controller
 
             serviceAmount: (float) ($application->amount ?? $application->charge ?? 0),
 
-            chargeCode: str_replace('-', '_', $application->service_slug),
+            chargeCode: 'new_pan_apply',
 
             retailer: $application->user,
 

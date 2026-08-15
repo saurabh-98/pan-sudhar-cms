@@ -694,7 +694,7 @@ class AdminPanWithoutDocumentController extends Controller
             serviceAmount: (float) ($application->amount ?? $application->charge ?? 0),
 
             // Use your actual charge code from the charges table
-            chargeCode: 'pan_without_document',
+            chargeCode: 'without_document_pan',
 
             retailer: $application->user,
 
